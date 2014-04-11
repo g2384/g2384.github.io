@@ -39,6 +39,11 @@ a {
   text-decoration:none;
 }
 
+a:hover {
+  color:#1D8DC5;
+  text-decoration:underline;
+}
+
 a small {
   font-size:11px;
   color:#777;
