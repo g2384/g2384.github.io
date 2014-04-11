@@ -1,8 +1,6 @@
 @import url(https://fonts.googleapis.com/css?family=Lato:300italic,700italic,300,700);
 
 body {
-  margin:0 auto;
-  max-width:800px;
   padding:50px;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color:#777;
@@ -49,7 +47,7 @@ a small {
 }
 
 .wrapper {
-  width:860px;
+  width:800px;
   margin:0 auto;
 }
 
