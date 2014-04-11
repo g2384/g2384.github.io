@@ -189,6 +189,13 @@ footer {
   bottom:50px;
 }
 
+.html {
+  color:#009933;
+}
+.js {
+  color:#FF9900;
+}
+
 @media print, screen and (max-width: 960px) {
   
   div.wrapper {
