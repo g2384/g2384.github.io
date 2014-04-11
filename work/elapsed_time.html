@@ -1,0 +1,18 @@
+<html>
+<head>
+<title>Elapsed Time
+</title>
+</head>
+<body>
+<script>window.onload = function() {
+    var s = 0, m, b=0, el = document.getElementById('t');
+    (function n() {
+	h=~~((m = ~~(++s / 60)) / 60);
+        el.innerHTML =  (m % 60) + ' : ' + (s % 60);
+		if(h){s=0;document.getElementById('a').innerHTML=(++b)+" : <embed src=\"a.mp3\" hidden=\"true\" autostart=\"true\" />";}
+		setTimeout(n, 1000);
+    })();
+}</script>
+<div id="a" style="display:inline;">0 : </div><div id="t" style="display:inline;width:80px;" ></div>ヾ(=^▽^=)ノ
+</body>
+</html>
