@@ -188,7 +188,9 @@ footer {
   position:fixed;
   bottom:50px;
 }
-
+.text {
+  color:#888888;
+}
 .html {
   color:#009933;
 }
