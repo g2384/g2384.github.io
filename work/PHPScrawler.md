@@ -22,9 +22,8 @@ if(strpos($contents, “想要的内容”)){ // 若包含“想要的内容”
 $DOM = new DOMDocument();
 $DOM->loadHTML($str);
 foreach ($DOM->getElementsByTagName('tr') as $node) { // 例如，只想要<tr>的标签
-$array[] = $DOM->saveHTML($node);
+$array[] = $DOM->saveHTML($node); // $array 包含所有的<tr>标签
 }
-// $array 包含了所有的<tr>标签
 </pre>
 ###调试方法
 <pre>
