@@ -25,6 +25,7 @@ foreach ($DOM->getElementsByTagName('tr') as $node) { // 例如，只想要<tr>�
 $array[] = $DOM->saveHTML($node); // $array 包含所有的<tr>标签
 }
 </pre>
+
 ###调试方法
 <pre>
 echo $contents; // 显示成网页形式
