@@ -1,4 +1,4 @@
-###使用file_get_contents([源码](https://gist.github.com/g2384/10582934))
+###使用file_get_contents [源码](https://gist.github.com/g2384/10582934)
 <pre>
   $url = “http://www.xxx.com/”; 
   $contents = file_get_contents($url); // $contents现在保存了网页源码
