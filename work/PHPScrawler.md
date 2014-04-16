@@ -17,14 +17,14 @@ if(strpos($contents, “想要的内容”)){ // 若包含“想要的内容”
 }
 </pre>
 ###过滤内容(方法二)
-<pre>
-// 使用 loadHTML，解析网页内容，然后使用getElementsByTagName过滤
-$DOM = new DOMDocument();
-$DOM->loadHTML($str);
-foreach ($DOM->getElementsByTagName('tr') as $node) { // 例如，只想要<tr>的标签
-$array[] = $DOM->saveHTML($node); // $array 包含所有的<tr>标签
-}
-</pre>
+
+	// 使用 loadHTML，解析网页内容，然后使用getElementsByTagName过滤
+	$DOM = new DOMDocument();
+	$DOM->loadHTML($str);
+	foreach ($DOM->getElementsByTagName('tr') as $node) { // 例如，只想要<tr>的标签
+	$array[] = $DOM->saveHTML($node); // $array 包含所有的<tr>标签
+	}
+
 
 ###调试方法
 <pre>
