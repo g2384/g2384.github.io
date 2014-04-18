@@ -197,6 +197,10 @@ footer {
 .js {
   color:#FF9900;
 }
+.php {
+  color:#4F5B93;
+}
+
 
 @media print, screen and (max-width: 960px) {
   
