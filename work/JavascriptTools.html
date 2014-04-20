@@ -4,18 +4,30 @@
 <title>Javascript Tools</title>
 </head>
 <style>span {
+cursor:pointer;
 margin-left:-5px;
 text-align: center;
-width: 145px;
+width: 20px;
 font-size:10px;
 display: inline-block;
 border: 1px solid #838B8B;
 line-height:200%
 }
+#color{
+background-color:#fff;
+position:fixed;
+right:0px;
+top:0px;
+font-size:2em;
+}
 </style>
 <script>
-function displayColor(x){
+function dispC(x){
 document.body.style.background=x.style.background;
+document.getElementById('color').innerHTML=x.getAttribute("data-word");
+}
+function holdC(x){
+document.getElementById('holder').innerHTML=x.getAttribute("data-word");
 }
 </script>
 
@@ -207,629 +219,664 @@ result+="</tr>";
 e.value="<table>"+result+"</table>";
 document.getElementById("holder").innerHTML=e.value;
 }
+
+function GenerateList(){
+var str=document.getElementById("txt").value;
+var arr=str.split("+");
+var l=arr.length;
+var k,result="";
+k=arr[1].split("~");
+for(var i=k[0];i<=k[1];i++){
+result=result+arr[0]+i+arr[2]+"\n";
+}
+document.getElementById("holder").innerHTML=result;
+}
+function demo(x){
+switch(x){
+case 1:document.getElementById("txt").value="1	a\n2	b";
+break;
+case 2:document.getElementById("txt").value="No.+0~100+=";
+break;
+}
+}
 </script>
 <body>
 <textarea rows="10" style="width:100%;font-size:16px;" id="txt">1	a
 2	b</textarea>
 
-<input type="button" value="Generate Table" id="GenerateTable" onclick="GenerateTable()"><br>
+<input type="button" value="Generate Table" id="GenerateTable" onclick="GenerateTable()"><input type="button" value="Demo" onclick="demo(1)"><br>
+<input type="button" value="Generate List" id="GenerateList" onclick="GenerateList()"><input type="button" value="Demo" onclick="demo(2)"> (format: [prefix]+[start]~[end]+[suffix])<br>
 <input type="button" onclick="CountLines();" value="Count Duplicates in List">
 sort by: 
-<label for="sortby_count"><input type="radio" name="sortby" value="count" checked="checked" id="sortby_count">Count</label>
-<label for="sortby_line"><input type="radio" name="sortby" value="line" id="sortby_line">Line</label> | (Use this to find duplicate lines, or to count the number of repeats.)<br>
+<label for="sortby_count"><input type="radio" name="sortby" value="count" checked="checked" id="sortby_count"> Count</label>
+<label for="sortby_line"><input type="radio" name="sortby" value="line" id="sortby_line"> Line</label> | (Use this to find duplicate lines, or to count the number of repeats.)<br>
 <input type="button" onclick="CountWords();" value="Count Character Occurrences"> (Use this to display the frequency of each character and character code contained in the text)<br>
 <a href="http://textmechanic.com/Count-Text.html">A more powerful text counter:</a>
 <pre id="holder"></pre>
+<div id="color"></div>
 <br><hr>
 CSS Color Chart: altered from http://www.somacon.com/p142.php<br>
-<span onmouseover="displayColor(this)" style="background-color:#FFFFF2">Pearly Gates:#FFFFF2</span>
-<span onmouseover="displayColor(this)" style="background-color:#FBF5E6">Pale Olive:#FBF5E6</span>
-<span onmouseover="displayColor(this)" style="background-color:#FFFFFF">Ultra Pure White:#FFFFFF</span>
-<span onmouseover="displayColor(this)" style="background-color:#F6F9ED">Frosted Lime:#F6F9ED</span>
-<span onmouseover="displayColor(this)" style="background-color:#FDFDF0">White Orchid:#FDFDF0</span>
-<span onmouseover="displayColor(this)" style="background-color:#EEF3E2">Green Veil:#EEF3E2</span>
-<span onmouseover="displayColor(this)" style="background-color:#EBECE4">Gray Cliffs:#EBECE4</span>
-<span onmouseover="displayColor(this)" style="background-color:#ECF1EF">Far Horizon:#ECF1EF</span>
-<span onmouseover="displayColor(this)" style="background-color:#FFFFFE">Plantation White:#FFFFFE</span>
-<span onmouseover="displayColor(this)" style="background-color:#FCF6CF">Warm Summer:#FCF6CF</span>
-<span onmouseover="displayColor(this)" style="background-color:#FDFCDC">Ivory Tusk:#FDFCDC</span>
-<span onmouseover="displayColor(this)" style="background-color:#FEFEF2">Eggshell Cream:#FEFEF2</span>
-<span onmouseover="displayColor(this)" style="background-color:#F1EDC2">Toasted Meringue:#F1EDC2</span>
-<span onmouseover="displayColor(this)" style="background-color:#FEFFEF">Light Sand:#FEFFEF</span>
-<span onmouseover="displayColor(this)" style="background-color:#FEF0C9">Carmel Tan:#FEF0C9</span>
-<span onmouseover="displayColor(this)" style="background-color:#FFFFFD">Wedding Veil:#FFFFFD</span>
-<span onmouseover="displayColor(this)" style="background-color:#FEFFF1">Subtle White:#FEFFF1</span>
-<span onmouseover="displayColor(this)" style="background-color:#FEF6E4">Warm Shadow:#FEF6E4</span>
-<span onmouseover="displayColor(this)" style="background-color:#FEF5CA">Sand Box:#FEF5CA</span>
-<span onmouseover="displayColor(this)" style="background-color:#FCF8DC">Frosted Peach:#FCF8DC</span>
-<span onmouseover="displayColor(this)" style="background-color:#FEEECD">Dusted Pink:#FEEECD</span>
-<span onmouseover="displayColor(this)" style="background-color:#FEF9ED">Porcelain White:#FEF9ED</span>
-<span onmouseover="displayColor(this)" style="background-color:#FFEECA">Light Adobe:#FFEECA</span>
-<span onmouseover="displayColor(this)" style="background-color:#FEEED4">Barely Blushing:#FEEED4</span>
-<span onmouseover="displayColor(this)" style="background-color:#FEF1E1">Dusty Trail:#FEF1E1</span>
-<span onmouseover="displayColor(this)" style="background-color:#FEF1E9">Ostrich Feather:#FEF1E9</span>
-<span onmouseover="displayColor(this)" style="background-color:#FFFFF3">White Sail:#FFFFF3</span>
-<span onmouseover="displayColor(this)" style="background-color:#FDF2EE">Morning Fog:#FDF2EE</span>
-<span onmouseover="displayColor(this)" style="background-color:#FEE0C6">Dove Beige:#FEE0C6</span>
-<span onmouseover="displayColor(this)" style="background-color:#F0F8FF">aliceblue:#F0F8FF</span>
-<span onmouseover="displayColor(this)" style="background-color:#FAEBD7">antiquewhite:#FAEBD7</span>
-<span onmouseover="displayColor(this)" style="background-color:#FFEFDB">antiquewhite1:#FFEFDB</span>
-<span onmouseover="displayColor(this)" style="background-color:#EEDFCC">antiquewhite2:#EEDFCC</span>
-<span onmouseover="displayColor(this)" style="background-color:#CDC0B0">antiquewhite3:#CDC0B0</span>
-<span onmouseover="displayColor(this)" style="background-color:#8B8378">antiquewhite4:#8B8378</span>
-<span onmouseover="displayColor(this)" style="background-color:#7FFFD4">aquamarine:#7FFFD4</span>
-<span onmouseover="displayColor(this)" style="background-color:#76EEC6">aquamarine2:#76EEC6</span>
-<span onmouseover="displayColor(this)" style="background-color:#66CDAA">aquamarine3:#66CDAA</span>
-<span onmouseover="displayColor(this)" style="background-color:#458B74">aquamarine4:#458B74</span>
-<span onmouseover="displayColor(this)" style="background-color:#F0FFFF">azure:#F0FFFF</span>
-<span onmouseover="displayColor(this)" style="background-color:#F0FFFF">azure1:#F0FFFF</span>
-<span onmouseover="displayColor(this)" style="background-color:#E0EEEE">azure2:#E0EEEE</span>
-<span onmouseover="displayColor(this)" style="background-color:#C1CDCD">azure3:#C1CDCD</span>
-<span onmouseover="displayColor(this)" style="background-color:#838B8B">azure4:#838B8B</span>
-<span onmouseover="displayColor(this)" style="background-color:#F5F5DC">beige:#F5F5DC</span>
-<span onmouseover="displayColor(this)" style="background-color:#FFE4C4">bisque:#FFE4C4</span>
-<span onmouseover="displayColor(this)" style="background-color:#EED5B7">bisque2:#EED5B7</span>
-<span onmouseover="displayColor(this)" style="background-color:#CDB79E">bisque3:#CDB79E</span>
-<span onmouseover="displayColor(this)" style="background-color:#8B7D6B">bisque4:#8B7D6B</span>
-<span onmouseover="displayColor(this)" style="background-color:#000000">black:#000000</span>
-<span onmouseover="displayColor(this)" style="background-color:#FFEBCD">blanchedalmond:#FFEBCD</span>
-<span onmouseover="displayColor(this)" style="background-color:#0000FF">blue:#0000FF</span>
-<span onmouseover="displayColor(this)" style="background-color:#0000EE">blue2:#0000EE</span>
-<span onmouseover="displayColor(this)" style="background-color:#0000CD">blue3:#0000CD</span>
-<span onmouseover="displayColor(this)" style="background-color:#00008B">blue4:#00008B</span>
-<span onmouseover="displayColor(this)" style="background-color:#8A2BE2">blueviolet:#8A2BE2</span>
-<span onmouseover="displayColor(this)" style="background-color:#A52A2A">brown:#A52A2A</span>
-<span onmouseover="displayColor(this)" style="background-color:#FF4040">brown1:#FF4040</span>
-<span onmouseover="displayColor(this)" style="background-color:#EE3B3B">brown2:#EE3B3B</span>
-<span onmouseover="displayColor(this)" style="background-color:#CD3333">brown3:#CD3333</span>
-<span onmouseover="displayColor(this)" style="background-color:#8B2323">brown4:#8B2323</span>
-<span onmouseover="displayColor(this)" style="background-color:#DEB887">burlywood:#DEB887</span>
-<span onmouseover="displayColor(this)" style="background-color:#FFD39B">burlywood1:#FFD39B</span>
-<span onmouseover="displayColor(this)" style="background-color:#EEC591">burlywood2:#EEC591</span>
-<span onmouseover="displayColor(this)" style="background-color:#CDAA7D">burlywood3:#CDAA7D</span>
-<span onmouseover="displayColor(this)" style="background-color:#8B7355">burlywood4:#8B7355</span>
-<span onmouseover="displayColor(this)" style="background-color:#5F9EA0">cadetblue:#5F9EA0</span>
-<span onmouseover="displayColor(this)" style="background-color:#98F5FF">cadetblue1:#98F5FF</span>
-<span onmouseover="displayColor(this)" style="background-color:#8EE5EE">cadetblue2:#8EE5EE</span>
-<span onmouseover="displayColor(this)" style="background-color:#7AC5CD">cadetblue3:#7AC5CD</span>
-<span onmouseover="displayColor(this)" style="background-color:#53868B">cadetblue4:#53868B</span>
-<span onmouseover="displayColor(this)" style="background-color:#7FFF00">chartreuse:#7FFF00</span>
-<span onmouseover="displayColor(this)" style="background-color:#7FFF00">chartreuse1:#7FFF00</span>
-<span onmouseover="displayColor(this)" style="background-color:#76EE00">chartreuse2:#76EE00</span>
-<span onmouseover="displayColor(this)" style="background-color:#66CD00">chartreuse3:#66CD00</span>
-<span onmouseover="displayColor(this)" style="background-color:#458B00">chartreuse4:#458B00</span>
-<span onmouseover="displayColor(this)" style="background-color:#D2691E">chocolate:#D2691E</span>
-<span onmouseover="displayColor(this)" style="background-color:#FF7F24">chocolate1:#FF7F24</span>
-<span onmouseover="displayColor(this)" style="background-color:#EE7621">chocolate2:#EE7621</span>
-<span onmouseover="displayColor(this)" style="background-color:#CD661D">chocolate3:#CD661D</span>
-<span onmouseover="displayColor(this)" style="background-color:#8B4513">chocolate4:#8B4513</span>
-<span onmouseover="displayColor(this)" style="background-color:#FF7F50">coral:#FF7F50</span>
-<span onmouseover="displayColor(this)" style="background-color:#FF7256">coral1:#FF7256</span>
-<span onmouseover="displayColor(this)" style="background-color:#EE6A50">coral2:#EE6A50</span>
-<span onmouseover="displayColor(this)" style="background-color:#CD5B45">coral3:#CD5B45</span>
-<span onmouseover="displayColor(this)" style="background-color:#8B3E2F">coral4:#8B3E2F</span>
-<span onmouseover="displayColor(this)" style="background-color:#6495ED">cornflowerblue:#6495ED</span>
-<span onmouseover="displayColor(this)" style="background-color:#FFF8DC">cornsilk:#FFF8DC</span>
-<span onmouseover="displayColor(this)" style="background-color:#FFF8DC">cornsilk1:#FFF8DC</span>
-<span onmouseover="displayColor(this)" style="background-color:#EEE8CD">cornsilk2:#EEE8CD</span>
-<span onmouseover="displayColor(this)" style="background-color:#CDC8B1">cornsilk3:#CDC8B1</span>
-<span onmouseover="displayColor(this)" style="background-color:#8B8878">cornsilk4:#8B8878</span>
-<span onmouseover="displayColor(this)" style="background-color:#DC143C">crimson:#DC143C</span>
-<span onmouseover="displayColor(this)" style="background-color:#00FFFF">cyan:#00FFFF</span>
-<span onmouseover="displayColor(this)" style="background-color:#00FFFF">cyan1:#00FFFF</span>
-<span onmouseover="displayColor(this)" style="background-color:#00EEEE">cyan2:#00EEEE</span>
-<span onmouseover="displayColor(this)" style="background-color:#00CDCD">cyan3:#00CDCD</span>
-<span onmouseover="displayColor(this)" style="background-color:#008B8B">cyan4:#008B8B</span>
-<span onmouseover="displayColor(this)" style="background-color:#00008B">darkblue:#00008B</span>
-<span onmouseover="displayColor(this)" style="background-color:#008B8B">darkcyan:#008B8B</span>
-<span onmouseover="displayColor(this)" style="background-color:#B8860B">darkgoldenrod:#B8860B</span>
-<span onmouseover="displayColor(this)" style="background-color:#FFB90F">darkgoldenrod1:#FFB90F</span>
-<span onmouseover="displayColor(this)" style="background-color:#EEAD0E">darkgoldenrod2:#EEAD0E</span>
-<span onmouseover="displayColor(this)" style="background-color:#CD950C">darkgoldenrod3:#CD950C</span>
-<span onmouseover="displayColor(this)" style="background-color:#8B6508">darkgoldenrod4:#8B6508</span>
-<span onmouseover="displayColor(this)" style="background-color:#A9A9A9">darkgrey:#A9A9A9</span>
-<span onmouseover="displayColor(this)" style="background-color:#006400">darkgreen:#006400</span>
-<span onmouseover="displayColor(this)" style="background-color:#BDB76B">darkkhaki:#BDB76B</span>
-<span onmouseover="displayColor(this)" style="background-color:#8B008B">darkmagenta:#8B008B</span>
-<span onmouseover="displayColor(this)" style="background-color:#556B2F">darkolivegreen:#556B2F</span>
-<span onmouseover="displayColor(this)" style="background-color:#CAFF70">darkolivegreen1:#CAFF70</span>
-<span onmouseover="displayColor(this)" style="background-color:#BCEE68">darkolivegreen2:#BCEE68</span>
-<span onmouseover="displayColor(this)" style="background-color:#A2CD5A">darkolivegreen3:#A2CD5A</span>
-<span onmouseover="displayColor(this)" style="background-color:#6E8B3D">darkolivegreen4:#6E8B3D</span>
-<span onmouseover="displayColor(this)" style="background-color:#FF8C00">darkorange:#FF8C00</span>
-<span onmouseover="displayColor(this)" style="background-color:#FF7F00">darkorange1:#FF7F00</span>
-<span onmouseover="displayColor(this)" style="background-color:#EE7600">darkorange2:#EE7600</span>
-<span onmouseover="displayColor(this)" style="background-color:#CD6600">darkorange3:#CD6600</span>
-<span onmouseover="displayColor(this)" style="background-color:#8B4500">darkorange4:#8B4500</span>
-<span onmouseover="displayColor(this)" style="background-color:#9932CC">darkorchid:#9932CC</span>
-<span onmouseover="displayColor(this)" style="background-color:#BF3EFF">darkorchid1:#BF3EFF</span>
-<span onmouseover="displayColor(this)" style="background-color:#B23AEE">darkorchid2:#B23AEE</span>
-<span onmouseover="displayColor(this)" style="background-color:#9A32CD">darkorchid3:#9A32CD</span>
-<span onmouseover="displayColor(this)" style="background-color:#68228B">darkorchid4:#68228B</span>
-<span onmouseover="displayColor(this)" style="background-color:#8B0000">darkred:#8B0000</span>
-<span onmouseover="displayColor(this)" style="background-color:#E9967A">darksalmon:#E9967A</span>
-<span onmouseover="displayColor(this)" style="background-color:#8FBC8F">darkseagreen:#8FBC8F</span>
-<span onmouseover="displayColor(this)" style="background-color:#C1FFC1">darkseagreen1:#C1FFC1</span>
-<span onmouseover="displayColor(this)" style="background-color:#B4EEB4">darkseagreen2:#B4EEB4</span>
-<span onmouseover="displayColor(this)" style="background-color:#9BCD9B">darkseagreen3:#9BCD9B</span>
-<span onmouseover="displayColor(this)" style="background-color:#698B69">darkseagreen4:#698B69</span>
-<span onmouseover="displayColor(this)" style="background-color:#483D8B">darkslateblue:#483D8B</span>
-<span onmouseover="displayColor(this)" style="background-color:#2F4F4F">darkslategrey:#2F4F4F</span>
-<span onmouseover="displayColor(this)" style="background-color:#97FFFF">darkslategrey1:#97FFFF</span>
-<span onmouseover="displayColor(this)" style="background-color:#8DEEEE">darkslategrey2:#8DEEEE</span>
-<span onmouseover="displayColor(this)" style="background-color:#79CDCD">darkslategrey3:#79CDCD</span>
-<span onmouseover="displayColor(this)" style="background-color:#528B8B">darkslategrey4:#528B8B</span>
-<span onmouseover="displayColor(this)" style="background-color:#00CED1">darkturquoise:#00CED1</span>
-<span onmouseover="displayColor(this)" style="background-color:#9400D3">darkviolet:#9400D3</span>
-<span onmouseover="displayColor(this)" style="background-color:#FF1493">deeppink:#FF1493</span>
-<span onmouseover="displayColor(this)" style="background-color:#EE1289">deeppink2:#EE1289</span>
-<span onmouseover="displayColor(this)" style="background-color:#CD1076">deeppink3:#CD1076</span>
-<span onmouseover="displayColor(this)" style="background-color:#8B0A50">deeppink4:#8B0A50</span>
-<span onmouseover="displayColor(this)" style="background-color:#00BFFF">deepskyblue:#00BFFF</span>
-<span onmouseover="displayColor(this)" style="background-color:#00B2EE">deepskyblue2:#00B2EE</span>
-<span onmouseover="displayColor(this)" style="background-color:#009ACD">deepskyblue3:#009ACD</span>
-<span onmouseover="displayColor(this)" style="background-color:#00688B">deepskyblue4:#00688B</span>
-<span onmouseover="displayColor(this)" style="background-color:#696969">dimgrey:#696969</span>
-<span onmouseover="displayColor(this)" style="background-color:#1E90FF">dodgerblue:#1E90FF</span>
-<span onmouseover="displayColor(this)" style="background-color:#1E90FF">dodgerblue1:#1E90FF</span>
-<span onmouseover="displayColor(this)" style="background-color:#1C86EE">dodgerblue2:#1C86EE</span>
-<span onmouseover="displayColor(this)" style="background-color:#1874CD">dodgerblue3:#1874CD</span>
-<span onmouseover="displayColor(this)" style="background-color:#104E8B">dodgerblue4:#104E8B</span>
-<span onmouseover="displayColor(this)" style="background-color:#B22222">firebrick:#B22222</span>
-<span onmouseover="displayColor(this)" style="background-color:#FF3030">firebrick1:#FF3030</span>
-<span onmouseover="displayColor(this)" style="background-color:#EE2C2C">firebrick2:#EE2C2C</span>
-<span onmouseover="displayColor(this)" style="background-color:#CD2626">firebrick3:#CD2626</span>
-<span onmouseover="displayColor(this)" style="background-color:#8B1A1A">firebrick4:#8B1A1A</span>
-<span onmouseover="displayColor(this)" style="background-color:#FFFAF0">floralwhite:#FFFAF0</span>
-<span onmouseover="displayColor(this)" style="background-color:#228B22">forestgreen:#228B22</span>
-<span onmouseover="displayColor(this)" style="background-color:#DCDCDC">gainsboro:#DCDCDC</span>
-<span onmouseover="displayColor(this)" style="background-color:#F8F8FF">ghostwhite:#F8F8FF</span>
-<span onmouseover="displayColor(this)" style="background-color:#FFD700">gold:#FFD700</span>
-<span onmouseover="displayColor(this)" style="background-color:#FFD700">gold1:#FFD700</span>
-<span onmouseover="displayColor(this)" style="background-color:#EEC900">gold2:#EEC900</span>
-<span onmouseover="displayColor(this)" style="background-color:#CDAD00">gold3:#CDAD00</span>
-<span onmouseover="displayColor(this)" style="background-color:#8B7500">gold4:#8B7500</span>
-<span onmouseover="displayColor(this)" style="background-color:#DAA520">goldenrod:#DAA520</span>
-<span onmouseover="displayColor(this)" style="background-color:#FFC125">goldenrod1:#FFC125</span>
-<span onmouseover="displayColor(this)" style="background-color:#EEB422">goldenrod2:#EEB422</span>
-<span onmouseover="displayColor(this)" style="background-color:#CD9B1D">goldenrod3:#CD9B1D</span>
-<span onmouseover="displayColor(this)" style="background-color:#8B6914">goldenrod4:#8B6914</span>
-<span onmouseover="displayColor(this)" style="background-color:#BEBEBE">grey:#BEBEBE</span>
+Popular 
+<span style="background-color:#ebebeb;width:40px;" data-word="#ebebeb">Bkg</span>
+<span style="background-color:#545454;width:40px;" data-word="#545454">Text</span>
+<span style="background-color:#21769B;width:40px;" data-word="#21769B">Link</span><br>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FFFFF2" data-word="Pearly Gates:#FFFFF2">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FBF5E6" data-word="Pale Olive:#FBF5E6">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FFFFFF" data-word="Ultra Pure White:#FFFFFF">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#F6F9ED" data-word="Frosted Lime:#F6F9ED">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FDFDF0" data-word="White Orchid:#FDFDF0">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EEF3E2" data-word="Green Veil:#EEF3E2">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EBECE4" data-word="Gray Cliffs:#EBECE4">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#ECF1EF" data-word="Far Horizon:#ECF1EF">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FFFFFE" data-word="Plantation White:#FFFFFE">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FCF6CF" data-word="Warm Summer:#FCF6CF">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FDFCDC" data-word="Ivory Tusk:#FDFCDC">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FEFEF2" data-word="Eggshell Cream:#FEFEF2">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#F1EDC2" data-word="Toasted Meringue:#F1EDC2">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FEFFEF" data-word="Light Sand:#FEFFEF">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FEF0C9" data-word="Carmel Tan:#FEF0C9">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FFFFFD" data-word="Wedding Veil:#FFFFFD">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FEFFF1" data-word="Subtle White:#FEFFF1">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FEF6E4" data-word="Warm Shadow:#FEF6E4">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FEF5CA" data-word="Sand Box:#FEF5CA">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FCF8DC" data-word="Frosted Peach:#FCF8DC">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FEEECD" data-word="Dusted Pink:#FEEECD">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FEF9ED" data-word="Porcelain White:#FEF9ED">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FFEECA" data-word="Light Adobe:#FFEECA">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FEEED4" data-word="Barely Blushing:#FEEED4">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FEF1E1" data-word="Dusty Trail:#FEF1E1">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FEF1E9" data-word="Ostrich Feather:#FEF1E9">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FFFFF3" data-word="White Sail:#FFFFF3">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FDF2EE" data-word="Morning Fog:#FDF2EE">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FEE0C6" data-word="Dove Beige:#FEE0C6">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#F0F8FF" data-word="aliceblue:#F0F8FF">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FAEBD7" data-word="antiquewhite:#FAEBD7">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FFEFDB" data-word="antiquewhite1:#FFEFDB">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EEDFCC" data-word="antiquewhite2:#EEDFCC">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CDC0B0" data-word="antiquewhite3:#CDC0B0">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8B8378" data-word="antiquewhite4:#8B8378">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#7FFFD4" data-word="aquamarine:#7FFFD4">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#76EEC6" data-word="aquamarine2:#76EEC6">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#66CDAA" data-word="aquamarine3:#66CDAA">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#458B74" data-word="aquamarine4:#458B74">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#F0FFFF" data-word="azure:#F0FFFF">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#F0FFFF" data-word="azure1:#F0FFFF">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#E0EEEE" data-word="azure2:#E0EEEE">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#C1CDCD" data-word="azure3:#C1CDCD">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#838B8B" data-word="azure4:#838B8B">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#F5F5DC" data-word="beige:#F5F5DC">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FFE4C4" data-word="bisque:#FFE4C4">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EED5B7" data-word="bisque2:#EED5B7">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CDB79E" data-word="bisque3:#CDB79E">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8B7D6B" data-word="bisque4:#8B7D6B">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#000000" data-word="black:#000000">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FFEBCD" data-word="blanchedalmond:#FFEBCD">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#0000FF" data-word="blue:#0000FF">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#0000EE" data-word="blue2:#0000EE">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#0000CD" data-word="blue3:#0000CD">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#00008B" data-word="blue4:#00008B">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8A2BE2" data-word="blueviolet:#8A2BE2">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#A52A2A" data-word="brown:#A52A2A">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FF4040" data-word="brown1:#FF4040">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EE3B3B" data-word="brown2:#EE3B3B">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CD3333" data-word="brown3:#CD3333">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8B2323" data-word="brown4:#8B2323">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#DEB887" data-word="burlywood:#DEB887">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FFD39B" data-word="burlywood1:#FFD39B">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EEC591" data-word="burlywood2:#EEC591">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CDAA7D" data-word="burlywood3:#CDAA7D">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8B7355" data-word="burlywood4:#8B7355">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#5F9EA0" data-word="cadetblue:#5F9EA0">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#98F5FF" data-word="cadetblue1:#98F5FF">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8EE5EE" data-word="cadetblue2:#8EE5EE">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#7AC5CD" data-word="cadetblue3:#7AC5CD">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#53868B" data-word="cadetblue4:#53868B">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#7FFF00" data-word="chartreuse:#7FFF00">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#7FFF00" data-word="chartreuse1:#7FFF00">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#76EE00" data-word="chartreuse2:#76EE00">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#66CD00" data-word="chartreuse3:#66CD00">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#458B00" data-word="chartreuse4:#458B00">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#D2691E" data-word="chocolate:#D2691E">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FF7F24" data-word="chocolate1:#FF7F24">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EE7621" data-word="chocolate2:#EE7621">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CD661D" data-word="chocolate3:#CD661D">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8B4513" data-word="chocolate4:#8B4513">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FF7F50" data-word="coral:#FF7F50">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FF7256" data-word="coral1:#FF7256">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EE6A50" data-word="coral2:#EE6A50">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CD5B45" data-word="coral3:#CD5B45">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8B3E2F" data-word="coral4:#8B3E2F">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#6495ED" data-word="cornflowerblue:#6495ED">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FFF8DC" data-word="cornsilk:#FFF8DC">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FFF8DC" data-word="cornsilk1:#FFF8DC">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EEE8CD" data-word="cornsilk2:#EEE8CD">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CDC8B1" data-word="cornsilk3:#CDC8B1">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8B8878" data-word="cornsilk4:#8B8878">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#DC143C" data-word="crimson:#DC143C">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#00FFFF" data-word="cyan:#00FFFF">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#00FFFF" data-word="cyan1:#00FFFF">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#00EEEE" data-word="cyan2:#00EEEE">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#00CDCD" data-word="cyan3:#00CDCD">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#008B8B" data-word="cyan4:#008B8B">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#00008B" data-word="darkblue:#00008B">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#008B8B" data-word="darkcyan:#008B8B">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#B8860B" data-word="darkgoldenrod:#B8860B">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FFB90F" data-word="darkgoldenrod1:#FFB90F">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EEAD0E" data-word="darkgoldenrod2:#EEAD0E">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CD950C" data-word="darkgoldenrod3:#CD950C">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8B6508" data-word="darkgoldenrod4:#8B6508">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#A9A9A9" data-word="darkgrey:#A9A9A9">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#006400" data-word="darkgreen:#006400">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#BDB76B" data-word="darkkhaki:#BDB76B">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8B008B" data-word="darkmagenta:#8B008B">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#556B2F" data-word="darkolivegreen:#556B2F">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CAFF70" data-word="darkolivegreen1:#CAFF70">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#BCEE68" data-word="darkolivegreen2:#BCEE68">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#A2CD5A" data-word="darkolivegreen3:#A2CD5A">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#6E8B3D" data-word="darkolivegreen4:#6E8B3D">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FF8C00" data-word="darkorange:#FF8C00">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FF7F00" data-word="darkorange1:#FF7F00">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EE7600" data-word="darkorange2:#EE7600">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CD6600" data-word="darkorange3:#CD6600">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8B4500" data-word="darkorange4:#8B4500">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#9932CC" data-word="darkorchid:#9932CC">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#BF3EFF" data-word="darkorchid1:#BF3EFF">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#B23AEE" data-word="darkorchid2:#B23AEE">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#9A32CD" data-word="darkorchid3:#9A32CD">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#68228B" data-word="darkorchid4:#68228B">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8B0000" data-word="darkred:#8B0000">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#E9967A" data-word="darksalmon:#E9967A">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8FBC8F" data-word="darkseagreen:#8FBC8F">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#C1FFC1" data-word="darkseagreen1:#C1FFC1">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#B4EEB4" data-word="darkseagreen2:#B4EEB4">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#9BCD9B" data-word="darkseagreen3:#9BCD9B">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#698B69" data-word="darkseagreen4:#698B69">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#483D8B" data-word="darkslateblue:#483D8B">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#2F4F4F" data-word="darkslategrey:#2F4F4F">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#97FFFF" data-word="darkslategrey1:#97FFFF">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8DEEEE" data-word="darkslategrey2:#8DEEEE">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#79CDCD" data-word="darkslategrey3:#79CDCD">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#528B8B" data-word="darkslategrey4:#528B8B">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#00CED1" data-word="darkturquoise:#00CED1">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#9400D3" data-word="darkviolet:#9400D3">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FF1493" data-word="deeppink:#FF1493">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EE1289" data-word="deeppink2:#EE1289">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CD1076" data-word="deeppink3:#CD1076">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8B0A50" data-word="deeppink4:#8B0A50">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#00BFFF" data-word="deepskyblue:#00BFFF">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#00B2EE" data-word="deepskyblue2:#00B2EE">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#009ACD" data-word="deepskyblue3:#009ACD">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#00688B" data-word="deepskyblue4:#00688B">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#696969" data-word="dimgrey:#696969">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#1E90FF" data-word="dodgerblue:#1E90FF">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#1E90FF" data-word="dodgerblue1:#1E90FF">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#1C86EE" data-word="dodgerblue2:#1C86EE">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#1874CD" data-word="dodgerblue3:#1874CD">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#104E8B" data-word="dodgerblue4:#104E8B">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#B22222" data-word="firebrick:#B22222">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FF3030" data-word="firebrick1:#FF3030">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EE2C2C" data-word="firebrick2:#EE2C2C">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CD2626" data-word="firebrick3:#CD2626">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8B1A1A" data-word="firebrick4:#8B1A1A">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FFFAF0" data-word="floralwhite:#FFFAF0">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#228B22" data-word="forestgreen:#228B22">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#DCDCDC" data-word="gainsboro:#DCDCDC">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#F8F8FF" data-word="ghostwhite:#F8F8FF">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FFD700" data-word="gold:#FFD700">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FFD700" data-word="gold1:#FFD700">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EEC900" data-word="gold2:#EEC900">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CDAD00" data-word="gold3:#CDAD00">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8B7500" data-word="gold4:#8B7500">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#DAA520" data-word="goldenrod:#DAA520">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FFC125" data-word="goldenrod1:#FFC125">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EEB422" data-word="goldenrod2:#EEB422">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CD9B1D" data-word="goldenrod3:#CD9B1D">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8B6914" data-word="goldenrod4:#8B6914">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#BEBEBE" data-word="grey:#BEBEBE">&nbsp;</span>
 <br>
-<span onmouseover="displayColor(this)" style="background-color:#000000">grey0:#000000</span>
-<span onmouseover="displayColor(this)" style="background-color:#030303">grey1:#030303</span>
-<span onmouseover="displayColor(this)" style="background-color:#050505">grey2:#050505</span>
-<span onmouseover="displayColor(this)" style="background-color:#080808">grey3:#080808</span>
-<span onmouseover="displayColor(this)" style="background-color:#0A0A0A">grey4:#0A0A0A</span>
-<span onmouseover="displayColor(this)" style="background-color:#0D0D0D">grey5:#0D0D0D</span>
-<span onmouseover="displayColor(this)" style="background-color:#0F0F0F">grey6:#0F0F0F</span>
-<span onmouseover="displayColor(this)" style="background-color:#121212">grey7:#121212</span>
-<span onmouseover="displayColor(this)" style="background-color:#141414">grey8:#141414</span>
-<span onmouseover="displayColor(this)" style="background-color:#171717">grey9:#171717</span>
-<span onmouseover="displayColor(this)" style="background-color:#1A1A1A">grey10:#1A1A1A</span>
-<span onmouseover="displayColor(this)" style="background-color:#1C1C1C">grey11:#1C1C1C</span>
-<span onmouseover="displayColor(this)" style="background-color:#1F1F1F">grey12:#1F1F1F</span>
-<span onmouseover="displayColor(this)" style="background-color:#212121">grey13:#212121</span>
-<span onmouseover="displayColor(this)" style="background-color:#242424">grey14:#242424</span>
-<span onmouseover="displayColor(this)" style="background-color:#262626">grey15:#262626</span>
-<span onmouseover="displayColor(this)" style="background-color:#292929">grey16:#292929</span>
-<span onmouseover="displayColor(this)" style="background-color:#2B2B2B">grey17:#2B2B2B</span>
-<span onmouseover="displayColor(this)" style="background-color:#2E2E2E">grey18:#2E2E2E</span>
-<span onmouseover="displayColor(this)" style="background-color:#303030">grey19:#303030</span>
-<span onmouseover="displayColor(this)" style="background-color:#333333">grey20:#333333</span>
-<span onmouseover="displayColor(this)" style="background-color:#363636">grey21:#363636</span>
-<span onmouseover="displayColor(this)" style="background-color:#383838">grey22:#383838</span>
-<span onmouseover="displayColor(this)" style="background-color:#3B3B3B">grey23:#3B3B3B</span>
-<span onmouseover="displayColor(this)" style="background-color:#3D3D3D">grey24:#3D3D3D</span>
-<span onmouseover="displayColor(this)" style="background-color:#404040">grey25:#404040</span>
-<span onmouseover="displayColor(this)" style="background-color:#424242">grey26:#424242</span>
-<span onmouseover="displayColor(this)" style="background-color:#454545">grey27:#454545</span>
-<span onmouseover="displayColor(this)" style="background-color:#474747">grey28:#474747</span>
-<span onmouseover="displayColor(this)" style="background-color:#4A4A4A">grey29:#4A4A4A</span>
-<span onmouseover="displayColor(this)" style="background-color:#4D4D4D">grey30:#4D4D4D</span>
-<span onmouseover="displayColor(this)" style="background-color:#4F4F4F">grey31:#4F4F4F</span>
-<span onmouseover="displayColor(this)" style="background-color:#525252">grey32:#525252</span>
-<span onmouseover="displayColor(this)" style="background-color:#545454">grey33:#545454</span>
-<span onmouseover="displayColor(this)" style="background-color:#575757">grey34:#575757</span>
-<span onmouseover="displayColor(this)" style="background-color:#595959">grey35:#595959</span>
-<span onmouseover="displayColor(this)" style="background-color:#5C5C5C">grey36:#5C5C5C</span>
-<span onmouseover="displayColor(this)" style="background-color:#5E5E5E">grey37:#5E5E5E</span>
-<span onmouseover="displayColor(this)" style="background-color:#616161">grey38:#616161</span>
-<span onmouseover="displayColor(this)" style="background-color:#636363">grey39:#636363</span>
-<span onmouseover="displayColor(this)" style="background-color:#666666">grey40:#666666</span>
-<span onmouseover="displayColor(this)" style="background-color:#696969">grey41:#696969</span>
-<span onmouseover="displayColor(this)" style="background-color:#6B6B6B">grey42:#6B6B6B</span>
-<span onmouseover="displayColor(this)" style="background-color:#6E6E6E">grey43:#6E6E6E</span>
-<span onmouseover="displayColor(this)" style="background-color:#707070">grey44:#707070</span>
-<span onmouseover="displayColor(this)" style="background-color:#737373">grey45:#737373</span>
-<span onmouseover="displayColor(this)" style="background-color:#757575">grey46:#757575</span>
-<span onmouseover="displayColor(this)" style="background-color:#787878">grey47:#787878</span>
-<span onmouseover="displayColor(this)" style="background-color:#7A7A7A">grey48:#7A7A7A</span>
-<span onmouseover="displayColor(this)" style="background-color:#7D7D7D">grey49:#7D7D7D</span>
-<span onmouseover="displayColor(this)" style="background-color:#7F7F7F">grey50:#7F7F7F</span>
-<span onmouseover="displayColor(this)" style="background-color:#828282">grey51:#828282</span>
-<span onmouseover="displayColor(this)" style="background-color:#858585">grey52:#858585</span>
-<span onmouseover="displayColor(this)" style="background-color:#878787">grey53:#878787</span>
-<span onmouseover="displayColor(this)" style="background-color:#8A8A8A">grey54:#8A8A8A</span>
-<span onmouseover="displayColor(this)" style="background-color:#8C8C8C">grey55:#8C8C8C</span>
-<span onmouseover="displayColor(this)" style="background-color:#8F8F8F">grey56:#8F8F8F</span>
-<span onmouseover="displayColor(this)" style="background-color:#919191">grey57:#919191</span>
-<span onmouseover="displayColor(this)" style="background-color:#949494">grey58:#949494</span>
-<span onmouseover="displayColor(this)" style="background-color:#969696">grey59:#969696</span>
-<span onmouseover="displayColor(this)" style="background-color:#999999">grey60:#999999</span>
-<span onmouseover="displayColor(this)" style="background-color:#9C9C9C">grey61:#9C9C9C</span>
-<span onmouseover="displayColor(this)" style="background-color:#9E9E9E">grey62:#9E9E9E</span>
-<span onmouseover="displayColor(this)" style="background-color:#A1A1A1">grey63:#A1A1A1</span>
-<span onmouseover="displayColor(this)" style="background-color:#A3A3A3">grey64:#A3A3A3</span>
-<span onmouseover="displayColor(this)" style="background-color:#A6A6A6">grey65:#A6A6A6</span>
-<span onmouseover="displayColor(this)" style="background-color:#A8A8A8">grey66:#A8A8A8</span>
-<span onmouseover="displayColor(this)" style="background-color:#ABABAB">grey67:#ABABAB</span>
-<span onmouseover="displayColor(this)" style="background-color:#ADADAD">grey68:#ADADAD</span>
-<span onmouseover="displayColor(this)" style="background-color:#B0B0B0">grey69:#B0B0B0</span>
-<span onmouseover="displayColor(this)" style="background-color:#B3B3B3">grey70:#B3B3B3</span>
-<span onmouseover="displayColor(this)" style="background-color:#B5B5B5">grey71:#B5B5B5</span>
-<span onmouseover="displayColor(this)" style="background-color:#B8B8B8">grey72:#B8B8B8</span>
-<span onmouseover="displayColor(this)" style="background-color:#BABABA">grey73:#BABABA</span>
-<span onmouseover="displayColor(this)" style="background-color:#BDBDBD">grey74:#BDBDBD</span>
-<span onmouseover="displayColor(this)" style="background-color:#BFBFBF">grey75:#BFBFBF</span>
-<span onmouseover="displayColor(this)" style="background-color:#C2C2C2">grey76:#C2C2C2</span>
-<span onmouseover="displayColor(this)" style="background-color:#C4C4C4">grey77:#C4C4C4</span>
-<span onmouseover="displayColor(this)" style="background-color:#C7C7C7">grey78:#C7C7C7</span>
-<span onmouseover="displayColor(this)" style="background-color:#C9C9C9">grey79:#C9C9C9</span>
-<span onmouseover="displayColor(this)" style="background-color:#CCCCCC">grey80:#CCCCCC</span>
-<span onmouseover="displayColor(this)" style="background-color:#CFCFCF">grey81:#CFCFCF</span>
-<span onmouseover="displayColor(this)" style="background-color:#D1D1D1">grey82:#D1D1D1</span>
-<span onmouseover="displayColor(this)" style="background-color:#D4D4D4">grey83:#D4D4D4</span>
-<span onmouseover="displayColor(this)" style="background-color:#D6D6D6">grey84:#D6D6D6</span>
-<span onmouseover="displayColor(this)" style="background-color:#D9D9D9">grey85:#D9D9D9</span>
-<span onmouseover="displayColor(this)" style="background-color:#DBDBDB">grey86:#DBDBDB</span>
-<span onmouseover="displayColor(this)" style="background-color:#DEDEDE">grey87:#DEDEDE</span>
-<span onmouseover="displayColor(this)" style="background-color:#E0E0E0">grey88:#E0E0E0</span>
-<span onmouseover="displayColor(this)" style="background-color:#E3E3E3">grey89:#E3E3E3</span>
-<span onmouseover="displayColor(this)" style="background-color:#E5E5E5">grey90:#E5E5E5</span>
-<span onmouseover="displayColor(this)" style="background-color:#E8E8E8">grey91:#E8E8E8</span>
-<span onmouseover="displayColor(this)" style="background-color:#EBEBEB">grey92:#EBEBEB</span>
-<span onmouseover="displayColor(this)" style="background-color:#EDEDED">grey93:#EDEDED</span>
-<span onmouseover="displayColor(this)" style="background-color:#F0F0F0">grey94:#F0F0F0</span>
-<span onmouseover="displayColor(this)" style="background-color:#F2F2F2">grey95:#F2F2F2</span>
-<span onmouseover="displayColor(this)" style="background-color:#F5F5F5">grey96:#F5F5F5</span>
-<span onmouseover="displayColor(this)" style="background-color:#F7F7F7">grey97:#F7F7F7</span>
-<span onmouseover="displayColor(this)" style="background-color:#FAFAFA">grey98:#FAFAFA</span>
-<span onmouseover="displayColor(this)" style="background-color:#FCFCFC">grey99:#FCFCFC</span>
-<span onmouseover="displayColor(this)" style="background-color:#FFFFFF">grey100:#FFFFFF</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#000000" data-word="grey0:#000000">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#030303" data-word="grey1:#030303">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#050505" data-word="grey2:#050505">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#080808" data-word="grey3:#080808">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#0A0A0A" data-word="grey4:#0A0A0A">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#0D0D0D" data-word="grey5:#0D0D0D">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#0F0F0F" data-word="grey6:#0F0F0F">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#121212" data-word="grey7:#121212">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#141414" data-word="grey8:#141414">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#171717" data-word="grey9:#171717">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#1A1A1A" data-word="grey10:#1A1A1A">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#1C1C1C" data-word="grey11:#1C1C1C">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#1F1F1F" data-word="grey12:#1F1F1F">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#212121" data-word="grey13:#212121">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#242424" data-word="grey14:#242424">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#262626" data-word="grey15:#262626">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#292929" data-word="grey16:#292929">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#2B2B2B" data-word="grey17:#2B2B2B">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#2E2E2E" data-word="grey18:#2E2E2E">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#303030" data-word="grey19:#303030">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#333333" data-word="grey20:#333333">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#363636" data-word="grey21:#363636">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#383838" data-word="grey22:#383838">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#3B3B3B" data-word="grey23:#3B3B3B">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#3D3D3D" data-word="grey24:#3D3D3D">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#404040" data-word="grey25:#404040">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#424242" data-word="grey26:#424242">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#454545" data-word="grey27:#454545">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#474747" data-word="grey28:#474747">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#4A4A4A" data-word="grey29:#4A4A4A">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#4D4D4D" data-word="grey30:#4D4D4D">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#4F4F4F" data-word="grey31:#4F4F4F">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#525252" data-word="grey32:#525252">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#545454" data-word="grey33:#545454">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#575757" data-word="grey34:#575757">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#595959" data-word="grey35:#595959">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#5C5C5C" data-word="grey36:#5C5C5C">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#5E5E5E" data-word="grey37:#5E5E5E">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#616161" data-word="grey38:#616161">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#636363" data-word="grey39:#636363">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#666666" data-word="grey40:#666666">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#696969" data-word="grey41:#696969">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#6B6B6B" data-word="grey42:#6B6B6B">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#6E6E6E" data-word="grey43:#6E6E6E">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#707070" data-word="grey44:#707070">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#737373" data-word="grey45:#737373">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#757575" data-word="grey46:#757575">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#787878" data-word="grey47:#787878">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#7A7A7A" data-word="grey48:#7A7A7A">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#7D7D7D" data-word="grey49:#7D7D7D">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#7F7F7F" data-word="grey50:#7F7F7F">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#828282" data-word="grey51:#828282">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#858585" data-word="grey52:#858585">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#878787" data-word="grey53:#878787">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8A8A8A" data-word="grey54:#8A8A8A">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8C8C8C" data-word="grey55:#8C8C8C">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8F8F8F" data-word="grey56:#8F8F8F">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#919191" data-word="grey57:#919191">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#949494" data-word="grey58:#949494">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#969696" data-word="grey59:#969696">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#999999" data-word="grey60:#999999">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#9C9C9C" data-word="grey61:#9C9C9C">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#9E9E9E" data-word="grey62:#9E9E9E">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#A1A1A1" data-word="grey63:#A1A1A1">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#A3A3A3" data-word="grey64:#A3A3A3">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#A6A6A6" data-word="grey65:#A6A6A6">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#A8A8A8" data-word="grey66:#A8A8A8">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#ABABAB" data-word="grey67:#ABABAB">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#ADADAD" data-word="grey68:#ADADAD">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#B0B0B0" data-word="grey69:#B0B0B0">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#B3B3B3" data-word="grey70:#B3B3B3">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#B5B5B5" data-word="grey71:#B5B5B5">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#B8B8B8" data-word="grey72:#B8B8B8">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#BABABA" data-word="grey73:#BABABA">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#BDBDBD" data-word="grey74:#BDBDBD">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#BFBFBF" data-word="grey75:#BFBFBF">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#C2C2C2" data-word="grey76:#C2C2C2">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#C4C4C4" data-word="grey77:#C4C4C4">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#C7C7C7" data-word="grey78:#C7C7C7">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#C9C9C9" data-word="grey79:#C9C9C9">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CCCCCC" data-word="grey80:#CCCCCC">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CFCFCF" data-word="grey81:#CFCFCF">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#D1D1D1" data-word="grey82:#D1D1D1">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#D4D4D4" data-word="grey83:#D4D4D4">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#D6D6D6" data-word="grey84:#D6D6D6">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#D9D9D9" data-word="grey85:#D9D9D9">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#DBDBDB" data-word="grey86:#DBDBDB">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#DEDEDE" data-word="grey87:#DEDEDE">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#E0E0E0" data-word="grey88:#E0E0E0">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#E3E3E3" data-word="grey89:#E3E3E3">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#E5E5E5" data-word="grey90:#E5E5E5">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#E8E8E8" data-word="grey91:#E8E8E8">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EBEBEB" data-word="grey92:#EBEBEB">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EDEDED" data-word="grey93:#EDEDED">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#F0F0F0" data-word="grey94:#F0F0F0">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#F2F2F2" data-word="grey95:#F2F2F2">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#F5F5F5" data-word="grey96:#F5F5F5">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#F7F7F7" data-word="grey97:#F7F7F7">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FAFAFA" data-word="grey98:#FAFAFA">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FCFCFC" data-word="grey99:#FCFCFC">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FFFFFF" data-word="grey100:#FFFFFF">&nbsp;</span>
 <br>
-<span onmouseover="displayColor(this)" style="background-color:#00FF00">green:#00FF00</span>
-<span onmouseover="displayColor(this)" style="background-color:#00FF00">green1:#00FF00</span>
-<span onmouseover="displayColor(this)" style="background-color:#00EE00">green2:#00EE00</span>
-<span onmouseover="displayColor(this)" style="background-color:#00CD00">green3:#00CD00</span>
-<span onmouseover="displayColor(this)" style="background-color:#008B00">green4:#008B00</span>
-<span onmouseover="displayColor(this)" style="background-color:#ADFF2F">greenyellow:#ADFF2F</span>
-<span onmouseover="displayColor(this)" style="background-color:#F0FFF0">honeydew:#F0FFF0</span>
-<span onmouseover="displayColor(this)" style="background-color:#E0EEE0">honeydew2:#E0EEE0</span>
-<span onmouseover="displayColor(this)" style="background-color:#C1CDC1">honeydew3:#C1CDC1</span>
-<span onmouseover="displayColor(this)" style="background-color:#838B83">honeydew4:#838B83</span>
-<span onmouseover="displayColor(this)" style="background-color:#FF69B4">hotpink:#FF69B4</span>
-<span onmouseover="displayColor(this)" style="background-color:#FF6EB4">hotpink1:#FF6EB4</span>
-<span onmouseover="displayColor(this)" style="background-color:#EE6AA7">hotpink2:#EE6AA7</span>
-<span onmouseover="displayColor(this)" style="background-color:#CD6090">hotpink3:#CD6090</span>
-<span onmouseover="displayColor(this)" style="background-color:#8B3A62">hotpink4:#8B3A62</span>
-<span onmouseover="displayColor(this)" style="background-color:#CD5C5C">indianred:#CD5C5C</span>
-<span onmouseover="displayColor(this)" style="background-color:#FF6A6A">indianred1:#FF6A6A</span>
-<span onmouseover="displayColor(this)" style="background-color:#EE6363">indianred2:#EE6363</span>
-<span onmouseover="displayColor(this)" style="background-color:#CD5555">indianred3:#CD5555</span>
-<span onmouseover="displayColor(this)" style="background-color:#8B3A3A">indianred4:#8B3A3A</span>
-<span onmouseover="displayColor(this)" style="background-color:#4B0082">indigo:#4B0082</span>
-<span onmouseover="displayColor(this)" style="background-color:#218868">indigo2:#218868</span>
-<span onmouseover="displayColor(this)" style="background-color:#FFFFF0">ivory:#FFFFF0</span>
-<span onmouseover="displayColor(this)" style="background-color:#EEEEE0">ivory2:#EEEEE0</span>
-<span onmouseover="displayColor(this)" style="background-color:#CDCDC1">ivory3:#CDCDC1</span>
-<span onmouseover="displayColor(this)" style="background-color:#8B8B83">ivory4:#8B8B83</span>
-<span onmouseover="displayColor(this)" style="background-color:#F0E68C">khaki:#F0E68C</span>
-<span onmouseover="displayColor(this)" style="background-color:#FFF68F">khaki1:#FFF68F</span>
-<span onmouseover="displayColor(this)" style="background-color:#EEE685">khaki2:#EEE685</span>
-<span onmouseover="displayColor(this)" style="background-color:#CDC673">khaki3:#CDC673</span>
-<span onmouseover="displayColor(this)" style="background-color:#8B864E">khaki4:#8B864E</span>
-<span onmouseover="displayColor(this)" style="background-color:#E6E6FA">lavender:#E6E6FA</span>
-<span onmouseover="displayColor(this)" style="background-color:#FFF0F5">lavenderblush:#FFF0F5</span>
-<span onmouseover="displayColor(this)" style="background-color:#FFF0F5">lavenderblush1:#FFF0F5</span>
-<span onmouseover="displayColor(this)" style="background-color:#EEE0E5">lavenderblush2:#EEE0E5</span>
-<span onmouseover="displayColor(this)" style="background-color:#CDC1C5">lavenderblush3:#CDC1C5</span>
-<span onmouseover="displayColor(this)" style="background-color:#8B8386">lavenderblush4:#8B8386</span>
-<span onmouseover="displayColor(this)" style="background-color:#7CFC00">lawngreen:#7CFC00</span>
-<span onmouseover="displayColor(this)" style="background-color:#FFFACD">lemonchiffon:#FFFACD</span>
-<span onmouseover="displayColor(this)" style="background-color:#FFFACD">lemonchiffon1:#FFFACD</span>
-<span onmouseover="displayColor(this)" style="background-color:#EEE9BF">lemonchiffon2:#EEE9BF</span>
-<span onmouseover="displayColor(this)" style="background-color:#CDC9A5">lemonchiffon3:#CDC9A5</span>
-<span onmouseover="displayColor(this)" style="background-color:#8B8970">lemonchiffon4:#8B8970</span>
-<span onmouseover="displayColor(this)" style="background-color:#ADD8E6">lightblue:#ADD8E6</span>
-<span onmouseover="displayColor(this)" style="background-color:#BFEFFF">lightblue1:#BFEFFF</span>
-<span onmouseover="displayColor(this)" style="background-color:#B2DFEE">lightblue2:#B2DFEE</span>
-<span onmouseover="displayColor(this)" style="background-color:#9AC0CD">lightblue3:#9AC0CD</span>
-<span onmouseover="displayColor(this)" style="background-color:#68838B">lightblue4:#68838B</span>
-<span onmouseover="displayColor(this)" style="background-color:#F08080">lightcoral:#F08080</span>
-<span onmouseover="displayColor(this)" style="background-color:#E0FFFF">lightcyan:#E0FFFF</span>
-<span onmouseover="displayColor(this)" style="background-color:#E0FFFF">lightcyan1:#E0FFFF</span>
-<span onmouseover="displayColor(this)" style="background-color:#D1EEEE">lightcyan2:#D1EEEE</span>
-<span onmouseover="displayColor(this)" style="background-color:#B4CDCD">lightcyan3:#B4CDCD</span>
-<span onmouseover="displayColor(this)" style="background-color:#7A8B8B">lightcyan4:#7A8B8B</span>
-<span onmouseover="displayColor(this)" style="background-color:#EEDD82">lightgoldenrod:#EEDD82</span>
-<span onmouseover="displayColor(this)" style="background-color:#FFEC8B">lightgoldenrod1:#FFEC8B</span>
-<span onmouseover="displayColor(this)" style="background-color:#EEDC82">lightgoldenrod2:#EEDC82</span>
-<span onmouseover="displayColor(this)" style="background-color:#CDBE70">lightgoldenrod3:#CDBE70</span>
-<span onmouseover="displayColor(this)" style="background-color:#8B814C">lightgoldenrod4:#8B814C</span>
-<span onmouseover="displayColor(this)" style="background-color:#FAFAD2">lightgoldenrodyellow:#FAFAD2</span>
-<span onmouseover="displayColor(this)" style="background-color:#D3D3D3">lightgrey:#D3D3D3</span>
-<span onmouseover="displayColor(this)" style="background-color:#90EE90">lightgreen:#90EE90</span>
-<span onmouseover="displayColor(this)" style="background-color:#FFB6C1">lightpink:#FFB6C1</span>
-<span onmouseover="displayColor(this)" style="background-color:#FFAEB9">lightpink1:#FFAEB9</span>
-<span onmouseover="displayColor(this)" style="background-color:#EEA2AD">lightpink2:#EEA2AD</span>
-<span onmouseover="displayColor(this)" style="background-color:#CD8C95">lightpink3:#CD8C95</span>
-<span onmouseover="displayColor(this)" style="background-color:#8B5F65">lightpink4:#8B5F65</span>
-<span onmouseover="displayColor(this)" style="background-color:#FFA07A">lightsalmon:#FFA07A</span>
-<span onmouseover="displayColor(this)" style="background-color:#FFA07A">lightsalmon1:#FFA07A</span>
-<span onmouseover="displayColor(this)" style="background-color:#EE9572">lightsalmon2:#EE9572</span>
-<span onmouseover="displayColor(this)" style="background-color:#CD8162">lightsalmon3:#CD8162</span>
-<span onmouseover="displayColor(this)" style="background-color:#8B5742">lightsalmon4:#8B5742</span>
-<span onmouseover="displayColor(this)" style="background-color:#20B2AA">lightseagreen:#20B2AA</span>
-<span onmouseover="displayColor(this)" style="background-color:#87CEFA">lightskyblue:#87CEFA</span>
-<span onmouseover="displayColor(this)" style="background-color:#B0E2FF">lightskyblue1:#B0E2FF</span>
-<span onmouseover="displayColor(this)" style="background-color:#A4D3EE">lightskyblue2:#A4D3EE</span>
-<span onmouseover="displayColor(this)" style="background-color:#8DB6CD">lightskyblue3:#8DB6CD</span>
-<span onmouseover="displayColor(this)" style="background-color:#607B8B">lightskyblue4:#607B8B</span>
-<span onmouseover="displayColor(this)" style="background-color:#8470FF">lightslateblue:#8470FF</span>
-<span onmouseover="displayColor(this)" style="background-color:#778899">lightslategrey:#778899</span>
-<span onmouseover="displayColor(this)" style="background-color:#B0C4DE">lightsteelblue:#B0C4DE</span>
-<span onmouseover="displayColor(this)" style="background-color:#CAE1FF">lightsteelblue1:#CAE1FF</span>
-<span onmouseover="displayColor(this)" style="background-color:#BCD2EE">lightsteelblue2:#BCD2EE</span>
-<span onmouseover="displayColor(this)" style="background-color:#A2B5CD">lightsteelblue3:#A2B5CD</span>
-<span onmouseover="displayColor(this)" style="background-color:#6E7B8B">lightsteelblue4:#6E7B8B</span>
-<span onmouseover="displayColor(this)" style="background-color:#FFFFE0">lightyellow:#FFFFE0</span>
-<span onmouseover="displayColor(this)" style="background-color:#EEEED1">lightyellow2:#EEEED1</span>
-<span onmouseover="displayColor(this)" style="background-color:#CDCDB4">lightyellow3:#CDCDB4</span>
-<span onmouseover="displayColor(this)" style="background-color:#8B8B7A">lightyellow4:#8B8B7A</span>
-<span onmouseover="displayColor(this)" style="background-color:#32CD32">limegreen:#32CD32</span>
-<span onmouseover="displayColor(this)" style="background-color:#FAF0E6">linen:#FAF0E6</span>
-<span onmouseover="displayColor(this)" style="background-color:#FF00FF">magenta:#FF00FF</span>
-<span onmouseover="displayColor(this)" style="background-color:#FF00FF">magenta1:#FF00FF</span>
-<span onmouseover="displayColor(this)" style="background-color:#EE00EE">magenta2:#EE00EE</span>
-<span onmouseover="displayColor(this)" style="background-color:#CD00CD">magenta3:#CD00CD</span>
-<span onmouseover="displayColor(this)" style="background-color:#8B008B">magenta4:#8B008B</span>
-<span onmouseover="displayColor(this)" style="background-color:#B03060">maroon:#B03060</span>
-<span onmouseover="displayColor(this)" style="background-color:#FF34B3">maroon1:#FF34B3</span>
-<span onmouseover="displayColor(this)" style="background-color:#EE30A7">maroon2:#EE30A7</span>
-<span onmouseover="displayColor(this)" style="background-color:#CD2990">maroon3:#CD2990</span>
-<span onmouseover="displayColor(this)" style="background-color:#8B1C62">maroon4:#8B1C62</span>
-<span onmouseover="displayColor(this)" style="background-color:#66CDAA">mediumaquamarine:#66CDAA</span>
-<span onmouseover="displayColor(this)" style="background-color:#0000CD">mediumblue:#0000CD</span>
-<span onmouseover="displayColor(this)" style="background-color:#BA55D3">mediumorchid:#BA55D3</span>
-<span onmouseover="displayColor(this)" style="background-color:#E066FF">mediumorchid1:#E066FF</span>
-<span onmouseover="displayColor(this)" style="background-color:#D15FEE">mediumorchid2:#D15FEE</span>
-<span onmouseover="displayColor(this)" style="background-color:#B452CD">mediumorchid3:#B452CD</span>
-<span onmouseover="displayColor(this)" style="background-color:#7A378B">mediumorchid4:#7A378B</span>
-<span onmouseover="displayColor(this)" style="background-color:#9370DB">mediumpurple:#9370DB</span>
-<span onmouseover="displayColor(this)" style="background-color:#AB82FF">mediumpurple1:#AB82FF</span>
-<span onmouseover="displayColor(this)" style="background-color:#9F79EE">mediumpurple2:#9F79EE</span>
-<span onmouseover="displayColor(this)" style="background-color:#8968CD">mediumpurple3:#8968CD</span>
-<span onmouseover="displayColor(this)" style="background-color:#5D478B">mediumpurple4:#5D478B</span>
-<span onmouseover="displayColor(this)" style="background-color:#3CB371">mediumseagreen:#3CB371</span>
-<span onmouseover="displayColor(this)" style="background-color:#7B68EE">mediumslateblue:#7B68EE</span>
-<span onmouseover="displayColor(this)" style="background-color:#00FA9A">mediumspringgreen:#00FA9A</span>
-<span onmouseover="displayColor(this)" style="background-color:#48D1CC">mediumturquoise:#48D1CC</span>
-<span onmouseover="displayColor(this)" style="background-color:#C71585">mediumvioletred:#C71585</span>
-<span onmouseover="displayColor(this)" style="background-color:#191970">midnightblue:#191970</span>
-<span onmouseover="displayColor(this)" style="background-color:#F5FFFA">mintcream:#F5FFFA</span>
-<span onmouseover="displayColor(this)" style="background-color:#FFE4E1">mistyrose:#FFE4E1</span>
-<span onmouseover="displayColor(this)" style="background-color:#FFE4E1">mistyrose1:#FFE4E1</span>
-<span onmouseover="displayColor(this)" style="background-color:#EED5D2">mistyrose2:#EED5D2</span>
-<span onmouseover="displayColor(this)" style="background-color:#CDB7B5">mistyrose3:#CDB7B5</span>
-<span onmouseover="displayColor(this)" style="background-color:#8B7D7B">mistyrose4:#8B7D7B</span>
-<span onmouseover="displayColor(this)" style="background-color:#FFE4B5">moccasin:#FFE4B5</span>
-<span onmouseover="displayColor(this)" style="background-color:#FFDEAD">navajowhite:#FFDEAD</span>
-<span onmouseover="displayColor(this)" style="background-color:#FFDEAD">navajowhite1:#FFDEAD</span>
-<span onmouseover="displayColor(this)" style="background-color:#EECFA1">navajowhite2:#EECFA1</span>
-<span onmouseover="displayColor(this)" style="background-color:#CDB38B">navajowhite3:#CDB38B</span>
-<span onmouseover="displayColor(this)" style="background-color:#8B795E">navajowhite4:#8B795E</span>
-<span onmouseover="displayColor(this)" style="background-color:#000080">navy:#000080</span>
-<span onmouseover="displayColor(this)" style="background-color:#000080">navyblue:#000080</span>
-<span onmouseover="displayColor(this)" style="background-color:#FDF5E6">oldlace:#FDF5E6</span>
-<span onmouseover="displayColor(this)" style="background-color:#6B8E23">olivedrab:#6B8E23</span>
-<span onmouseover="displayColor(this)" style="background-color:#C0FF3E">olivedrab1:#C0FF3E</span>
-<span onmouseover="displayColor(this)" style="background-color:#B3EE3A">olivedrab2:#B3EE3A</span>
-<span onmouseover="displayColor(this)" style="background-color:#9ACD32">olivedrab3:#9ACD32</span>
-<span onmouseover="displayColor(this)" style="background-color:#698B22">olivedrab4:#698B22</span>
-<span onmouseover="displayColor(this)" style="background-color:#FFA500">orange:#FFA500</span>
-<span onmouseover="displayColor(this)" style="background-color:#FFA500">orange1:#FFA500</span>
-<span onmouseover="displayColor(this)" style="background-color:#EE9A00">orange2:#EE9A00</span>
-<span onmouseover="displayColor(this)" style="background-color:#CD8500">orange3:#CD8500</span>
-<span onmouseover="displayColor(this)" style="background-color:#8B5A00">orange4:#8B5A00</span>
-<span onmouseover="displayColor(this)" style="background-color:#FF4500">orangered:#FF4500</span>
-<span onmouseover="displayColor(this)" style="background-color:#FF4500">orangered1:#FF4500</span>
-<span onmouseover="displayColor(this)" style="background-color:#EE4000">orangered2:#EE4000</span>
-<span onmouseover="displayColor(this)" style="background-color:#CD3700">orangered3:#CD3700</span>
-<span onmouseover="displayColor(this)" style="background-color:#8B2500">orangered4:#8B2500</span>
-<span onmouseover="displayColor(this)" style="background-color:#DA70D6">orchid:#DA70D6</span>
-<span onmouseover="displayColor(this)" style="background-color:#FF83FA">orchid1:#FF83FA</span>
-<span onmouseover="displayColor(this)" style="background-color:#EE7AE9">orchid2:#EE7AE9</span>
-<span onmouseover="displayColor(this)" style="background-color:#CD69C9">orchid3:#CD69C9</span>
-<span onmouseover="displayColor(this)" style="background-color:#8B4789">orchid4:#8B4789</span>
-<span onmouseover="displayColor(this)" style="background-color:#EEE8AA">palegoldenrod:#EEE8AA</span>
-<span onmouseover="displayColor(this)" style="background-color:#98FB98">palegreen:#98FB98</span>
-<span onmouseover="displayColor(this)" style="background-color:#9AFF9A">palegreen1:#9AFF9A</span>
-<span onmouseover="displayColor(this)" style="background-color:#90EE90">palegreen2:#90EE90</span>
-<span onmouseover="displayColor(this)" style="background-color:#7CCD7C">palegreen3:#7CCD7C</span>
-<span onmouseover="displayColor(this)" style="background-color:#548B54">palegreen4:#548B54</span>
-<span onmouseover="displayColor(this)" style="background-color:#AFEEEE">paleturquoise:#AFEEEE</span>
-<span onmouseover="displayColor(this)" style="background-color:#BBFFFF">paleturquoise1:#BBFFFF</span>
-<span onmouseover="displayColor(this)" style="background-color:#AEEEEE">paleturquoise2:#AEEEEE</span>
-<span onmouseover="displayColor(this)" style="background-color:#96CDCD">paleturquoise3:#96CDCD</span>
-<span onmouseover="displayColor(this)" style="background-color:#668B8B">paleturquoise4:#668B8B</span>
-<span onmouseover="displayColor(this)" style="background-color:#DB7093">palevioletred:#DB7093</span>
-<span onmouseover="displayColor(this)" style="background-color:#FF82AB">palevioletred1:#FF82AB</span>
-<span onmouseover="displayColor(this)" style="background-color:#EE799F">palevioletred2:#EE799F</span>
-<span onmouseover="displayColor(this)" style="background-color:#CD6889">palevioletred3:#CD6889</span>
-<span onmouseover="displayColor(this)" style="background-color:#8B475D">palevioletred4:#8B475D</span>
-<span onmouseover="displayColor(this)" style="background-color:#FFEFD5">papayawhip:#FFEFD5</span>
-<span onmouseover="displayColor(this)" style="background-color:#FFDAB9">peachpuff:#FFDAB9</span>
-<span onmouseover="displayColor(this)" style="background-color:#FFDAB9">peachpuff1:#FFDAB9</span>
-<span onmouseover="displayColor(this)" style="background-color:#EECBAD">peachpuff2:#EECBAD</span>
-<span onmouseover="displayColor(this)" style="background-color:#CDAF95">peachpuff3:#CDAF95</span>
-<span onmouseover="displayColor(this)" style="background-color:#8B7765">peachpuff4:#8B7765</span>
-<span onmouseover="displayColor(this)" style="background-color:#CD853F">peru:#CD853F</span>
-<span onmouseover="displayColor(this)" style="background-color:#FFC0CB">pink:#FFC0CB</span>
-<span onmouseover="displayColor(this)" style="background-color:#FFB5C5">pink1:#FFB5C5</span>
-<span onmouseover="displayColor(this)" style="background-color:#EEA9B8">pink2:#EEA9B8</span>
-<span onmouseover="displayColor(this)" style="background-color:#CD919E">pink3:#CD919E</span>
-<span onmouseover="displayColor(this)" style="background-color:#8B636C">pink4:#8B636C</span>
-<span onmouseover="displayColor(this)" style="background-color:#DDA0DD">plum:#DDA0DD</span>
-<span onmouseover="displayColor(this)" style="background-color:#FFBBFF">plum1:#FFBBFF</span>
-<span onmouseover="displayColor(this)" style="background-color:#EEAEEE">plum2:#EEAEEE</span>
-<span onmouseover="displayColor(this)" style="background-color:#CD96CD">plum3:#CD96CD</span>
-<span onmouseover="displayColor(this)" style="background-color:#8B668B">plum4:#8B668B</span>
-<span onmouseover="displayColor(this)" style="background-color:#B0E0E6">powderblue:#B0E0E6</span>
-<span onmouseover="displayColor(this)" style="background-color:#A020F0">purple:#A020F0</span>
-<span onmouseover="displayColor(this)" style="background-color:#9B30FF">purple1:#9B30FF</span>
-<span onmouseover="displayColor(this)" style="background-color:#912CEE">purple2:#912CEE</span>
-<span onmouseover="displayColor(this)" style="background-color:#7D26CD">purple3:#7D26CD</span>
-<span onmouseover="displayColor(this)" style="background-color:#551A8B">purple4:#551A8B</span>
-<span onmouseover="displayColor(this)" style="background-color:#FF0000">red:#FF0000</span>
-<span onmouseover="displayColor(this)" style="background-color:#EE0000">red2:#EE0000</span>
-<span onmouseover="displayColor(this)" style="background-color:#CD0000">red3:#CD0000</span>
-<span onmouseover="displayColor(this)" style="background-color:#8B0000">red4:#8B0000</span>
-<span onmouseover="displayColor(this)" style="background-color:#BC8F8F">rosybrown:#BC8F8F</span>
-<span onmouseover="displayColor(this)" style="background-color:#FFC1C1">rosybrown1:#FFC1C1</span>
-<span onmouseover="displayColor(this)" style="background-color:#EEB4B4">rosybrown2:#EEB4B4</span>
-<span onmouseover="displayColor(this)" style="background-color:#CD9B9B">rosybrown3:#CD9B9B</span>
-<span onmouseover="displayColor(this)" style="background-color:#8B6969">rosybrown4:#8B6969</span>
-<span onmouseover="displayColor(this)" style="background-color:#4169E1">royalblue:#4169E1</span>
-<span onmouseover="displayColor(this)" style="background-color:#4876FF">royalblue1:#4876FF</span>
-<span onmouseover="displayColor(this)" style="background-color:#436EEE">royalblue2:#436EEE</span>
-<span onmouseover="displayColor(this)" style="background-color:#3A5FCD">royalblue3:#3A5FCD</span>
-<span onmouseover="displayColor(this)" style="background-color:#27408B">royalblue4:#27408B</span>
-<span onmouseover="displayColor(this)" style="background-color:#8B4513">saddlebrown:#8B4513</span>
-<span onmouseover="displayColor(this)" style="background-color:#FA8072">salmon:#FA8072</span>
-<span onmouseover="displayColor(this)" style="background-color:#FF8C69">salmon1:#FF8C69</span>
-<span onmouseover="displayColor(this)" style="background-color:#EE8262">salmon2:#EE8262</span>
-<span onmouseover="displayColor(this)" style="background-color:#CD7054">salmon3:#CD7054</span>
-<span onmouseover="displayColor(this)" style="background-color:#8B4C39">salmon4:#8B4C39</span>
-<span onmouseover="displayColor(this)" style="background-color:#F4A460">sandybrown:#F4A460</span>
-<span onmouseover="displayColor(this)" style="background-color:#2E8B57">seagreen:#2E8B57</span>
-<span onmouseover="displayColor(this)" style="background-color:#54FF9F">seagreen1:#54FF9F</span>
-<span onmouseover="displayColor(this)" style="background-color:#4EEE94">seagreen2:#4EEE94</span>
-<span onmouseover="displayColor(this)" style="background-color:#43CD80">seagreen3:#43CD80</span>
-<span onmouseover="displayColor(this)" style="background-color:#2E8B57">seagreen4:#2E8B57</span>
-<span onmouseover="displayColor(this)" style="background-color:#FFF5EE">seashell:#FFF5EE</span>
-<span onmouseover="displayColor(this)" style="background-color:#EEE5DE">seashell2:#EEE5DE</span>
-<span onmouseover="displayColor(this)" style="background-color:#CDC5BF">seashell3:#CDC5BF</span>
-<span onmouseover="displayColor(this)" style="background-color:#8B8682">seashell4:#8B8682</span>
-<span onmouseover="displayColor(this)" style="background-color:#8E388E">sgibeet:#8E388E</span>
-<span onmouseover="displayColor(this)" style="background-color:#C5C1AA">sgibrightgrey:#C5C1AA</span>
-<span onmouseover="displayColor(this)" style="background-color:#71C671">sgichartreuse:#71C671</span>
-<span onmouseover="displayColor(this)" style="background-color:#555555">sgidarkgrey:#555555</span>
-<span onmouseover="displayColor(this)" style="background-color:#000000">sgigrey0:#000000</span>
-<span onmouseover="displayColor(this)" style="background-color:#0A0A0A">sgigrey4:#0A0A0A</span>
-<span onmouseover="displayColor(this)" style="background-color:#141414">sgigrey8:#141414</span>
-<span onmouseover="displayColor(this)" style="background-color:#1E1E1E">sgigrey12:#1E1E1E</span>
-<span onmouseover="displayColor(this)" style="background-color:#282828">sgigrey16:#282828</span>
-<span onmouseover="displayColor(this)" style="background-color:#333333">sgigrey20:#333333</span>
-<span onmouseover="displayColor(this)" style="background-color:#3D3D3D">sgigrey24:#3D3D3D</span>
-<span onmouseover="displayColor(this)" style="background-color:#474747">sgigrey28:#474747</span>
-<span onmouseover="displayColor(this)" style="background-color:#515151">sgigrey32:#515151</span>
-<span onmouseover="displayColor(this)" style="background-color:#5B5B5B">sgigrey36:#5B5B5B</span>
-<span onmouseover="displayColor(this)" style="background-color:#666666">sgigrey40:#666666</span>
-<span onmouseover="displayColor(this)" style="background-color:#707070">sgigrey44:#707070</span>
-<span onmouseover="displayColor(this)" style="background-color:#7A7A7A">sgigrey48:#7A7A7A</span>
-<span onmouseover="displayColor(this)" style="background-color:#848484">sgigrey52:#848484</span>
-<span onmouseover="displayColor(this)" style="background-color:#8E8E8E">sgigrey56:#8E8E8E</span>
-<span onmouseover="displayColor(this)" style="background-color:#999999">sgigrey60:#999999</span>
-<span onmouseover="displayColor(this)" style="background-color:#A3A3A3">sgigrey64:#A3A3A3</span>
-<span onmouseover="displayColor(this)" style="background-color:#ADADAD">sgigrey68:#ADADAD</span>
-<span onmouseover="displayColor(this)" style="background-color:#B7B7B7">sgigrey72:#B7B7B7</span>
-<span onmouseover="displayColor(this)" style="background-color:#C1C1C1">sgigrey76:#C1C1C1</span>
-<span onmouseover="displayColor(this)" style="background-color:#CCCCCC">sgigrey80:#CCCCCC</span>
-<span onmouseover="displayColor(this)" style="background-color:#D6D6D6">sgigrey84:#D6D6D6</span>
-<span onmouseover="displayColor(this)" style="background-color:#E0E0E0">sgigrey88:#E0E0E0</span>
-<span onmouseover="displayColor(this)" style="background-color:#EAEAEA">sgigrey92:#EAEAEA</span>
-<span onmouseover="displayColor(this)" style="background-color:#F4F4F4">sgigrey96:#F4F4F4</span>
-<span onmouseover="displayColor(this)" style="background-color:#FFFFFF">sgigrey100:#FFFFFF</span>
-<span onmouseover="displayColor(this)" style="background-color:#7D9EC0">sgilightblue:#7D9EC0</span>
-<span onmouseover="displayColor(this)" style="background-color:#AAAAAA">sgilightgrey:#AAAAAA</span>
-<span onmouseover="displayColor(this)" style="background-color:#848484">sgimediumgrey:#848484</span>
-<span onmouseover="displayColor(this)" style="background-color:#8E8E38">sgiolivedrab:#8E8E38</span>
-<span onmouseover="displayColor(this)" style="background-color:#C67171">sgisalmon:#C67171</span>
-<span onmouseover="displayColor(this)" style="background-color:#7171C6">sgislateblue:#7171C6</span>
-<span onmouseover="displayColor(this)" style="background-color:#388E8E">sgiteal:#388E8E</span>
-<span onmouseover="displayColor(this)" style="background-color:#282828">sgiverydarkgrey:#282828</span>
-<span onmouseover="displayColor(this)" style="background-color:#D6D6D6">sgiverylightgrey:#D6D6D6</span>
-<span onmouseover="displayColor(this)" style="background-color:#A0522D">sienna:#A0522D</span>
-<span onmouseover="displayColor(this)" style="background-color:#FF8247">sienna1:#FF8247</span>
-<span onmouseover="displayColor(this)" style="background-color:#EE7942">sienna2:#EE7942</span>
-<span onmouseover="displayColor(this)" style="background-color:#CD6839">sienna3:#CD6839</span>
-<span onmouseover="displayColor(this)" style="background-color:#8B4726">sienna4:#8B4726</span>
-<span onmouseover="displayColor(this)" style="background-color:#87CEEB">skyblue:#87CEEB</span>
-<span onmouseover="displayColor(this)" style="background-color:#87CEFF">skyblue1:#87CEFF</span>
-<span onmouseover="displayColor(this)" style="background-color:#7EC0EE">skyblue2:#7EC0EE</span>
-<span onmouseover="displayColor(this)" style="background-color:#6CA6CD">skyblue3:#6CA6CD</span>
-<span onmouseover="displayColor(this)" style="background-color:#4A708B">skyblue4:#4A708B</span>
-<span onmouseover="displayColor(this)" style="background-color:#6A5ACD">slateblue:#6A5ACD</span>
-<span onmouseover="displayColor(this)" style="background-color:#836FFF">slateblue1:#836FFF</span>
-<span onmouseover="displayColor(this)" style="background-color:#7A67EE">slateblue2:#7A67EE</span>
-<span onmouseover="displayColor(this)" style="background-color:#6959CD">slateblue3:#6959CD</span>
-<span onmouseover="displayColor(this)" style="background-color:#473C8B">slateblue4:#473C8B</span>
-<span onmouseover="displayColor(this)" style="background-color:#708090">slategrey:#708090</span>
-<span onmouseover="displayColor(this)" style="background-color:#C6E2FF">slategrey1:#C6E2FF</span>
-<span onmouseover="displayColor(this)" style="background-color:#B9D3EE">slategrey2:#B9D3EE</span>
-<span onmouseover="displayColor(this)" style="background-color:#9FB6CD">slategrey3:#9FB6CD</span>
-<span onmouseover="displayColor(this)" style="background-color:#6C7B8B">slategrey4:#6C7B8B</span>
-<span onmouseover="displayColor(this)" style="background-color:#FFFAFA">snow:#FFFAFA</span>
-<span onmouseover="displayColor(this)" style="background-color:#EEE9E9">snow2:#EEE9E9</span>
-<span onmouseover="displayColor(this)" style="background-color:#CDC9C9">snow3:#CDC9C9</span>
-<span onmouseover="displayColor(this)" style="background-color:#8B8989">snow4:#8B8989</span>
-<span onmouseover="displayColor(this)" style="background-color:#00FF7F">springgreen:#00FF7F</span>
-<span onmouseover="displayColor(this)" style="background-color:#00EE76">springgreen2:#00EE76</span>
-<span onmouseover="displayColor(this)" style="background-color:#00CD66">springgreen3:#00CD66</span>
-<span onmouseover="displayColor(this)" style="background-color:#008B45">springgreen4:#008B45</span>
-<span onmouseover="displayColor(this)" style="background-color:#4682B4">steelblue:#4682B4</span>
-<span onmouseover="displayColor(this)" style="background-color:#63B8FF">steelblue1:#63B8FF</span>
-<span onmouseover="displayColor(this)" style="background-color:#5CACEE">steelblue2:#5CACEE</span>
-<span onmouseover="displayColor(this)" style="background-color:#4F94CD">steelblue3:#4F94CD</span>
-<span onmouseover="displayColor(this)" style="background-color:#36648B">steelblue4:#36648B</span>
-<span onmouseover="displayColor(this)" style="background-color:#D2B48C">tan:#D2B48C</span>
-<span onmouseover="displayColor(this)" style="background-color:#FFA54F">tan1:#FFA54F</span>
-<span onmouseover="displayColor(this)" style="background-color:#EE9A49">tan2:#EE9A49</span>
-<span onmouseover="displayColor(this)" style="background-color:#CD853F">tan3:#CD853F</span>
-<span onmouseover="displayColor(this)" style="background-color:#8B5A2B">tan4:#8B5A2B</span>
-<span onmouseover="displayColor(this)" style="background-color:#D8BFD8">thistle:#D8BFD8</span>
-<span onmouseover="displayColor(this)" style="background-color:#FFE1FF">thistle1:#FFE1FF</span>
-<span onmouseover="displayColor(this)" style="background-color:#EED2EE">thistle2:#EED2EE</span>
-<span onmouseover="displayColor(this)" style="background-color:#CDB5CD">thistle3:#CDB5CD</span>
-<span onmouseover="displayColor(this)" style="background-color:#8B7B8B">thistle4:#8B7B8B</span>
-<span onmouseover="displayColor(this)" style="background-color:#FF6347">tomato:#FF6347</span>
-<span onmouseover="displayColor(this)" style="background-color:#EE5C42">tomato2:#EE5C42</span>
-<span onmouseover="displayColor(this)" style="background-color:#CD4F39">tomato3:#CD4F39</span>
-<span onmouseover="displayColor(this)" style="background-color:#8B3626">tomato4:#8B3626</span>
-<span onmouseover="displayColor(this)" style="background-color:#40E0D0">turquoise:#40E0D0</span>
-<span onmouseover="displayColor(this)" style="background-color:#00F5FF">turquoise1:#00F5FF</span>
-<span onmouseover="displayColor(this)" style="background-color:#00E5EE">turquoise2:#00E5EE</span>
-<span onmouseover="displayColor(this)" style="background-color:#00C5CD">turquoise3:#00C5CD</span>
-<span onmouseover="displayColor(this)" style="background-color:#00868B">turquoise4:#00868B</span>
-<span onmouseover="displayColor(this)" style="background-color:#EE82EE">violet:#EE82EE</span>
-<span onmouseover="displayColor(this)" style="background-color:#D02090">violetred:#D02090</span>
-<span onmouseover="displayColor(this)" style="background-color:#FF3E96">violetred1:#FF3E96</span>
-<span onmouseover="displayColor(this)" style="background-color:#EE3A8C">violetred2:#EE3A8C</span>
-<span onmouseover="displayColor(this)" style="background-color:#CD3278">violetred3:#CD3278</span>
-<span onmouseover="displayColor(this)" style="background-color:#8B2252">violetred4:#8B2252</span>
-<span onmouseover="displayColor(this)" style="background-color:#F5DEB3">wheat:#F5DEB3</span>
-<span onmouseover="displayColor(this)" style="background-color:#FFE7BA">wheat1:#FFE7BA</span>
-<span onmouseover="displayColor(this)" style="background-color:#EED8AE">wheat2:#EED8AE</span>
-<span onmouseover="displayColor(this)" style="background-color:#CDBA96">wheat3:#CDBA96</span>
-<span onmouseover="displayColor(this)" style="background-color:#8B7E66">wheat4:#8B7E66</span>
-<span onmouseover="displayColor(this)" style="background-color:#FFFFFF">white:#FFFFFF</span>
-<span onmouseover="displayColor(this)" style="background-color:#F5F5F5">whitesmoke:#F5F5F5</span>
-<span onmouseover="displayColor(this)" style="background-color:#FFFF00">yellow1:#FFFF00</span>
-<span onmouseover="displayColor(this)" style="background-color:#EEEE00">yellow2:#EEEE00</span>
-<span onmouseover="displayColor(this)" style="background-color:#CDCD00">yellow3:#CDCD00</span>
-<span onmouseover="displayColor(this)" style="background-color:#8B8B00">yellow4:#8B8B00</span>
-<span onmouseover="displayColor(this)" style="background-color:#9ACD32">yellowgreen:#9ACD32</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#000000" data-word="sgigrey0:#000000">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#000080" data-word="navy:#000080">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#000080" data-word="navyblue:#000080">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#0000CD" data-word="mediumblue:#0000CD">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#00868B" data-word="turquoise4:#00868B">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#008B00" data-word="green4:#008B00">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#008B45" data-word="springgreen4:#008B45">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#00C5CD" data-word="turquoise3:#00C5CD">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#00CD00" data-word="green3:#00CD00">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#00CD66" data-word="springgreen3:#00CD66">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#00E5EE" data-word="turquoise2:#00E5EE">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#00EE00" data-word="green2:#00EE00">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#00EE76" data-word="springgreen2:#00EE76">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#00F5FF" data-word="turquoise1:#00F5FF">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#00FA9A" data-word="mediumspringgreen:#00FA9A">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#00FF00" data-word="green:#00FF00">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#00FF00" data-word="green1:#00FF00">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#00FF7F" data-word="springgreen:#00FF7F">&nbsp;</span>
+<br>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#0A0A0A" data-word="sgigrey4:#0A0A0A">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#141414" data-word="sgigrey8:#141414">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#191970" data-word="midnightblue:#191970">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#1E1E1E" data-word="sgigrey12:#1E1E1E">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#20B2AA" data-word="lightseagreen:#20B2AA">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#218868" data-word="indigo2:#218868">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#27408B" data-word="royalblue4:#27408B">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#282828" data-word="sgigrey16:#282828">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#282828" data-word="sgiverydarkgrey:#282828">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#2E8B57" data-word="seagreen:#2E8B57">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#2E8B57" data-word="seagreen4:#2E8B57">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#32CD32" data-word="limegreen:#32CD32">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#333333" data-word="sgigrey20:#333333">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#36648B" data-word="steelblue4:#36648B">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#388E8E" data-word="sgiteal:#388E8E">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#3A5FCD" data-word="royalblue3:#3A5FCD">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#3CB371" data-word="mediumseagreen:#3CB371">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#3D3D3D" data-word="sgigrey24:#3D3D3D">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#40E0D0" data-word="turquoise:#40E0D0">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#4169E1" data-word="royalblue:#4169E1">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#436EEE" data-word="royalblue2:#436EEE">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#43CD80" data-word="seagreen3:#43CD80">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#4682B4" data-word="steelblue:#4682B4">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#473C8B" data-word="slateblue4:#473C8B">&nbsp;</span>
+<br>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#474747" data-word="sgigrey28:#474747">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#4876FF" data-word="royalblue1:#4876FF">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#48D1CC" data-word="mediumturquoise:#48D1CC">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#4A708B" data-word="skyblue4:#4A708B">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#4B0082" data-word="indigo:#4B0082">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#4EEE94" data-word="seagreen2:#4EEE94">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#4F94CD" data-word="steelblue3:#4F94CD">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#515151" data-word="sgigrey32:#515151">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#548B54" data-word="palegreen4:#548B54">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#54FF9F" data-word="seagreen1:#54FF9F">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#551A8B" data-word="purple4:#551A8B">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#555555" data-word="sgidarkgrey:#555555">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#5B5B5B" data-word="sgigrey36:#5B5B5B">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#5CACEE" data-word="steelblue2:#5CACEE">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#5D478B" data-word="mediumpurple4:#5D478B">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#607B8B" data-word="lightskyblue4:#607B8B">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#63B8FF" data-word="steelblue1:#63B8FF">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#666666" data-word="sgigrey40:#666666">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#668B8B" data-word="paleturquoise4:#668B8B">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#66CDAA" data-word="mediumaquamarine:#66CDAA">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#68838B" data-word="lightblue4:#68838B">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#6959CD" data-word="slateblue3:#6959CD">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#698B22" data-word="olivedrab4:#698B22">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#6A5ACD" data-word="slateblue:#6A5ACD">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#6B8E23" data-word="olivedrab:#6B8E23">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#6C7B8B" data-word="slategrey4:#6C7B8B">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#6CA6CD" data-word="skyblue3:#6CA6CD">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#6E7B8B" data-word="lightsteelblue4:#6E7B8B">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#707070" data-word="sgigrey44:#707070">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#708090" data-word="slategrey:#708090">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#7171C6" data-word="sgislateblue:#7171C6">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#71C671" data-word="sgichartreuse:#71C671">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#778899" data-word="lightslategrey:#778899">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#7A378B" data-word="mediumorchid4:#7A378B">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#7A67EE" data-word="slateblue2:#7A67EE">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#7A7A7A" data-word="sgigrey48:#7A7A7A">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#7A8B8B" data-word="lightcyan4:#7A8B8B">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#7B68EE" data-word="mediumslateblue:#7B68EE">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#7CCD7C" data-word="palegreen3:#7CCD7C">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#7CFC00" data-word="lawngreen:#7CFC00">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#7D26CD" data-word="purple3:#7D26CD">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#7D9EC0" data-word="sgilightblue:#7D9EC0">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#7EC0EE" data-word="skyblue2:#7EC0EE">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#836FFF" data-word="slateblue1:#836FFF">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#838B83" data-word="honeydew4:#838B83">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8470FF" data-word="lightslateblue:#8470FF">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#848484" data-word="sgigrey52:#848484">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#848484" data-word="sgimediumgrey:#848484">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#87CEEB" data-word="skyblue:#87CEEB">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#87CEFA" data-word="lightskyblue:#87CEFA">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#87CEFF" data-word="skyblue1:#87CEFF">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8968CD" data-word="mediumpurple3:#8968CD">&nbsp;</span>
+<br>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8B0000" data-word="red4:#8B0000">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8B008B" data-word="magenta4:#8B008B">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8B1C62" data-word="maroon4:#8B1C62">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8B2252" data-word="violetred4:#8B2252">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8B2500" data-word="orangered4:#8B2500">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8B3626" data-word="tomato4:#8B3626">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8B3A3A" data-word="indianred4:#8B3A3A">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8B3A62" data-word="hotpink4:#8B3A62">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8B4513" data-word="saddlebrown:#8B4513">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8B4726" data-word="sienna4:#8B4726">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8B475D" data-word="palevioletred4:#8B475D">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8B4789" data-word="orchid4:#8B4789">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8B4C39" data-word="salmon4:#8B4C39">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8B5742" data-word="lightsalmon4:#8B5742">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8B5A00" data-word="orange4:#8B5A00">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8B5A2B" data-word="tan4:#8B5A2B">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8B5F65" data-word="lightpink4:#8B5F65">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8B636C" data-word="pink4:#8B636C">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8B668B" data-word="plum4:#8B668B">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8B6969" data-word="rosybrown4:#8B6969">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8B7765" data-word="peachpuff4:#8B7765">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8B795E" data-word="navajowhite4:#8B795E">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8B7B8B" data-word="thistle4:#8B7B8B">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8B7D7B" data-word="mistyrose4:#8B7D7B">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8B7E66" data-word="wheat4:#8B7E66">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8B814C" data-word="lightgoldenrod4:#8B814C">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8B8386" data-word="lavenderblush4:#8B8386">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8B864E" data-word="khaki4:#8B864E">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8B8682" data-word="seashell4:#8B8682">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8B8970" data-word="lemonchiffon4:#8B8970">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8B8989" data-word="snow4:#8B8989">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8B8B00" data-word="yellow4:#8B8B00">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8B8B7A" data-word="lightyellow4:#8B8B7A">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8B8B83" data-word="ivory4:#8B8B83">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8DB6CD" data-word="lightskyblue3:#8DB6CD">&nbsp;</span>
+<br>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8E388E" data-word="sgibeet:#8E388E">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8E8E38" data-word="sgiolivedrab:#8E8E38">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#8E8E8E" data-word="sgigrey56:#8E8E8E">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#90EE90" data-word="lightgreen:#90EE90">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#90EE90" data-word="palegreen2:#90EE90">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#912CEE" data-word="purple2:#912CEE">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#9370DB" data-word="mediumpurple:#9370DB">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#96CDCD" data-word="paleturquoise3:#96CDCD">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#98FB98" data-word="palegreen:#98FB98">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#999999" data-word="sgigrey60:#999999">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#9AC0CD" data-word="lightblue3:#9AC0CD">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#9ACD32" data-word="olivedrab3:#9ACD32">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#9ACD32" data-word="yellowgreen:#9ACD32">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#9AFF9A" data-word="palegreen1:#9AFF9A">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#9B30FF" data-word="purple1:#9B30FF">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#9F79EE" data-word="mediumpurple2:#9F79EE">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#9FB6CD" data-word="slategrey3:#9FB6CD">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#A020F0" data-word="purple:#A020F0">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#A0522D" data-word="sienna:#A0522D">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#A2B5CD" data-word="lightsteelblue3:#A2B5CD">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#A3A3A3" data-word="sgigrey64:#A3A3A3">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#A4D3EE" data-word="lightskyblue2:#A4D3EE">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#AAAAAA" data-word="sgilightgrey:#AAAAAA">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#AB82FF" data-word="mediumpurple1:#AB82FF">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#ADADAD" data-word="sgigrey68:#ADADAD">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#ADD8E6" data-word="lightblue:#ADD8E6">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#ADFF2F" data-word="greenyellow:#ADFF2F">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#AEEEEE" data-word="paleturquoise2:#AEEEEE">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#AFEEEE" data-word="paleturquoise:#AFEEEE">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#B03060" data-word="maroon:#B03060">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#B0C4DE" data-word="lightsteelblue:#B0C4DE">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#B0E0E6" data-word="powderblue:#B0E0E6">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#B0E2FF" data-word="lightskyblue1:#B0E2FF">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#B2DFEE" data-word="lightblue2:#B2DFEE">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#B3EE3A" data-word="olivedrab2:#B3EE3A">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#B452CD" data-word="mediumorchid3:#B452CD">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#B4CDCD" data-word="lightcyan3:#B4CDCD">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#B7B7B7" data-word="sgigrey72:#B7B7B7">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#B9D3EE" data-word="slategrey2:#B9D3EE">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#BA55D3" data-word="mediumorchid:#BA55D3">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#BBFFFF" data-word="paleturquoise1:#BBFFFF">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#BC8F8F" data-word="rosybrown:#BC8F8F">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#BCD2EE" data-word="lightsteelblue2:#BCD2EE">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#BFEFFF" data-word="lightblue1:#BFEFFF">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#C0FF3E" data-word="olivedrab1:#C0FF3E">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#C1C1C1" data-word="sgigrey76:#C1C1C1">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#C1CDC1" data-word="honeydew3:#C1CDC1">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#C5C1AA" data-word="sgibrightgrey:#C5C1AA">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#C67171" data-word="sgisalmon:#C67171">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#C6E2FF" data-word="slategrey1:#C6E2FF">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#C71585" data-word="mediumvioletred:#C71585">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CAE1FF" data-word="lightsteelblue1:#CAE1FF">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CCCCCC" data-word="sgigrey80:#CCCCCC">&nbsp;</span>
+<br>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CD0000" data-word="red3:#CD0000">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CD00CD" data-word="magenta3:#CD00CD">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CD2990" data-word="maroon3:#CD2990">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CD3278" data-word="violetred3:#CD3278">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CD3700" data-word="orangered3:#CD3700">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CD4F39" data-word="tomato3:#CD4F39">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CD5555" data-word="indianred3:#CD5555">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CD5C5C" data-word="indianred:#CD5C5C">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CD6090" data-word="hotpink3:#CD6090">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CD6839" data-word="sienna3:#CD6839">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CD6889" data-word="palevioletred3:#CD6889">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CD69C9" data-word="orchid3:#CD69C9">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CD7054" data-word="salmon3:#CD7054">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CD8162" data-word="lightsalmon3:#CD8162">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CD8500" data-word="orange3:#CD8500">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CD853F" data-word="peru:#CD853F">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CD853F" data-word="tan3:#CD853F">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CD8C95" data-word="lightpink3:#CD8C95">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CD919E" data-word="pink3:#CD919E">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CD96CD" data-word="plum3:#CD96CD">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CD9B9B" data-word="rosybrown3:#CD9B9B">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CDAF95" data-word="peachpuff3:#CDAF95">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CDB38B" data-word="navajowhite3:#CDB38B">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CDB5CD" data-word="thistle3:#CDB5CD">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CDB7B5" data-word="mistyrose3:#CDB7B5">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CDBA96" data-word="wheat3:#CDBA96">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CDBE70" data-word="lightgoldenrod3:#CDBE70">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CDC1C5" data-word="lavenderblush3:#CDC1C5">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CDC5BF" data-word="seashell3:#CDC5BF">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CDC673" data-word="khaki3:#CDC673">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CDC9A5" data-word="lemonchiffon3:#CDC9A5">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CDC9C9" data-word="snow3:#CDC9C9">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CDCD00" data-word="yellow3:#CDCD00">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CDCDB4" data-word="lightyellow3:#CDCDB4">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#CDCDC1" data-word="ivory3:#CDCDC1">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#D02090" data-word="violetred:#D02090">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#D15FEE" data-word="mediumorchid2:#D15FEE">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#D1EEEE" data-word="lightcyan2:#D1EEEE">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#D2B48C" data-word="tan:#D2B48C">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#D3D3D3" data-word="lightgrey:#D3D3D3">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#D6D6D6" data-word="sgigrey84:#D6D6D6">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#D6D6D6" data-word="sgiverylightgrey:#D6D6D6">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#D8BFD8" data-word="thistle:#D8BFD8">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#DA70D6" data-word="orchid:#DA70D6">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#DB7093" data-word="palevioletred:#DB7093">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#DDA0DD" data-word="plum:#DDA0DD">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#E066FF" data-word="mediumorchid1:#E066FF">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#E0E0E0" data-word="sgigrey88:#E0E0E0">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#E0EEE0" data-word="honeydew2:#E0EEE0">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#E0FFFF" data-word="lightcyan:#E0FFFF">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#E0FFFF" data-word="lightcyan1:#E0FFFF">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#E6E6FA" data-word="lavender:#E6E6FA">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EAEAEA" data-word="sgigrey92:#EAEAEA">&nbsp;</span>
+<br>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EE0000" data-word="red2:#EE0000">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EE00EE" data-word="magenta2:#EE00EE">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EE30A7" data-word="maroon2:#EE30A7">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EE3A8C" data-word="violetred2:#EE3A8C">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EE4000" data-word="orangered2:#EE4000">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EE5C42" data-word="tomato2:#EE5C42">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EE6363" data-word="indianred2:#EE6363">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EE6AA7" data-word="hotpink2:#EE6AA7">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EE7942" data-word="sienna2:#EE7942">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EE799F" data-word="palevioletred2:#EE799F">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EE7AE9" data-word="orchid2:#EE7AE9">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EE8262" data-word="salmon2:#EE8262">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EE82EE" data-word="violet:#EE82EE">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EE9572" data-word="lightsalmon2:#EE9572">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EE9A00" data-word="orange2:#EE9A00">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EE9A49" data-word="tan2:#EE9A49">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EEA2AD" data-word="lightpink2:#EEA2AD">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EEA9B8" data-word="pink2:#EEA9B8">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EEAEEE" data-word="plum2:#EEAEEE">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EEB4B4" data-word="rosybrown2:#EEB4B4">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EECBAD" data-word="peachpuff2:#EECBAD">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EECFA1" data-word="navajowhite2:#EECFA1">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EED2EE" data-word="thistle2:#EED2EE">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EED5D2" data-word="mistyrose2:#EED5D2">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EED8AE" data-word="wheat2:#EED8AE">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EEDC82" data-word="lightgoldenrod2:#EEDC82">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EEDD82" data-word="lightgoldenrod:#EEDD82">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EEE0E5" data-word="lavenderblush2:#EEE0E5">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EEE5DE" data-word="seashell2:#EEE5DE">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EEE685" data-word="khaki2:#EEE685">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EEE8AA" data-word="palegoldenrod:#EEE8AA">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EEE9BF" data-word="lemonchiffon2:#EEE9BF">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EEE9E9" data-word="snow2:#EEE9E9">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EEEE00" data-word="yellow2:#EEEE00">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EEEED1" data-word="lightyellow2:#EEEED1">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#EEEEE0" data-word="ivory2:#EEEEE0">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#F08080" data-word="lightcoral:#F08080">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#F0E68C" data-word="khaki:#F0E68C">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#F0FFF0" data-word="honeydew:#F0FFF0">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#F4A460" data-word="sandybrown:#F4A460">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#F4F4F4" data-word="sgigrey96:#F4F4F4">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#F5DEB3" data-word="wheat:#F5DEB3">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#F5F5F5" data-word="whitesmoke:#F5F5F5">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#F5FFFA" data-word="mintcream:#F5FFFA">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FA8072" data-word="salmon:#FA8072">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FAF0E6" data-word="linen:#FAF0E6">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FAFAD2" data-word="lightgoldenrodyellow:#FAFAD2">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FDF5E6" data-word="oldlace:#FDF5E6">&nbsp;</span>
+<br>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FF0000" data-word="red:#FF0000">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FF00FF" data-word="magenta:#FF00FF">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FF00FF" data-word="magenta1:#FF00FF">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FF34B3" data-word="maroon1:#FF34B3">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FF3E96" data-word="violetred1:#FF3E96">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FF4500" data-word="orangered:#FF4500">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FF4500" data-word="orangered1:#FF4500">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FF6347" data-word="tomato:#FF6347">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FF69B4" data-word="hotpink:#FF69B4">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FF6A6A" data-word="indianred1:#FF6A6A">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FF6EB4" data-word="hotpink1:#FF6EB4">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FF8247" data-word="sienna1:#FF8247">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FF82AB" data-word="palevioletred1:#FF82AB">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FF83FA" data-word="orchid1:#FF83FA">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FF8C69" data-word="salmon1:#FF8C69">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FFA07A" data-word="lightsalmon:#FFA07A">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FFA07A" data-word="lightsalmon1:#FFA07A">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FFA500" data-word="orange:#FFA500">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FFA500" data-word="orange1:#FFA500">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FFA54F" data-word="tan1:#FFA54F">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FFAEB9" data-word="lightpink1:#FFAEB9">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FFB5C5" data-word="pink1:#FFB5C5">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FFB6C1" data-word="lightpink:#FFB6C1">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FFBBFF" data-word="plum1:#FFBBFF">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FFC0CB" data-word="pink:#FFC0CB">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FFC1C1" data-word="rosybrown1:#FFC1C1">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FFDAB9" data-word="peachpuff:#FFDAB9">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FFDAB9" data-word="peachpuff1:#FFDAB9">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FFDEAD" data-word="navajowhite:#FFDEAD">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FFDEAD" data-word="navajowhite1:#FFDEAD">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FFE1FF" data-word="thistle1:#FFE1FF">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FFE4B5" data-word="moccasin:#FFE4B5">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FFE4E1" data-word="mistyrose:#FFE4E1">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FFE4E1" data-word="mistyrose1:#FFE4E1">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FFE7BA" data-word="wheat1:#FFE7BA">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FFEC8B" data-word="lightgoldenrod1:#FFEC8B">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FFEFD5" data-word="papayawhip:#FFEFD5">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FFF0F5" data-word="lavenderblush:#FFF0F5">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FFF0F5" data-word="lavenderblush1:#FFF0F5">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FFF5EE" data-word="seashell:#FFF5EE">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FFF68F" data-word="khaki1:#FFF68F">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FFFACD" data-word="lemonchiffon:#FFFACD">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FFFACD" data-word="lemonchiffon1:#FFFACD">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FFFAFA" data-word="snow:#FFFAFA">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FFFF00" data-word="yellow1:#FFFF00">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FFFFE0" data-word="lightyellow:#FFFFE0">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FFFFF0" data-word="ivory:#FFFFF0">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FFFFFF" data-word="sgigrey100:#FFFFFF">&nbsp;</span>
+<span onmouseover="dispC(this)" onclick="holdC(this)"style="background-color:#FFFFFF" data-word="white:#FFFFFF">&nbsp;</span>
+
+
 </body>
 
 </html>
