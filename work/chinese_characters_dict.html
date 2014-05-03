@@ -1,12 +1,30 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Chinese Character Dictionary</title>
-977 Characters. Explanations are from wiktionary.org, and adapted.
+977 Characters. Explanations are from wiktionary.org, and adapted. <a href="https://googledrive.com/host/0B4xVwonJgym0QlBYRHN1VWtXUUU/hanzi_dict.pdf">[PDF from (not updated on time)]</a>
 <style>
 table{border-spacing: 0;border-top:1px solid #888888;}
 td {border-bottom:1px solid #888888;padding:5px 5px;}
 tr:hover{background-color:#eeeeee;}
 ol{margin:0 0;}
 </style>
+<script>
+function fetchHeader(url, wch) {
+    try {
+        var req=new XMLHttpRequest();
+        req.open("HEAD", url, false);
+        req.send(null);
+        if(req.status== 200){
+            return req.getResponseHeader(wch);
+        }
+        else return false;
+    } catch(er) {
+        return er.message;
+    }
+}
+
+document.write("<br>Last modified: "+fetchHeader(location.href,'Last-Modified'));
+
+</script>
 <table><tr><td>一</td><td>yī</td><td><ol><li>one</li><li>alone</li></ol></td></tr>
 <tr><td>二</td><td>èr</td><td><ol><li>two</li><li>twice</li></ol></td></tr>
 <tr><td>三</td><td>sān</td><td><ol><li>three</li></ol></td></tr>
@@ -48,14 +66,14 @@ ol{margin:0 0;}
 <tr><td>白</td><td>bái</td><td><ol><li>white</li><li>pure, unblemished</li><li>bright</li><li>a surname</li></ol></td></tr>
 <tr><td>田</td><td>tián</td><td><ol><li>field, arable land, cultivated</li><li>a surname</li></ol></td></tr>
 <tr><td>电</td><td>diàn</td><td><ol><li>lightning</li><li>electricity, electric, electro-</li></ol></td></tr>
-<tr><td>也</td><td>yě</td><td><ol><li>too; also; Example: 我也是中国人。 (I too am Chinese/I am also Chinese. In Standard Vernacular Chinese)</li><li>Classical final particle of strong affirmation or identity</li></ol></td></tr>
+<tr><td>也</td><td>yě</td><td><ol><li>too; also; Example: 我也是中国人。 (I too am Chinese/I am also Chinese.</li><li>Classical final particle of strong affirmation or identity</li></ol></td></tr>
 <tr><td>长</td><td>cháng</td><td><ol><li>long</li><li>length</li><li>to excel in</li><li>leader(read as zhǎng)</li><li>to grow (read as zhǎng)</li></ol></td></tr>
 <tr><td>山</td><td>shān</td><td><ol><li>mountain, hill, peak</li></ol></td></tr>
 <tr><td>出</td><td>chū</td><td><ol><li>go out, send out</li><li>stand</li><li>produce</li></ol></td></tr>
 <tr><td>飞</td><td>fēi</td><td><ol><li>fly</li><li>go quickly</li><li>dart</li><li>high</li></ol></td></tr>
 <tr><td>马</td><td>mǎ</td><td><ol><li>horse</li><li>a surname</li></ol></td></tr>
 <tr><td>鸟</td><td>niǎo</td><td><ol><li>bird</li></ol></td></tr>
-<tr><td>云</td><td>yún</td><td><ol><li>cloud, clouds</li><li>(Classical Chinese)say, speak</li></ol></td></tr>
+<tr><td>云</td><td>yún</td><td><ol><li>cloud, clouds</li><li>(Classical Chinese) say, speak</li></ol></td></tr>
 <tr><td>公</td><td>gōng</td><td><ol><li>fair, equitable</li><li>public</li><li>duke</li><li>male (for animals, not humans)</li></ol></td></tr>
 <tr><td>车</td><td>chē</td><td><ol><li>cart, vehicle</li><li>carry in cart</li></ol></td></tr>
 <tr><td>牛</td><td>niú</td><td><ol><li>any bovine animal indiscriminately, including cow, bull, ox, and buffalo</li><li>(astronomy) the Ox, a Chinese constellation near Capricorn</li></ol></td></tr>
@@ -115,7 +133,7 @@ ol{margin:0 0;}
 <tr><td>说</td><td>shuō</td><td><ol><li>speak, say, talk</li><li>scold, upbraid</li></ol></td></tr>
 <tr><td>友</td><td>yǒu</td><td><ol><li>friend, companion</li><li>fraternity</li></ol></td></tr>
 <tr><td>话</td><td>huà</td><td><ol><li>speech, talk, language</li><li>dialect</li></ol></td></tr>
-<tr><td>春</td><td>chūn</td><td><ol><li>spring (season)</li><li>wanton</li></ol></td></tr>
+<tr><td>春</td><td>chūn</td><td><ol><li>spring (season)</li></ol></td></tr>
 <tr><td>朋</td><td>péng</td><td><ol><li>friend, pal, acquaintance</li></ol></td></tr>
 <tr><td>高</td><td>gāo</td><td><ol><li>high, tall</li><li>lofty, elevated</li></ol></td></tr>
 <tr><td>你</td><td>nǐ</td><td><ol><li>second person pronoun: you</li></ol></td></tr>
@@ -312,7 +330,7 @@ ol{margin:0 0;}
 <tr><td>常</td><td>cháng</td><td><ol><li>common, normal, frequent, regular, often</li><li>a surname</li></ol></td></tr>
 <tr><td>问</td><td>wèn</td><td><ol><li>ask about, inquire after</li></ol></td></tr>
 <tr><td>伴</td><td>bàn</td><td><ol><li>companion, comrade, partner</li><li>accompany</li></ol></td></tr>
-<tr><td>间</td><td>jiān</td><td><ol><li>midpoint, space</li><li>place, locality</li></ol></td></tr>
+<tr><td>间</td><td>jiān</td><td><ol><li>midpoint, space</li><li>room, place, locality</li></ol></td></tr>
 <tr><td>共</td><td>gòng</td><td><ol><li>together with, all, total</li><li>to share</li></ol></td></tr>
 <tr><td>伙</td><td>huǒ</td><td><ol><li>companion, colleague</li><li>utensils</li></ol></td></tr>
 <tr><td>汽</td><td>qì</td><td><ol><li>steam, vapor, gas</li></ol></td></tr>
@@ -328,7 +346,7 @@ ol{margin:0 0;}
 <tr><td>秋</td><td>qiū</td><td><ol><li>autumn, fall</li><li>year</li></ol></td></tr>
 <tr><td>江</td><td>jiāng</td><td><ol><li>large river</li><li>an abbreviation for Yangtze river</li><li>a surname</li></ol></td></tr>
 <tr><td>只</td><td>zhī</td><td><ol><li>only, just, simply</li></ol></td></tr>
-<tr><td>帮</td><td>bāng</td><td><ol><li>help, assist</li><li>defend</li><li>upper</li></ol></td></tr>
+<tr><td>帮</td><td>bāng</td><td><ol><li>help, assist</li></ol></td></tr>
 <tr><td>星</td><td>xīng</td><td><ol><li>a star, planet</li><li>any point of light</li></ol></td></tr>
 <tr><td>请</td><td>qǐng</td><td><ol><li>ask, request</li><li>invite</li><li>please</li></ol></td></tr>
 <tr><td>雪</td><td>xuě</td><td><ol><li>snow</li><li>to erase pain, avenge</li></ol></td></tr>
@@ -415,8 +433,8 @@ ol{margin:0 0;}
 <tr><td>除</td><td>chú</td><td><ol><li>eliminate, remove, except</li></ol></td></tr>
 <tr><td>息</td><td>xī</td><td><ol><li>rest, put stop to, end, cease</li><li>breath</li></ol></td></tr>
 <tr><td>您</td><td>nín</td><td><ol><li>honorific for 'you'</li></ol></td></tr>
-<tr><td>牵</td><td>qiān</td><td><ol><li>drag, pull, lead by hand</li></ol></td></tr>
-<tr><td>困</td><td>kùn</td><td><ol><li>to surround, besiege</li><li>to be surrounded</li><li>difficult</li></ol></td></tr>
+<tr><td>牵</td><td>qiān</td><td><ol><li>(v.) drag, pull, lead by hand</li></ol></td></tr>
+<tr><td>困</td><td>kùn</td><td><ol><li>to surround, besiege</li><li>to be surrounded</li><li>difficult</li><li>(adj.) sleepy</li></ol></td></tr>
 <tr><td>员</td><td>yuán</td><td><ol><li>member</li><li>personnel, staff member</li></ol></td></tr>
 <tr><td>青</td><td>qīng</td><td><ol><li>green, blue, black, azure</li><li>young</li><li>clear</li></ol></td></tr>
 <tr><td>宁</td><td>níng</td><td><ol><li>stand, stop</li><li>calm, peaceful, serene</li><li>healthy</li></ol></td></tr>
@@ -474,7 +492,7 @@ ol{margin:0 0;}
 <tr><td>申</td><td>shēn</td><td><ol><li>to state to a superior, report</li><li>to extend</li><li>ninth of twelve earthly branches (十二支): monkey (猴) of Chinese zodiac</li></ol></td></tr>
 <tr><td>匹</td><td>pǐ</td><td><ol><li>bolt of cloth</li><li>counter for horses</li><li>counter for small animals (Japanese)</li></ol></td></tr>
 <tr><td>互</td><td>hù</td><td><ol><li>mutually, reciprocally</li></ol></td></tr>
-<tr><td>京</td><td>jīng</td><td><ol><li>capital city</li><li>10 quadrillions or 10 millions</li></ol></td></tr>
+<tr><td>京</td><td>jīng</td><td><ol><li>capital city</li></ol></td></tr>
 <tr><td>泪</td><td>lèi</td><td><ol><li>tears</li><li>weep, cry</li></ol></td></tr>
 <tr><td>洋</td><td>yáng</td><td><ol><li>ocean, sea</li><li>A (typically male) given name</li><li>foreign, western, imported</li></ol></td></tr>
 <tr><td>拥</td><td>yōng</td><td><ol><li>embrace, hug, squeeze</li><li>crowd</li></ol></td></tr>
@@ -535,7 +553,7 @@ ol{margin:0 0;}
 <tr><td>免</td><td>miǎn</td><td><ol><li>spare</li><li>excuse from</li><li>evade</li></ol></td></tr>
 <tr><td>告</td><td>gào</td><td><ol><li>tell, announce, inform</li><li>accuse</li></ol></td></tr>
 <tr><td>诉</td><td>sù</td><td><ol><li>accuse</li><li>sue</li><li>inform</li><li>narrate</li></ol></td></tr>
-<tr><td>狐</td><td>hú</td><td><ol><li>species of fox</li></ol></td></tr>
+<tr><td>狐</td><td>hú</td><td><ol><li>species of fox (狐狸 = fox)</li></ol></td></tr>
 <tr><td>狸</td><td>lí</td><td><ol><li>raccoon dog</li></ol></td></tr>
 <tr><td>猴</td><td>hóu</td><td><ol><li>monkey, ape</li><li>monkey-like</li><li>naughty child</li></ol></td></tr>
 <tr><td>颗</td><td>kē</td><td><ol><li>grain, kernel</li></ol></td></tr>
@@ -559,8 +577,8 @@ ol{margin:0 0;}
 <tr><td>术</td><td>shù</td><td><ol><li>art, skill, special feat</li><li>method, technique</li></ol></td></tr>
 <tr><td>吐</td><td>tǔ</td><td><ol><li>vomit, spew out, cough up</li></ol></td></tr>
 <tr><td>注</td><td>zhù</td><td><ol><li>concentrate, focus, direct</li></ol></td></tr>
-<tr><td>课</td><td>kè</td><td><ol><li>lesson</li><li>course</li><li>classwork</li></ol></td></tr>
-<tr><td>铅</td><td>qiān</td><td><ol><li>lead</li></ol></td></tr>
+<tr><td>课</td><td>kè</td><td><ol><li>lesson, course, classwork</li></ol></td></tr>
+<tr><td>铅</td><td>qiān</td><td><ol><li>(n.) lead</li></ol></td></tr>
 <tr><td>笔</td><td>bǐ</td><td><ol><li>writing brush</li><li>write</li><li>stroke</li></ol></td></tr>
 <tr><td>桌</td><td>zhuō</td><td><ol><li>table, desk, stand</li></ol></td></tr>
 <tr><td>景</td><td>jǐng</td><td><ol><li>scenery, view</li><li>conditions, situation</li></ol></td></tr>
@@ -629,7 +647,7 @@ ol{margin:0 0;}
 <tr><td>鸡</td><td>jī</td><td><ol><li>chicken</li></ol></td></tr>
 <tr><td>猫</td><td>māo</td><td><ol><li>cat</li></ol></td></tr>
 <tr><td>羽</td><td>yǔ</td><td><ol><li>feather, plume</li><li>wings</li><li>fifth note in the Chinese pentatonic scale or la</li></ol></td></tr>
-<tr><td>领</td><td>lǐng</td><td><ol><li>neck</li><li>collar</li><li>lead, guide</li></ol></td></tr>
+<tr><td>领</td><td>lǐng</td><td><ol><li>neck</li><li>collar</li><li>(v.) lead, guide</li></ol></td></tr>
 <tr><td>捉</td><td>zhuō</td><td><ol><li>grasp, clutch</li><li>catch, seize</li></ol></td></tr>
 <tr><td>理</td><td>lǐ</td><td><ol><li>reason, logic</li><li>manage</li><li>a surname</li></ol></td></tr>
 <tr><td>跃</td><td>yuè</td><td><ol><li>skip, jump, frolic</li></ol></td></tr>
@@ -690,7 +708,7 @@ ol{margin:0 0;}
 <tr><td>飘</td><td>piāo</td><td><ol><li>whirlwind, cyclone</li><li>floating</li></ol></td></tr>
 <tr><td>必</td><td>bì</td><td><ol><li>surely, most certainly</li><li>must</li></ol></td></tr>
 <tr><td>事</td><td>shì</td><td><ol><li>affair, matter, business</li><li>to serve</li><li>accident, incident</li></ol></td></tr>
-<tr><td>历</td><td>lì</td><td><ol><li>history</li><li>calendar</li></ol></td></tr>
+<tr><td>历</td><td>lì</td><td><ol><li>history</li><li>calendar</li><li>experience</li><li>go through</li><li>one by one</ol></td></tr>
 <tr><td>史</td><td>shǐ</td><td><ol><li>history, chronicle, annals</li></ol></td></tr>
 <tr><td>灭</td><td>miè</td><td><ol><li>extinguish</li><li>wipe out, exterminate</li></ol></td></tr>
 <tr><td>克</td><td>kè</td><td><ol><li>gram</li><li>to overcome, to subdue, to overthrow</li><li>to restrain</li><li>to be able to</li><li>transliteration for /k/ or /ko/</li></ol></td></tr>
@@ -700,7 +718,7 @@ ol{margin:0 0;}
 <tr><td>植</td><td>zhí</td><td><ol><li>plant, trees, plants</li><li>grow</li></ol></td></tr>
 <tr><td>厂</td><td>chǎng</td><td><ol><li>factory</li></ol></td></tr>
 <tr><td>产</td><td>chǎn</td><td><ol><li>give birth, bring forth, produce</li></ol></td></tr>
-<tr><td>介</td><td>jiè</td><td><ol><li>to lie between</li><li>seashell</li><li>to wear armour</li><li>(literary) alternative form of 芥</li></ol></td></tr>
+<tr><td>介</td><td>jiè</td><td><ol><li>to lie between</li><li>seashell</li><li>to wear armour</li></ol></td></tr>
 <tr><td>农</td><td>nóng</td><td><ol><li>agriculture, farming</li><li>farmer</li></ol></td></tr>
 <tr><td>科</td><td>kē</td><td><ol><li>section, department</li><li>science</li><li>(biology) family</li></ol></td></tr>
 <tr><td>技</td><td>jì</td><td><ol><li>skill, ability, talent, ingenuity</li></ol></td></tr>
@@ -896,7 +914,7 @@ ol{margin:0 0;}
 <tr><td>埋</td><td>mái</td><td><ol><li>bury, secrete, conceal</li></ol></td></tr>
 <tr><td>铁</td><td>tiě</td><td><ol><li>iron</li><li>strong, solid, firm</li></ol></td></tr>
 <tr><td>底</td><td>dǐ</td><td><ol><li>bottom, underneath, underside</li></ol></td></tr>
-<tr><td>导</td><td>dǎo</td><td><ol><li>direct, guide, lead, conduct</li></ol></td></tr>
+<tr><td>导</td><td>dǎo</td><td><ol><li>(v.) direct, guide, lead, conduct</li></ol></td></tr>
 <tr><td>盏</td><td>zhǎn</td><td><ol><li>small cup or container</li></ol></td></tr>
 <tr><td>稠</td><td>chóu</td><td><ol><li>dense, crowded, packed</li><li>soupy, viscous</li></ol></td></tr>
 <tr><td>针</td><td>zhēn</td><td><ol><li>needle</li><li>pin</li><li>tack</li><li>acupuncture</li></ol></td></tr>
