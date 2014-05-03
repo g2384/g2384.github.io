@@ -106,16 +106,16 @@ function encoding(name, checkPlain, add, checkEncoded, remove, bname) {
 }
 
 encoding('Decimal to hex', 
-         match(/^-?[0-9]+$/), base(10,16), 
+         match(/^-?[0-9]+$/i), base(10,16), 
          match(/^-?(?:0x)?[0-9a-f]+$/i), base(16,10), 'Hex to decimal');
 encoding('Decimal to octal', 
-         match(/^-?[0-7]+$/), base(10,8), 
+         match(/^-?[0-7]+$/i), base(10,8), 
          match(/^-?[0-9a-f]+$/i), base(8,10), 'Octal to decimal');
 encoding('Binary to decimal', 
-         match(/^[01]+/), base(2,10), 
+         match(/^[01]+$/), base(2,10), 
          match(/^\d+$/i), base(10,2), 'Decimal to binary');
 encoding('Binary to hex', 
-         match(/^[01]+/), base(2,16), 
+         match(/^[01]+$/), base(2,16), 
          match(/^-?(?:0x)?[0-9a-f]+$/i), base(16,2), 'Hex to binary');
 
 encoding('Unicode codepoint (from hex)',
