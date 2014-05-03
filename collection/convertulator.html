@@ -1,91 +1,85 @@
 <!-- adapted from http://conv.alf.nu/ -->
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=GBK"><script>
-function sweet(f) {
-  f.sweet = 1;
-  return f;
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=GBK"><script>function sweet(f) {
+    f.sweet = 1;
+    return f;
 };
 var cache = window.localStorage || {};
-function ask(query, f) {
-  if (query in cache) return f(cache[query]);
-  var xh = new XMLHttpRequest();
-  xh.open('GET', '/:::?'+encodeURI(query));
-  xh.onreadystatechange = function() {
-    if (this.readyState == this.DONE) {
-      var v = JSON.parse(this.responseText);
-      cache[query] = v;
-      f(v);
-    }
-  };
-  xh.send();  
+
+function wrap(a, b) {
+    return function (x) {
+        return a + x + b;
+    };
 }
-function wrap(a,b) {
-  return function(x) {
-    return a+x+b;
-  };
- }
-function base(a,b) {
-  return function(x) {
-    x = parseInt(x, a);
-    if (isNaN(x)) throw x;
-    return x.toString(b);
-  };
+
+function base(a, b) {
+    return function (x) {
+        x = parseInt(x, a);
+        if (isNaN(x)) throw x;
+        return x.toString(b);
+    };
 }
 
 function chr(x) {
-  x = Math.floor(x);
-  if (x < 0 || x>0x10ffff || x != x) throw 'not in range';
-  var s = new String(String.fromCharCode(x));
-  s.extra = 'unicode:'+x;
-  return s;
+    x = Math.floor(x);
+    if (x < 0 || x > 0x10ffff || x != x) throw 'not in range';
+    var s = new String(String.fromCharCode(x));
+    s.extra = 'unicode:' + x;
+    return s;
 }
+
 function ord(x) {
-  if(x.length === 1) {
-    var n = x.charCodeAt(0);
-    var v = new String(n);
-    v.extra = 'unicode:'+n;
-    return v;
-  }
+    if (x.length === 1) {
+        var n = x.charCodeAt(0);
+        var v = new String(n);
+        v.extra = 'unicode:' + n;
+        return v;
+    }
 }
+
 function always(x) {
-  return function() {
-    return x;
-  };
+    return function () {
+        return x;
+    };
 }
+
 function match(rex) {
-  return function(s) {
-     return rex.test(s);
-  };
+    return function (s) {
+        return rex.test(s);
+    };
 }
-function replace(a,b) {
-  return function(s) {
-    return s.replace(a,b);
-  };
+
+function replace(a, b) {
+    return function (s) {
+        return s.replace(a, b);
+    };
 }
-Function.prototype.then = function(f) {
-  var g = this;
-  return function(x) {
-    return f(g(x));
-  };
+Function.prototype.then = function (f) {
+    var g = this;
+    return function (x) {
+        return f(g(x));
+    };
 };
+
 function above(i) {
-  if (i<128) throw i;
-  return match(new RegExp('['+String.fromCharCode(i)+'-\uffff]'));
+    if (i < 128) throw i;
+    return match(new RegExp('[' + String.fromCharCode(i) + '-\uffff]'));
 }
+
 function not(f) {
-  return function() {
-    return !f.apply(this, arguments);
-  };
+    return function () {
+        return !f.apply(this, arguments);
+    };
 }
-Function.prototype.and = function(right) {
-  var left = this;
-  return function() {
-    return left.apply(this,arguments) && right.apply(this,arguments);
-  };
+Function.prototype.and = function (right) {
+    var left = this;
+    return function () {
+        return left.apply(this, arguments) && right.apply(this, arguments);
+    };
 };
 
 var oneChar = /^(?:[\u0000-\ud7fff\ue000-\uffff]|[\ud800-\udbff][\udc00-\udfff])$/,
-  matchChars = /(?:[\u0000-\ud7fff\ue000-\uffff]|[\ud800-\udbff][\udc00-\udfff])/g,
-  onlyChars = /^(?:[\u0000-\ud7fff\ue000-\uffff]|[\ud800-\udbff][\udc00-\udfff])+$/g;
+    matchChars = /(?:[\u0000-\ud7fff\ue000-\uffff]|[\ud800-\udbff][\udc00-\udfff])/g,
+    onlyChars = /^(?:[\u0000-\ud7fff\ue000-\uffff]|[\ud800-\udbff][\udc00-\udfff])+$/g;
 
 var pass = always(true);
 var eightBitSafe = not(above(256));
@@ -96,233 +90,308 @@ var utf8 = encodeURIComponent.then(unescape);
 var untf8 = escape.then(decodeURIComponent);
 
 var things = [];
+
 function oneway(name, before, func, after) {
-  things.push({name:name, before:before, func:func, after:after||pass});
-}
-function encoding(name, checkPlain, add, checkEncoded, remove, bname) {
-  oneway(bname ? name : 'To '+name, checkPlain, add, checkEncoded);
-  if (remove)
-    oneway(bname || 'From '+name, checkEncoded, remove, checkPlain);
+    things.push({
+        name: name,
+        before: before,
+        func: func,
+        after: after || pass
+    });
 }
 
-encoding('Decimal to hex', 
-         match(/^-?[0-9]+$/i), base(10,16), 
-         match(/^-?(?:0x)?[0-9a-f]+$/i), base(16,10), 'Hex to decimal');
-encoding('Decimal to octal', 
-         match(/^-?[0-7]+$/i), base(10,8), 
-         match(/^-?[0-9a-f]+$/i), base(8,10), 'Octal to decimal');
-encoding('Binary to decimal', 
-         match(/^[01]+$/), base(2,10), 
-         match(/^\d+$/i), base(10,2), 'Decimal to binary');
-encoding('Binary to hex', 
-         match(/^[01]+$/), base(2,16), 
-         match(/^-?(?:0x)?[0-9a-f]+$/i), base(16,2), 'Hex to binary');
+function encoding(name, checkPlain, add, checkEncoded, remove, bname) {
+    oneway(bname ? name : 'To ' + name, checkPlain, add, checkEncoded);
+    if (remove)
+        oneway(bname || 'From ' + name, checkEncoded, remove, checkPlain);
+}
+
+encoding('-Decimal to hex',
+    match(/^-?[0-9]+$/i), base(10, 16),
+    match(/^-?(?:0x)?[0-9a-f]+$/i), base(16, 10), '-Hex to decimal');
+encoding('-Decimal to octal',
+    match(/^-?[0-9]+$/i), base(10, 8),
+    match(/^-?[0-7]+$/i), base(8, 10), '-Octal to decimal');
+encoding('-Hex to octal',
+    match(/^-?(?:0x)?[0-9a-f]+$/i), base(16, 8),
+    match(/^-?[0-7]+$/i), base(8, 16), '-Octal to hex');
+encoding('-Binary to decimal',
+    match(/^[01]+$/), base(2, 10),
+    match(/^\d+$/i), base(10, 2), '-Decimal to binary');
+encoding('-Binary to hex',
+    match(/^[01]+$/), base(2, 16),
+    match(/^-?(?:0x)?[0-9a-f]+$/i), base(16, 2), '-Hex to binary');
 
 encoding('Unicode codepoint (from hex)',
-         match(/^(?:0x|U\+)?[0-9a-f]+$/i), replace(/^U\+/,'').then(base(16,10).then(chr)),
-         match(oneChar), ord.then(base(10,16)),
-         'Unicode codepoint (to hex)');
+    match(/^(?:0x|U\+)?[0-9a-f]+$/i), replace(/^U\+/, '').then(base(16, 10).then(chr)),
+    match(oneChar), ord.then(base(10, 16)),
+    'Unicode codepoint (to hex)');
 encoding('Unicode codepoint (from decimal)',
-         match(/^\d+/i), chr,
-         match(oneChar), ord,
-         'Unicode codepoint (to decimal)');
+    match(/^\d+/i), chr,
+    match(oneChar), ord,
+    'Unicode codepoint (to decimal)');
 
 function withplus(name, s1, f1, s2, f2) {
-  encoding('URL/%-encoding ('+name+')', s1, f1, s2, f2);
-  encoding('URL/%-encoding ('+name+', "+" is space)', 
-         s1.and(match(/[ +]/)),
-         f1.then(replace(/\+/g, '%2b')).then(replace(/%20/g, '+')),
-         s2.and(match(/%2[0bB]|\+/)),
-         replace(/\+/g, ' ').then(f2));
+    encoding('URL/%-encoding (' + name + ')', s1, f1, s2, f2);
+    encoding('URL/%-encoding (' + name + ', "+" is space)',
+        s1.and(match(/[ +]/)),
+        f1.then(replace(/\+/g, '%2b')).then(replace(/%20/g, '+')),
+        s2.and(match(/%2[0bB]|\+/)),
+        replace(/\+/g, ' ').then(f2));
 }
 withplus('only ASCII', ascii, escape, pass, unescape);
 withplus('raw bytes mapped as Latin-1', latin, escape, pass, unescape);
 withplus('Unicode with UTF-8', not(ascii), encodeURIComponent, pass, decodeURIComponent);
 withplus('Unicode with UTF-16', pass, escape, match(/%u/i), unescape);
 encoding('UTF8-encoding', not(ascii), utf8, latin, untf8);
+
 function JSON_parse(s) {
-  try { return JSON.parse(s);
-  }catch(_) {
-    return JSON.parse((""+s).replace(/\\x(..)|(\\.)/g, 
-                          function(s,a,b) {
-                            return a ? "\\u00"+a : b;
-                                     }));
-  }
+    try {
+        return JSON.parse(s);
+    } catch (_) {
+        return JSON.parse(("" + s).replace(/\\x(..)|(\\.)/g,
+            function (s, a, b) {
+                return a ? "\\u00" + a : b;
+            }));
+    }
 }
-encoding('To JSON string', ascii, 
-         function(x) {
-           var y = JSON.stringify(x);
-           return y != '"'+x+'"' && y;
-         }, match(/^\"/), JSON_parse,
-         'From JSON string');
-encoding('To JSON string', not(ascii), 
-         function(x) {
-           var y = JSON.stringify(x);
-           y = y.replace(/[\u0080-\uffff]/g, function(ch) {
-               var s = "0000" + ch.charCodeAt(0).toString(16);
-               return "\\u" + s.substring(s.length-4);
-             });
-           return y != '"'+x+'"' && y;
-         }, match(/^\"/), sweet(JSON_parse),
-         'From JSON string');
-oneway('From JSON string (no quotes)', pass, 
-       sweet(function(x) {
-         return JSON_parse('"'+x+'"'); 
-         }));
+encoding('To JSON string', ascii,
+    function (x) {
+        var y = JSON.stringify(x);
+        return y != '"' + x + '"' && y;
+    }, match(/^\"/), JSON_parse,
+    'From JSON string');
+encoding('To JSON string', not(ascii),
+    function (x) {
+        var y = JSON.stringify(x);
+        y = y.replace(/[\u0080-\uffff]/g, function (ch) {
+            var s = "0000" + ch.charCodeAt(0).toString(16);
+            return "\\u" + s.substring(s.length - 4);
+        });
+        return y != '"' + x + '"' && y;
+    }, match(/^\"/), sweet(JSON_parse),
+    'From JSON string');
+oneway('From JSON string (no quotes)', pass,
+    sweet(function (x) {
+        return JSON_parse('"' + x + '"');
+    }));
 oneway('Generic unbackslash', pass,
-       sweet(function(x) {
-         var s = x.replace(/\\x([0-9a-f]{2})|\\u([0-9a-f]{4})|\\([0-9]{1,3})|\\([bfnrtu])|\\(.)/g, function(all,a,b,c,d,e) {
-             return a ? String.fromCharCode(parseInt(a, 16)) :
-                    b ? String.fromCharCode(parseInt(b, 16)) :
-                    c ? String.fromCharCode(parseInt(b, 8)) :
-                    d ? JSON.parse('"'+all+'"') : e;
-           });
-         try {
-           if (s === JSON.parse('"'+x+'"')) return;
-         }catch(_) {}
-         return s;
-         }));
+    sweet(function (x) {
+        var s = x.replace(/\\x([0-9a-f]{2})|\\u([0-9a-f]{4})|\\([0-9]{1,3})|\\([bfnrtu])|\\(.)/g, function (all, a, b, c, d, e) {
+            return a ? String.fromCharCode(parseInt(a, 16)) :
+                b ? String.fromCharCode(parseInt(b, 16)) :
+                c ? String.fromCharCode(parseInt(b, 8)) :
+                d ? JSON.parse('"' + all + '"') : e;
+        });
+        try {
+            if (s === JSON.parse('"' + x + '"')) return;
+        } catch (_) {}
+        return s;
+    }));
 encoding('Base-64', eightBitSafe, btoa, pass, atob);
-var toHex = function(ch) {
-  var c = base(10,16)(ord(ch));
-  while (c.length&1) c = '0'+c;
-  return c+' ';
+var toHex = function (ch) {
+    var c = base(10, 16)(ord(ch));
+    while (c.length & 1) c = '0' + c;
+    return c + ' ';
 };
+
 var toHexByte = replace(/[\s\S]/g, toHex);
 var toHexChar = replace(matchChars, toHex);
+
 function byteEncoding(name, enc, after, dec) {
-  encoding(name+' (ASCII)', ascii, enc, after, dec);
-  encoding(name+' (raw/Latin-1)', latin, enc, after, dec);
-  encoding(name+' (UTF-8)', not(ascii), utf8.then(enc), after, dec && dec.then(untf8));
+    encoding(name + ' (ASCII)', ascii, enc, after, dec);
+    encoding(name + ' (raw/Latin-1)', latin, enc, after, dec);
+    encoding(name + ' (UTF-8)', not(ascii), utf8.then(enc), after, dec && dec.then(untf8));
 }
+
 function unhex(s) {
-  var z = s.match(/[0-9a-f]{2}/gi);
-  var res = [];
-  for (var i=0;i<z.length;i++) res.push(String.fromCharCode(parseInt(z[i], 16)));
-  return res.join(''); 
+    var z = s.match(/[0-9a-f]{2}/gi);
+    var res = [];
+    for (var i = 0; i < z.length; i++) res.push(String.fromCharCode(parseInt(z[i], 16)));
+    return res.join('');
 }
-byteEncoding('MD5', function(s) {
-    return window.faultylabs && faultylabs.MD5(''+s);
-  }, pass);
-oneway('MD5', 
-         match(/^[0-9a-f]{32}$/i),
-         function(s) {
-           return N('a', {href:'http://md5.thekaine.de/?hash='+s, innerText:'Lookup'});
-         });
+byteEncoding('MD5', function (s) {
+    return window.faultylabs && faultylabs.MD5('' + s);
+}, pass);
+oneway('MD5',
+    match(/^[0-9a-f]{32}$/i),
+    function (s) {
+        return N('a', {
+            href: 'http://md5.thekaine.de/?hash=' + s,
+            innerText: 'Lookup'
+        });
+    });
 byteEncoding('Hex', toHexByte, match(/^(?:\s+|[0-9a-f]{2})+$/i), sweet(unhex));
 encoding('Hex (Unicode codepoints)', not(eightBitSafe).and(not(match(oneChar))), toHexChar, pass);
-encoding('HTML escapes', 
-         pass, 
-         function(s) {  var x = document.createElement('span'); x.innerText = s; return x.innerHTML; },
-         pass,
-         sweet(function(s) {  var x = document.createElement('span'); x.innerHTML = s; return x.innerText; }));
+encoding('HTML escapes',
+    pass,
+    function (s) {
+        var x = document.createElement('span');
+        x.innerText = s;
+        return x.innerHTML;
+    },
+    pass,
+    sweet(function (s) {
+        var x = document.createElement('span');
+        x.innerHTML = s;
+        return x.innerText;
+    }));
 
 byteEncoding('Quoted-Printable',
-             replace(/ (?=[\r\n])|=|[^ -~]/g, function(m) {
-                 var x = '0' + m.charCodeAt(0).toString(16).toUpperCase();
-                 return '='+x.substring(x.length-2);
-               }),
-             match(/=/),
-             replace(/=(?:(\r\n?|\n)|([0-9A-F]{2})|(.))/ig, function(_, nl, hex, bad) {
-                 if (bad) throw 0;
-                 return nl ? '' : String.fromCharCode(parseInt(hex,16));
-               }));
+    replace(/ (?=[\r\n])|=|[^ -~]/g, function (m) {
+        var x = '0' + m.charCodeAt(0).toString(16).toUpperCase();
+        return '=' + x.substring(x.length - 2);
+    }),
+    match(/=/),
+    replace(/=(?:(\r\n?|\n)|([0-9A-F]{2})|(.))/ig, function (_, nl, hex, bad) {
+        if (bad) throw 0;
+        return nl ? '' : String.fromCharCode(parseInt(hex, 16));
+    }));
 encoding('RFC 2047 mail header',
-         pass,
-         replace(/=\?(?:(iso-8859-1)|(utf-8))\?(?:(q)|(b))\?(.+?)\?=/gi,
-                 function(_, iso, utf, quote, base, text) {
-                   if (quote) text = text.replace(/=([0-9a-f]{2})/ig, 
-                                                  function(_, s) { return String.fromCharCode(parseInt(s, 16)); });
-                   if (base) text = atob(base);
-                   if (utf) text = decodeURI(escape(text));
-                   return text;
-                 }),
-         pass);
+    pass,
+    replace(/=\?(?:(iso-8859-1)|(utf-8))\?(?:(q)|(b))\?(.+?)\?=/gi,
+        function (_, iso, utf, quote, base, text) {
+            if (quote) text = text.replace(/=([0-9a-f]{2})/ig,
+                function (_, s) {
+                    return String.fromCharCode(parseInt(s, 16));
+                });
+            if (base) text = atob(base);
+            if (utf) text = decodeURI(escape(text));
+            return text;
+        }),
+    pass);
 
 encoding('URL', match(/^(https?|data):/),
-         function(x) { return N('a', {href:x, innerText:'Click me'}); },
-         pass);
+    function (x) {
+        return N('a', {
+            href: x,
+            innerText: 'Click me'
+        });
+    },
+    pass);
 encoding('Image', match(/^data:image/),
-         function(x) { return N('img', {src:x}) },
-         pass);
+    function (x) {
+        return N('img', {
+            src: x
+        })
+    },
+    pass);
 
-function mul(x) { return function(y) { return x*y; }; }
-function range(a,b) { return function(y) {  return y >= a && y < b; } };
-function stamp2str(d) { return new Date(+d).toString(); }
-function str2stamp(s) { return new Date(''+s).getTime(); }
+function mul(x) {
+    return function (y) {
+        return x * y;
+    };
+}
+
+function range(a, b) {
+    return function (y) {
+        return y >= a && y < b;
+    }
+};
+
+function stamp2str(d) {
+    return new Date(+d).toString();
+}
+
+function str2stamp(s) {
+    return new Date('' + s).getTime();
+}
 encoding('Timestamp (milliseconds)', pass, str2stamp, range(4e9, 4e12), stamp2str);
 encoding('Timestamp (seconds)', pass, str2stamp.then(mul(1e-3)), range(4e6, 4e9), mul(1e3).then(stamp2str));
-var pscale = 1000/0x100000;
-encoding('Timestamp (PHP uniqid)', pass, str2stamp.then(mul(1/pscale)).then(base(10,16)), match(/^[34][0-9a-f]{12}$/), base(16,10).then(mul(pscale)).then(stamp2str));
-things.sort(function(a,b) {
-    return a.name<b.name ? -1 : a.name === b.name ? 0 : 1;
-  });                 
-         
+var pscale = 1000 / 0x100000;
+encoding('Timestamp (PHP uniqid)', pass, str2stamp.then(mul(1 / pscale)).then(base(10, 16)), match(/^[34][0-9a-f]{12}$/), base(16, 10).then(mul(pscale)).then(stamp2str));
+things.sort(function (a, b) {
+    return a.name < b.name ? -1 : a.name === b.name ? 0 : 1;
+});
+
 
 function test(thing, input) {
-  try {
-    if (!thing.before(input)) throw '-';
-    var out = thing.func.call(window, input);
-    if (out === undefined || out === false) throw ''+out;
-    if (out.nodeType) return ['ok', out];
-    if (!(out instanceof String)) out = '' + out;
-    if (!thing.after(out)) throw '-';
-    return [out === input ? 'same' : 'ok', out];
-  } catch (x) {
-    return ['meh', x];
-  }
+    try {
+        if (!thing.before(input)) throw '-';
+        var out = thing.func.call(window, input);
+        if (out === undefined || out === false) throw '' + out;
+        if (out.nodeType) return ['ok', out];
+        if (!(out instanceof String)) out = '' + out;
+        if (!thing.after(out)) throw '-';
+        return [out === input ? 'same' : 'ok', out];
+    } catch (x) {
+        return ['meh', x];
+    }
 }
-function N(x,p,cs) { 
-  var e = document.createElement(x); 
-  if (p) for(var k in p) e[k]=p[k];
-  if (cs) cs.map(function(c) { e.appendChild(c); });
-  return e; 
+
+function N(x, p, cs) {
+    var e = document.createElement(x);
+    if (p)
+        for (var k in p) e[k] = p[k];
+    if (cs) cs.map(function (c) {
+        e.appendChild(c);
+    });
+    return e;
 }
+
 function x() {
-  var val = document.getElementById('t').value;
-  var out = document.getElementById('output');
-  out.innerHTML = '';
-  dump(val, 0);
-  function dump(val, level) {
-    things.map(function(t) {
-               var res = test(t,val);
-               if (res[0] === 'ok') {
-                 var text = res[1];
-                 function copy() {
-                   var tf = document.getElementById('t');
-                   tf.value = text;
-                   tf.focus(); tf.select();
-                   x();
-                 }
-                 var field =
-                   text && text.nodeType ? text :
-                   text.match(/[\r\n]+/g) ?
-                   N('textarea', {rows:7, cols:70, value:text}) :
-                   N('input', {size:Math.max(40, res[1].length), value:text});
-                 out.appendChild(
-                   N('tr', {},
-                     [N('td', {className:res[0]+' copy lev'+level, innerText:t.name, onclick:copy}),
-                      N('td', {}, [field])]));
-                 if (text.extra) {
-                   var place;
-                   out.appendChild(
-                     N('tr', {className:'extra'},
-                       [N('td'),
-                        place = N('td', {})]));
-                   ask(text.extra, function(s) {
-                         place.innerText = s;
-                       });
-                 }
-                 if (level == 0 && t.func.sweet) dump(text, level+1);
-               }
-             });
-  }
+    var val = document.getElementById('t').value;
+    var out = document.getElementById('output');
+    out.innerHTML = '';
+    dump(val);
+
+    function dump(val) {
+        things.map(function (t) {
+            var res = test(t, val);
+            if (res[0] === 'ok') {
+                var text = res[1];
+
+                function copy() {
+                    var tf = document.getElementById('t');
+                    tf.value = text;
+                    tf.focus();
+                    tf.select();
+                    x();
+                }
+                if (t.name.search("binary")) {
+                    if (text.length >= 5) {
+                        text = text.replace(/([01])(?=([01]{4})+$)/g, '$1 ');
+                    }
+                }
+                var field =
+                    text && text.nodeType ? text :
+                    text.match(/[\r\n]+/g) ?
+                    N('textarea', {
+                        rows: 7,
+                        value: text
+                    }) :
+                    N('input', {
+                        size: Math.max(40, res[1].length),
+                        value: text
+                    });
+
+                out.appendChild(
+                    N('tr', {}, [N('td', {
+                            className: res[0] + ' copy',
+                            innerText: t.name,
+                            onclick: copy
+                        }),
+                        N('td', {}, [field])
+                    ]));
+                if (text.extra) {
+                    var place;
+                    out.appendChild(
+                        N('tr', {
+                            className: 'extra'
+                        }, [N('td'),
+                            place = N('td', {})
+                        ]));
+                }
+            }
+        });
+    }
 }
+
 function y(obj) {
-  document.all.t.value = obj.value;
-  x();
-  document.all.t.focus();
-  document.all.t.select();
+    document.all.t.value = obj.value;
+    x();
+    document.all.t.focus();
+    document.all.t.select();
 }
 </script><style type="text/css">
 textarea { font-size:200%; }
