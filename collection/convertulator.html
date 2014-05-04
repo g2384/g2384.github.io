@@ -5,6 +5,7 @@
 };
 function base(a, b) {
     return function (x) {
+		x = x.replace(/ /g,"");
         x = parseInt(x, a);
         if (isNaN(x)) throw x;
         return x.toString(b);
@@ -99,20 +100,20 @@ function encoding(name, checkPlain, add, checkEncoded, remove, bname) {
 }
 
 encoding('-Dec to Hex',
-    match(/^-?[0-9]+$/i), base(10, 16),
-    match(/^-?(?:0x)?[0-9a-f]+$/i), base(16, 10), '-Hex to Dec');
+    match(/^-?[0-9 ]+$/i), base(10, 16),
+    match(/^-?(?:0x)?[0-9a-f ]+$/i), base(16, 10), '-Hex to Dec');
 encoding('-Dec to Oct',
-    match(/^-?[0-9]+$/i), base(10, 8),
-    match(/^-?[0-7]+$/i), base(8, 10), '-Oct to Dec');
+    match(/^-?[0-9 ]+$/i), base(10, 8),
+    match(/^-?[0-7 ]+$/i), base(8, 10), '-Oct to Dec');
 encoding('-Hex to Oct',
-    match(/^-?(?:0x)?[0-9a-f]+$/i), base(16, 8),
-    match(/^-?[0-7]+$/i), base(8, 16), '-Oct to Hex');
+    match(/^-?(?:0x)?[0-9a-f ]+$/i), base(16, 8),
+    match(/^-?[0-7 ]+$/i), base(8, 16), '-Oct to Hex');
 encoding('-Bin to Dec',
-    match(/^[01]+$/), base(2, 10),
-    match(/^\d+$/i), base(10, 2), '-Dec to Bin');
+    match(/^[01 ]+$/), base(2, 10),
+    match(/^[0-9 ]+$/i), base(10, 2), '-Dec to Bin');
 encoding('-Bin to Hex',
-    match(/^[01]+$/), base(2, 16),
-    match(/^-?(?:0x)?[0-9a-f]+$/i), base(16, 2), '-Hex to Bin');
+    match(/^[01 ]+$/), base(2, 16),
+    match(/^-?(?:0x)?[0-9a-f ]+$/i), base(16, 2), '-Hex to Bin');
 
 encoding('Unicode codepoint (from hex)',
     match(/^(?:0x|U\+)?[0-9a-f]+$/i), replace(/^U\+/, '').then(base(16, 10).then(chr)),
@@ -340,7 +341,7 @@ function x() {
                     tf.select();
                     x();
                 }
-                if (t.name.search("to Bin")) {
+                if (t.name.search("to Bin")>0) {
                     if (text.length >= 5) {
                         text = text.replace(/([01])(?=([01]{4})+$)/g, '$1 ');
                     }
@@ -359,7 +360,7 @@ function x() {
 
                 out.appendChild(
                     N('tr', {}, [N('td', {
-                            className: res[0] + ' copy',
+                            className: 'copy',
                             innerText: t.name,
                             onclick: copy
                         }),
@@ -391,7 +392,7 @@ td.copy:hover { cursor:hand; color:#999; }</style>
 <title>Convertulator</title>
 </head><body onload="x()">
 <textarea rows="3" id="t" onkeyup="x()" onchange="x()" placeholder="Type something"></textarea>
-<table id="output"><tr><td class="ok copy">To MD5 (ASCII)</td><td><input size="40"></td></tr></table>
+<table id="output"><tr><td class="copy">To MD5 (ASCII)</td><td><input size="40"></td></tr></table>
 <script>// MD5.js http://blog.faultylabs.com/files/md5.js from: Luigi Galli
 if(typeof faultylabs=='undefined')faultylabs={};faultylabs.MD5=function(a){function b(r){var s=(r>>>0).toString(16);return "00000000".substr(0,8-s.length)+s;}function c(r){var s=[];for(var t=0;t<r.length;t++)s=s.concat(k(r[t]));return s;}function d(r){var s=[];for(var t=0;t<8;t++){s.push(r&255);r=r>>>8;}return s;}function e(r,s){return ((r<<s)&4294967295)|(r>>>(32-s));}function f(r,s,t){return (r&s)|(~r&t);}function g(r,s,t){return (t&r)|(~t&s);}function h(r,s,t){return r^s^t;}function i(r,s,t){return s^(r|~t);}function j(r,s){return (r[s+3]<<24)|(r[s+2]<<16)|(r[s+1]<<8)|(r[s]);}function k(r){var s=[];for(var t=0;t<r.length;t++)if(r.charCodeAt(t)<=127){s.push(r.charCodeAt(t));}else{var u=encodeURIComponent(r.charAt(t)).substr(1).split('%');for(var v=0;v<u.length;v++)s.push(parseInt(u[v],16));}return s;}function l(r,s,t,u){var v="",w=0,x=0;for(var y=3;y>=0;y--){x=arguments[y];w=(x&255);x=x>>>8;w=w<<8;w=w|(x&255);x=x>>>8;w=w<<8;w=w|(x&255);x=x>>>8;w=w<<8;w=w|x;v=v+b(w);}return v;}function m(r){var s=new Array(r.length);for(var t=0;t<r.length;t++)s[t]=r[t];return s;}var n=null,o=null;if(typeof a=='string'){n=k(a);}else if(a.constructor==Array){if(a.length===0){n=a;}else if(typeof a[0]=='string'){n=c(a);}else if(typeof a[0]=='number'){n=a;}else o=typeof a[0];}else if(typeof ArrayBuffer!='undefined'){if(a instanceof ArrayBuffer){n=m(new Uint8Array(a));}else if((a instanceof Uint8Array)||(a instanceof Int8Array)){n=m(a);}else if((a instanceof Uint32Array)||(a instanceof Int32Array)||(a instanceof Uint16Array)||(a instanceof Int16Array)||(a instanceof Float32Array)||(a instanceof Float64Array)){n=m(new Uint8Array(a.buffer));}else o=typeof a;}else o=typeof a;if(o)alert('MD5 type mismatch, cannot process '+o);function p(r,s){return 4294967295&(r+s);}return q();function q(){function r(ea,fa,ga,ha){var ia=ca;ca=ba;ba=aa;aa=p(aa,e(p(z,p(ea,p(fa,ga))),ha));z=ia;}var s=n.length;n.push(128);var t=n.length%64;if(t>56){for(var u=0;u<(64-t);u++)n.push(0);t=n.length%64;}for(u=0;u<(56-t);u++)n.push(0);n=n.concat(d(s*8));var v=1732584193,w=4023233417,x=2562383102,y=271733878,z=0,aa=0,ba=0,ca=0;for(u=0;u<n.length/64;u++){z=v;aa=w;ba=x;ca=y;var da=u*64;r(f(aa,ba,ca),3614090360,j(n,da),7);r(f(aa,ba,ca),3905402710,j(n,da+4),12);r(f(aa,ba,ca),606105819,j(n,da+8),17);r(f(aa,ba,ca),3250441966,j(n,da+12),22);r(f(aa,ba,ca),4118548399,j(n,da+16),7);r(f(aa,ba,ca),1200080426,j(n,da+20),12);r(f(aa,ba,ca),2821735955,j(n,da+24),17);r(f(aa,ba,ca),4249261313,j(n,da+28),22);r(f(aa,ba,ca),1770035416,j(n,da+32),7);r(f(aa,ba,ca),2336552879,j(n,da+36),12);r(f(aa,ba,ca),4294925233,j(n,da+40),17);r(f(aa,ba,ca),2304563134,j(n,da+44),22);r(f(aa,ba,ca),1804603682,j(n,da+48),7);r(f(aa,ba,ca),4254626195,j(n,da+52),12);r(f(aa,ba,ca),2792965006,j(n,da+56),17);r(f(aa,ba,ca),1236535329,j(n,da+60),22);r(g(aa,ba,ca),4129170786,j(n,da+4),5);r(g(aa,ba,ca),3225465664,j(n,da+24),9);r(g(aa,ba,ca),643717713,j(n,da+44),14);r(g(aa,ba,ca),3921069994,j(n,da),20);r(g(aa,ba,ca),3593408605,j(n,da+20),5);r(g(aa,ba,ca),38016083,j(n,da+40),9);r(g(aa,ba,ca),3634488961,j(n,da+60),14);r(g(aa,ba,ca),3889429448,j(n,da+16),20);r(g(aa,ba,ca),568446438,j(n,da+36),5);r(g(aa,ba,ca),3275163606,j(n,da+56),9);r(g(aa,ba,ca),4107603335,j(n,da+12),14);r(g(aa,ba,ca),1163531501,j(n,da+32),20);r(g(aa,ba,ca),2850285829,j(n,da+52),5);r(g(aa,ba,ca),4243563512,j(n,da+8),9);r(g(aa,ba,ca),1735328473,j(n,da+28),14);r(g(aa,ba,ca),2368359562,j(n,da+48),20);r(h(aa,ba,ca),4294588738,j(n,da+20),4);r(h(aa,ba,ca),2272392833,j(n,da+32),11);r(h(aa,ba,ca),1839030562,j(n,da+44),16);r(h(aa,ba,ca),4259657740,j(n,da+56),23);r(h(aa,ba,ca),2763975236,j(n,da+4),4);r(h(aa,ba,ca),1272893353,j(n,da+16),11);r(h(aa,ba,ca),4139469664,j(n,da+28),16);r(h(aa,ba,ca),3200236656,j(n,da+40),23);r(h(aa,ba,ca),681279174,j(n,da+52),4);r(h(aa,ba,ca),3936430074,j(n,da),11);r(h(aa,ba,ca),3572445317,j(n,da+12),16);r(h(aa,ba,ca),76029189,j(n,da+24),23);r(h(aa,ba,ca),3654602809,j(n,da+36),4);r(h(aa,ba,ca),3873151461,j(n,da+48),11);r(h(aa,ba,ca),530742520,j(n,da+60),16);r(h(aa,ba,ca),3299628645,j(n,da+8),23);r(i(aa,ba,ca),4096336452,j(n,da),6);r(i(aa,ba,ca),1126891415,j(n,da+28),10);r(i(aa,ba,ca),2878612391,j(n,da+56),15);r(i(aa,ba,ca),4237533241,j(n,da+20),21);r(i(aa,ba,ca),1700485571,j(n,da+48),6);r(i(aa,ba,ca),2399980690,j(n,da+12),10);r(i(aa,ba,ca),4293915773,j(n,da+40),15);r(i(aa,ba,ca),2240044497,j(n,da+4),21);r(i(aa,ba,ca),1873313359,j(n,da+32),6);r(i(aa,ba,ca),4264355552,j(n,da+60),10);r(i(aa,ba,ca),2734768916,j(n,da+24),15);r(i(aa,ba,ca),1309151649,j(n,da+52),21);r(i(aa,ba,ca),4149444226,j(n,da+16),6);r(i(aa,ba,ca),3174756917,j(n,da+44),10);r(i(aa,ba,ca),718787259,j(n,da+8),15);r(i(aa,ba,ca),3951481745,j(n,da+36),21);v=p(v,z);w=p(w,aa);x=p(x,ba);y=p(y,ca);}return l(y,x,w,v);}};
 </script></body></html>
