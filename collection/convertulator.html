@@ -3,14 +3,6 @@
     f.sweet = 1;
     return f;
 };
-var cache = window.localStorage || {};
-
-function wrap(a, b) {
-    return function (x) {
-        return a + x + b;
-    };
-}
-
 function base(a, b) {
     return function (x) {
         x = parseInt(x, a);
@@ -106,21 +98,21 @@ function encoding(name, checkPlain, add, checkEncoded, remove, bname) {
         oneway(bname || 'From ' + name, checkEncoded, remove, checkPlain);
 }
 
-encoding('-Decimal to hex',
+encoding('-Dec to Hex',
     match(/^-?[0-9]+$/i), base(10, 16),
-    match(/^-?(?:0x)?[0-9a-f]+$/i), base(16, 10), '-Hex to decimal');
-encoding('-Decimal to octal',
+    match(/^-?(?:0x)?[0-9a-f]+$/i), base(16, 10), '-Hex to Dec');
+encoding('-Dec to Oct',
     match(/^-?[0-9]+$/i), base(10, 8),
-    match(/^-?[0-7]+$/i), base(8, 10), '-Octal to decimal');
-encoding('-Hex to octal',
+    match(/^-?[0-7]+$/i), base(8, 10), '-Oct to Dec');
+encoding('-Hex to Oct',
     match(/^-?(?:0x)?[0-9a-f]+$/i), base(16, 8),
-    match(/^-?[0-7]+$/i), base(8, 16), '-Octal to hex');
-encoding('-Binary to decimal',
+    match(/^-?[0-7]+$/i), base(8, 16), '-Oct to Hex');
+encoding('-Bin to Dec',
     match(/^[01]+$/), base(2, 10),
-    match(/^\d+$/i), base(10, 2), '-Decimal to binary');
-encoding('-Binary to hex',
+    match(/^\d+$/i), base(10, 2), '-Dec to Bin');
+encoding('-Bin to Hex',
     match(/^[01]+$/), base(2, 16),
-    match(/^-?(?:0x)?[0-9a-f]+$/i), base(16, 2), '-Hex to binary');
+    match(/^-?(?:0x)?[0-9a-f]+$/i), base(16, 2), '-Hex to Bin');
 
 encoding('Unicode codepoint (from hex)',
     match(/^(?:0x|U\+)?[0-9a-f]+$/i), replace(/^U\+/, '').then(base(16, 10).then(chr)),
@@ -332,7 +324,7 @@ function N(x, p, cs) {
 function x() {
     var val = document.getElementById('t').value;
     var out = document.getElementById('output');
-    out.innerHTML = 'length: '+val.length;
+    out.innerHTML = 'length: '+val.length+'';
     dump(val);
 
     function dump(val) {
@@ -348,7 +340,7 @@ function x() {
                     tf.select();
                     x();
                 }
-                if (t.name.search("binary")) {
+                if (t.name.search("to Bin")) {
                     if (text.length >= 5) {
                         text = text.replace(/([01])(?=([01]{4})+$)/g, '$1 ');
                     }
