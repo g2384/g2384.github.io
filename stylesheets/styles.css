@@ -200,10 +200,10 @@ footer {
 .php {
   color:#4F5B93;
 }
-.text
+.star
 {
-text-shadow: 0 0 10px #ffe169;
-color:#ffd21c;
+text-shadow: 0 0 5px #ffe169;
+color:#ffb803;
 }
 
 @media print, screen and (max-width: 960px) {
