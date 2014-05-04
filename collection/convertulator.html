@@ -11,6 +11,19 @@ function base(a, b) {
         return x.toString(b);
     };
 }
+function base2(a, b) {
+    return function (x) {
+		x = x.replace(/ /g,"");
+		if(a==2){
+		x = parseInt(x, a)-Math.pow(2,x.length);}
+		else{
+        x = parseInt(-x, a);
+		x = (~x + 1 >>> 0);
+		}
+        if (isNaN(x)) throw x;
+        return x.toString(b);
+    };
+}
 
 function chr(x) {
     x = Math.floor(x);
@@ -100,20 +113,27 @@ function encoding(name, checkPlain, add, checkEncoded, remove, bname) {
 }
 
 encoding('-Dec to Hex',
-    match(/^-?[0-9 ]+$/i), base(10, 16),
+    match(/^-?[0-9 ]+$/), base(10, 16),
     match(/^-?(?:0x)?[0-9a-f ]+$/i), base(16, 10), '-Hex to Dec');
 encoding('-Dec to Oct',
-    match(/^-?[0-9 ]+$/i), base(10, 8),
-    match(/^-?[0-7 ]+$/i), base(8, 10), '-Oct to Dec');
+    match(/^-?[0-9 ]+$/), base(10, 8),
+    match(/^-?[0-7 ]+$/), base(8, 10), '-Oct to Dec');
 encoding('-Hex to Oct',
     match(/^-?(?:0x)?[0-9a-f ]+$/i), base(16, 8),
-    match(/^-?[0-7 ]+$/i), base(8, 16), '-Oct to Hex');
+    match(/^-?[0-7 ]+$/), base(8, 16), '-Oct to Hex');
 encoding('-Bin to Dec',
     match(/^[01 ]+$/), base(2, 10),
-    match(/^[0-9 ]+$/i), base(10, 2), '-Dec to Bin');
+    match(/^[0-9 ]+$/), base(10, 2), '-Dec to Bin');
 encoding('-Bin to Hex',
     match(/^[01 ]+$/), base(2, 16),
-    match(/^-?(?:0x)?[0-9a-f ]+$/i), base(16, 2), '-Hex to Bin');
+    match(/^(?:0x)?[0-9a-f ]+$/i), base(16, 2), '-Hex to Bin');
+encoding('-Dec to (2\'s)Bin',
+    match(/^-[0-9 ]+$/), base2(10, 2),
+    match(/^1+[01 ]+$/), base2(2, 10), '-Bin(2\'s) to Dec');
+encoding('-Dec to (2\'s)Hex',
+    match(/^-[0-9 ]+$/), base2(10, 16),
+    match(/^1+[01 ]+$/), base2(2, 16), '-Bin(2\'s) to Hex');
+	
 
 encoding('Unicode codepoint (from hex)',
     match(/^(?:0x|U\+)?[0-9a-f]+$/i), replace(/^U\+/, '').then(base(16, 10).then(chr)),
@@ -302,11 +322,12 @@ function test(thing, input) {
     try {
         if (!thing.before(input)) throw '-';
         var out = thing.func.call(window, input);
+	if (!thing.after(out)&&((typeof out)!='string')) throw '-';
         if (out === undefined || out === false) throw '' + out;
         if (out.nodeType) return ['ok', out];
         if (!(out instanceof String)) out = '' + out;
-        if (!thing.after(out)) throw '-';
         return [out === input ? 'same' : 'ok', out];
+		
     } catch (x) {
         return ['meh', x];
     }
@@ -333,7 +354,6 @@ function x() {
             var res = test(t, val);
             if (res[0] === 'ok') {
                 var text = res[1];
-
                 function copy() {
                     var tf = document.getElementById('t');
                     tf.value = text;
