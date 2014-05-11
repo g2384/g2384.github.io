@@ -1,5 +1,5 @@
 $max = 100; // max number of news to display
-$file = 'hnews.txt'; // Must exist before using. a file to save all data
+$file = 'hnews.txt'; // Must exist before using. a file to store all data
 $items = array_reverse(explode("\n", file_get_contents($file)));
 $i = 0;
 
@@ -97,7 +97,7 @@ for ($i = 0; $i < $len; $i++)
 	$list = $list . "<div class=list><span$rank>" . ($item[0] + 1) . '</span>' . $item[1] . " $comment</div>\n";
 	}
 
-$webpage = '<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"><head><style>body {font-family:Arial,Helvetica,Sans-serif;font-size:16px;margin:0 0;color:#999;}.wrap {max-width:960px;margin:0 auto;}.list {width:100%;margin:0;padding:0;}.comhead,.list .comm {font-size:14px;color:#999;}.rank {background-color:#ddd;padding-left:9px;}a {display:inline-block;position:relative;text-decoration:none;line-height:200%;font-size:18px;color:#555;padding-left:5px;}a:visited {color:#999;}.list:hover,.list a:hover,.list .comm:hover {color:#000;}@media (max-width: 855px) {   a {display:inline;line-height:100%;}.list{margin-bottom:10px;}}</style></head><body><div class=wrap>Last update: ' . date('Y M d (D), H:i:s', time()) . " <a href=hackernews.php>update now!</a><br /><br />$list</div></body>";
+$webpage = '<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"><head><style>body {font-family:Arial,Helvetica,Sans-serif;font-size:16px;margin:0 0;color:#999;}.wrap {max-width:960px;margin:0 auto;}.list {width:100%;margin:0;padding:0;}.comhead,.list .comm {font-size:14px;color:#999;}.rank {background-color:#ddd;padding-left:9px;}a {display:inline-block;position:relative;text-decoration:none;line-height:200%;font-size:18px;color:#555;padding-left:5px;}a:visited {color:#999;}.list:hover,.list a:hover,.list .comm:hover {color:#000;}@media (max-width: 855px) {   a {display:inline;line-height:100%;}.list{margin-bottom:10px;}}</style><script>function load(){var s=document.cookie;var a=document.getElementsByClassName("list");var l=a.length;for(i=0;i<l;i++){if(a[i].innerHTML.match(s)&&s){a[i].innerHTML="<hr>"+a[i].innerHTML;i=l+1}}if(i==l+2){str=a[0].innerHTML.replace(/<[ a-z"=]+>[0-9]+<\/span>/g,"");str=str.substring(0,50);document.cookie=str}}</script></head><body onload="load()"><div class=wrap>Last update: ' . date('Y M d (D), H:i:s', time()) . " <a href=hackernews.php>update now!</a><br /><br />$list</div></body>";
 $fp = fopen('index.html', 'w');
 fwrite($fp, $webpage);
 fclose($fp);
