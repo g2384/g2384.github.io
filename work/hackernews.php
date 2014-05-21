@@ -31,9 +31,9 @@ foreach($array as $a)
 		if ($b)
 			{ // titles
 			$str = substr($str, $b);
-			$str = str_replace('<td class="title">', '', $str);
-			$str = str_replace(' rel="nofollow"', '', $str);
-			$str = str_replace('item?id=', 'https://news.ycombinator.com/item?id=', $str);
+			$original = array('<td class="title">', ' rel="nofollow"', 'item?id=');
+			$new   = array('', '', 'https://news.ycombinator.com/item?id=');
+			$str = str_replace($original, $new, $str);
 			$arr[] = $str;
 			}
 		  else
