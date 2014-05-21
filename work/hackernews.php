@@ -1,12 +1,13 @@
+<?
 $max = 100; // max number of news to display
-$file = 'hnews.txt'; // Must exist before using. a file to store all data
+$file = 'hnews.txt'; // Must exist before using. a file to save all data
 $items = array_reverse(explode("\n", file_get_contents($file)));
 $i = 0;
 
 foreach($items as $a)
 	{
 	$item[$i] = explode("<%>", $a);
-	//$item[$i][0] => rank, $item[$i][1] => title, $item[$i][2] => commments
+	//$item[$i][0] => rank, $item[$i][1] => title, $item[$i][2] => comment number, $item[$i][3] => id_number
 	$i++;
 	}
 
@@ -25,10 +26,10 @@ foreach($array as $a)
 	$b = strpos($a, '<td class="title"'); // find all the news
 	if (strlen($a) < 1500)
 		{
-		$str = trim(preg_replace('/\s+/', ' ', $a));
+		$str = trim(preg_replace('/\s+/', ' ', $a)); // remove \r\n
 		$str = str_replace('</td> </tr>', '', $str);
 		if ($b)
-			{
+			{ // titles
 			$str = substr($str, $b);
 			$str = str_replace('<td class="title">', '', $str);
 			$str = str_replace(' rel="nofollow"', '', $str);
@@ -37,39 +38,41 @@ foreach($array as $a)
 			}
 		  else
 		if (strpos($str, 'class="subtext"'))
-			{
+			{ // comments
 			$str = substr($str, strpos($str, '<a href="item?id'));
 			$str = str_replace('<a href="item?id', '<a class=comm href="https://news.ycombinator.com/item?id=', $str);
+			preg_match('/[0-9]+/', $str, $match, PREG_OFFSET_CAPTURE);
+			$id[]=$match[0][0];
 			$comm[] = $str;
 			}
 		}
 	}
-
-$temp = count($arr) - 1;
+$l = count($arr) - 1;
 $append = $i;
 
-for ($k = 0; $k < $temp; $k++)
+for ($k = 0; $k < $l; $k++)
 	{
-	$matched = 0;
 	for ($j = 0; $j < $i; $j++)
-		{ //[0] => rank, [1] => title, [2] => commments
-		if ($item[$j][1] == $arr[$k])
+		{ //[0] => rank, [1] => title, [2] => comment number, $item[$i][3] => id_number
+		if ($item[$j][3] == $id[$k])
 			{
-			$item[$j][2] = $comm[$k]; // update the comment number
-			$matched = 1;
+			$item[$j][2] = $comm[$k]; // update "comment number"
+			$item[$j][1] = $arr[$k]; // update "title"
 			if ($item[$j][0] > $k)
 				{
-				$item[$j][0] = $k;
+				$item[$j][0] = $k; // update "rank"
 				}
+			$j = $i; // break the for loop
 			}
 		}
-
-	if ($matched == 0) // if not matched, append this item
+//if matched, $j = $i+1
+	if ($j == $i) // if not matched, append this item
 		{
 		$item[$append] = array(
 			$k,
 			$arr[$k],
-			$comm[$k]
+			$comm[$k],
+			$id[$k]
 		);
 		$append++;
 		}
@@ -80,7 +83,7 @@ for ($i = 0; $i < $append; $i++)
 	$items[$i] = implode("<%>", $item[$i]);
 	}
 
-$items = array_slice(array_reverse($items) , 0, $max); //reverse and slice the array, now, the newest is at the top
+$items = array_slice(array_reverse($items) , 0, $max); //reverse and slice the array. Now, the newest is at the top
 file_put_contents($file, implode("\n", $items));
 
 // -------------------------------------
@@ -101,3 +104,4 @@ $webpage = '<meta charset="utf-8"/><meta name="viewport" content="width=device-w
 $fp = fopen('index.html', 'w');
 fwrite($fp, $webpage);
 fclose($fp);
+?>
