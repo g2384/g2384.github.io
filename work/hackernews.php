@@ -39,11 +39,9 @@ foreach($array as $a)
 		  else
 		if (strpos($str, 'class="subtext"'))
 			{ // comments
-			$str = substr($str, strpos($str, '<a href="item?id'));
-			$str = str_replace('<a href="item?id', '<a class=comm href="https://news.ycombinator.com/item?id=', $str);
-			preg_match('/[0-9]+/', $str, $match, PREG_OFFSET_CAPTURE);
+			preg_match_all('/[0-9]+( comments)?/', substr($str, strpos($str, '<a href="item')), $match);
 			$id[]=$match[0][0];
-			$comm[] = $str;
+			$comm[] = $match[0][1]?$match[0][1]:'discuss';
 			}
 		}
 	}
@@ -96,11 +94,11 @@ for ($i = 0; $i < $len; $i++)
 	{
 	$item = explode('<%>', $items[$i]);
 	$rank = $item[0] < 9 ? ' class=rank' : '';
-	$comment = strpos($item[1], 'item?id=') ? '' : $item[2]; // some news don't have discussion page
+	$comment = strpos($item[1], 'item?id=') ? '' : '<a class=comm href="https://news.ycombinator.com/item?id='.$item[3].'">'.$item[2].'</a>'; // some news don't have discussion page
 	$list = $list . "<div class=list><span$rank>" . ($item[0] + 1) . '</span>' . $item[1] . " $comment</div>\n";
 	}
 
-$webpage = '<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"><head><style>body {font-family:Arial,Helvetica,Sans-serif;font-size:16px;margin:0 0;color:#999;}.wrap {max-width:960px;margin:0 auto;}.list {width:100%;margin:0;padding:0;}.comhead,.list .comm {font-size:14px;color:#999;}.rank {background-color:#ddd;padding-left:9px;}a {display:inline-block;position:relative;text-decoration:none;line-height:200%;font-size:18px;color:#555;padding-left:5px;}a:visited {color:#999;}.list:hover,.list a:hover,.list .comm:hover {color:#000;}@media (max-width: 855px) {   a {display:inline;line-height:100%;}.list{margin-bottom:10px;}}</style><script>function load(){var e=document.cookie;var t=document.getElementsByClassName("list");var n=t.length;var r=t[0].innerHTML.replace(/<[ a-z"=]+>[0-9]+<\/span>/g,"");r=r.substring(0,50);for(i=0;i<n;i++){if(t[i].innerHTML.match(e)&&e){t[i].innerHTML="<hr>"+t[i].innerHTML;i=n+1}}document.cookie=r}</script></head><body onload="load()"><div class=wrap>Last update: ' . date('Y M d (D), H:i:s', time()) . " <a href=hackernews.php>update now!</a><br /><br />$list</div></body>";
+$webpage = '<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"><head><style>body{font-family:Arial,Helvetica,Sans-serif;font-size:16px;color:#999;margin:0}.wrap{max-width:960px;margin:0 auto}.list{width:100%;margin:0;padding:0}.list .comm{font-size:14px;color:#999}.rank{background-color:#ddd;padding-left:9px}a{display:inline-block;position:relative;text-decoration:none;line-height:200%;font-size:18px;color:#555;padding-left:5px}a:visited{color:#999}.list:hover,.list a:hover,.list .comm:hover{color:#000}@media max-width 855px {a{display:inline;line-height:100%}.list{margin-bottom:10px}}</style><script>function load(){var e=document.cookie;var t=document.getElementsByClassName("list");var n=t.length;var r=t[0].innerHTML.replace(/<[ a-z"=]+>[0-9]+<\/span>/g,"");r=r.substring(0,50);for(i=0;i<n;i++){if(t[i].innerHTML.match(e)&&e){t[i].innerHTML="<hr>"+t[i].innerHTML;i=n+1}}document.cookie=r}</script></head><body onload="load()"><div class=wrap>Last update: ' . date('Y M d (D), H:i:s', time()) . " <a href=hackernews.php>update now!</a><br /><br />$list</div></body>";
 $fp = fopen('index.html', 'w');
 fwrite($fp, $webpage);
 fclose($fp);
