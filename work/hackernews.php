@@ -11,13 +11,13 @@ foreach($items as $a)
 	[0] => rank, 
 	[1] => title, 
 	[2] => comment number, 
-	[3] => id_number, 
-	[4] => 's' = currently on homepage
+	[3] => id, 
+	[4] => currently on homepage
 	}*/
 	$i++;
 	}
-
-$contents = file_get_contents("https://news.ycombinator.com/"); // get webpage contents
+$url='https://news.ycombinator.com/';
+$contents = file_get_contents($url); // get webpage contents
 $contents = mb_convert_encoding($contents, 'HTML-ENTITIES', 'UTF-8');
 $DOM = new DOMDocument();
 $DOM->loadHTML($contents); // parse the contents
@@ -38,7 +38,7 @@ foreach($array as $a)
 			{ // titles
 			$str = substr($str, $b);
 			$original = array('<td class="title">', ' rel="nofollow"', 'item?id=');
-			$new   = array('', '', 'https://news.ycombinator.com/item?id=');
+			$new   = array('', '', $url.'item?id=');
 			$str = str_replace($original, $new, $str);
 			$arr[] = $str;
 			}
@@ -53,17 +53,16 @@ foreach($array as $a)
 	}
 $l = count($arr) - 1;
 $append = $i;
-
+$t=time();
 for ($k = 0; $k < $l; $k++)
 	{
-	$item[$k][4] = 'n';
 	for ($j = 0; $j < $i; $j++)
-		{ //[0] => rank, [1] => title, [2] => comment number, $item[$i][3] => id_number
+		{ //[0] => rank, [1] => title, [2] => comment number, $item[$i][3] => id
 		if ($item[$j][3] == $id[$k])
 			{
 			$item[$j][2] = $comm[$k]; // update "comment number"
 			$item[$j][1] = $arr[$k]; // update "title"
-			$item[$j][4] = 's';
+			$item[$j][4] = $t;
 			if ($item[$j][0] > $k)
 				{
 				$item[$j][0] = $k; // update "rank"
@@ -79,7 +78,7 @@ for ($k = 0; $k < $l; $k++)
 			$arr[$k],
 			$comm[$k],
 			$id[$k],
-			's'
+			$t
 		);
 		$append++;
 		}
@@ -96,20 +95,20 @@ file_put_contents($file, implode("\n", $items));
 // -------------------------------------
 // generate the index.html static webpage
 
-$len = count($items);
+$l = count($items);
 $list = '';
 
-for ($i = 0; $i < $len; $i++)
+for ($i = 0; $i < $l; $i++)
 	{
 	$item = explode('<%>', $items[$i]);
 	$rank = $item[0] < 9 ? ' class=rank' : '';
-	$star = $item[4]=='s'?'<span class="star">★</span>':'';
-	$comment = strpos($item[1], 'item?id=') ? '' :($item[3]? '<a class=comm href="https://news.ycombinator.com/item?id='.$item[3].'">'.$item[2]."</a>":''); // some news don't have discussion page
+	$star = $item[4]==$t?'<span class="star">★</span>':'';
+	$comment = strpos($item[1], 'item?id=') ? '' :($item[3]? '<a class=comm href="'.$url.'item?id='.$item[3].'">'.$item[2]."</a>":''); // some news don't have discussion page
 	
 	$list = $list . "<div class=list><span$rank>" . ($item[0] + 1) . '</span>' . $item[1] . " $comment $star</div>\n";
 	}
 
-$webpage = '<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"><head><style>body{font-family:Arial,Helvetica,Sans-serif;font-size:16px;color:#999;margin:0}.wrap{max-width:980px;margin:0 auto}.list{width:100%;margin:0;padding:0}.comhead,.list .comm{font-size:14px;color:#999}.rank{background-color:#ddd;padding-left:9px}a{display:inline-block;position:relative;text-decoration:none;line-height:200%;font-size:18px;color:#555;padding-left:5px}a:visited{color:#999}.list:hover,.list a:hover,.list .comm:hover{color:#000}@media max-width 855px {a{display:inline;line-height:100%}.list{margin-bottom:10px}}.star {text-shadow: 0 0 5px #ffe169;color: #ffb803;}</style><script>function load(){var e=document.cookie;var t=document.getElementsByClassName("list");var n=t.length;var r=t[0].innerHTML.replace(/<[ a-z"=]+>[0-9]+<\/span>/g,"");r=r.substring(0,50);for(i=0;i<n;i++){if(t[i].innerHTML.match(e)&&e){t[i].innerHTML="<hr>"+t[i].innerHTML;i=n+1}}document.cookie=r}</script></head><body onload="load()"><div class=wrap>Last update: ' . date('Y M d (D), H:i:s', time()) . " <a href=hackernews.php>update now!</a><br /><br />$list</div></body>";
+$webpage = '<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"><head><style>body{font-family:Arial,Helvetica,Sans-serif;font-size:16px;color:#999;margin:0}.wrap{max-width:980px;margin:0 auto}.list{width:100%;margin:0;padding:0}.comhead,.list .comm{font-size:14px;color:#999}.rank{background-color:#ddd;padding-left:9px}a{display:inline-block;position:relative;text-decoration:none;line-height:200%;font-size:18px;color:#555;padding-left:5px}a:visited{color:#999}.list:hover,.list a:hover,.list .comm:hover{color:#000}@media (max-width: 855px) {a{display:inline;line-height:100%}.list{margin-bottom:10px}}.star {text-shadow: 0 0 5px #ffe169;color: #ffb803;}</style><script>function load(){var e=document.cookie;var t=document.getElementsByClassName("list");var n=t.length;var r=t[0].innerHTML.replace(/<[ a-z"=]+>[0-9]+<\/span>/g,"");r=r.substring(0,50);for(i=0;i<n;i++){if(t[i].innerHTML.match(e)&&e){t[i].innerHTML="<hr>"+t[i].innerHTML;i=n+1}}document.cookie=r}</script></head><body onload="load()"><div class=wrap>Last update: ' . date('Y M d (D), H:i:s', $t) . " <a href=hackernews.php>update now!</a><br /><br />$list</div></body>";
 $fp = fopen('index.html', 'w');
 fwrite($fp, $webpage);
 fclose($fp);
