@@ -1,89 +1,57 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.1 Transitional//EN"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>Hex Numbers Calculator</title>
 <script language="JavaScript">
-<!--
-// round for decimal of (value of precision) places, default is 3
-// This routine can be used to pass a number and a number for precision or just a number only, that is to be rounded to a set number of decimal places. This routine supports leading and trailing zeros, leading and trailing spaces, and padding. To prevent errors, pass variables as a string.
-function perRound(num, precision) {
-	var precision = 3; //default value if not passed from caller, change if desired
-	// remark if passed from caller
-	precision = parseInt(precision); // make certain the decimal precision is an integer
-    var result1 = num * Math.pow(10, precision);
-    var result2 = Math.round(result1);
-    var result3 = result2 / Math.pow(10, precision);
-    return zerosPad(result3, precision);
-}
-function zerosPad(rndVal, decPlaces) {
-    var valStrg = rndVal.toString(); // Convert the number to a string
-    var decLoc = valStrg.indexOf("."); // Locate the decimal point
-    // check for a decimal 
-    if (decLoc == -1) {
-        decPartLen = 0; // If no decimal, then all decimal places will be padded with 0s
-        // If decPlaces is greater than zero, add a decimal point
-        valStrg += decPlaces > 0 ? "." : "";
-    }
-    else {
-        decPartLen = valStrg.length - decLoc - 1; // If there is a decimal already, only the needed decimal places will be padded with 0s
-    }
-     var totalPad = decPlaces - decPartLen;    // Calculate the number of decimal places that need to be padded with 0s
-    if (totalPad > 0) {
-        // Pad the string with 0s
-        for (var cntrVal = 1; cntrVal <= totalPad; cntrVal++) 
-            valStrg += "0";
-        }
-    return valStrg;
-}
-
 function conv(form) {
-if(form.hexnumin.value.match(/^[01 ]+$/)&&form.hexnumin2.value.match(/^[01 ]+$/)){
-form.hexnumin.value = parseInt(form.hexnumin.value, 2).toString(16);
-form.hexnumin2.value = parseInt(form.hexnumin2.value, 2).toString(16);}
+if(form.numin.value.match(/^[01 ]+$/)&&form.numin2.value.match(/^[01 ]+$/)){
+form.numin.value = parseInt(form.numin.value.replace(/ /g, ""), 2).toString(16);
+form.numin2.value = parseInt(form.numin2.value.replace(/ /g, ""), 2).toString(16);}
 }
 	
-function doMath(form) {
-if(form.hexnumin.value.match(/^[01 ]+$/)&&form.hexnumin2.value.match(/^[01 ]+$/)){
+function x(form) {
+if(form.numin.value.match(/^[01 ]+$/)&&form.numin2.value.match(/^[01 ]+$/)){
 form.Conv.disabled=false;
 }else{
 form.Conv.disabled=true;
 }
-form.num.value = parseInt(form.hexnumin.value,16);
-form.num2.value = parseInt(form.hexnumin2.value,16);
-if(form.hexnumin.value==''){
+form.num.value = parseInt(form.numin.value,16);
+form.num2.value = parseInt(form.numin2.value,16);
+if(form.numin.value==''){
 form.num.value=0;}
-if(form.hexnumin2.value==''){
+if(form.numin2.value==''){
 form.num2.value=0;}
 
-var number = form.num.value; //decimal out
-var number2 = form.num2.value; //decimal out
-var hexaddansv = eval(number) + eval(number2);
+var number = eval(form.num.value); //decimal out
+var number2 = eval(form.num2.value); //decimal out
+
+var hexaddansv = number + number2;
 form.decaddans.value = (hexaddansv); //decimal
 form.hexaddans.value = Number(hexaddansv).toString(16); //hex
 //Subtraction
-var hexsubansv = eval(number) - eval(number2);
+
+var hexsubansv = number - number2;
 form.decsubans.value = (hexsubansv); //decimal
 form.hexsubans.value = Number(hexsubansv).toString(16); //hex
 
-var hexmltansv = eval(number) * eval(number2);
+var hexmltansv = number * number2;
 form.decmltans.value = (hexmltansv); //decimal
 form.hexmltans.value = Number(hexmltansv).toString(16); //hex
 //Division
 
-var powerv = eval(number) / eval(number2);
+var powerv = number / number2;
 form.decdivans.value = (powerv); //decimal
 form.hexdivans.value = Number(powerv).toString(16); //hex
 }
-//  -->
 </script>
 <style>body {font-family:"Courier New";font-size:100%;}.c { text-transform: uppercase; }</style></head>
 <body>
 <form>
 <h1>Hex/Bin Numbers Calculator</h1>
 Enter A Hex/Bin: 
-<input type="text" class="c" name="hexnumin" size="20" onchange="doMath(this.form)"><br>
+<input type="text" class="c" name="numin" size="20" onchange="x(this.form)"><br>
 Enter B Hex/Bin: 
-<input type="text" class="c" name="hexnumin2" size="20" onchange="doMath(this.form)"><br>
+<input type="text" class="c" name="numin2" size="20" onchange="x(this.form)"><br>
 <input type="Button" name="Conv" value="Convert to Hex" onclick="conv(this.form)" disabled=false>(if input is Binary)<br>
-<input type="Button" value="Calculate" onclick="doMath(this.form)"><br><br>
+<input type="Button" value="Calculate" onclick="x(this.form)"><br><br>
 Results<br>
 1st Hex to Dec
 <input type="text" name="num" size="20" value="0" readonly=""><br>
