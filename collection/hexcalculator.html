@@ -5,8 +5,9 @@ function conv(form) {
 if(form.numin.value.match(/^[01 ]+$/)&&form.numin2.value.match(/^[01 ]+$/)){
 form.numin.value = parseInt(form.numin.value.replace(/ /g, ""), 2).toString(16);
 form.numin2.value = parseInt(form.numin2.value.replace(/ /g, ""), 2).toString(16);}
+x(form);
 }
-	
+
 function x(form) {
 if(form.numin.value.match(/^[01 ]+$/)&&form.numin2.value.match(/^[01 ]+$/)){
 form.Conv.disabled=false;
