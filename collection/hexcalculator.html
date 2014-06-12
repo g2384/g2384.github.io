@@ -8,73 +8,53 @@ form.numin2.value = parseInt(form.numin2.value.replace(/ /g, ""), 2).toString(16
 form.Conv.disabled=true;
 x(form);
 }
-
+	
 function x(form) {
 if(form.numin.value.match(/^[01 ]+$/)&&form.numin2.value.match(/^[01 ]+$/)){
 form.Conv.disabled=false;
 }else{
 form.Conv.disabled=true;
 }
-form.num.value = parseInt(form.numin.value,16);
-form.num2.value = parseInt(form.numin2.value,16);
+var in1=form.numin.value;
+var in2=form.numin2.value;
 if(form.numin.value==''){
-form.num.value=0;}
+in1=0;
+}
 if(form.numin2.value==''){
-form.num2.value=0;}
+in2=0;
+}
 
-var number = eval(form.num.value); //decimal out
-var number2 = eval(form.num2.value); //decimal out
+var number = parseInt(in1,16); //decimal out
+var number2 = parseInt(in2,16); //decimal out
 
-var hexaddansv = number + number2;
-form.decaddans.value = (hexaddansv); //decimal
-form.hexaddans.value = Number(hexaddansv).toString(16); //hex
-//Subtraction
+var Rsum = number + number2;
+var Rsub = number - number2;
+var Rmlt = number * number2;//multiplication
+var Rquo = number / number2;//quotient
 
-var hexsubansv = number - number2;
-form.decsubans.value = (hexsubansv); //decimal
-form.hexsubans.value = Number(hexsubansv).toString(16); //hex
-
-var hexmltansv = number * number2;
-form.decmltans.value = (hexmltansv); //decimal
-form.hexmltans.value = Number(hexmltansv).toString(16); //hex
-//Division
-
-var powerv = number / number2;
-form.decdivans.value = (powerv); //decimal
-form.hexdivans.value = Number(powerv).toString(16); //hex
+document.getElementById("r").innerHTML="Dec:<br>"+
+number+" + "+number2+" = "+Rsum+"<br>"+
+number+" - "+number2+" = "+Rsub+"<br>"+
+number+" × "+number2+" = "+Rmlt+"<br>"+
+number+" ÷ "+number2+" = "+Rquo+
+"<br><br>Hex:<br>"+
+in1+" + "+in2+" = "+Number(Rsum).toString(16)+"<br>"+
+in1+" - "+in2+" = "+Number(Rsub).toString(16)+"<br>"+
+in1+" × "+in2+" = "+Number(Rmlt).toString(16)+"<br>"+
+in1+" ÷ "+in2+" = "+Number(Rquo).toString(16);
 }
 </script>
-<style>body {font-family:"Courier New";font-size:100%;}.c { text-transform: uppercase; }</style></head>
+<style>body {font-family:"Courier New";}.c { text-transform: uppercase; }</style></head>
 <body>
 <form>
 <h1>Hex/Bin Numbers Calculator</h1>
 Enter A Hex/Bin: 
-<input type="text" class="c" name="numin" size="20" onkeydown="x(this.form)"><br>
+<input type="text" class="c" name="numin" size="20" onkeyup="x(this.form)"><br>
 Enter B Hex/Bin: 
-<input type="text" class="c" name="numin2" size="20" onkeydown="x(this.form)"><br>
+<input type="text" class="c" name="numin2" size="20" onkeyup="x(this.form)"><br>
 <input type="Button" name="Conv" value="Convert to Hex" onclick="conv(this.form)" disabled=false>(only if input is Binary)<br>
 <input type="Button" value="Calculate" onclick="x(this.form)"><br><br>
 Results<br>
-1st Hex to Dec
-<input type="text" name="num" size="20" value="0" readonly=""><br>
-2nd Hex to Dec
-<input type="text" name="num2" size="20" value="0" readonly=""><br><br>
-Dec +
-<input type="text" name="decaddans" value="0" readonly=""><br>
-Dec -
-<input type="text" name="decsubans" value="0" readonly=""><br>
-Dec ×
-<input type="text" name="decmltans" value="0" readonly=""><br>
-Dec ÷
-<input type="text" name="decdivans" value="0" readonly=""><br><br>
-Hex +
-<input type="text" class="c" name="hexaddans" value="0" readonly=""><br>
-Hex -
-<input type="text" class="c" name="hexsubans" value="0" readonly=""><br>
-Hex ×
-<input type="text" class="c" name="hexmltans" value="0" readonly=""><br>
-Hex ÷
-<input type="text" class="c" name="hexdivans" value="0" readonly=""><br>
-
+<div id="r" class="c"></div>
 </form>
 </div></body></html>
