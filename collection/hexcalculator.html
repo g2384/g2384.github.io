@@ -49,10 +49,10 @@ form.hexdivans.value = Number(powerv).toString(16); //hex
 <form>
 <h1>Hex/Bin Numbers Calculator</h1>
 Enter A Hex/Bin: 
-<input type="text" class="c" name="numin" size="20" onchange="x(this.form)"><br>
+<input type="text" class="c" name="numin" size="20" onkeydown="x(this.form)"><br>
 Enter B Hex/Bin: 
-<input type="text" class="c" name="numin2" size="20" onchange="x(this.form)"><br>
-<input type="Button" name="Conv" value="Convert to Hex" onclick="conv(this.form)" disabled=false>(if input is Binary)<br>
+<input type="text" class="c" name="numin2" size="20" onkeydown="x(this.form)"><br>
+<input type="Button" name="Conv" value="Convert to Hex" onclick="conv(this.form)" disabled=false>(only if input is Binary)<br>
 <input type="Button" value="Calculate" onclick="x(this.form)"><br><br>
 Results<br>
 1st Hex to Dec
