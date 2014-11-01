@@ -45,7 +45,7 @@ fclose($f);
 ###定时获取
 <pre>
 sleep(10); // 等待10秒
-
+或者
 <meta http-equiv="refresh" content="10"> // 写在文件开头，网页每10秒自动刷新
 <?
 $i   = file_get_contents("count"); // 使用count文本文件，记录执行到第几个
