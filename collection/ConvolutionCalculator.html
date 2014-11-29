@@ -135,5 +135,80 @@ Adapted from: <br>http://www.rapidtables.com/calc/math/convolution-calculator.ht
 <p>MatLab defaults the length to length(x)+length(h)-1, whereas this defaults to Math.max(x.length,h.length). As usual, don't assume, supply values.</p>
 <p>Also, this doesn't work for lengths &lt; max of x or h. Not sure why.</p>
 
+<script type="text/javascript">
 
+function checnum(as)
+{
+      var a = as.value;
+      as.value = a.replace(/[^-,\d.]/g,"");
+}
+
+
+
+function calculate()
+{
+var data=document.getElementById("data").value;
+var arr = new Array();
+arr=data.split(" ");
+var N=arr.length;
+
+if(data=="")
+{
+   alert("Enter series values");
+   return 0;
+    
+}
+else if(N>=11)
+{
+   alert("Enter series size upto 10");
+   return 0; 
+}
+else
+{
+var t_real = new Array(N);
+var t_img = new Array(N);
+
+var real=0;
+var img=0;
+var tmp=0;
+var str="";
+
+for(var k=0;k<N;k++)
+ {
+    img=0;
+    real=0;
+    
+    for(var n=0;n<N;n++)
+    {
+         tmp=(-1)*((2*Math.PI*n*k)/N) *(180/Math.PI);
+         real+=Math.cos(tmp)*arr[n];
+         img+=Math.sin(tmp)*arr[n];
+           // alert(Math.cos(tmp)*arr[n]+"===="+Math.sin(tmp)*arr[n]+"cos"+tmp);
+    }
+    
+    t_real[k]=real;
+    t_img[k]=img;
+    
+    str+=Math.round(t_real[k]*1000)/1000+"+"+Math.round(t_img[k]*1000)/1000+"j ";
+      // alert(t_real[k]+"+"+t_img[k]+"j");
+	  str=str.replace("+-","-");
+ } 
+ }
+ document.getElementById("result").value=str;
+}
+function fact(num)
+{
+    var rval=1;
+    for(var i = 2; i <= num; i++)
+        rval = rval * i;
+    return rval;
+}
+
+</script>
+	<h1>Discrete Fourier Transform Calculator</h1>   
+<p>Online DFT calculator to convert the given Fourier series to discrete series function.</p>  
+
+	 Enter series values: (Up to 10 values)<br><textarea id=data onkeyup='checnum(this)'>1 2 3</textarea> <br>
+ <input type=button value=Calculate onclick='calculate()'><br>
+  <textarea id='result' rows='8' cols='40' readonly='readonly'></textarea><br>
 </body></html>
