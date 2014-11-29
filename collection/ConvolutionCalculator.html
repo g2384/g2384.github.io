@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Convolution calculator</title>
+<style>
+
+	@media all and (max-width: 576px) {
+		textarea { width:100%; height:70px; }
+	}
+	@media all and (min-width: 577px) {
+		textarea { width:500px; height:70px; }
+	}
+</style>
+<style type="text/css"></style></head>
+
+<body>
+Adapted from: <br>http://www.rapidtables.com/calc/math/convolution-calculator.htm<br>http://www.uniquelycommon.com/projects/circular_convolution
+		<h1>Linear Convolution/Circular Convolution calculator</h1>
+		
+				Enter first data sequence:<br />
+				<textarea id="function_x" name="function_x">1 1 1 0 0 0</textarea><br />
+				Enter second data sequence:<br />
+				<textarea id="function_h" name="function_h">0.5 0.2 0.3</textarea><br /><br />
+				<input onclick="form_calc(0)" type="button" value="Calculate Linear Convolution" class="btn"><br /><br />
+		<label for="length">(optional) circular conv length = </label><input id="length" style="width: 50px;" value="4" /><br />
+		<input onclick="form_calc(1);" type="button" value="Calculate Circular Convolution" /><br /><br />
+				Result data sequence:<br />			
+				<textarea id="function_result" name="function_result" class="outtext" readonly=""></textarea><br />
+		
+	
+	<script>
+	function form_calc(type){
+			var x      = document.getElementById( "function_x" );
+			var h      = document.getElementById( "function_h" );
+			var length = document.getElementById( "length" );
+			var y      = document.getElementById( "function_result" );
+			
+			x = x.value;
+			h = h.value;
+			x = x.replace(/[ ]*,[ ]*|[ ]+/g,' ');
+			h = h.replace(/[ ]*,[ ]*|[ ]+/g,' ');
+			length = length.value;
+			
+			x = x.split ? x.split( ' ' ) : [];
+			h = h.split ? h.split( ' ' ) : [];
+			for(var i = 0; i < x.length; i++ ){
+				x[i] = parseFloat( x[i] );
+			}
+			for(var i = 0; i < h.length; i++ ){
+				h[i] = parseFloat( h[i] );
+			}
+			
+			length = parseInt( length ) || undefined;
+		
+			//console.log( x, h, length );
+			if(type==1){
+			result = convoluteCirc( x, h, length );
+			}else{
+			result = ConvolutionLinear(x,h);
+			}
+			y.value = '';
+			res_len=result.length;
+			var str="";
+			for(i=0; i<res_len; i++) {
+				str+=String(result[i])+' ';
+			}
+			y.value=str;
+		}
+		function ConvolutionLinear(x1,x2)
+		{
+			var x = new Array();
+			var h = new Array();
+			var y = new Array();
+			Nx = x1.length;
+			Nh = x2.length;
+			Ny = Nx+Nh-1;
+
+			for(i=0; i<Nh-1; i++)
+				x[i] = 0;
+			for(i=0; i<Nx; i++)
+				x[i+Nh-1] = parseFloat(x1[i]);
+			for(i=Nx+Nh-1; i<Nx+2*(Nh-1); i++)
+				x[i] = 0;
+			for(i=0; i<Nh; i++)
+				h[i] = parseFloat(x2[i]);
+
+			for(i=0; i<Ny; i++)
+			{
+				y[i] = 0;
+				for(j=0; j<Nh; j++)
+					y[i] += x[i+j]*h[Nh-1-j];
+			}
+			
+			return y;
+		}
+		function convoluteCirc( x, h, length ){
+			x = x || [];
+			h = h || [];
+			length = length || Math.max( h.length, x.length );
+			if( length < 1 ){
+				console.error( "length should be at least +1", length );
+				return false;
+			}
+			h.length = Math.max( h.length, length );
+			x.length = Math.max( x.length, length );
+			y = [];
+			for(var i = 0; i<h.length; i++){
+				if( (h[i] == undefined) || isNaN( h[i] ) )
+					h[i] = 0;
+			}
+			for(var i = 0; i<x.length; i++){
+				if( (x[i] == undefined) || isNaN( x[i] ) )
+					x[i] = 0;
+			}
+			h = h.reverse();
+			
+			//console.log( x, h, length );
+			
+			for( var i = 0; i<x.length; i++ ){
+				// rotate h (last to front)
+				h.unshift( h.pop() );
+				y[i] = 0;
+				for( var ii = 0; ii < h.length; ii++){
+					y[i] += (x[ii] || 0) * h[ii];
+					//console.log( "added",  (x[ii] || 0), "*", h[ii], "=", (x[ii] || 0) * h[ii] );
+				}
+			}
+			
+			return y;
+		}
+	</script>
+<p>
+	It's harder to know if you really understand a number-crunching process by hand vs. hand-programming. While this evaluates correctly for the one example from class, perhaps its best to do some testing in MatLab... :)
+</p>
+<p>MatLab defaults the length to length(x)+length(h)-1, whereas this defaults to Math.max(x.length,h.length). As usual, don't assume, supply values.</p>
+<p>Also, this doesn't work for lengths &lt; max of x or h. Not sure why.</p>
+
+
+</body></html>
