@@ -19,10 +19,10 @@ https://www.easycalculation.com/engineering/mechanical/discrete-fourier-transfor
 http://scistatcalc.blogspot.co.uk/2013/12/fft-calculator.html<br>
 		<h1>Linear Convolution/Circular Convolution calculator</h1>
 		
-				Enter first data sequence:<br />
+				Enter first data sequence: (real numbers only)<br />
 				<textarea id="function_x">1 1 1 0 0 0</textarea><input type=button value="Calculate DFT" onclick='calculate("x")'><br />
 				<div id='result_x'></div>
-				Enter second data sequence:<br />
+				Enter second data sequence: (real numbers only)<br />
 				<textarea id="function_h">0.5 0.2 0.3</textarea><input type=button value="Calculate DFT" onclick='calculate("h")'><br />
 				<div id='result_h'></div><br /><br />
 				<input onclick="form_calc(0)" type="button" value="Calculate Linear Convolution" class="btn"><br /><br />
@@ -185,9 +185,9 @@ for(var k=0;k<N;k++)
 </script>
 
 <h1>FFT calculator</h1>
-Input:
+Input: (accept imaginary numbers, e.g. 1+j 0 2+j 0 3 0 4 0)
 <br>
-<textarea id="Num_inp">1 0 2 0 3 0 4 0</textarea>
+<textarea id="Num_inp">1+j 0 2+j 0 3 0 4 0</textarea>
 <br><label><input id="fft_dir" type="checkbox">Check for IFFT, uncheck for FFT.</label>
 <br>
 <input name="b1" onclick="calc_fft()" type="Button" value="Perform FFT/IFFT">
@@ -203,6 +203,8 @@ function calc_fft() {
   var input = document.getElementById("Num_inp").value;
   input=input.replace("-","+-");
   input=input.replace("++-","+-");
+  input=input.replace("i","j");
+  input=input.replace(/([\+\-])j /g,"$11 ");
   input=input.replace("j","");
   var inp_arr=input.split(" ");
   var tmp_str = '';
@@ -213,7 +215,7 @@ for(var i=0;i<data_size;i++){
   y[i] = Number(temp[1]?temp[1]:"0");//imaginary
   
 }
-//console.log(x,y)
+console.log(x,y)
 
   var m = Math.ceil(Math.log(x.length)/Math.log(2));
 
@@ -231,7 +233,8 @@ var Nfft = (1 << m);
       re_im_out_str = re_im_out_str.concat(tmp_str);
 
     }
-	re_im_out_str=re_im_out_str.replace("+-","-");
+	re_im_out_str=re_im_out_str.replace(/\+\-/g,"-");
+	re_im_out_str=re_im_out_str.replace(/.000000/g,"");
   document.getElementById("Real_Imag_out").value = re_im_out_str;
 
  
