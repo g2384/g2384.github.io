@@ -185,14 +185,13 @@ Input: (accept imaginary numbers, e.g. 1+j 0 2+j 0 3 0 4 0)
 <br>
 <input name="b1" onclick="calc_fft()" type="Button" value="Perform FFT/IFFT">
 <br><br>
-<textarea id="Real_Imag_out"></textarea>
+<div id="Real_Imag_out"></div>
 
 <script language="JavaScript">
 var x = new Array();
 var y = new Array();
  
 function calc_fft() {
-
   var input = document.getElementById("Num_inp").value;
   input=input.replace("-","+-");
   input=input.replace("++-","+-");
@@ -206,9 +205,8 @@ for(var i=0;i<data_size;i++){
 	var temp= inp_arr[i].split("+");
   x[i] = Number(temp[0]?temp[0]:"0");//real
   y[i] = Number(temp[1]?temp[1]:"0");//imaginary
-  
 }
-console.log(x,y)
+//console.log(x,y)
 
   var m = Math.ceil(Math.log(x.length)/Math.log(2));
 
@@ -221,21 +219,15 @@ console.log(x,y)
 var Nfft = (1 << m);
   for (k = 0; k < Nfft; k++)
     {
-        tmp_str = x[k].toFixed(6) + "+" + y[k].toFixed(6) + "j\n";
-
+        tmp_str = x[k].toFixed(6) + "+" + y[k].toFixed(6) + "j<br />";
       re_im_out_str = re_im_out_str.concat(tmp_str);
-
     }
 	re_im_out_str=re_im_out_str.replace(/\+\-/g,"-");
 	re_im_out_str=re_im_out_str.replace(/.000000/g,"");
-  document.getElementById("Real_Imag_out").value = re_im_out_str;
-
- 
-
+  document.getElementById("Real_Imag_out").innerHTML = re_im_out_str;
  // Reset the values of x and y
  x = [];
  y = [];
-
 }
 
 /*
