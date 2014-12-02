@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Convolution calculator</title>
 <style>
@@ -11,7 +12,7 @@ div,textarea{font-family:"Courier New";}
 		textarea { width:500px; height:70px; }
 	}
 </style>
-<style type="text/css"></style></head>
+</head>
 
 <body>
 Adapted from: <br>http://www.rapidtables.com/calc/math/convolution-calculator.htm<br>http://www.uniquelycommon.com/projects/circular_convolution<br>
@@ -133,16 +134,8 @@ http://scistatcalc.blogspot.co.uk/2013/12/fft-calculator.html<br>
 			return y;
 		}
 	</script>
-<p>
-	It's harder to know if you really understand a number-crunching process by hand vs. hand-programming. While this evaluates correctly for the one example from class, perhaps its best to do some testing in MatLab... :)
-</p>
-<p>MatLab defaults the length to length(x)+length(h)-1, whereas this defaults to Math.max(x.length,h.length). As usual, don't assume, supply values.</p>
-<p>Also, this doesn't work for lengths &lt; max of x or h. Not sure why.</p>
 
 <script type="text/javascript">
-
-
-
 function calculate(s)
 {
 var data=document.getElementById("function_"+s).value;
@@ -254,8 +247,6 @@ var Nfft = (1 << m);
 
 function FFT(dir,m,x,y)
 {
-   
-
    /* Calculate the number of points */
    n = 1;
    for (i=0;i<m;i++) 
