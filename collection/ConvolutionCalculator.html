@@ -77,6 +77,7 @@ http://scistatcalc.blogspot.co.uk/2013/12/fft-calculator.html<br>
 				str+=String(result[i])+' ';
 			}
 			y.innerHTML=y.innerHTML+"<br>-------<br>Circular Conv:<br>"+str+"<br>-------";
+			y.innerHTML=formatMath(y.innerHTML);
 		}
 		function ConvolutionLinear(x1,x2)
 		{
@@ -102,7 +103,6 @@ http://scistatcalc.blogspot.co.uk/2013/12/fft-calculator.html<br>
 				for(j=0; j<Nh; j++)
 					y[i] += x[i+j]*h[Nh-1-j];
 			}
-			
 			return y;
 		}
 		function convoluteCirc( x, h, length ){
@@ -143,6 +143,16 @@ http://scistatcalc.blogspot.co.uk/2013/12/fft-calculator.html<br>
 	</script>
 
 <script type="text/javascript">
+function formatMath(s){
+s=s.replace(/\+\-/g,"-");// +- => -
+	s=s.replace(/\.([1-9]+)[0]+([\+\-])/g,".$1$2");// 1.10 => 1.1
+	s=s.replace(/\.([1-9]+)[0]+\j/g,".$1j");// 0.10j => 0.1j
+	s=s.replace(/\.[0]+([\+\-\j])/g,"$1");// 0.10j => 0.1j
+	s=s.replace(/\.0j/g,"j");
+	s=s.replace(/\.0[\+\-]/g,"+");
+	s=s.replace(/[\+\-]0j/g,"");
+	return s;
+}
 function calculate(s)
 {
 var data=document.getElementById("function_"+s).value;
@@ -176,9 +186,9 @@ for(var k=0;k<N;k++)
     
     str+=Math.round(t_real[k]*1000)/1000+"+"+Math.round(t_img[k]*1000)/1000+"j<br />";
       // alert(t_real[k]+"+"+t_img[k]+"j");
-	  str=str.replace("+-","-");
+	  
  } 
- 
+ str=formatMath(str);
  document.getElementById("result_"+s).innerHTML=str+"-------";
 }
 
@@ -226,12 +236,7 @@ var Nfft = (1 << m);
         tmp_str = x[k].toFixed(6) + "+" + y[k].toFixed(6) + "j<br />";
       re_im_out_str = re_im_out_str.concat(tmp_str);
     }
-	re_im_out_str=re_im_out_str.replace(/\+\-/g,"-");
-	re_im_out_str=re_im_out_str.replace(/[0]+[\+\-]/g,"+");
-	re_im_out_str=re_im_out_str.replace(/[0]+\j/g,"j");
-	re_im_out_str=re_im_out_str.replace(/\.j/g,"j");
-	re_im_out_str=re_im_out_str.replace(/\.\+/g,"+");
-	re_im_out_str=re_im_out_str.replace(/[\+\-]0j/g,"");
+	re_im_out_str=formatMath(re_im_out_str);
   document.getElementById("Real_Imag_out").innerHTML = re_im_out_str+"-------";
  // Reset the values of x and y
  x = [];
