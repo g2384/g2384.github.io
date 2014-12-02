@@ -21,20 +21,22 @@ http://scistatcalc.blogspot.co.uk/2013/12/fft-calculator.html<br>
 		<h1>Linear Convolution/Circular Convolution calculator</h1>
 		
 				Enter first data sequence: (real numbers only)<br />
-				<textarea id="function_x">1 1 1 0 0 0</textarea><input type=button value="Calculate DFT" onclick='calculate("x")'><br />
+				<textarea id="function_x">1 1 1 0 0 0</textarea>
+				<br /><input type=button value="Calculate its DFT" onclick='calculate("x")'><br />
 				<div id='result_x'></div>
+				<br />
 				Enter second data sequence: (real numbers only)<br />
-				<textarea id="function_h">0.5 0.2 0.3</textarea><input type=button value="Calculate DFT" onclick='calculate("h")'><br />
-				<div id='result_h'></div><br /><br />
-				<input onclick="form_calc(0)" type="button" value="Calculate Linear Convolution" class="btn"><br /><br />
+				<textarea id="function_h">0.5 0.2 0.3</textarea>
+				<br /><input type=button value="Calculate its DFT" onclick='calculate("h")'><br />
+				<div id='result_h'></div><br />
+				<input onclick="form_calc()" type="button" value="Calculate Convolution" class="btn"><br />
 		<label for="length">(optional) circular conv length = </label><input id="length" style="width: 50px;" value="4" /><br />
-		<input onclick="form_calc(1);" type="button" value="Calculate Circular Convolution" /><br /><br />
-				Result data sequence:<br />			
-				<textarea id="function_result" class="outtext" readonly=""></textarea><br />
+		<br />
+				<div id="function_result"></div><br />
 		
 	
 	<script>
-	function form_calc(type){
+	function form_calc(){
 			var x      = document.getElementById( "function_x" );
 			var h      = document.getElementById( "function_h" );
 			var length = document.getElementById( "length" );
@@ -58,18 +60,23 @@ http://scistatcalc.blogspot.co.uk/2013/12/fft-calculator.html<br>
 			length = parseInt( length ) || undefined;
 		
 			//console.log( x, h, length );
-			if(type==1){
+			
 			result = convoluteCirc( x, h, length );
-			}else{
-			result = ConvolutionLinear(x,h);
-			}
-			y.value = '';
+			y.innerHTML = '';
 			res_len=result.length;
 			var str="";
 			for(i=0; i<res_len; i++) {
 				str+=String(result[i])+' ';
 			}
-			y.value=str;
+			y.innerHTML="Linear Conv:<br>"+str;
+			
+			result = ConvolutionLinear(x,h);
+			res_len=result.length;
+			str="";
+			for(i=0; i<res_len; i++) {
+				str+=String(result[i])+' ';
+			}
+			y.innerHTML=y.innerHTML+"<br>-------<br>Circular Conv:<br>"+str+"<br>-------";
 		}
 		function ConvolutionLinear(x1,x2)
 		{
@@ -149,7 +156,7 @@ var t_img = new Array(N);
 var real=0;
 var img=0;
 var tmp=0;
-var str="";
+var str="-------<br>";
 
 for(var k=0;k<N;k++)
  {
@@ -172,7 +179,7 @@ for(var k=0;k<N;k++)
 	  str=str.replace("+-","-");
  } 
  
- document.getElementById("result_"+s).innerHTML=str;
+ document.getElementById("result_"+s).innerHTML=str+"-------";
 }
 
 </script>
@@ -190,7 +197,6 @@ Input: (accept imaginary numbers, e.g. 1+j 0 2+j 0 3 0 4 0)
 <script language="JavaScript">
 var x = new Array();
 var y = new Array();
- 
 function calc_fft() {
   var input = document.getElementById("Num_inp").value;
   input=input.replace("-","+-");
@@ -209,13 +215,11 @@ for(var i=0;i<data_size;i++){
 //console.log(x,y)
 
   var m = Math.ceil(Math.log(x.length)/Math.log(2));
-
   if (document.getElementById("fft_dir").checked)
     FFT(-1,m,x,y);
   else
     FFT(1,m,x,y);
-
-  var re_im_out_str = "";
+  var re_im_out_str = "-------<br>";
 var Nfft = (1 << m);
   for (k = 0; k < Nfft; k++)
     {
@@ -223,27 +227,28 @@ var Nfft = (1 << m);
       re_im_out_str = re_im_out_str.concat(tmp_str);
     }
 	re_im_out_str=re_im_out_str.replace(/\+\-/g,"-");
-	re_im_out_str=re_im_out_str.replace(/.000000/g,"");
-  document.getElementById("Real_Imag_out").innerHTML = re_im_out_str;
+	re_im_out_str=re_im_out_str.replace(/[0]+[\+\-]/g,"+");
+	re_im_out_str=re_im_out_str.replace(/[0]+\j/g,"j");
+	re_im_out_str=re_im_out_str.replace(/\.j/g,"j");
+	re_im_out_str=re_im_out_str.replace(/\.\+/g,"+");
+	re_im_out_str=re_im_out_str.replace(/[\+\-]0j/g,"");
+  document.getElementById("Real_Imag_out").innerHTML = re_im_out_str+"-------";
  // Reset the values of x and y
  x = [];
  y = [];
 }
-
 /*
    This computes an in-place complex-to-complex FFT 
    x and y are the real and imaginary arrays of 2^m points.
    dir =  1 gives forward transform
    dir = -1 gives reverse transform 
 */
-
 function FFT(dir,m,x,y)
 {
    /* Calculate the number of points */
    n = 1;
    for (i=0;i<m;i++) 
       n *= 2;
-
    /* Do the bit reversal */
    i2 = n >> 1;
    j = 0;
@@ -300,9 +305,7 @@ function FFT(dir,m,x,y)
          y[i] /= n;
       }
    }
-   
    return(1);
 }
-
 </script>
 </body></html>
