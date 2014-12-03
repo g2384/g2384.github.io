@@ -184,7 +184,7 @@ for(var k=0;k<N;k++)
     t_real[k]=real;
     t_img[k]=img;
     
-    str+=Math.round(t_real[k]*1000)/1000+"+"+Math.round(t_img[k]*1000)/1000+"j<br />";
+    str+=t_real[k].toFixed(6)+"+"+t_img[k].toFixed(6)+"j<br />";
       // alert(t_real[k]+"+"+t_img[k]+"j");
 	  
  } 
