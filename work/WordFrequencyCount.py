@@ -3,12 +3,12 @@
 #format the file by replacing ([，。：“”‘’（）《》！、；？]) with \r\n
 dictionary={}
 c=0
-threshold=1#minimum number of duplicates
+threshold=10#minimum number of duplicates
 max_length=7#maximum length of word
 min_length=2
-string = open('input.txt','r').read()
+string = open('tiannew_test.txt','r').read()
 string=unicode(string,"utf-8")
-print('finish reading file')
+print('read file finished')
 arr=string.split()
 
 for n in range(min_length,max_length):
@@ -27,20 +27,20 @@ for i in dictionary.keys():
         dictionary.pop(i, None)
 print('lenth of filtered dict: '+ str(len(dictionary)))
 
-#if "abc" with 2 counts, and "abcdef" with 2 counts
+#if "abc" has 2 counts, and "abcdef" has 2 counts
 #they actually refer to the same word, i.e. "abc" is in "abcdef"
+#the duplicate word is "abcdef", "abc" is reduntant
 for i in dictionary.keys():
     for j in dictionary.keys():
         if not i in dictionary:
             break
-        if (j in i) and len(i)!=len(j) and dictionary[j]==dictionary[i]:
+        if (j in i) and len(i)>len(j) and dictionary[j]==dictionary[i]:
             print ('"'+j+'"('+str(dictionary[j])+') is merged into "'+i+'"('+str(dictionary[i])+')')
             c+=1
             dictionary.pop(j, None)
-            break
 print('number of merged entries: '+str(c))
-
-f=open('result.txt','w')            
+print('lenth of merged dict: '+str(len(dictionary)))
+f=open('tian_result.txt','w')            
 for i in dictionary.keys():
     if(dictionary[i]>=threshold):
         f.write (i.encode('utf-8')+'\t'+str(dictionary[i])+'\n')
