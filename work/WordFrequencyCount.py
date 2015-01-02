@@ -6,7 +6,7 @@ c=0
 threshold=10#minimum number of duplicates
 max_length=7#maximum length of word
 min_length=2
-string = open('tiannew_test.txt','r').read()
+string = open('input.txt','r').read()
 string=unicode(string,"utf-8")
 print('read file finished')
 arr=string.split()
@@ -40,7 +40,7 @@ for i in dictionary.keys():
             dictionary.pop(j, None)
 print('number of merged entries: '+str(c))
 print('lenth of merged dict: '+str(len(dictionary)))
-f=open('tian_result.txt','w')            
+f=open('result.txt','w')            
 for i in dictionary.keys():
     if(dictionary[i]>=threshold):
         f.write (i.encode('utf-8')+'\t'+str(dictionary[i])+'\n')
