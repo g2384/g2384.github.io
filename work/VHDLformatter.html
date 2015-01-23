@@ -46,13 +46,13 @@ String.prototype.reverse = function() {
 function f() {
     var input = document.getElementById("in").value;
     input = input.replace(/(?:\r\n|\r|\n)/g, '\r\n');
-	input = input.replace(/[ ]+/g, ' ');
 	input = input.replace(/ \r\n/g, '\r\n');
     var arr = input.split("\r\n");
+	var comments=[],comments_i=0;
     var l = arr.length;
     var str = "",
         str1 = "";
-    var k = [];
+    var k = [],n=0,p=0;
     for (i = 0; i < l; i++) {
         k = arr[i].match(/"([^"]+)"/g);
 
@@ -62,65 +62,117 @@ function f() {
                 arr[i] = arr[i].replace(k[j], encodeURIComponent(k[j]))
             }
         }
-		
-		n = arr[i].regexIndexOf(/[a-zA-Z0-9\(\&\)\-%]/);
-        n = n < 0 ? 0 : n;
-        arr[i] = arr[i].substr(n);
+		n = arr[i].regexIndexOf(/[a-zA-Z0-9\(\&\)%]/);
+		p = arr[i].indexOf("--");
+		p = p < 0 ? 999 : p;
+		if(n<p){
+			arr[i] = arr[i].substr(n);
+			n = n < 0 ? 0 : n;
+		}else{
+			comments.push(arr[i]);
+			arr[i] = "@@comments"+(comments_i++);
+		}
+        
     }
 
     input = arr.join("\r\n");
     input = input.replace(/\r\n\r\n\r\n/g, '\r\n');
     input = input.replace(/\r\nbegin([ \r\n])/g, '\r\nBEGIN$1');
-    input = input.replace(/\r\narchetecture ([ \r\n])/g, '\r\nARCHITECTURE$1');
+    input = input.replace(/\r\narchetecture ([\r\n])/g, '\r\nARCHITECTURE$1');
     input = input.replace(/[ ]+is([ \r\n])/g, ' IS$1');
     input = input.replace(/\r\nelsif([ \(])/g, '\r\nELSIF$1');
     input = input.replace(/\r\nif([ \(]+)/g, '\r\nIF$1');
+    input = input.replace(/\r\nelse([ ]?)/g, '\r\nELSE');
     input = input.replace(/\r\nreport([ "])/g, '\r\nREPORT$1');
     input = input.replace(/\r\nthen([ \r\n])/g, '\r\nTHEN$1');
     input = input.replace(/\r\nend if([; \r\n])/g, '\r\nEND IF$1');
     input = input.replace(/ then([ \r\n])/g, ' THEN$1');
-    input = input.replace(/[ ]?([&=\-<>])[ ]?/g, ' $1 ');
+    input = input.replace(/[ ]?([&=\-<>\+])[ ]?/g, ' $1 ');
     input = input.replace(/[ ]?([,])[ ]?/g, '$1 ');
-    input = input.replace(/[ ]?<  =[ ]?/g, ' <= ');
+    input = input.replace(/[ ]?(<|:)[ ]+=[ ]?/g, ' $1= ');
     input = input.replace(/[ ]?=  >[ ]?/g, ' => ');
-    input = input.replace(/(IF|PROCESS|PORT)[ ]?([\(\)])/g, '$1 $2');
+    input = input.replace(/(IF)[ ]?([\(\)])/g, '$1 $2');
     input = input.replace(/([\(\)])[ ]?(THEN)/g, '$1 $2');
     input = input.replace(/([\(\)])[ ]?(and|or)[ ]?([\(\)])?/g, '$1 $2 $3');
-
+    input = input.replace(/ -  - /g,"--");
+	input = input.replace(/[ ]+/g, ' ');
     var n = 0,
         j = 0;
-    var tab_n = 1;
-    var back_tab = false;
+    var tab_n = 1,comments_r=0;
+    var back_tab = false,forward_tab = false,need_semi=false,semi_pos=0,process_pos=0,process_b=false;
     arr = input.split("\r\n");
 	l = arr.length;
     for (i = 0; i < l; i++) {
         str = arr[i];
+		semi_pos=str.indexOf(";");
+		process_pos=str.indexOf("PROCESS");
+		if(process_pos>=0){
+			process_b=true;
+		}
         if (str.indexOf("ELSIF") == 0) {
             tab_n--;
             back_tab = true;
         }
+        else if (str.indexOf("END CASE") == 0) {
+            tab_n-=2;
+        }
         else if (str.indexOf("END ") == 0) {
             tab_n--;
         }
-        else if (str.indexOf(");") == 0) {
+        else if (str.indexOf("ELSE") == 0) {
             tab_n--;
 			back_tab = true;
         }
+        else if (str.indexOf("WHEN") == 0) {
+            tab_n--;
+			back_tab = true;
+        }
+        else if (str.indexOf("BEGIN") == 0) {
+			if(!process_b){
+            tab_n--;
+			back_tab = true;
+			process_b=false;
+			}else{
+			back_tab = true;
+			}
+        }
+        else if (need_semi&&semi_pos>=0) {
+            forward_tab = true;
+			need_semi = false;
+        }
         tab_n = tab_n < 1 ? 1 : tab_n;
-		str = decodeURIComponent(str);
-        arr[i] = (Array(tab_n).join("\t")) + str;
+		if (str.length){
+			if(str.indexOf("@@")!=0){
+				arr[i] = (Array(tab_n).join("\t")) + str;
+			}else{
+				arr[i] = arr[i].replace("@@comments"+(comments_r),comments[(comments_r++)]);
+			}
+		}else{
+			arr[i] = str;
+		}
+		arr[i] = decodeURIComponent(arr[i]);
         if (back_tab) {
             tab_n++;
             back_tab = false;
         }
-        if (str.indexOf("BEGIN") == 0) {
+		if (forward_tab) {
+            tab_n--;
+            forward_tab = false;
+        }
+        if (str.indexOf("ENTITY ") == 0) {
             tab_n++;
         }
-        else if (str.indexOf("ENTITY ") == 0) {
+        else if (str.indexOf("FOR ") == 0) {
             tab_n++;
+        }
+        else if (str.indexOf("CASE ") == 0) {
+            tab_n+=2;
         }
         else if (str.indexOf("PORT ") == 0) {
             tab_n++;
+			if (semi_pos<0){
+			need_semi=true;
+			}
         }
         else if (str.indexOf("ARCHITECTURE ") == 0) {
             tab_n++;
@@ -131,7 +183,6 @@ function f() {
 		
     }
     input = arr.join("\r\n");
-    input = input.replace(" -  - ","--");
     /*input = input.replace(/[\u00A0-\u9999<>\&]/gim, function(i) {
         return '&#' + i.charCodeAt(0) + ';';
     }); //HTML entity encoding*/
