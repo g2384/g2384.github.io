@@ -54,18 +54,20 @@ function f() {
         str1 = "";
     var k = [];
     for (i = 0; i < l; i++) {
-        n = arr[i].regexIndexOf(/[a-zA-Z0-9\(\&\)\-]/);
-        n = n < 0 ? 0 : n;
-		
         k = arr[i].match(/"([^"]+)"/g);
 
         if (k != null) {
             var u = k.length;
             for (var j = 0; j < u; j++) {
                 arr[i] = arr[i].replace(k[j], encodeURIComponent(k[j]))
+				console.log(arr[i])
             }
         }
+		
+		n = arr[i].regexIndexOf(/[a-zA-Z0-9\(\&\)\-%]/);
+        n = n < 0 ? 0 : n;
         arr[i] = arr[i].substr(n);
+		console.log(n,arr[i])
     }
 
     input = arr.join("\r\n");
@@ -87,7 +89,7 @@ function f() {
     input = input.replace(/(IF|PROCESS)[ ]?([\(\)])/g, '$1 $2');
     input = input.replace(/([\(\)])[ ]?(THEN)/g, '$1 $2');
     input = input.replace(/([\(\)])[ ]?(and|or)[ ]?([\(\)])?/g, '$1 $2 $3');
-
+console.log(input)
     var n = 0,
         j = 0;
     var tab_n = 1;
@@ -104,6 +106,9 @@ function f() {
             tab_n--;
         }
         tab_n = tab_n < 1 ? 1 : tab_n;
+		//console.log(str)
+		str = decodeURIComponent(str);
+		console.log(str)
         arr[i] = (Array(tab_n).join("\t")) + str;
         //console.log(arr[i],tab_n);
         if (back_tab) {
@@ -122,10 +127,10 @@ function f() {
         else if (str.indexOf("IF") == 0) {
             tab_n++;
         }
+		
     }
     input = arr.join("\r\n");
     input = input.replace(" -  - ","--");
-    input = decodeURIComponent(input);
     /*input = input.replace(/[\u00A0-\u9999<>\&]/gim, function(i) {
         return '&#' + i.charCodeAt(0) + ';';
     }); //HTML entity encoding*/
