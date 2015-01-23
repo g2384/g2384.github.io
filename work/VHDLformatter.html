@@ -1,7 +1,8 @@
 <html>
+<title>VHDL Beautifier</title>
 <style>
 body{margin:0 auto;max-width:800px;}
-textarea{width:100%;}
+textarea{width:100%;font-family:Consolas,Courier;}
 #btn{
 margin: 10px 10px;
 padding: 5px 8px;
@@ -22,9 +23,9 @@ border: 1px solid rgb(194, 194, 194);}
 <p>
 Proper formatting makes code easier to read and understand.<br />
 Please make a backup before you replace your code!</p>
-<textarea id="in" rows="10"></textarea><br />
+<textarea id="in" rows="10" wrap="off"></textarea><br />
 <input type="button" id="btn" onclick="f()" value="start"/><br />
-<textarea id="out" rows="20"></textarea>
+<textarea id="out" rows="20" wrap="off"></textarea>
 <script>
 String.prototype.regexIndexOf = function(pattern, startIndex) {
     startIndex = startIndex || 0;
@@ -45,15 +46,17 @@ String.prototype.reverse = function() {
 function f() {
     var input = document.getElementById("in").value;
     input = input.replace(/(?:\r\n|\r|\n)/g, '\r\n');
+	input = input.replace(/[ ]+/g, ' ');
+	input = input.replace(/ \r\n/g, '\r\n');
     var arr = input.split("\r\n");
     var l = arr.length;
     var str = "",
         str1 = "";
     var k = [];
     for (i = 0; i < l; i++) {
-        n = arr[i].regexIndexOf(/[a-zA-Z0-9\(\&)]/);
+        n = arr[i].regexIndexOf(/[a-zA-Z0-9\(\&\)\-]/);
         n = n < 0 ? 0 : n;
-
+		
         k = arr[i].match(/"([^"]+)"/g);
 
         if (k != null) {
@@ -61,12 +64,12 @@ function f() {
             for (var j = 0; j < u; j++) {
                 arr[i] = arr[i].replace(k[j], encodeURIComponent(k[j]))
             }
-
         }
         arr[i] = arr[i].substr(n);
     }
 
     input = arr.join("\r\n");
+    input = input.replace(/\r\n\r\n\r\n/g, '\r\n');
     input = input.replace(/\r\nbegin([ \r\n])/g, '\r\nBEGIN$1');
     input = input.replace(/\r\narchetecture ([ \r\n])/g, '\r\nARCHITECTURE$1');
     input = input.replace(/[ ]+is([ \r\n])/g, ' IS$1');
@@ -76,11 +79,11 @@ function f() {
     input = input.replace(/\r\nthen([ \r\n])/g, '\r\nTHEN$1');
     input = input.replace(/\r\nend if([; \r\n])/g, '\r\nEND IF$1');
     input = input.replace(/ then([ \r\n])/g, ' THEN$1');
-    input = input.replace(/:[ ]?process([ \r\n])/g, ':  PROCESS$1');
-    input = input.replace(/[ ]?([&=\-])[ ]?/g, ' $1 ');
+    input = input.replace(/:[ ]?process([ \r\n\(])/g, ': PROCESS$1');
+    input = input.replace(/[ ]?([&=\-<>])[ ]?/g, ' $1 ');
     input = input.replace(/[ ]?([,])[ ]?/g, '$1 ');
-    input = input.replace(/[ ]?(< =)[ ]?/g, ' <= ');
-    input = input.replace(/[ ]?(= >)[ ]?/g, ' => ');
+    input = input.replace(/[ ]?<  =[ ]?/g, ' <= ');
+    input = input.replace(/[ ]?=  >[ ]?/g, ' => ');
     input = input.replace(/(IF|PROCESS)[ ]?([\(\)])/g, '$1 $2');
     input = input.replace(/([\(\)])[ ]?(THEN)/g, '$1 $2');
     input = input.replace(/([\(\)])[ ]?(and|or)[ ]?([\(\)])?/g, '$1 $2 $3');
@@ -90,17 +93,14 @@ function f() {
     var tab_n = 1;
     var back_tab = false;
     arr = input.split("\r\n");
-
+	l = arr.length;
     for (i = 0; i < l; i++) {
         str = arr[i];
-        n = str.indexOf("ELSIF");
-        if (n == 0) {
+        if (str.indexOf("ELSIF") == 0) {
             tab_n--;
             back_tab = true;
         }
-
-        n = str.indexOf("END ");
-        if (n == 0) {
+        else if (str.indexOf("END ") == 0) {
             tab_n--;
         }
         tab_n = tab_n < 1 ? 1 : tab_n;
@@ -110,28 +110,25 @@ function f() {
             tab_n++;
             back_tab = false;
         }
-        n = str.indexOf("BEGIN");
-        if (n == 0) {
+        if (str.indexOf("BEGIN") == 0) {
             tab_n++;
         }
-        n = str.indexOf("ENTITY ");
-        if (n == 0) {
+        else if (str.indexOf("ENTITY ") == 0) {
             tab_n++;
         }
-        n = str.indexOf("ARCHITECTURE ");
-        if (n == 0) {
+        else if (str.indexOf("ARCHITECTURE ") == 0) {
             tab_n++;
         }
-        n = str.indexOf("IF");
-        if (n == 0) {
+        else if (str.indexOf("IF") == 0) {
             tab_n++;
         }
     }
     input = arr.join("\r\n");
+    input = input.replace(" -  - ","--");
     input = decodeURIComponent(input);
-    input = input.replace(/[\u00A0-\u9999<>\&]/gim, function(i) {
+    /*input = input.replace(/[\u00A0-\u9999<>\&]/gim, function(i) {
         return '&#' + i.charCodeAt(0) + ';';
-    }); //HTML entity encoding
+    }); //HTML entity encoding*/
     document.getElementById("out").innerHTML = input;
 }
 </script>
