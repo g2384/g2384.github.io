@@ -60,14 +60,12 @@ function f() {
             var u = k.length;
             for (var j = 0; j < u; j++) {
                 arr[i] = arr[i].replace(k[j], encodeURIComponent(k[j]))
-				console.log(arr[i])
             }
         }
 		
 		n = arr[i].regexIndexOf(/[a-zA-Z0-9\(\&\)\-%]/);
         n = n < 0 ? 0 : n;
         arr[i] = arr[i].substr(n);
-		console.log(n,arr[i])
     }
 
     input = arr.join("\r\n");
@@ -81,15 +79,14 @@ function f() {
     input = input.replace(/\r\nthen([ \r\n])/g, '\r\nTHEN$1');
     input = input.replace(/\r\nend if([; \r\n])/g, '\r\nEND IF$1');
     input = input.replace(/ then([ \r\n])/g, ' THEN$1');
-    input = input.replace(/:[ ]?process([ \r\n\(])/g, ': PROCESS$1');
     input = input.replace(/[ ]?([&=\-<>])[ ]?/g, ' $1 ');
     input = input.replace(/[ ]?([,])[ ]?/g, '$1 ');
     input = input.replace(/[ ]?<  =[ ]?/g, ' <= ');
     input = input.replace(/[ ]?=  >[ ]?/g, ' => ');
-    input = input.replace(/(IF|PROCESS)[ ]?([\(\)])/g, '$1 $2');
+    input = input.replace(/(IF|PROCESS|PORT)[ ]?([\(\)])/g, '$1 $2');
     input = input.replace(/([\(\)])[ ]?(THEN)/g, '$1 $2');
     input = input.replace(/([\(\)])[ ]?(and|or)[ ]?([\(\)])?/g, '$1 $2 $3');
-console.log(input)
+
     var n = 0,
         j = 0;
     var tab_n = 1;
@@ -105,12 +102,13 @@ console.log(input)
         else if (str.indexOf("END ") == 0) {
             tab_n--;
         }
+        else if (str.indexOf(");") == 0) {
+            tab_n--;
+			back_tab = true;
+        }
         tab_n = tab_n < 1 ? 1 : tab_n;
-		//console.log(str)
 		str = decodeURIComponent(str);
-		console.log(str)
         arr[i] = (Array(tab_n).join("\t")) + str;
-        //console.log(arr[i],tab_n);
         if (back_tab) {
             tab_n++;
             back_tab = false;
@@ -119,6 +117,9 @@ console.log(input)
             tab_n++;
         }
         else if (str.indexOf("ENTITY ") == 0) {
+            tab_n++;
+        }
+        else if (str.indexOf("PORT ") == 0) {
             tab_n++;
         }
         else if (str.indexOf("ARCHITECTURE ") == 0) {
