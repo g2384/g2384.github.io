@@ -56,7 +56,7 @@ Please make a backup before you replace your code!</p>
 <input type="button" class="btn" onclick="f()" value="start"/>
 <input type="button" class="btn" id="selectAll" value="Select All" onclick="selectText(document.getElementById('vhdl'))"/><br />
 <!-- <textarea id="out" rows="20" wrap="off"></textarea> -->
-<pre><code class="vhdl" id="vhdl"></code><pre>
+<pre id="result"><code class="vhdl" id="vhdl"></code><pre>
 <script>
 String.prototype.regexIndexOf = function(pattern, startIndex) {
     startIndex = startIndex || 0;
@@ -232,9 +232,10 @@ function f() {
         }
     }
     input = arr.join("\r\n");
+	document.getElementById("result").innerHTML = "<code class='vhdl' id='vhdl'></code>";
     document.getElementById("vhdl").innerHTML = input;
     document.getElementById("selectAll").style.display = "inline-block";
-    hljs.initHighlighting();
+    hljs.highlightBlock(document.getElementById("vhdl"));
 }
 </script>
 
