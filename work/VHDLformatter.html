@@ -256,7 +256,11 @@ function f() {
 				}
 				bra_semi_b=true;
 			}else{
-				back_tab=true;
+				if(str.indexOf("(")==str_len-1){
+					back_tab=true;
+				}else if(str.regexIndexOf(/\([ ]+\(/)>=0&&str.indexOf("),")>=0){
+					back_tab=true;
+				}
 				if(str.indexOf("),")>=0||bra_semi_accept){
 				back_tab=false;
 				bra_semi_accept=true;
@@ -304,8 +308,6 @@ function f() {
         } else if (str.indexOf("IF") == 0) {
             tab_n++;
         }
-
-		
     }
     input = arr.join("\r\n");
 	document.getElementById("result").innerHTML = "<code class='vhdl' id='vhdl'></code>";
@@ -314,6 +316,5 @@ function f() {
     hljs.highlightBlock(document.getElementById("vhdl"));
 }
 </script>
-
 </body>
 </html>
