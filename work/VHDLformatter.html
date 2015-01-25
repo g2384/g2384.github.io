@@ -123,7 +123,9 @@ function f() {
 		port_b = false,
 		bra_semi_pos = 0,
 		bra_semi_b = false,
-		bra_semi_accept = false;
+		bra_semi_accept = false,
+		process_pos=0,
+		process_b=false;
     for (i = 0; i < l; i++) {
         k = arr[i].match(/"([^"]+)"/g);
         if (k != null) {
@@ -186,6 +188,10 @@ function f() {
     input = input.replace(/\r\nthen([ \r\n])/gi, '\r\nTHEN$1');
     input = input.replace(/\r\nend if([; \r\n])/gi, '\r\nEND IF$1');
     input = input.replace(/ then([ \r\n])/gi, ' THEN$1');
+    input = input.replace(/\r\nsignal/gi, '\r\nSIGNAL');
+    input = input.replace(/: out/gi, ': OUT');
+    input = input.replace(/: in/gi, ': IN');
+    input = input.replace(/\r\nalias/gi, '\r\nALIAS');
     input = input.replace(/[ ]?([&=\-<>\+])[ ]?/g, ' $1 ');
     input = input.replace(/[ ]?([,])[ ]?/g, '$1 ');
     input = input.replace(/[ ]?(<|:)[ ]+=[ ]?/g, ' $1= ');
@@ -206,6 +212,7 @@ function f() {
         semi_pos = str.indexOf(";");
         bra_semi_pos = str.indexOf(");");
         arch_pos = str.indexOf("ARCHITECTURE ");
+        process_pos = str.indexOf(": PROCESS");
         if (str.indexOf("ELSIF") == 0) {
             tab_n--;
             back_tab = true;
@@ -227,7 +234,18 @@ function f() {
             } else {
                 back_tab = true;
             }
+        }else if (process_pos >= 0) {
+            back_tab = true;
+			process_b=true;
+			begin_b = true;
+			
+			need_semi = false;
+        
+        bra_comma_pos_b = false;
+		bra_semi_b = false;
+		bra_semi_accept = false;
         }
+		console.log(back_tab,process_b)
         if (need_semi && semi_pos >= 0) {
             forward_tab = true;
             need_semi = false;
@@ -255,7 +273,10 @@ function f() {
 					bra_semi_accept=true;
 				}
 				bra_semi_b=true;
-			}else{
+			}else if(process_b){
+				process_b=false;
+			}
+			else{
 				if(str.indexOf("(")==str_len-1){
 					back_tab=true;
 				}else if(str.regexIndexOf(/\([ ]+\(/)>=0&&str.indexOf("),")>=0){
@@ -308,6 +329,8 @@ function f() {
         } else if (str.indexOf("IF") == 0) {
             tab_n++;
         }
+console.log(tab_n,str);
+		
     }
     input = arr.join("\r\n");
 	document.getElementById("result").innerHTML = "<code class='vhdl' id='vhdl'></code>";
@@ -316,5 +339,6 @@ function f() {
     hljs.highlightBlock(document.getElementById("vhdl"));
 }
 </script>
+
 </body>
 </html>
