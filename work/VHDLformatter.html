@@ -255,6 +255,12 @@ function f() {
 					bra_semi_accept=true;
 				}
 				bra_semi_b=true;
+			}else{
+				back_tab=true;
+				if(str.indexOf("),")>=0||bra_semi_accept){
+				back_tab=false;
+				bra_semi_accept=true;
+				}
 			}
         }
         tab_n = tab_n < 1 ? 1 : tab_n;
