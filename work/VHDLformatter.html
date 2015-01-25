@@ -59,11 +59,12 @@ function selectText(element) {
 Proper formatting makes code easier to read and understand.<br />
 Please make a backup before you replace your code!</p>
 <textarea id="in" rows="10" wrap="off"></textarea><br />
-<input type="button" class="btn" onclick="f()" value="start"/>
-<input type="button" class="btn" id="selectAll" value="Select All" onclick="selectText(document.getElementById('vhdl'))"/><br />
 <label><input type="checkbox" id="remove_comments">Remove commments</label>
  | <label><input type="checkbox" id="remove_lines">Remove blank lines</label>
- | <label><input type="checkbox" id="remove_report">Remove REPORT</label>
+ | <label><input type="checkbox" id="remove_report">Remove REPORT</label><br />
+<input type="button" class="btn" onclick="f()" value="start"/>
+<input type="button" class="btn" id="selectAll" value="Select All" onclick="selectText(document.getElementById('vhdl'))"/><br />
+
 <!-- <textarea id="out" rows="20" wrap="off"></textarea> -->
 <pre id="result"><code class="vhdl" id="vhdl"></code><pre>
 <script>
@@ -106,6 +107,23 @@ function f() {
     var k = [],
         n = 0,
         p = 0;
+	var n = 0,
+        j = 0;
+    var tab_n = 1,
+        comments_r = 0,
+        str_len = 0;
+    var back_tab = false,
+        forward_tab = false,
+        need_semi = false,
+        semi_pos = 0,
+        arch_pos = 0,
+        begin_b = false,
+        bra_comma_pos = 0,
+        bra_comma_pos_b = false,
+		port_b = false,
+		bra_semi_pos = 0,
+		bra_semi_b = false,
+		bra_semi_accept = false;
     for (i = 0; i < l; i++) {
         k = arr[i].match(/"([^"]+)"/g);
         if (k != null) {
@@ -133,7 +151,19 @@ function f() {
 		    arr[i] = arr[i].replace(/@@comments[0-9]+/g, '');
 		}
 		if (remove_report) {
-		    arr[i] = arr[i].replace(/REPORT[ %0-9a-zA-Z&,\.'\(\)\-_]+;/g, '');
+		    n = arr[i].indexOf("REPORT");
+			p = arr[i].indexOf(";");
+			if(n>=0){
+				arr[i]='';
+				if(p<0){
+					need_semi=true;
+				}
+			}else if(need_semi){
+				arr[i]='';
+				if(p>=0){
+					need_semi=false;
+				}
+			}
 		}
 		if (remove_lines) {
 		    str = arr[i].replace(/[ \t\r\n]/g, '');
@@ -146,41 +176,27 @@ function f() {
     }
     input = arr.join("\r\n");
     input = input.replace(/\r\n\r\n\r\n/g, '\r\n');
-    input = input.replace(/\r\nbegin([ \r\n])/g, '\r\nBEGIN$1');
-    input = input.replace(/\r\narchetecture /g, '\r\nARCHITECTURE ');
-    input = input.replace(/[ ]+is([ \r\n])/g, ' IS$1');
-    input = input.replace(/\r\nelsif([ \(])/g, '\r\nELSIF$1');
-    input = input.replace(/\r\nif([ \(]+)/g, '\r\nIF$1');
-    input = input.replace(/\r\nelse([ ]?)/g, '\r\nELSE');
-    input = input.replace(/\r\nreport([ "])/g, '\r\nREPORT$1');
-    input = input.replace(/\r\nthen([ \r\n])/g, '\r\nTHEN$1');
-    input = input.replace(/\r\nend if([; \r\n])/g, '\r\nEND IF$1');
-    input = input.replace(/ then([ \r\n])/g, ' THEN$1');
+    input = input.replace(/\r\nbegin([ \r\n])/gi, '\r\nBEGIN$1');
+    input = input.replace(/\r\narchetecture /gi, '\r\nARCHITECTURE ');
+    input = input.replace(/[ ]+is([ \r\n])/gi, ' IS$1');
+    input = input.replace(/\r\nelsif([ \(])/gi, '\r\nELSIF$1');
+    input = input.replace(/\r\nif([ \(]+)/gi, '\r\nIF$1');
+    input = input.replace(/\r\nelse([ ]?)/gi, '\r\nELSE');
+    input = input.replace(/\r\nreport([ "])/gi, '\r\nREPORT$1');
+    input = input.replace(/\r\nthen([ \r\n])/gi, '\r\nTHEN$1');
+    input = input.replace(/\r\nend if([; \r\n])/gi, '\r\nEND IF$1');
+    input = input.replace(/ then([ \r\n])/gi, ' THEN$1');
     input = input.replace(/[ ]?([&=\-<>\+])[ ]?/g, ' $1 ');
     input = input.replace(/[ ]?([,])[ ]?/g, '$1 ');
     input = input.replace(/[ ]?(<|:)[ ]+=[ ]?/g, ' $1= ');
     input = input.replace(/[ ]?=  >[ ]?/g, ' => ');
     input = input.replace(/(IF)[ ]?([\(\)])/g, '$1 $2');
-    input = input.replace(/([\(\)])[ ]?(THEN)/g, '$1 $2');
-    input = input.replace(/([\(\)])[ ]?(and|or)[ ]?([\(\)])?/g, '$1 $2 $3');
+    input = input.replace(/([\(\)])[ ]?(THEN)/gi, '$1 $2');
+    input = input.replace(/([\(\)])[ ]?(and|or)[ ]?([\(\)])?/gi, '$1 $2 $3');
     input = input.replace(/ -  - /g, "--");
     input = input.replace(/\r\n[ \t]+--\r\n/g, "\r\n");
     input = input.replace(/[ ]+/g, ' ');
 	
-    var n = 0,
-        j = 0;
-    var tab_n = 1,
-        comments_r = 0,
-        str_len = 0;
-    var back_tab = false,
-        forward_tab = false,
-        need_semi = false,
-        semi_pos = 0,
-        process_pos = 0,
-        process_b = false,
-        bra_comma_pos = 0,
-        bra_comma_pos_b = false,
-		port_b = false;
     arr = input.split("\r\n");
     l = arr.length;
     for (i = 0; i < l; i++) {
@@ -188,10 +204,8 @@ function f() {
         str = arr[i];
         str_len = str.length;
         semi_pos = str.indexOf(";");
-        process_pos = str.indexOf("PROCESS");
-        if (process_pos >= 0) {
-            process_b = true;
-        }
+        bra_semi_pos = str.indexOf(");");
+        arch_pos = str.indexOf("ARCHITECTURE ");
         if (str.indexOf("ELSIF") == 0) {
             tab_n--;
             back_tab = true;
@@ -206,10 +220,10 @@ function f() {
             tab_n--;
             back_tab = true;
         } else if (str.indexOf("BEGIN") == 0) {
-            if (!process_b) {
+            if (begin_b) {
                 tab_n--;
                 back_tab = true;
-                process_b = false;
+                begin_b = false;
             } else {
                 back_tab = true;
             }
@@ -218,9 +232,30 @@ function f() {
             forward_tab = true;
             need_semi = false;
         }
+		if (bra_semi_pos >= 0){
+			if(bra_semi_pos==0||str.indexOf("));")>0){
+				if(port_b){
+				tab_n--;
+				port_b=false;
+				}
+			}else if(bra_semi_accept&&bra_semi_pos>0){
+				forward_tab = true;
+				port_b=false;
+				bra_semi_accept=false;
+			}
+		}
+		
         if (str.indexOf("PORT") == 0) {
-            tab_n++;
+            back_tab=true;
 			port_b=true;
+        }
+		if (str.indexOf("(")>=0) {
+			if(port_b){
+				if(str.indexOf(" MAP(")>=0){
+					bra_semi_accept=true;
+				}
+				bra_semi_b=true;
+			}
         }
         tab_n = tab_n < 1 ? 1 : tab_n;
         if (str_len) {
@@ -239,14 +274,12 @@ function f() {
             tab_n++;
             back_tab = false;
         }
+		
         if (forward_tab) {
             tab_n--;
             forward_tab = false;
-			if(port_b){
-				tab_n--;
-				port_b=false;
-			}
         }
+		
         if (str.indexOf("ENTITY ") == 0) {
             tab_n++;
         }
@@ -259,20 +292,14 @@ function f() {
             tab_n++;
         } else if (str.indexOf("CASE ") == 0) {
             tab_n += 2;
-        } else if (str.indexOf("ARCHITECTURE ") == 0) {
+        } else if (arch_pos == 0) {
             tab_n++;
+			begin_b = true;
         } else if (str.indexOf("IF") == 0) {
             tab_n++;
         }
-        if (str.indexOf("(") == str.length - 1 && str.length > 0 || str.indexOf("IS (") >= 0) {
-            if (!need_semi && semi_pos < 0) {
-                tab_n++;
-                need_semi = true;
-            }
-            if (semi_pos < 0) {
 
-            }
-        }
+		
     }
     input = arr.join("\r\n");
 	document.getElementById("result").innerHTML = "<code class='vhdl' id='vhdl'></code>";
