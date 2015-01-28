@@ -104,6 +104,11 @@ function f() {
     var remove_comments = document.getElementById("remove_comments").checked;
     var remove_lines = document.getElementById("remove_lines").checked;
     var remove_report = document.getElementById("remove_report").checked;
+	
+	var keyword_cap=["$1ABS$2","$1ACCESS$2","$1AFTER$2","$1ALIAS$2","$1ALL$2","$1AND$2","$1ARCHITECTURE$2","$1ARRAY$2","$1ASSERT$2","$1ATTRIBUTE$2","$1BEGIN$2","$1BLOCK$2","$1BODY$2","$1BUFFER$2","$1BUS$2","$1CASE$2","$1COMPONENT$2","$1CONFIGURATION$2","$1CONSTANT$2","$1CONTEXT$2","$1COVER$2","$1DISCONNECT$2","$1DOWNTO$2","$1DEFAULT$2","$1ELSE$2","$1ELSIF$2","$1END$2","$1ENTITY$2","$1EXIT$2","$1FAIRNESS$2","$1FILE$2","$1FOR$2","$1FORCE$2","$1FUNCTION$2","$1GENERATE$2","$1GENERIC$2","$1GROUP$2","$1GUARDED$2","$1IF$2","$1IMPURE$2","$1IN$2","$1INERTIAL$2","$1INOUT$2","$1IS$2","$1LABEL$2","$1LIBRARY$2","$1LINKAGE$2","$1LITERAL$2","$1LOOP$2","$1MAP$2","$1MOD$2","$1NAND$2","$1NEW$2","$1NEXT$2","$1NOR$2","$1NOT$2","$1NULL$2","$1OF$2","$1ON$2","$1OPEN$2","$1OR$2","$1OTHERS$2","$1OUT$2","$1PACKAGE$2","$1PORT$2","$1POSTPONED$2","$1PROCEDURE$2","$1PROCESS$2","$1PROPERTY$2","$1PROTECTED$2","$1PURE$2","$1RANGE$2","$1RECORD$2","$1REGISTER$2","$1REJECT$2","$1RELEASE$2","$1REM$2","$1REPORT$2","$1RESTRICT$2","$1RESTRICT_GUARANTEE$2","$1RETURN$2","$1ROL$2","$1ROR$2","$1SELECT$2","$1SEQUENCE$2","$1SEVERITY$2","$1SHARED$2","$1SIGNAL$2","$1SLA$2","$1SLL$2","$1SRA$2","$1SRL$2","$1STRONG$2","$1SUBTYPE$2","$1THEN$2","$1TO$2","$1TRANSPORT$2","$1TYPE$2","$1UNAFFECTED$2","$1UNITS$2","$1UNTIL$2","$1USE$2","$1VARIABLE$2","$1VMODE$2","$1VPROP$2","$1VUNIT$2","$1WAIT$2","$1WHEN$2","$1WHILE$2","$1WITH$2","$1XNOR$2","$1XOR$2"], typename_cap=["$1BOOLEAN$2","$1BIT$2","$1CHARACTER$2","$1INTEGER$2","$1TIME$2","$1NATURAL$2","$1POSITIVE$2","$1STRING$2"];
+	var typename_reg=[/([\r\n ])boolean([ (;])/gi, /([\r\n ])bit([ (;])/gi, /([\r\n ])character([ (;])/gi, /([\r\n ])integer([ (;])/gi, /([\r\n ])time([ (;])/gi, /([\r\n ])natural([ (;])/gi, /([\r\n ])positive([ (;])/gi, /([\r\n ])string([ (;])/gi],keyword_reg=[/([\r\n ])abs([ (;])/gi, /([\r\n ])access([ (;])/gi, /([\r\n ])after([ (;])/gi, /([\r\n ])alias([ (;])/gi, /([\r\n ])all([ (;])/gi, /([\r\n ])and([ (;])/gi, /([\r\n ])architecture([ (;])/gi, /([\r\n ])array([ (;])/gi, /([\r\n ])assert([ (;])/gi, /([\r\n ])attribute([ (;])/gi, /([\r\n ])begin([ (;])/gi, /([\r\n ])block([ (;])/gi, /([\r\n ])body([ (;])/gi, /([\r\n ])buffer([ (;])/gi, /([\r\n ])bus([ (;])/gi, /([\r\n ])case([ (;])/gi, /([\r\n ])component([ (;])/gi, /([\r\n ])configuration([ (;])/gi, /([\r\n ])constant([ (;])/gi, /([\r\n ])context([ (;])/gi, /([\r\n ])cover([ (;])/gi, /([\r\n ])disconnect([ (;])/gi, /([\r\n ])downto([ (;])/gi, /([\r\n ])default([ (;])/gi, /([\r\n ])else([ (;])/gi, /([\r\n ])elsif([ (;])/gi, /([\r\n ])end([ (;])/gi, /([\r\n ])entity([ (;])/gi, /([\r\n ])exit([ (;])/gi, /([\r\n ])fairness([ (;])/gi, /([\r\n ])file([ (;])/gi, /([\r\n ])for([ (;])/gi, /([\r\n ])force([ (;])/gi, /([\r\n ])function([ (;])/gi, /([\r\n ])generate([ (;])/gi, /([\r\n ])generic([ (;])/gi, /([\r\n ])group([ (;])/gi, /([\r\n ])guarded([ (;])/gi, /([\r\n ])if([ (;])/gi, /([\r\n ])impure([ (;])/gi, /([\r\n ])in([ (;])/gi, /([\r\n ])inertial([ (;])/gi, /([\r\n ])inout([ (;])/gi, /([\r\n ])is([ (;])/gi, /([\r\n ])label([ (;])/gi, /([\r\n ])library([ (;])/gi, /([\r\n ])linkage([ (;])/gi, /([\r\n ])literal([ (;])/gi, /([\r\n ])loop([ (;])/gi, /([\r\n ])map([ (;])/gi, /([\r\n ])mod([ (;])/gi, /([\r\n ])nand([ (;])/gi, /([\r\n ])new([ (;])/gi, /([\r\n ])next([ (;])/gi, /([\r\n ])nor([ (;])/gi, /([\r\n ])not([ (;])/gi, /([\r\n ])null([ (;])/gi, /([\r\n ])of([ (;])/gi, /([\r\n ])on([ (;])/gi, /([\r\n ])open([ (;])/gi, /([\r\n ])or([ (;])/gi, /([\r\n ])others([ (;])/gi, /([\r\n ])out([ (;])/gi, /([\r\n ])package([ (;])/gi, /([\r\n ])port([ (;])/gi, /([\r\n ])postponed([ (;])/gi, /([\r\n ])procedure([ (;])/gi, /([\r\n ])process([ (;])/gi, /([\r\n ])property([ (;])/gi, /([\r\n ])protected([ (;])/gi, /([\r\n ])pure([ (;])/gi, /([\r\n ])range([ (;])/gi, /([\r\n ])record([ (;])/gi, /([\r\n ])register([ (;])/gi, /([\r\n ])reject([ (;])/gi, /([\r\n ])release([ (;])/gi, /([\r\n ])rem([ (;])/gi, /([\r\n ])report([ (;])/gi, /([\r\n ])restrict([ (;])/gi,  /([\r\n ])restrict_guarantee([ (;])/gi,  /([\r\n ])return([ (;])/gi, /([\r\n ])rol([ (;])/gi, /([\r\n ])ror([ (;])/gi, /([\r\n ])select([ (;])/gi, /([\r\n ])sequence([ (;])/gi, /([\r\n ])severity([ (;])/gi, /([\r\n ])shared([ (;])/gi, /([\r\n ])signal([ (;])/gi, /([\r\n ])sla([ (;])/gi, /([\r\n ])sll([ (;])/gi, /([\r\n ])sra([ (;])/gi, /([\r\n ])srl([ (;])/gi, /([\r\n ])strong([ (;])/gi, /([\r\n ])subtype([ (;])/gi, /([\r\n ])then([ (;])/gi, /([\r\n ])to([ (;])/gi, /([\r\n ])transport([ (;])/gi, /([\r\n ])type([ (;])/gi, /([\r\n ])unaffected([ (;])/gi, /([\r\n ])units([ (;])/gi, /([\r\n ])until([ (;])/gi, /([\r\n ])use([ (;])/gi, /([\r\n ])variable([ (;])/gi, /([\r\n ])vmode([ (;])/gi, /([\r\n ])vprop([ (;])/gi, /([\r\n ])vunit([ (;])/gi, /([\r\n ])wait([ (;])/gi, /([\r\n ])when([ (;])/gi, /([\r\n ])while([ (;])/gi, /([\r\n ])with([ (;])/gi, /([\r\n ])xnor([ (;])/gi, /([\r\n ])xor([ (;])/gi];
+	
+	
     input = input.replace(/(?:\r\n|\r|\n)/g, '\r\n');
     input = input.replace(/ \r\n/g, '\r\n');
     var arr = input.split("\r\n");
@@ -187,8 +192,6 @@ function f() {
     input = arr.join("\r\n");
     input = input.replace(/\r\n\r\n\r\n/g, '\r\n');
 	
-	var keyword_cap=["$1ABS$2","$1ACCESS$2","$1AFTER$2","$1ALIAS$2","$1ALL$2","$1AND$2","$1ARCHITECTURE$2","$1ARRAY$2","$1ASSERT$2","$1ATTRIBUTE$2","$1BEGIN$2","$1BLOCK$2","$1BODY$2","$1BUFFER$2","$1BUS$2","$1CASE$2","$1COMPONENT$2","$1CONFIGURATION$2","$1CONSTANT$2","$1CONTEXT$2","$1COVER$2","$1DISCONNECT$2","$1DOWNTO$2","$1DEFAULT$2","$1ELSE$2","$1ELSIF$2","$1END$2","$1ENTITY$2","$1EXIT$2","$1FAIRNESS$2","$1FILE$2","$1FOR$2","$1FORCE$2","$1FUNCTION$2","$1GENERATE$2","$1GENERIC$2","$1GROUP$2","$1GUARDED$2","$1IF$2","$1IMPURE$2","$1IN$2","$1INERTIAL$2","$1INOUT$2","$1IS$2","$1LABEL$2","$1LIBRARY$2","$1LINKAGE$2","$1LITERAL$2","$1LOOP$2","$1MAP$2","$1MOD$2","$1NAND$2","$1NEW$2","$1NEXT$2","$1NOR$2","$1NOT$2","$1NULL$2","$1OF$2","$1ON$2","$1OPEN$2","$1OR$2","$1OTHERS$2","$1OUT$2","$1PACKAGE$2","$1PORT$2","$1POSTPONED$2","$1PROCEDURE$2","$1PROCESS$2","$1PROPERTY$2","$1PROTECTED$2","$1PURE$2","$1RANGE$2","$1RECORD$2","$1REGISTER$2","$1REJECT$2","$1RELEASE$2","$1REM$2","$1REPORT$2","$1RESTRICT$2","$1RESTRICT_GUARANTEE$2","$1RETURN$2","$1ROL$2","$1ROR$2","$1SELECT$2","$1SEQUENCE$2","$1SEVERITY$2","$1SHARED$2","$1SIGNAL$2","$1SLA$2","$1SLL$2","$1SRA$2","$1SRL$2","$1STRONG$2","$1SUBTYPE$2","$1THEN$2","$1TO$2","$1TRANSPORT$2","$1TYPE$2","$1UNAFFECTED$2","$1UNITS$2","$1UNTIL$2","$1USE$2","$1VARIABLE$2","$1VMODE$2","$1VPROP$2","$1VUNIT$2","$1WAIT$2","$1WHEN$2","$1WHILE$2","$1WITH$2","$1XNOR$2","$1XOR$2"], typename_cap=["$1BOOLEAN$2","$1BIT$2","$1CHARACTER$2","$1INTEGER$2","$1TIME$2","$1NATURAL$2","$1POSITIVE$2","$1STRING$2"];
-	var typename_reg=[/([\r\n ])boolean([ (;])/gi, /([\r\n ])bit([ (;])/gi, /([\r\n ])character([ (;])/gi, /([\r\n ])integer([ (;])/gi, /([\r\n ])time([ (;])/gi, /([\r\n ])natural([ (;])/gi, /([\r\n ])positive([ (;])/gi, /([\r\n ])string([ (;])/gi],keyword_reg=[/([\r\n ])abs([ (;])/gi, /([\r\n ])access([ (;])/gi, /([\r\n ])after([ (;])/gi, /([\r\n ])alias([ (;])/gi, /([\r\n ])all([ (;])/gi, /([\r\n ])and([ (;])/gi, /([\r\n ])architecture([ (;])/gi, /([\r\n ])array([ (;])/gi, /([\r\n ])assert([ (;])/gi, /([\r\n ])attribute([ (;])/gi, /([\r\n ])begin([ (;])/gi, /([\r\n ])block([ (;])/gi, /([\r\n ])body([ (;])/gi, /([\r\n ])buffer([ (;])/gi, /([\r\n ])bus([ (;])/gi, /([\r\n ])case([ (;])/gi, /([\r\n ])component([ (;])/gi, /([\r\n ])configuration([ (;])/gi, /([\r\n ])constant([ (;])/gi, /([\r\n ])context([ (;])/gi, /([\r\n ])cover([ (;])/gi, /([\r\n ])disconnect([ (;])/gi, /([\r\n ])downto([ (;])/gi, /([\r\n ])default([ (;])/gi, /([\r\n ])else([ (;])/gi, /([\r\n ])elsif([ (;])/gi, /([\r\n ])end([ (;])/gi, /([\r\n ])entity([ (;])/gi, /([\r\n ])exit([ (;])/gi, /([\r\n ])fairness([ (;])/gi, /([\r\n ])file([ (;])/gi, /([\r\n ])for([ (;])/gi, /([\r\n ])force([ (;])/gi, /([\r\n ])function([ (;])/gi, /([\r\n ])generate([ (;])/gi, /([\r\n ])generic([ (;])/gi, /([\r\n ])group([ (;])/gi, /([\r\n ])guarded([ (;])/gi, /([\r\n ])if([ (;])/gi, /([\r\n ])impure([ (;])/gi, /([\r\n ])in([ (;])/gi, /([\r\n ])inertial([ (;])/gi, /([\r\n ])inout([ (;])/gi, /([\r\n ])is([ (;])/gi, /([\r\n ])label([ (;])/gi, /([\r\n ])library([ (;])/gi, /([\r\n ])linkage([ (;])/gi, /([\r\n ])literal([ (;])/gi, /([\r\n ])loop([ (;])/gi, /([\r\n ])map([ (;])/gi, /([\r\n ])mod([ (;])/gi, /([\r\n ])nand([ (;])/gi, /([\r\n ])new([ (;])/gi, /([\r\n ])next([ (;])/gi, /([\r\n ])nor([ (;])/gi, /([\r\n ])not([ (;])/gi, /([\r\n ])null([ (;])/gi, /([\r\n ])of([ (;])/gi, /([\r\n ])on([ (;])/gi, /([\r\n ])open([ (;])/gi, /([\r\n ])or([ (;])/gi, /([\r\n ])others([ (;])/gi, /([\r\n ])out([ (;])/gi, /([\r\n ])package([ (;])/gi, /([\r\n ])port([ (;])/gi, /([\r\n ])postponed([ (;])/gi, /([\r\n ])procedure([ (;])/gi, /([\r\n ])process([ (;])/gi, /([\r\n ])property([ (;])/gi, /([\r\n ])protected([ (;])/gi, /([\r\n ])pure([ (;])/gi, /([\r\n ])range([ (;])/gi, /([\r\n ])record([ (;])/gi, /([\r\n ])register([ (;])/gi, /([\r\n ])reject([ (;])/gi, /([\r\n ])release([ (;])/gi, /([\r\n ])rem([ (;])/gi, /([\r\n ])report([ (;])/gi, /([\r\n ])restrict([ (;])/gi,  /([\r\n ])restrict_guarantee([ (;])/gi,  /([\r\n ])return([ (;])/gi, /([\r\n ])rol([ (;])/gi, /([\r\n ])ror([ (;])/gi, /([\r\n ])select([ (;])/gi, /([\r\n ])sequence([ (;])/gi, /([\r\n ])severity([ (;])/gi, /([\r\n ])shared([ (;])/gi, /([\r\n ])signal([ (;])/gi, /([\r\n ])sla([ (;])/gi, /([\r\n ])sll([ (;])/gi, /([\r\n ])sra([ (;])/gi, /([\r\n ])srl([ (;])/gi, /([\r\n ])strong([ (;])/gi, /([\r\n ])subtype([ (;])/gi, /([\r\n ])then([ (;])/gi, /([\r\n ])to([ (;])/gi, /([\r\n ])transport([ (;])/gi, /([\r\n ])type([ (;])/gi, /([\r\n ])unaffected([ (;])/gi, /([\r\n ])units([ (;])/gi, /([\r\n ])until([ (;])/gi, /([\r\n ])use([ (;])/gi, /([\r\n ])variable([ (;])/gi, /([\r\n ])vmode([ (;])/gi, /([\r\n ])vprop([ (;])/gi, /([\r\n ])vunit([ (;])/gi, /([\r\n ])wait([ (;])/gi, /([\r\n ])when([ (;])/gi, /([\r\n ])while([ (;])/gi, /([\r\n ])with([ (;])/gi, /([\r\n ])xnor([ (;])/gi, /([\r\n ])xor([ (;])/gi];
 	input=matchInArray(input, keyword_reg,keyword_cap);
 	input=matchInArray(input, typename_reg,typename_cap);
 	
@@ -200,6 +203,7 @@ function f() {
     input = input.replace(/([\(\)])[ ]?(THEN)/gi, '$1 $2');
     input = input.replace(/([\(\)])[ ]?(and|or)[ ]?([\(\)])?/gi, '$1 $2 $3');
     input = input.replace(/ -  - /g, "--");
+    input = input.replace(/ \/ = /g, " /= ");
     input = input.replace(/\r\n[ \t]+--\r\n/g, "\r\n");
     input = input.replace(/[ ]+/g, ' ');
 	
@@ -239,9 +243,9 @@ function f() {
 			process_b=true;
 			begin_b = true;
 			need_semi = false;
-        bra_comma_pos_b = false;
-		bra_semi_b = false;
-		bra_semi_accept = false;
+			bra_comma_pos_b = false;
+			bra_semi_b = false;
+			bra_semi_accept = false;
         }
         if (need_semi && semi_pos >= 0) {
             forward_tab = true;
@@ -260,7 +264,7 @@ function f() {
 			}
 		}
 		
-        if (str.regexIndexOf(/([\r\n]+)port([ (]+)/) == 0||str.regexIndexOf(/([\r\n]+)generic([ (]+)/) == 0) {
+        if (str.regexIndexOf(/^PORT[ (]/) >= 0||str.regexIndexOf(/^GENERIC[ (]/) >= 0) {
             back_tab=true;
 			port_b=true;
         }
@@ -302,19 +306,15 @@ function f() {
             tab_n++;
             back_tab = false;
         }
-		
         if (forward_tab) {
             tab_n--;
             forward_tab = false;
         }
-		
         if (str.indexOf("ENTITY ") == 0) {
             tab_n++;
-        }
-        if (str.indexOf("RECORD") == 0) {
+        }else if (str.indexOf("RECORD") == 0) {
             tab_n++;
-        }
-        if (str.indexOf("PACKAGE ") == 0) {
+        }else if (str.indexOf("PACKAGE ") == 0) {
             tab_n++;
         } else if (str.indexOf("FOR ") == 0) {
             tab_n++;
@@ -328,7 +328,6 @@ function f() {
         }
     }
     input = arr.join("\r\n");
-	document.getElementById("result").innerHTML = "<code class='vhdl' id='vhdl'></code>";
     document.getElementById("vhdl").innerHTML = input;
     document.getElementById("selectAll").style.display = "inline-block";
     hljs.highlightBlock(document.getElementById("vhdl"));
