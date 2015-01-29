@@ -222,19 +222,17 @@ function f() {
 					alias[p2++]=str.split(" IS ");
 				}
 				i2--;
-				console.log(p2,alias)
 				var str2 = subarr[i2].substr(o);
 				for(p=0;p<p2;p++){
 					var reg = new RegExp(alias[p][1],'gi');
 					str2 = str2.replace(reg,alias[p][0]);
-					console.log(reg)
 				}
 				subarr[i2] = subarr[i2].substring(0,o)+str2;
 			}
 			arr[i]=subarr.join("ALIAS ");
 		}
+		input=arr.join("ARCHITECTURE ");
 	}
-	input=arr.join("ARCHITECTURE ");
 	
     arr = input.split("\r\n");
     l = arr.length;
@@ -356,10 +354,7 @@ function f() {
             tab_n++;
         }
     }
-    input = arr.join("\r\n");
-	
-
-	
+    input = arr.join("\r\n");	
     document.getElementById("vhdl").innerHTML = input;
     document.getElementById("selectAll").style.display = "inline-block";
     hljs.highlightBlock(document.getElementById("vhdl"));
