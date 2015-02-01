@@ -1,0 +1,218 @@
+<meta charset="UTF-8" />
+<head>
+<title>24 Game(24点) Calculator and Even More</title>
+<style>body { margin: 0; padding: 20px 20px;font-size:18px;line-height:130%;}
+#n{width:300px;}
+#result{font-family:"Courier New", Courier, monospace;}
+.btn{
+margin: 10px 10px;
+padding: 5px 8px;
+font-size: 16px;
+line-height: 1.33;
+border-radius: 3px;
+color: #333;
+border-color: #ccc;
+cursor: pointer;
+text-align: center;
+white-space: nowrap;
+border: 1px solid rgb(194, 194, 194);}
+.btn:hover{background-color:#afd9ee}
+#selectAll{display:none;}
+input[type="checkbox"] + label {
+    display:inline-block;
+    width:19px;
+    height:19px;
+    margin:-1px 4px 0 0;
+}
+label{cursor:pointer;}
+label:hover{color:#555;}
+input[type="text"]{margin:5px 0px;height:30px;}
+</style>
+</head>
+<body>
+<h2>24 Game(24点) Calculator and Even More</h2>
+1. Enter numbers, separate with ","(comma), e.g. "11,11,11,12";<br>
+2. To calculate the <strong>range</strong> these numbers can generate (e.g. 4, 2, 1 can generate all numbers between 1 to 10), set "Lower limit" and "Upper limit" to be valid integers.<br>
+3. To calculate <strong>one specific result (e.g. 24)</strong>, set "Lower limit" = "Upper limit" = your integer.<br>
+**Only +, -, ×, ÷, and (), are considered.<br><br>
+<strong>Interesting facts:</strong><br>
+you can use<br>
+&nbsp;&nbsp;&nbsp;&nbsp;2 and 1 to calculate the number from 1 to 3;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;6, 2 and 1 to calculate 1 ~ 14; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;[4, 2, 1] to get 1 ~ 10;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[29, 5, 4, 2] to get 1 ~ 64; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;[35, 4, 3, 2] to get 1 ~ 60;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[38, 6, 1, 2, 2] to get 1 ~ 136; 
+<br><br>
+Number: <input type="text" id="n" value="11,11,11,12" /><br />
+Lower limit: <input type="text" id="lower" value="20" /><br />
+Upper limit: <input type="text" id="upper" value="24" /><br />
+<label><input type="checkbox" id="all" />Output All Possible Operations</label><br />
+<input type="submit" value="Add Operators" class="btn" onClick="calc()">
+<pre id="result"></pre>
+
+<script>
+Array.prototype.remove = function(from, to) {
+    var rest = this.slice((to || from) + 1 || this.length);
+    this.length = from < 0 ? this.length + from : from;
+    return this.push.apply(this, rest);
+};
+
+function permute(input) {
+    var permArr = [],
+        usedChars = [];
+
+    function main() {
+        var i, ch;
+        for (i = 0; i < input.length; i++) {
+            ch = input.splice(i, 1)[0];
+            usedChars.push(ch);
+            if (input.length == 0) {
+                permArr.push(usedChars.slice());
+            }
+            main();
+            input.splice(i, 0, ch);
+            usedChars.pop();
+        }
+        return permArr;
+    }
+    return main();
+}
+
+function removeDuplicated(c) {
+    var l = c.length;
+	var k=c[0].length;
+	var t=true;
+    for (var i = 0; i < k; i++) {
+		for (var j = 0; j < k; j++) {
+		if((c[0][i] == c[0][j]) && (i != j)){
+			t=false;
+		}
+	}
+	}
+	console.log(t)
+	if(t){
+		return c;
+	}
+    for (var i = 0; i < l; i++) {
+        for (var j = 0; j < l; j++) {
+            if ((c[i].join("") == c[j].join("")) && (i != j)) {
+                l--;
+                c.remove(j);
+                j--;
+            }
+        }
+    }
+    return c
+}
+
+function calc() {
+    var str = document.getElementById("n").value;
+    var all = document.getElementById("all").checked;
+    str = str.replace(/ |\s/g, "");
+    var a = str.split(",");
+    str = "";
+    var upper = document.getElementById("upper").value;
+    var lower = document.getElementById("lower").value;
+
+    var c = permute(a);
+    c = removeDuplicated(c);
+    rs = generateEqu(c, a.length);
+    str = "";
+    for (var target = lower; target <= upper; target++) {
+        var r = "";
+        var s = target.toString();
+        l = c.length;
+        for (var i = 0; i < l; i++) {
+            var u = rs[i].length;
+            for (var j = 0; j < u; j++) {
+                if (eval(rs[i][j]).toString() == s) {
+                    r += (rs[i][j] + " = " + s);
+                    if (!all) {
+                        j = u;
+                        i = l;
+                    } else {
+                        r += "<br>";
+                    }
+                }
+            }
+            //console.log(r)
+        }
+
+        if (r != "") {
+            str = str + r + "<br>";
+        } else {
+            str = str + "No result for " + s + "<br>";
+			if (all) {
+				str += "<br>";
+			}
+        }
+
+    }
+    str = str.replace(/\(([0-9]+)\)/g, "$1")
+    str = str.replace(/\(([0-9]+\*[0-9]+)\)(\*|\/)/g, "$1$2")
+    str = str.replace(/\(([0-9\+\-\(\)]+)(\*|\/)([0-9]+)\)(\*|\/)/g, "$1$2$3$4");
+    str = str.replace(/\*/g, "×");
+    str = str.replace(/\//g, "÷");
+    document.getElementById("result").innerHTML = str;
+}
+
+function generateEqu(c, le) {
+    var l = c.length,
+        k = [];
+    var l = c.length,
+        le2 = le;
+    var rn = [],
+        rs = [],
+        str = "";
+    for (var i = 0; i < l; i++) {
+
+        k = c[i];
+        rs = [], le = le2;
+        var u = Math.pow(4, --le);;
+        for (var j = 0; j < u; j++) {
+            // rn[j] = k[0];
+            rs[j] = k[0].toString();
+        }
+
+
+        var ln = Math.pow(4, le2 - 2);
+
+
+        for (var z = 1; z < le2; z++) {
+            var index = 0;
+            var d = Math.pow(4, --le);
+            //console.log(d, u,ln,le2)
+            //console.log(z,k[z])
+            for (var x = 0; x < ln; x++) {
+                if (index < u) {
+                    for (var y = 0; y < d; y++) {
+                        //rn[index] += k[z];
+                        rs[index] += ("+" + k[z].toString());
+                        index++;
+                    }
+                    for (var y = 0; y < d; y++) {
+                        //rn[index] -= k[z];
+                        rs[index] += ("-" + k[z].toString());
+                        index++;
+                    }
+                    for (var y = 0; y < d; y++) {
+                        //rn[index] *= k[z];
+                        rs[index] = "(" + rs[index] + ")*" + k[z].toString();
+                        index++;
+                    }
+                    for (var y = 0; y < d; y++) {
+                        //rn[index] /= k[z];
+                        rs[index] = "(" + rs[index] + ")/" + k[z].toString();
+                        index++;
+                    }
+                }
+            }
+        }
+        rn[i] = rs;
+        //console.log(rs)
+    }
+    return rn;
+}
+</script>
+</body>
