@@ -58,6 +58,7 @@ function selectText(element) {
 Proper formatting makes code easier to read and understand.<br />
 Please make a backup before you replace your code!</p>
 <textarea id="in" rows="10" wrap="off"></textarea><br />
+<label><input type="checkbox" id="no_format">Only highlight, don't format</label><br>
 <label><input type="checkbox" id="remove_comments">Remove commments</label>
  | <label><input type="checkbox" id="remove_lines">Remove blank lines</label>
  | <label><input type="checkbox" id="remove_report">Remove REPORT</label><br />
@@ -99,6 +100,13 @@ function matchInArray(str, regexArray,replaceArray) {
 
 function f() {
     var input = document.getElementById("in").value;
+    var no_format = document.getElementById("no_format").checked;
+	if (no_format){
+		document.getElementById("vhdl").innerHTML = input;
+		document.getElementById("selectAll").style.display = "inline-block";
+		hljs.highlightBlock(document.getElementById("vhdl"));
+		return;
+	}
     var remove_comments = document.getElementById("remove_comments").checked;
     var remove_lines = document.getElementById("remove_lines").checked;
     var remove_report = document.getElementById("remove_report").checked;
