@@ -58,7 +58,7 @@ function selectText(element) {
 Proper formatting makes code easier to read and understand.<br />
 Please make a backup before you replace your code!</p>
 <textarea id="in" rows="10" wrap="off"></textarea><br />
-<label><input type="checkbox" id="no_format">Only highlight, don't format</label><br>
+<label><input type="checkbox" id="no_format" onclick="noFormat()">Only highlight, don't format</label><br>
 <label><input type="checkbox" id="remove_comments">Remove commments</label>
  | <label><input type="checkbox" id="remove_lines">Remove blank lines</label>
  | <label><input type="checkbox" id="remove_report">Remove REPORT</label><br />
@@ -97,7 +97,13 @@ function matchInArray(str, regexArray,replaceArray) {
     }
 	return str;
 }
-
+function noFormat(){
+var t=!(document.getElementById("remove_comments").disabled);
+document.getElementById("remove_comments").disabled = t;
+document.getElementById("remove_lines").disabled = t;
+document.getElementById("remove_report").disabled = t;
+document.getElementById("check_alias").disabled = t;
+}
 function f() {
     var input = document.getElementById("in").value;
     var no_format = document.getElementById("no_format").checked;
@@ -298,13 +304,13 @@ function f() {
 			}
 		}
 		
-        if (str.regexIndexOf(/^PORT[ (]/) >= 0||str.regexIndexOf(/^GENERIC[ (]/) >= 0) {
+        if (str.regexIndexOf(/^PORT[ (]/) >= 0) {
             back_tab=true;
 			port_b=true;
         }
 		if (str.indexOf("(")>=0) {
 			if(port_b){
-				if(str.indexOf(" MAP(")>=0){
+				if(str.indexOf("PORT MAP(")>=0){
 					bra_semi_accept=true;
 				}
 				bra_semi_b=true;
@@ -344,7 +350,7 @@ function f() {
             tab_n--;
             forward_tab = false;
         }
-        if (str.indexOf("ENTITY ") == 0) {
+        if (str.indexOf("ENTITY ") == 0 && str.indexOf(": ENTITY ") < 0) {
             tab_n++;
         }else if (str.indexOf("RECORD") == 0) {
             tab_n++;
