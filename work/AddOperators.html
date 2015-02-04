@@ -44,8 +44,8 @@ you can use<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[2, 8, 9, 12, 13] to get 1 ~ 271; 
 <br><br>
 Number: <input type="text" id="n" value="4,4,6,6,60" /><br>
-Lower limit: <input type="text" id="lower" value="29" /><br>
-Upper limit: <input type="text" id="upper" value="29" /><br>
+Lower limit: <input type="text" id="lower" value="1" /><br>
+Upper limit: <input type="text" id="upper" value="100" /><br>
 <label><input type="checkbox" id="a" />Output All Possible Operations</label><br>
 <input type="submit" value="Add Operators" class="btn" onClick="calc()">
 <pre id="result"></pre>
@@ -116,6 +116,8 @@ function calc() {
     str = "";
     var upper = document.getElementById("upper").value;
     var lower = document.getElementById("lower").value;
+	upper=lower<upper?upper:lower;
+	document.getElementById("upper").value=upper;
     var c = permute(a);
     c = removeDuplicated(c);
     rs = generateEqu(c, a.length);
@@ -219,11 +221,19 @@ function extraEqu(l, rs, s, s_neg,all) {
                 }
             }
 			if (r == "" || all) {
+			// ((6/7)+8)*4-5 -> ((6/7)+8)*(4-5)
+                equ = rs[i][j];
+                if (equ.regexIndexOf(/(\*|\/)([0-9]+[\+\-][0-9]+)$/) >= 0) {
+                    equ = equ.replace(/(\*|\/)([0-9]+[\+\-][0-9]+)$/, "$1($2)");
+					r+=compEqu(equ,s,s_neg);
+                }
+            }
+			if (r == "" || all) {
 			// (6+7)*8+4-5 -> (6+7)*(8+4)-5
                 equ = rs[i][j];
                 if (equ.regexIndexOf(/(\*|\/)([0-9]+[\+\-][0-9]+)/) >= 0) {
                     equ = equ.replace(/(\*|\/)([0-9]+[\+\-][0-9]+)/, "$1($2)");
-                    r+=compEqu(equ,s,s_neg);
+					r+=compEqu(equ,s,s_neg);
                 }
             }
 			if (r == "" || all) {
