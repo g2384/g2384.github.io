@@ -57,14 +57,31 @@ function selectText(element) {
 <p>
 Proper formatting makes code easier to read and understand.<br />
 Please make a backup before you replace your code!</p>
+<script>
+function fetchHeader(url, wch) {
+    try {
+        var req=new XMLHttpRequest();
+        req.open("HEAD", url, false);
+        req.send(null);
+        if(req.status== 200){
+            return req.getResponseHeader(wch);
+        }
+        else return false;
+    } catch(er) {
+        return er.message;
+    }
+}
+document.write("<p>Last modified: "+fetchHeader(location.href,'Last-Modified')+"</p>");
+</script>
 <textarea id="in" rows="10" wrap="off"></textarea><br />
 <label><input type="checkbox" id="no_format" onclick="noFormat()">Only highlight, don't format</label><br>
 <label><input type="checkbox" id="remove_comments">Remove commments</label>
  | <label><input type="checkbox" id="remove_lines">Remove blank lines</label>
  | <label><input type="checkbox" id="remove_report">Remove REPORT</label><br />
- | <label><input type="checkbox" id="check_alias">Check ALIAS (every long name is replaced with ALIAS)</label><br />
+<label><input type="checkbox" id="check_alias">Check ALIAS (every long name is replaced with ALIAS)</label><br />
 <input type="button" class="btn" onclick="f()" value="start"/>
 <input type="button" class="btn" id="selectAll" value="Select All" onclick="selectText(document.getElementById('vhdl'))"/><br />
+
 <pre id="result"><code class="vhdl" id="vhdl"></code><pre>
 <script>
 String.prototype.regexIndexOf = function(pattern, startIndex) {
@@ -168,7 +185,7 @@ function f() {
             arr[i] = arr[i].substr(n, p - n) + "@@comments" + (comments_i++);
 
         } else if (n > p && p >= 0) {
-            comments.push(arr[i].substr(0));
+            comments.push(arr[i].substr(p));
             arr[i] = "@@comments" + (comments_i++);
         } else {
             n = n < 0 ? 0 : n;
@@ -219,6 +236,7 @@ function f() {
     input = input.replace(/ \/ = /g, " /= ");
     input = input.replace(/\r\n[ \t]+--\r\n/g, "\r\n");
     input = input.replace(/[ ]+/g, ' ');
+    input = input.replace(/PORT[ \r\n]+\(/g, 'PORT (');
 	
 	if(check_alias){
 		var alias=[],subarr=[],o=0,p=0,p2=0,l2=0,i2=0;
@@ -262,7 +280,8 @@ function f() {
             back_tab = true;
         } else if (str.indexOf("END CASE") == 0) {
             tab_n -= 2;
-        } else if (str.regexIndexOf("^END[ ;$]") == 0) {
+        } else if (str.regexIndexOf("^END[a-zA-Z0-9_ ]+;") == 0) {
+		console.log(str)
             tab_n--;
         } else if (str.indexOf("ELSE") == 0) {
             tab_n--;
@@ -292,19 +311,25 @@ function f() {
             need_semi = false;
         }
 		if (bra_semi_pos >= 0){
-			if(bra_semi_pos==0||str.indexOf("));")>0){
+		console.log(str,bra_semi_accept)
+			if(str.indexOf("));")>0){
 				if(port_b){
 				tab_n--;
 				port_b=false;
 				}
+			}else if(bra_semi_pos==0){
+				tab_n--;
+				port_b=false;
+				bra_semi_accept=false;
 			}else if(bra_semi_accept&&bra_semi_pos>0){
+			
 				forward_tab = true;
 				port_b=false;
 				bra_semi_accept=false;
 			}
 		}
 		
-        if (str.regexIndexOf(/^PORT[ (]/) >= 0) {
+        if (str.indexOf("PORT (") >= 0||str.indexOf("PORT MAP") >= 0) {
             back_tab=true;
 			port_b=true;
         }
@@ -334,7 +359,7 @@ function f() {
             if (str.indexOf("@@comments") < 0) {
                 arr[i] = (Array(tab_n).join("\t")) + str;
             } else if(str.indexOf("@@comments") == 0){
-				arr[i] = arr[i].replace("@@comments" + (comments_r), comments[(comments_r++)]);
+				arr[i] = (Array(tab_n).join("\t")) +arr[i].replace("@@comments" + (comments_r), comments[(comments_r++)]);
 			} else {
                 arr[i] = (Array(tab_n).join("\t")) + arr[i].replace("@@comments" + (comments_r), comments[(comments_r++)]);
             }
