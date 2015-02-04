@@ -40,7 +40,7 @@ input[type="text"]{margin:5px 0px;height:30px;}
 you can use<br>
 &nbsp;&nbsp;&nbsp;&nbsp;2 and 1 to calculate the number from 1 to 3;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;4, 2 and 1 to calculate 1 ~ 10; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;[4, 4, 6, 6, 60] to get 1 ~ 100 (Except for 84, 99); <br>
+&nbsp;&nbsp;&nbsp;&nbsp;[4, 4, 6, 6, 60] to get 1 ~ 100; <br>
 &nbsp;&nbsp;&nbsp;&nbsp;[2, 8, 9, 12, 13] to get 1 ~ 271; 
 <br><br>
 Number: <input type="text" id="n" value="4,4,6,6,60" /><br>
@@ -181,7 +181,7 @@ function calc() {
     str = str.replace(/\/(\(|[0-9])/g, "÷$1");
     str = str.replace(/(<br>)+/g, "<br>");
 	var b3 = performance.now();
-	str = 'It took ' + parseInt(b3 - a3) + ' ms.<br>------<br>' + str;
+	str = 'Time: ' + parseInt(b3 - a3) + ' ms.<br>------<br>' + str;
     document.getElementById("result").innerHTML = str;
 }
 function isNumber(n) {
@@ -197,24 +197,25 @@ function extraEqu(l, rs, s, s_neg,all) {
             if (equ.regexIndexOf(/(\/|\*)([0-9]+[\+\-])/) >= 0) {
                 equ = equ.replace(/(\/|\*)([0-9]+[\+\-])/, "$1($2");
                 equ += ")";
-                r_t=compEqu(equ,s,s_neg);
-					if(r_t.length>0){
-					r+=(r_t+"<br>")
-					
-					}
+                r+=compEqu(equ,s,s_neg);
             }
             if (r == "" || all) {
+			// ((6+7)+8)*4-5 -> ((6+7)+(8)*4-5)
+                equ = rs[i][j];
+                if (equ.regexIndexOf(/(\-|\+)([0-9]+\)[\*\/][0-9]+)/) >= 0) {
+                    equ = equ.replace(/(\-|\+)([0-9]+\)[\*\/][0-9]+)/, "$1($2");
+                    equ = equ.replace(/\(([0-9]+)\)$/g, "$1");
+                    equ += ")";
+                    r+=compEqu(equ,s,s_neg);
+                }
+            }if (r == "" || all) {
 			// ((6+7)+8+4)*5 -> ((6+7)+8+(4)*5)
                 equ = rs[i][j];
                 if (equ.regexIndexOf(/(\-|\+)([0-9]+\)[\*\/][0-9]+)$/) >= 0) {
                     equ = equ.replace(/(\-|\+)([0-9]+\)[\*\/][0-9]+)$/, "$1($2");
                     equ = equ.replace(/\(([0-9]+)\)$/g, "$1");
                     equ += ")";
-                    r_t=compEqu(equ,s,s_neg);
-					if(r_t.length>0){
-					r+=(r_t+"<br>")
-					
-					}
+                    r+=compEqu(equ,s,s_neg);
                 }
             }
 			if (r == "" || all) {
@@ -222,11 +223,7 @@ function extraEqu(l, rs, s, s_neg,all) {
                 equ = rs[i][j];
                 if (equ.regexIndexOf(/(\*|\/)([0-9]+[\+\-][0-9]+)/) >= 0) {
                     equ = equ.replace(/(\*|\/)([0-9]+[\+\-][0-9]+)/, "$1($2)");
-                    r_t=compEqu(equ,s,s_neg);
-					if(r_t.length>0){
-					r+=(r_t+"<br>")
-					
-					}
+                    r+=compEqu(equ,s,s_neg);
                 }
             }
 			if (r == "" || all) {
@@ -234,11 +231,7 @@ function extraEqu(l, rs, s, s_neg,all) {
                 equ = rs[i][j];
                 if (equ.regexIndexOf(/(\*|\/)([0-9]+[\+\-][0-9]+[\+\-][0-9]+)/) >= 0) {
                     equ = equ.replace(/(\*|\/)([0-9]+[\+\-][0-9]+[\+\-][0-9]+)/, "$1($2)");
-                    r_t=compEqu(equ,s,s_neg);
-					if(r_t.length>0){
-					r+=(r_t+"<br>")
-					
-					}
+                    r+=compEqu(equ,s,s_neg);
                 }
             }
 			if (r !=""&&!all) {
@@ -257,9 +250,9 @@ var kk = eval(equ);
 if (parseInt(kk) == kk) {
 	kk = kk.toString();
 	if (kk == s) {
-		r = (equ + " = " + s);
+		r = (equ + " = " + s+"<br>");
 	} else if (kk == s_neg) {
-		r = ("-(" + equ + ") = " + s);
+		r = ("-(" + equ + ") = " + s+"<br>");
 	}
 }
 
