@@ -88,7 +88,6 @@ function removeDuplicated(c) {
 		}
 	}
 	}
-	console.log(t)
 	if(t){
 		return c;
 	}
@@ -157,37 +156,12 @@ function calc() {
             }
         }
         if (r != "") {
+			if(all){
+				r+=extraEqu(l,rs,s,s_neg,all);
+			}
             str = str + r + "<br>";
         } else {
-            for (var i = 0; i < l; i++) {
-                var u = rs[i].length;
-                for (var j = 0; j < u; j++) {
-                    var equ = rs[i][j];
-                    if (equ.regexIndexOf(/(\/|\*)([0-9]+[\+\-])/) >= 0) {
-                        equ = equ.replace(/(\/|\*)([0-9]+[\+\-])/, "$1($2");
-                        equ += ")";
-                        if (eval(equ).toString() == s) {
-                            r += (equ + " = " + s);
-                            if (!all) {
-                                j = u;
-                                i = l;
-                            } else {
-                                r += "<br>";
-                            }
-                        } else if (eval(equ).toString() == s_neg) {
-
-                            r += ("-(" + equ + ") = " + s);
-                            if (!all) {
-                                j = u;
-                                i = l;
-                            } else {
-                                r += "<br>";
-                            }
-
-                        }
-                    }
-                }
-            }
+            r=extraEqu(l,rs,s,s_neg,all);
             if (r != "") {
                 str = str + r + "<br>";
             } else {
@@ -207,7 +181,39 @@ function calc() {
     str = str.replace(/<÷/g, "</");
     document.getElementById("result").innerHTML = str;
 }
+function extraEqu(l,rs,s,s_neg){
+	var r="";
+	for (var i = 0; i < l; i++) {
+		var u = rs[i].length;
+		for (var j = 0; j < u; j++) {
+			var equ = rs[i][j];
+			if (equ.regexIndexOf(/(\/|\*)([0-9]+[\+\-])/) >= 0) {
+				equ = equ.replace(/(\/|\*)([0-9]+[\+\-])/, "$1($2");
+				equ += ")";
+				if (eval(equ).toString() == s) {
+					r += (equ + " = " + s);
+					if (!all) {
+						j = u;
+						i = l;
+					} else {
+						r += "<br>";
+					}
+				} else if (eval(equ).toString() == s_neg) {
 
+					r += ("-(" + equ + ") = " + s);
+					if (!all) {
+						j = u;
+						i = l;
+					} else {
+						r += "<br>";
+					}
+
+				}
+			}
+		}
+	}
+	return r;
+}
 function generateEqu(c, le) {
     var l = c.length,
         k = [];
