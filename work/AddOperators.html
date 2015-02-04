@@ -39,15 +39,12 @@ input[type="text"]{margin:5px 0px;height:30px;}
 <strong>Interesting facts:</strong><br>
 you can use<br>
 &nbsp;&nbsp;&nbsp;&nbsp;2 and 1 to calculate the number from 1 to 3;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;6, 2 and 1 to calculate 1 ~ 14; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;[4, 2, 1] to get 1 ~ 10;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[29, 5, 4, 2] to get 1 ~ 64; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;[35, 4, 3, 2] to get 1 ~ 60;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;4, 2 and 1 to calculate 1 ~ 10; <br>
 &nbsp;&nbsp;&nbsp;&nbsp;[38, 6, 1, 2, 2] to get 1 ~ 136; 
 <br><br>
-Number: <input type="text" id="n" value="11,11,11,12" /><br />
-Lower limit: <input type="text" id="lower" value="20" /><br />
-Upper limit: <input type="text" id="upper" value="24" /><br />
+Number: <input type="text" id="n" value="4,4,6,6,60" /><br />
+Lower limit: <input type="text" id="lower" value="47" /><br />
+Upper limit: <input type="text" id="upper" value="47" /><br />
 <label><input type="checkbox" id="all" />Output All Possible Operations</label><br />
 <input type="submit" value="Add Operators" class="btn" onClick="calc()">
 <pre id="result"></pre>
@@ -106,7 +103,11 @@ function removeDuplicated(c) {
     }
     return c
 }
-
+String.prototype.regexIndexOf = function(pattern, startIndex) {
+    startIndex = startIndex || 0;
+    var searchResult = this.substr(startIndex).search(pattern);
+    return (-1 === searchResult) ? -1 : searchResult + startIndex;
+}
 function calc() {
     var str = document.getElementById("n").value;
     var all = document.getElementById("all").checked;
@@ -115,46 +116,95 @@ function calc() {
     str = "";
     var upper = document.getElementById("upper").value;
     var lower = document.getElementById("lower").value;
-
     var c = permute(a);
     c = removeDuplicated(c);
     rs = generateEqu(c, a.length);
+    //console.log(rs)
     str = "";
     for (var target = lower; target <= upper; target++) {
         var r = "";
         var s = target.toString();
+        var s_neg = "-" + s;
         l = c.length;
         for (var i = 0; i < l; i++) {
             var u = rs[i].length;
             for (var j = 0; j < u; j++) {
-                if (eval(rs[i][j]).toString() == s) {
-                    r += (rs[i][j] + " = " + s);
+                var equ = rs[i][j];
+                if (eval(equ).toString() == s) {
+                    rs[i].remove(j);
+                    j--;
+                    r += (equ + " = " + s);
                     if (!all) {
                         j = u;
                         i = l;
                     } else {
                         r += "<br>";
                     }
+                    u--;
+                } else if (eval(equ).toString() == s_neg) {
+                    rs[i].remove(j);
+                    j--;
+                    r += ("-(" + equ + ") = " + s);
+                    //console.log(r)
+                    if (!all) {
+                        j = u;
+                        i = l;
+                    } else {
+                        r += "<br>";
+                    }
+                    u--;
                 }
             }
-            //console.log(r)
         }
-
         if (r != "") {
             str = str + r + "<br>";
         } else {
-            str = str + "No result for " + s + "<br>";
-			if (all) {
-				str += "<br>";
-			}
-        }
+            for (var i = 0; i < l; i++) {
+                var u = rs[i].length;
+                for (var j = 0; j < u; j++) {
+                    var equ = rs[i][j];
+                    if (equ.regexIndexOf(/(\/|\*)([0-9]+[\+\-])/) >= 0) {
+                        equ = equ.replace(/(\/|\*)([0-9]+[\+\-])/, "$1($2");
+                        equ += ")";
+                        if (eval(equ).toString() == s) {
+                            r += (equ + " = " + s);
+                            if (!all) {
+                                j = u;
+                                i = l;
+                            } else {
+                                r += "<br>";
+                            }
+                        } else if (eval(equ).toString() == s_neg) {
 
+                            r += ("-(" + equ + ") = " + s);
+                            if (!all) {
+                                j = u;
+                                i = l;
+                            } else {
+                                r += "<br>";
+                            }
+
+                        }
+                    }
+                }
+            }
+            if (r != "") {
+                str = str + r + "<br>";
+            } else {
+
+                str = str + "<strong>No result for " + s + "</strong><br>";
+                if (all) {
+                    str += "<br>";
+                }
+            }
+        }
     }
     str = str.replace(/\(([0-9]+)\)/g, "$1")
     str = str.replace(/\(([0-9]+\*[0-9]+)\)(\*|\/)/g, "$1$2")
     str = str.replace(/\(([0-9\+\-\(\)]+)(\*|\/)([0-9]+)\)(\*|\/)/g, "$1$2$3$4");
     str = str.replace(/\*/g, "×");
     str = str.replace(/\//g, "÷");
+    str = str.replace(/<÷/g, "</");
     document.getElementById("result").innerHTML = str;
 }
 
