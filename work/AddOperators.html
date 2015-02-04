@@ -40,12 +40,13 @@ input[type="text"]{margin:5px 0px;height:30px;}
 you can use<br>
 &nbsp;&nbsp;&nbsp;&nbsp;2 and 1 to calculate the number from 1 to 3;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;4, 2 and 1 to calculate 1 ~ 10; <br>
-&nbsp;&nbsp;&nbsp;&nbsp;[38, 6, 1, 2, 2] to get 1 ~ 136; 
+&nbsp;&nbsp;&nbsp;&nbsp;[4, 4, 6, 6, 60] to get 1 ~ 100 (Except for 84, 99); <br>
+&nbsp;&nbsp;&nbsp;&nbsp;[2, 8, 9, 12, 13] to get 1 ~ 271; 
 <br><br>
-Number: <input type="text" id="n" value="4,4,6,6,60" /><br />
-Lower limit: <input type="text" id="lower" value="47" /><br />
-Upper limit: <input type="text" id="upper" value="47" /><br />
-<label><input type="checkbox" id="all" />Output All Possible Operations</label><br />
+Number: <input type="text" id="n" value="4,4,6,6,60" /><br>
+Lower limit: <input type="text" id="lower" value="29" /><br>
+Upper limit: <input type="text" id="upper" value="29" /><br>
+<label><input type="checkbox" id="a" />Output All Possible Operations</label><br>
 <input type="submit" value="Add Operators" class="btn" onClick="calc()">
 <pre id="result"></pre>
 
@@ -109,7 +110,7 @@ String.prototype.regexIndexOf = function(pattern, startIndex) {
 }
 function calc() {
     var str = document.getElementById("n").value;
-    var all = document.getElementById("all").checked;
+    var all = document.getElementById("a").checked;
     str = str.replace(/ |\s/g, "");
     var a = str.split(",");
     str = "";
@@ -120,6 +121,7 @@ function calc() {
     rs = generateEqu(c, a.length);
     //console.log(rs)
     str = "";
+	var a3 = performance.now();
     for (var target = lower; target <= upper; target++) {
         var r = "";
         var s = target.toString();
@@ -144,7 +146,6 @@ function calc() {
                     rs[i].remove(j);
                     j--;
                     r += ("-(" + equ + ") = " + s);
-                    //console.log(r)
                     if (!all) {
                         j = u;
                         i = l;
@@ -177,42 +178,92 @@ function calc() {
     str = str.replace(/\(([0-9]+\*[0-9]+)\)(\*|\/)/g, "$1$2")
     str = str.replace(/\(([0-9\+\-\(\)]+)(\*|\/)([0-9]+)\)(\*|\/)/g, "$1$2$3$4");
     str = str.replace(/\*/g, "×");
-    str = str.replace(/\//g, "÷");
-    str = str.replace(/<÷/g, "</");
+    str = str.replace(/\/(\(|[0-9])/g, "÷$1");
+    str = str.replace(/(<br>)+/g, "<br>");
+	var b3 = performance.now();
+	str = 'It took ' + parseInt(b3 - a3) + ' ms.<br>------<br>' + str;
     document.getElementById("result").innerHTML = str;
 }
-function extraEqu(l,rs,s,s_neg){
-	var r="";
-	for (var i = 0; i < l; i++) {
-		var u = rs[i].length;
-		for (var j = 0; j < u; j++) {
-			var equ = rs[i][j];
-			if (equ.regexIndexOf(/(\/|\*)([0-9]+[\+\-])/) >= 0) {
-				equ = equ.replace(/(\/|\*)([0-9]+[\+\-])/, "$1($2");
-				equ += ")";
-				if (eval(equ).toString() == s) {
-					r += (equ + " = " + s);
-					if (!all) {
-						j = u;
-						i = l;
-					} else {
-						r += "<br>";
+function isNumber(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
+}
+function extraEqu(l, rs, s, s_neg,all) {
+    var r = "";
+	var r_t="";
+    for (var i = 0; i < l; i++) {
+        var u = rs[i].length;
+        for (var j = 0; j < u; j++) {
+            var equ = rs[i][j];
+            if (equ.regexIndexOf(/(\/|\*)([0-9]+[\+\-])/) >= 0) {
+                equ = equ.replace(/(\/|\*)([0-9]+[\+\-])/, "$1($2");
+                equ += ")";
+                r_t=compEqu(equ,s,s_neg);
+					if(r_t.length>0){
+					r+=(r_t+"<br>")
+					
 					}
-				} else if (eval(equ).toString() == s_neg) {
-
-					r += ("-(" + equ + ") = " + s);
-					if (!all) {
-						j = u;
-						i = l;
-					} else {
-						r += "<br>";
+            }
+            if (r == "" || all) {
+			// ((6+7)+8+4)*5 -> ((6+7)+8+(4)*5)
+                equ = rs[i][j];
+                if (equ.regexIndexOf(/(\-|\+)([0-9]+\)[\*\/][0-9]+)$/) >= 0) {
+                    equ = equ.replace(/(\-|\+)([0-9]+\)[\*\/][0-9]+)$/, "$1($2");
+                    equ = equ.replace(/\(([0-9]+)\)$/g, "$1");
+                    equ += ")";
+                    r_t=compEqu(equ,s,s_neg);
+					if(r_t.length>0){
+					r+=(r_t+"<br>")
+					
 					}
-
-				}
+                }
+            }
+			if (r == "" || all) {
+			// (6+7)*8+4-5 -> (6+7)*(8+4)-5
+                equ = rs[i][j];
+                if (equ.regexIndexOf(/(\*|\/)([0-9]+[\+\-][0-9]+)/) >= 0) {
+                    equ = equ.replace(/(\*|\/)([0-9]+[\+\-][0-9]+)/, "$1($2)");
+                    r_t=compEqu(equ,s,s_neg);
+					if(r_t.length>0){
+					r+=(r_t+"<br>")
+					
+					}
+                }
+            }
+			if (r == "" || all) {
+			// (6+7)*8+4-5 -> (6+7)*(8+4-5)
+                equ = rs[i][j];
+                if (equ.regexIndexOf(/(\*|\/)([0-9]+[\+\-][0-9]+[\+\-][0-9]+)/) >= 0) {
+                    equ = equ.replace(/(\*|\/)([0-9]+[\+\-][0-9]+[\+\-][0-9]+)/, "$1($2)");
+                    r_t=compEqu(equ,s,s_neg);
+					if(r_t.length>0){
+					r+=(r_t+"<br>")
+					
+					}
+                }
+            }
+			if (r !=""&&!all) {
+				j = u;
+				i = l;
+				break;
 			}
-		}
+
+        }
+    }
+    return r;
+}
+function compEqu(equ,s,s_neg){
+var r="";
+var kk = eval(equ);
+if (parseInt(kk) == kk) {
+	kk = kk.toString();
+	if (kk == s) {
+		r = (equ + " = " + s);
+	} else if (kk == s_neg) {
+		r = ("-(" + equ + ") = " + s);
 	}
-	return r;
+}
+
+return r;
 }
 function generateEqu(c, le) {
     var l = c.length,
@@ -223,43 +274,31 @@ function generateEqu(c, le) {
         rs = [],
         str = "";
     for (var i = 0; i < l; i++) {
-
         k = c[i];
         rs = [], le = le2;
         var u = Math.pow(4, --le);;
         for (var j = 0; j < u; j++) {
-            // rn[j] = k[0];
             rs[j] = k[0].toString();
         }
-
-
         var ln = Math.pow(4, le2 - 2);
-
-
         for (var z = 1; z < le2; z++) {
             var index = 0;
             var d = Math.pow(4, --le);
-            //console.log(d, u,ln,le2)
-            //console.log(z,k[z])
             for (var x = 0; x < ln; x++) {
                 if (index < u) {
                     for (var y = 0; y < d; y++) {
-                        //rn[index] += k[z];
                         rs[index] += ("+" + k[z].toString());
                         index++;
                     }
                     for (var y = 0; y < d; y++) {
-                        //rn[index] -= k[z];
                         rs[index] += ("-" + k[z].toString());
                         index++;
                     }
                     for (var y = 0; y < d; y++) {
-                        //rn[index] *= k[z];
                         rs[index] = "(" + rs[index] + ")*" + k[z].toString();
                         index++;
                     }
                     for (var y = 0; y < d; y++) {
-                        //rn[index] /= k[z];
                         rs[index] = "(" + rs[index] + ")/" + k[z].toString();
                         index++;
                     }
@@ -267,7 +306,6 @@ function generateEqu(c, le) {
             }
         }
         rn[i] = rs;
-        //console.log(rs)
     }
     return rn;
 }
