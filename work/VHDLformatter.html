@@ -143,6 +143,8 @@ function f() {
     var arr = input.split("\r\n");
     var comments = [],
         comments_i = 0;
+    var quotes = [],
+		quotes_i = 0;
     var l = arr.length;
     var str = "",
         str1 = "";
@@ -169,13 +171,7 @@ function f() {
 		process_pos=0,
 		process_b=false;
     for (i = 0; i < l; i++) {
-        k = arr[i].match(/"([^"]+)"/g);
-        if (k != null) {
-            var u = k.length;
-            for (var j = 0; j < u; j++) {
-                arr[i] = arr[i].replace(k[j], encodeURIComponent(k[j]))
-            }
-        }
+        
 
         n = arr[i].regexIndexOf(/[a-zA-Z0-9\(\&\)%_\+']/);
         p = arr[i].indexOf("--");
@@ -209,6 +205,14 @@ function f() {
 				}
 			}
 		}
+		k = arr[i].match(/"([^"]+)"/g);
+        if (k != null) {
+            var u = k.length;
+            for (var j = 0; j < u; j++) {
+                arr[i] = arr[i].replace(k[j], "@@quotes"+quotes_i);
+				quotes[quotes_i++]=k[j]
+            }
+        }
 		if (remove_lines) {
 		    str = arr[i].replace(/[ \t\r\n]/g, '');
 		    if (str.length == 0) {
@@ -265,7 +269,7 @@ function f() {
 		}
 		input=arr.join("ARCHITECTURE ");
 	}
-	
+	quotes_i=0;
     arr = input.split("\r\n");
     l = arr.length;
     for (i = 0; i < l; i++) {
@@ -282,7 +286,6 @@ function f() {
         } else if (str.indexOf("END CASE") == 0) {
             tab_n -= 2;
         } else if (str.regexIndexOf("^END(([a-zA-Z0-9_ ]+;)|;)") == 0) {
-		console.log(str)
             tab_n--;
         } else if (str.indexOf("ELSE") == 0) {
             tab_n--;
@@ -312,7 +315,6 @@ function f() {
             need_semi = false;
         }
 		if (bra_semi_pos >= 0){
-		console.log(str,bra_semi_accept)
 			if(str.indexOf("));")>0){
 				if(port_b){
 				tab_n--;
@@ -364,10 +366,11 @@ function f() {
 			} else {
                 arr[i] = (Array(tab_n).join("\t")) + arr[i].replace("@@comments" + (comments_r), comments[(comments_r++)]);
             }
-        } else {
-            arr[i] = str;
+			if(arr[i].indexOf("@@quotes") > 0){
+				arr[i] = arr[i].replace("@@quotes"+quotes_i,quotes[quotes_i++]);
+			
+			}
         }
-        arr[i] = decodeURIComponent(arr[i]);
         if (back_tab) {
             tab_n++;
             back_tab = false;
