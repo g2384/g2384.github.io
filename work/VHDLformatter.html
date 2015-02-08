@@ -231,12 +231,13 @@ function f() {
 	
     input = input.replace(/[ ]?([&=:\-<>\+|])[ ]?/g, ' $1 ');
     input = input.replace(/[ ]?([,])[ ]?/g, '$1 ');
-    input = input.replace(/[ ]?(<|:)[ ]+=[ ]?/g, ' $1= ');
-    input = input.replace(/[ ]?=  >[ ]?/g, ' => ');
+    input = input.replace(/[ ]?(\?)?[ ]?(<|:|>|\/)?[ ]+(=)?[ ]?/g, ' $1$2$3 ');
+    input = input.replace(/[ ]?([\?=])[ ]+([><])[ ]?/g, ' $1$2 ');
     input = input.replace(/(IF)[ ]?([\(\)])/g, '$1 $2');
     input = input.replace(/([\(\)])[ ]?(THEN)/gi, '$1 $2');
     input = input.replace(/([\(\)])[ ]?(and|or)[ ]?([\(\)])?/gi, '$1 $2 $3');
     input = input.replace(/ -  - /g, "--");
+    input = input.replace(/ \* \* /g, "**");
     input = input.replace(/ \/ = /g, " /= ");
     input = input.replace(/\r\n[ \t]+--\r\n/g, "\r\n");
     input = input.replace(/[ ]+/g, ' ');
