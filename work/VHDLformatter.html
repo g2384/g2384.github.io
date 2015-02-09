@@ -83,7 +83,56 @@ document.write("<p>Last modified: "+fetchHeader(location.href,'Last-Modified')+"
 <input type="button" class="btn" onclick="f()" value="start"/>
 <input type="button" class="btn" id="selectAll" value="Select All" onclick="selectText(document.getElementById('vhdl'))"/><br />
 
-<pre id="result"><code class="vhdl" id="vhdl"></code><pre>
+<pre id="result"><code class="vhdl" id="vhdl">
+<font style="background-color:#FF9393; color:#fff"> output DEMO </font>
+
+<span class="hljs-keyword">LIBRARY</span> IEEE; <span class="hljs-comment">-- declare the library</span>
+<span class="hljs-keyword">USE</span> IEEE.std_logic_1164.<span class="hljs-keyword">ALL</span>;
+<span class="hljs-keyword">USE</span> IEEE.std_logic_arith.<span class="hljs-keyword">ALL</span>;
+<font style="background-color:#FF9393; color:#fff"> All reserved words are in capital </font>
+<font style="background-color:#FF9393; color:#fff"> All indents are in the right place </font>
+<span class="hljs-comment">---------------------------------------------------------------</span>
+
+<span class="hljs-keyword">ENTITY</span> example <span class="hljs-keyword">IS</span>
+	<span class="hljs-keyword">PORT</span> (
+		rst                   : <span class="hljs-keyword">IN</span> <span class="hljs-typename">std_logic</span>;
+		clk                   : <span class="hljs-keyword">IN</span> <span class="hljs-typename">std_logic</span>;
+		example_of_long_words : <span class="hljs-keyword">OUT</span> <span class="hljs-typename">std_logic_vector</span>(<span class="hljs-number">3</span> <span class="hljs-keyword">DOWNTO</span> <span class="hljs-number">0</span>)
+		<font style="background-color:#FF9393; color:#fff"> (<strong>Align signs in PORT()</strong> aligns these colons) </font>
+	);
+<span class="hljs-keyword">END</span> example;
+
+<span class="hljs-keyword">ARCHITECTURE</span> EXA <span class="hljs-keyword">OF</span> example <span class="hljs-keyword">IS</span>
+	<span class="hljs-keyword">ALIAS</span> slv <span class="hljs-keyword">IS</span> <span class="hljs-typename">std_logic_vector</span>;
+	<span class="hljs-keyword">SUBTYPE</span> bit4 <span class="hljs-keyword">IS</span> slv(<span class="hljs-number">3</span> <span class="hljs-keyword">DOWNTO</span> <span class="hljs-number">0</span>); <font style="background-color:#FF9393; color:#fff"> (<strong>Check ALIAS</strong> replaces all "<strong>std_logic_vector</strong>" with "<strong>slv</strong>") </font>
+	 
+<span class="hljs-keyword">BEGIN</span>
+	<del><span class="hljs-keyword">REPORT</span> <span class="hljs-string">"Hello World"</span></del>; <font style="background-color:#FF9393; color:#fff"> (<strong>Remove REPORT</strong> does this) </font>
+	 
+	stages : <span class="hljs-keyword">PROCESS</span> (rst, clk)
+	<span class="hljs-keyword">BEGIN</span>
+		 
+		<span class="hljs-keyword">IF</span> (rst = <span class="hljs-literal">'0'</span>) <span class="hljs-keyword">THEN</span>
+			<span class="hljs-keyword">CASE</span> bit4 <span class="hljs-keyword">IS</span>
+				<span class="hljs-keyword">WHEN</span> <span class="hljs-string">"0000"</span> =&gt; bit4 &lt;= <span class="hljs-string">"0001"</span>;
+				<span class="hljs-keyword">WHEN</span> <span class="hljs-string">"0001"</span> =&gt; bit4 &lt;= <span class="hljs-string">"0100"</span>;
+				<span class="hljs-keyword">WHEN</span> <span class="hljs-string">"0010"</span> =&gt; bit4 &lt;= <span class="hljs-string">"0010"</span>;
+				<span class="hljs-keyword">WHEN</span> <span class="hljs-string">"0100"</span> =&gt; bit4 &lt;= <span class="hljs-string">"0000"</span>;
+				<span class="hljs-keyword">WHEN</span> <span class="hljs-keyword">OTHERS</span> =&gt; 
+					<del><span class="hljs-keyword">REPORT</span> <span class="hljs-string">"Are there any more cases?"</span></del>; <font style="background-color:#FF9393; color:#fff"> (<strong>Remove REPORT</strong> does this) </font>
+			<span class="hljs-keyword">END</span> <span class="hljs-keyword">CASE</span>;
+		<span class="hljs-keyword">ELSIF</span> (clk<span class="hljs-attribute">'event</span> <span class="hljs-keyword">AND</span> clk = <span class="hljs-literal">'1'</span>) <span class="hljs-keyword">THEN</span>
+			<span class="hljs-keyword">IF</span> (bit4 = '<span class="hljs-number">0111</span>') <span class="hljs-keyword">THEN</span>
+				bit4 &lt;= <span class="hljs-string">"0000"</span>;
+			<span class="hljs-keyword">ELSE</span>
+				bit4 &lt;= <span class="hljs-string">"1111"</span>;
+			<span class="hljs-keyword">END</span> <span class="hljs-keyword">IF</span>;
+			<span class="hljs-comment">-- Sample comments 1;</span> 
+			<span class="hljs-comment">-- Sample comments 2;</span>  <font style="background-color:#FF9393; color:#fff"> (<strong>Remove comments</strong> will remove these) </font>
+		<span class="hljs-keyword">END</span> <span class="hljs-keyword">IF</span>;
+		 
+	<span class="hljs-keyword">END</span> <span class="hljs-keyword">PROCESS</span>;
+<span class="hljs-keyword">END</span> BEH;</code></pre>
 <script>
 String.prototype.regexIndexOf = function(pattern, startIndex) {
     startIndex = startIndex || 0;
@@ -279,6 +328,8 @@ function f() {
     arr = input.split("\r\n");
     l = arr.length;
 	var signAlignPos="";
+	var if_b=false;
+	var case_b=false;
     for (i = 0; i < l; i++) {
         str = arr[i];
         str_len = str.length;
@@ -290,15 +341,37 @@ function f() {
             tab_n--;
             back_tab = true;
         } else if (str.indexOf("END CASE") == 0) {
-            tab_n -= 2;
+		case_b=false;
+            tab_n --;
+			//if(arr[i-1].indexOf("WHEN") < 0){
+			tab_n--;
+			//}
         } else if (str.regexIndexOf("^END(([a-zA-Z0-9_ ]+;)|;)") == 0) {
             tab_n--;
-        } else if (str.indexOf("ELSE") == 0) {
+			if(str.indexOf("END IF") == 0){
+			if_b=false;
+			}
+        } else if (str.indexOf("ELSE") == 0 && if_b) {
             tab_n--;
+			if_b=false;
             back_tab = true;
-        } else if (str.indexOf("WHEN") == 0) {
-            tab_n--;
-            back_tab = true;
+        } else if (case_b){//
+		if(str.indexOf("WHEN") == 0) {
+			tab_n--;
+			back_tab = true;
+			}
+           /* if(arr[i+1].indexOf("WHEN") < 0){
+				if(arr[i-1].indexOf("WHEN") < 0){
+					tab_n--;
+					back_tab = true;
+				}else{
+					back_tab = true;
+				}
+			}*/
+			if (arr[i-1].indexOf("CASE") >= 0){
+			tab_n++;
+			}
+            
         } else if (str.indexOf("BEGIN") == 0) {
             if (begin_b) {
                 tab_n--;
@@ -442,11 +515,13 @@ function f() {
         } else if (str.indexOf("FOR ") == 0) {
             tab_n++;
         } else if (str.indexOf("CASE ") == 0) {
-            tab_n += 2;
+		case_b=true;
+            tab_n ++;
         } else if (arch_pos == 0) {
             tab_n++;
 			begin_b = true;
         } else if (str.indexOf("IF") == 0) {
+			if_b=true;
             tab_n++;
         }
     }
