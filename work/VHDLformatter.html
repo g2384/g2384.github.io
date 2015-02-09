@@ -79,6 +79,7 @@ document.write("<p>Last modified: "+fetchHeader(location.href,'Last-Modified')+"
  | <label><input type="checkbox" id="remove_lines">Remove blank lines</label>
  | <label><input type="checkbox" id="remove_report">Remove REPORT</label><br />
 <label><input type="checkbox" id="check_alias">Check ALIAS (every long name is replaced with ALIAS)</label><br />
+<label><input type="checkbox" id="sign_align">Align signs in PORT()</label><br />
 <input type="button" class="btn" onclick="f()" value="start"/>
 <input type="button" class="btn" id="selectAll" value="Select All" onclick="selectText(document.getElementById('vhdl'))"/><br />
 
@@ -120,6 +121,7 @@ document.getElementById("remove_comments").disabled = t;
 document.getElementById("remove_lines").disabled = t;
 document.getElementById("remove_report").disabled = t;
 document.getElementById("check_alias").disabled = t;
+document.getElementById("sign_align").disabled = t;
 }
 function f() {
     var input = document.getElementById("in").value;
@@ -134,6 +136,7 @@ function f() {
     var remove_lines = document.getElementById("remove_lines").checked;
     var remove_report = document.getElementById("remove_report").checked;
     var check_alias = document.getElementById("check_alias").checked;
+    var sign_align = document.getElementById("sign_align").checked;
 	
 	keyword_cap=["$1ABS$3","$1ACCESS$3","$1AFTER$3","$1ALIAS$3","$1ALL$3","$1AND$3","$1ARCHITECTURE$3","$1ARRAY$3","$1ASSERT$3","$1ATTRIBUTE$3","$1BEGIN$3","$1BLOCK$3","$1BODY$3","$1BUFFER$3","$1BUS$3","$1CASE$3","$1COMPONENT$3","$1CONFIGURATION$3","$1CONSTANT$3","$1CONTEXT$3","$1COVER$3","$1DISCONNECT$3","$1DOWNTO$3","$1DEFAULT$3","$1ELSE$3","$1ELSIF$3","$1END$3","$1ENTITY$3","$1EXIT$3","$1FAIRNESS$3","$1FILE$3","$1FOR$3","$1FORCE$3","$1FUNCTION$3","$1GENERATE$3","$1GENERIC$3","$1GROUP$3","$1GUARDED$3","$1IF$3","$1IMPURE$3","$1IN$3","$1INERTIAL$3","$1INOUT$3","$1IS$3","$1LABEL$3","$1LIBRARY$3","$1LINKAGE$3","$1LITERAL$3","$1LOOP$3","$1MAP$3","$1MOD$3","$1NAND$3","$1NEW$3","$1NEXT$3","$1NOR$3","$1NOT$3","$1NULL$3","$1OF$3","$1ON$3","$1OPEN$3","$1OR$3","$1OTHERS$3","$1OUT$3","$1PACKAGE$3","$1PORT$3","$1POSTPONED$3","$1PROCEDURE$3","$1PROCESS$3","$1PROPERTY$3","$1PROTECTED$3","$1PURE$3","$1RANGE$3","$1RECORD$3","$1REGISTER$3","$1REJECT$3","$1RELEASE$3","$1REM$3","$1REPORT$3","$1RESTRICT$3","$1RESTRICT_GUARANTEE$3","$1RETURN$3","$1ROL$3","$1ROR$3","$1SELECT$3","$1SEQUENCE$3","$1SEVERITY$3","$1SHARED$3","$1SIGNAL$3","$1SLA$3","$1SLL$3","$1SRA$3","$1SRL$3","$1STRONG$3","$1SUBTYPE$3","$1THEN$3","$1TO$3","$1TRANSPORT$3","$1TYPE$3","$1UNAFFECTED$3","$1UNITS$3","$1UNTIL$3","$1USE$3","$1VARIABLE$3","$1VMODE$3","$1VPROP$3","$1VUNIT$3","$1WAIT$3","$1WHEN$3","$1WHILE$3","$1WITH$3","$1XNOR$3","$1XOR$3"], typename_cap=["$1BOOLEAN$3","$1BIT$3","$1CHARACTER$3","$1INTEGER$3","$1TIME$3","$1NATURAL$3","$1POSITIVE$3","$1STRING$3"];
 	var typename_reg=[/([\s:,;\.]|^)(boolean)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(bit)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(character)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(integer)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(time)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(natural)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(positive)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(string)([\s;,(\.]|$)/gi],keyword_reg=[/([\s:,;\.]|^)(abs)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(access)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(after)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(alias)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(all)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(and)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(architecture)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(array)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(assert)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(attribute)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(begin)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(block)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(body)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(buffer)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(bus)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(case)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(component)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(configuration)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(constant)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(context)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(cover)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(disconnect)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(downto)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(default)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(else)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(elsif)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(end)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(entity)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(exit)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(fairness)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(file)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(for)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(force)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(function)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(generate)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(generic)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(group)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(guarded)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(if)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(impure)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(in)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(inertial)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(inout)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(is)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(label)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(library)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(linkage)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(literal)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(loop)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(map)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(mod)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(nand)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(new)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(next)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(nor)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(not)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(null)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(of)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(on)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(open)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(or)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(others)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(out)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(package)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(port)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(postponed)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(procedure)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(process)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(property)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(protected)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(pure)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(range)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(record)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(register)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(reject)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(release)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(rem)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(report)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(restrict)([\s;,(\.]|$)/gi,  /([\s:,;\.]|^)(restrict_guarantee)([\s;,(\.]|$)/gi,  /([\s:,;\.]|^)(return)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(rol)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(ror)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(select)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(sequence)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(severity)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(shared)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(signal)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(sla)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(sll)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(sra)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(srl)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(strong)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(subtype)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(then)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(to)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(transport)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(type)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(unaffected)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(units)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(until)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(use)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(variable)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(vmode)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(vprop)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(vunit)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(wait)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(when)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(while)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(with)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(xnor)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(xor)([\s;,(\.]|$)/gi];
@@ -145,6 +148,10 @@ function f() {
         comments_i = 0;
     var quotes = [],
 		quotes_i = 0;
+	var align = [],
+	align_max=[],
+	align_i1=0,
+		align_i = 0;
     var l = arr.length;
     var str = "",
         str1 = "";
@@ -179,8 +186,7 @@ function f() {
             var s = arr[i].substr(p);
             comments.push(s);
             arr[i] = arr[i].substr(n, p - n) + "@@comments" + (comments_i++);
-
-        } else if (n > p && p >= 0) {
+        } else if ((n > p && p >= 0) || (n<0 && p>=0)) {
             comments.push(arr[i].substr(p));
             arr[i] = "@@comments" + (comments_i++);
         } else {
@@ -241,8 +247,8 @@ function f() {
     input = input.replace(/ \/ = /g, " /= ");
     input = input.replace(/\r\n[ \t]+--\r\n/g, "\r\n");
     input = input.replace(/[ ]+/g, ' ');
-    input = input.replace(/PORT[ \r\n]+\(/g, 'PORT (');
-    input = input.replace(/PROCESS[ ]?[\r\n]?\(/g, 'PROCESS (');
+    input = input.replace(/(PORT|PROCESS)[ \r\n]?\(/g, '$1 (');
+    input = input.replace(/(MAP)[ \r\n]+\(/g, '$1(');
 	
 	if(check_alias){
 		var alias=[],subarr=[],o=0,p=0,p2=0,l2=0,i2=0;
@@ -270,11 +276,10 @@ function f() {
 		}
 		input=arr.join("ARCHITECTURE ");
 	}
-	quotes_i=0;
     arr = input.split("\r\n");
     l = arr.length;
+	var signAlignPos="";
     for (i = 0; i < l; i++) {
-
         str = arr[i];
         str_len = str.length;
         semi_pos = str.indexOf(";");
@@ -336,6 +341,37 @@ function f() {
         if (str.indexOf("PORT (") >= 0||str.indexOf("PORT MAP") >= 0) {
             back_tab=true;
 			port_b=true;
+			if(str.indexOf(");") < 0){
+				align_i1=align_i;
+				//console.log(align_i1)
+				var t=str.indexOf("=>");
+				if(t>=0){
+					signAlignPos="=>";
+				}else{
+					t=arr[i+1].indexOf("=>");
+					if(t>=0){
+						signAlignPos="=>";
+					}else{
+						t=str.indexOf(":");
+						if(t>=0){
+							signAlignPos=":";
+						}else{
+							t=arr[i+1].indexOf(":");
+							if(t>=0){
+								signAlignPos=":";
+							}
+						}
+					}
+				}
+			}else{
+				signAlignPos="";
+			}
+			if(str.indexOf("PORT (") >= 0 && str.indexOf(");") > 0){
+				
+				back_tab=false;
+				port_b=false;
+			}
+			//console.log(t,signAlignPos)
         }
 		if (str.indexOf("(")>=0) {
 			if(port_b){
@@ -358,19 +394,36 @@ function f() {
 				}
 			}
         }
+		if(sign_align){
+			if(port_b&&signAlignPos!=""){
+			if(str.indexOf(signAlignPos)>=0){
+				var a1=arr[i].split(signAlignPos);
+				var l1=a1[0].length;
+				if(align_i>=0&&align_i>align_i1){
+				align_max[align_i]=align_max[align_i-1];
+				}else{
+				align_max[align_i]=l1;
+				}
+				if(align_i>align_i1&&align_max[align_i]<l1){
+					for(var k=align_i1;k<=align_i;k++){
+						align_max[k]=l1;
+					}
+				}
+			//	console.log(align_max,align_max[align_i],l1,arr[i])
+				align[align_i]=l1;
+				arr[i]=a1[0]+"@@align"+(align_i++)+signAlignPos+a1[1];
+				}
+			}
+		}
         tab_n = tab_n < 1 ? 1 : tab_n;
         if (str_len) {
             if (str.indexOf("@@comments") < 0) {
-                arr[i] = (Array(tab_n).join("\t")) + str;
+                arr[i] = (Array(tab_n).join("\t")) + arr[i];
             } else if(str.indexOf("@@comments") == 0){
 				arr[i] = (Array(tab_n).join("\t")) +arr[i].replace("@@comments" + (comments_r), comments[(comments_r++)]);
 			} else {
                 arr[i] = (Array(tab_n).join("\t")) + arr[i].replace("@@comments" + (comments_r), comments[(comments_r++)]);
             }
-			if(arr[i].indexOf("@@quotes") > 0){
-				arr[i] = arr[i].replace("@@quotes"+quotes_i,quotes[quotes_i++]);
-			
-			}
         }
         if (back_tab) {
             tab_n++;
@@ -397,7 +450,18 @@ function f() {
             tab_n++;
         }
     }
-    input = arr.join("\r\n");	
+	input = arr.join("\r\n");
+	if(sign_align){
+	for(var k=0;k<align_i;k++){
+	//console.log(k)
+		input=input.replace("@@align"+k,Array((align_max[k]-align[k]+2)).join(" "));
+	}
+	}
+	for(var k=0;k<quotes_i;k++){
+		input= input.replace("@@quotes"+k,quotes[k]);
+			
+	}
+    
     document.getElementById("vhdl").innerHTML = input;
     document.getElementById("selectAll").style.display = "inline-block";
     hljs.highlightBlock(document.getElementById("vhdl"));
