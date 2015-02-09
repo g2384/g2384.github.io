@@ -2,7 +2,7 @@
 <head>
 <title>VHDL Beautifier</title>
 <style>
-body{margin:0 auto;max-width:960px;}
+body{margin:0 auto;max-width:960px;tab-size: 4;}
 textarea{width:100%;font-family:Consolas,Courier;}
 .btn{
 margin: 10px 10px;
@@ -80,17 +80,18 @@ document.write("<p>Last modified: "+fetchHeader(location.href,'Last-Modified')+"
  | <label><input type="checkbox" id="remove_report">Remove REPORT</label><br />
 <label><input type="checkbox" id="check_alias">Check ALIAS (every long name is replaced with ALIAS)</label><br />
 <label><input type="checkbox" id="sign_align">Align signs in PORT()</label><br />
+<label><input type="checkbox" id="use_space">Indent 4 spaces, rather than 1 tab</label><br />
 <input type="button" class="btn" onclick="f()" value="start"/>
 <input type="button" class="btn" id="selectAll" value="Select All" onclick="selectText(document.getElementById('vhdl'))"/><br />
 
 <pre id="result"><code class="vhdl" id="vhdl">
-<font style="background-color:#FF9393; color:#fff"> output DEMO </font>
+<font style="background-color:#9D9D9D; color:#fff"> output DEMO </font>
 
 <span class="hljs-keyword">LIBRARY</span> IEEE; <span class="hljs-comment">-- declare the library</span>
 <span class="hljs-keyword">USE</span> IEEE.std_logic_1164.<span class="hljs-keyword">ALL</span>;
 <span class="hljs-keyword">USE</span> IEEE.std_logic_arith.<span class="hljs-keyword">ALL</span>;
-<font style="background-color:#FF9393; color:#fff"> All reserved words are in capital </font>
-<font style="background-color:#FF9393; color:#fff"> All indents are in the right place </font>
+<font style="background-color:#9D9D9D; color:#fff"> (All reserved words are in capital) </font>
+<font style="background-color:#9D9D9D; color:#fff"> (All indents are in the right place) </font>
 <span class="hljs-comment">---------------------------------------------------------------</span>
 
 <span class="hljs-keyword">ENTITY</span> example <span class="hljs-keyword">IS</span>
@@ -98,16 +99,16 @@ document.write("<p>Last modified: "+fetchHeader(location.href,'Last-Modified')+"
 		rst                   : <span class="hljs-keyword">IN</span> <span class="hljs-typename">std_logic</span>;
 		clk                   : <span class="hljs-keyword">IN</span> <span class="hljs-typename">std_logic</span>;
 		example_of_long_words : <span class="hljs-keyword">OUT</span> <span class="hljs-typename">std_logic_vector</span>(<span class="hljs-number">3</span> <span class="hljs-keyword">DOWNTO</span> <span class="hljs-number">0</span>)
-		<font style="background-color:#FF9393; color:#fff"> (<strong>Align signs in PORT()</strong> aligns these colons) </font>
+		<font style="background-color:#9D9D9D; color:#fff"> (<strong>Align signs in PORT()</strong> aligns these colons) </font>
 	);
 <span class="hljs-keyword">END</span> example;
 
 <span class="hljs-keyword">ARCHITECTURE</span> EXA <span class="hljs-keyword">OF</span> example <span class="hljs-keyword">IS</span>
 	<span class="hljs-keyword">ALIAS</span> slv <span class="hljs-keyword">IS</span> <span class="hljs-typename">std_logic_vector</span>;
-	<span class="hljs-keyword">SUBTYPE</span> bit4 <span class="hljs-keyword">IS</span> slv(<span class="hljs-number">3</span> <span class="hljs-keyword">DOWNTO</span> <span class="hljs-number">0</span>); <font style="background-color:#FF9393; color:#fff"> (<strong>Check ALIAS</strong> replaces all "<strong>std_logic_vector</strong>" with "<strong>slv</strong>") </font>
+	<span class="hljs-keyword">SUBTYPE</span> bit4 <span class="hljs-keyword">IS</span> slv(<span class="hljs-number">3</span> <span class="hljs-keyword">DOWNTO</span> <span class="hljs-number">0</span>); <font style="background-color:#9D9D9D; color:#fff"> (<strong>Check ALIAS</strong> replaces all "<strong>std_logic_vector</strong>" with "<strong>slv</strong>") </font>
 	 
 <span class="hljs-keyword">BEGIN</span>
-	<del><span class="hljs-keyword">REPORT</span> <span class="hljs-string">"Hello World"</span></del>; <font style="background-color:#FF9393; color:#fff"> (<strong>Remove REPORT</strong> does this) </font>
+	<del><span class="hljs-keyword">REPORT</span> <span class="hljs-string">"Hello World"</span></del>; <font style="background-color:#9D9D9D; color:#fff"> (<strong>Remove REPORT</strong> does this) </font>
 	 
 	stages : <span class="hljs-keyword">PROCESS</span> (rst, clk)
 	<span class="hljs-keyword">BEGIN</span>
@@ -119,7 +120,7 @@ document.write("<p>Last modified: "+fetchHeader(location.href,'Last-Modified')+"
 				<span class="hljs-keyword">WHEN</span> <span class="hljs-string">"0010"</span> =&gt; bit4 &lt;= <span class="hljs-string">"0010"</span>;
 				<span class="hljs-keyword">WHEN</span> <span class="hljs-string">"0100"</span> =&gt; bit4 &lt;= <span class="hljs-string">"0000"</span>;
 				<span class="hljs-keyword">WHEN</span> <span class="hljs-keyword">OTHERS</span> =&gt; 
-					<del><span class="hljs-keyword">REPORT</span> <span class="hljs-string">"Are there any more cases?"</span></del>; <font style="background-color:#FF9393; color:#fff"> (<strong>Remove REPORT</strong> does this) </font>
+					<del><span class="hljs-keyword">REPORT</span> <span class="hljs-string">"Are there any more cases?"</span></del>; <font style="background-color:#9D9D9D; color:#fff"> (<strong>Remove REPORT</strong> does this) </font>
 			<span class="hljs-keyword">END</span> <span class="hljs-keyword">CASE</span>;
 		<span class="hljs-keyword">ELSIF</span> (clk<span class="hljs-attribute">'event</span> <span class="hljs-keyword">AND</span> clk = <span class="hljs-literal">'1'</span>) <span class="hljs-keyword">THEN</span>
 			<span class="hljs-keyword">IF</span> (bit4 = '<span class="hljs-number">0111</span>') <span class="hljs-keyword">THEN</span>
@@ -128,7 +129,7 @@ document.write("<p>Last modified: "+fetchHeader(location.href,'Last-Modified')+"
 				bit4 &lt;= <span class="hljs-string">"1111"</span>;
 			<span class="hljs-keyword">END</span> <span class="hljs-keyword">IF</span>;
 			<span class="hljs-comment">-- Sample comments 1;</span> 
-			<span class="hljs-comment">-- Sample comments 2;</span>  <font style="background-color:#FF9393; color:#fff"> (<strong>Remove comments</strong> will remove these) </font>
+			<span class="hljs-comment">-- Sample comments 2;</span>  <font style="background-color:#9D9D9D; color:#fff"> (<strong>Remove comments</strong> will remove these) </font>
 		<span class="hljs-keyword">END</span> <span class="hljs-keyword">IF</span>;
 		 
 	<span class="hljs-keyword">END</span> <span class="hljs-keyword">PROCESS</span>;
@@ -186,6 +187,11 @@ function f() {
     var remove_report = document.getElementById("remove_report").checked;
     var check_alias = document.getElementById("check_alias").checked;
     var sign_align = document.getElementById("sign_align").checked;
+    var use_space = document.getElementById("use_space").checked;
+	indentation="\t";
+	if(use_space){
+	indentation="    ";
+	}
 	
 	keyword_cap=["$1ABS$3","$1ACCESS$3","$1AFTER$3","$1ALIAS$3","$1ALL$3","$1AND$3","$1ARCHITECTURE$3","$1ARRAY$3","$1ASSERT$3","$1ATTRIBUTE$3","$1BEGIN$3","$1BLOCK$3","$1BODY$3","$1BUFFER$3","$1BUS$3","$1CASE$3","$1COMPONENT$3","$1CONFIGURATION$3","$1CONSTANT$3","$1CONTEXT$3","$1COVER$3","$1DISCONNECT$3","$1DOWNTO$3","$1DEFAULT$3","$1ELSE$3","$1ELSIF$3","$1END$3","$1ENTITY$3","$1EXIT$3","$1FAIRNESS$3","$1FILE$3","$1FOR$3","$1FORCE$3","$1FUNCTION$3","$1GENERATE$3","$1GENERIC$3","$1GROUP$3","$1GUARDED$3","$1IF$3","$1IMPURE$3","$1IN$3","$1INERTIAL$3","$1INOUT$3","$1IS$3","$1LABEL$3","$1LIBRARY$3","$1LINKAGE$3","$1LITERAL$3","$1LOOP$3","$1MAP$3","$1MOD$3","$1NAND$3","$1NEW$3","$1NEXT$3","$1NOR$3","$1NOT$3","$1NULL$3","$1OF$3","$1ON$3","$1OPEN$3","$1OR$3","$1OTHERS$3","$1OUT$3","$1PACKAGE$3","$1PORT$3","$1POSTPONED$3","$1PROCEDURE$3","$1PROCESS$3","$1PROPERTY$3","$1PROTECTED$3","$1PURE$3","$1RANGE$3","$1RECORD$3","$1REGISTER$3","$1REJECT$3","$1RELEASE$3","$1REM$3","$1REPORT$3","$1RESTRICT$3","$1RESTRICT_GUARANTEE$3","$1RETURN$3","$1ROL$3","$1ROR$3","$1SELECT$3","$1SEQUENCE$3","$1SEVERITY$3","$1SHARED$3","$1SIGNAL$3","$1SLA$3","$1SLL$3","$1SRA$3","$1SRL$3","$1STRONG$3","$1SUBTYPE$3","$1THEN$3","$1TO$3","$1TRANSPORT$3","$1TYPE$3","$1UNAFFECTED$3","$1UNITS$3","$1UNTIL$3","$1USE$3","$1VARIABLE$3","$1VMODE$3","$1VPROP$3","$1VUNIT$3","$1WAIT$3","$1WHEN$3","$1WHILE$3","$1WITH$3","$1XNOR$3","$1XOR$3"], typename_cap=["$1BOOLEAN$3","$1BIT$3","$1CHARACTER$3","$1INTEGER$3","$1TIME$3","$1NATURAL$3","$1POSITIVE$3","$1STRING$3"];
 	var typename_reg=[/([\s:,;\.]|^)(boolean)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(bit)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(character)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(integer)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(time)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(natural)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(positive)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(string)([\s;,(\.]|$)/gi],keyword_reg=[/([\s:,;\.]|^)(abs)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(access)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(after)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(alias)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(all)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(and)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(architecture)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(array)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(assert)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(attribute)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(begin)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(block)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(body)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(buffer)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(bus)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(case)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(component)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(configuration)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(constant)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(context)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(cover)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(disconnect)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(downto)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(default)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(else)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(elsif)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(end)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(entity)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(exit)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(fairness)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(file)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(for)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(force)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(function)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(generate)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(generic)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(group)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(guarded)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(if)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(impure)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(in)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(inertial)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(inout)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(is)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(label)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(library)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(linkage)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(literal)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(loop)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(map)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(mod)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(nand)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(new)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(next)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(nor)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(not)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(null)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(of)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(on)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(open)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(or)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(others)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(out)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(package)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(port)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(postponed)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(procedure)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(process)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(property)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(protected)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(pure)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(range)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(record)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(register)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(reject)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(release)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(rem)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(report)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(restrict)([\s;,(\.]|$)/gi,  /([\s:,;\.]|^)(restrict_guarantee)([\s;,(\.]|$)/gi,  /([\s:,;\.]|^)(return)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(rol)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(ror)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(select)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(sequence)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(severity)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(shared)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(signal)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(sla)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(sll)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(sra)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(srl)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(strong)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(subtype)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(then)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(to)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(transport)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(type)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(unaffected)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(units)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(until)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(use)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(variable)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(vmode)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(vprop)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(vunit)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(wait)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(when)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(while)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(with)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(xnor)([\s;,(\.]|$)/gi, /([\s:,;\.]|^)(xor)([\s;,(\.]|$)/gi];
@@ -491,11 +497,11 @@ function f() {
         tab_n = tab_n < 1 ? 1 : tab_n;
         if (str_len) {
             if (str.indexOf("@@comments") < 0) {
-                arr[i] = (Array(tab_n).join("\t")) + arr[i];
+                arr[i] = (Array(tab_n).join(indentation)) + arr[i];
             } else if(str.indexOf("@@comments") == 0){
-				arr[i] = (Array(tab_n).join("\t")) +arr[i].replace("@@comments" + (comments_r), comments[(comments_r++)]);
+				arr[i] = (Array(tab_n).join(indentation)) +arr[i].replace("@@comments" + (comments_r), comments[(comments_r++)]);
 			} else {
-                arr[i] = (Array(tab_n).join("\t")) + arr[i].replace("@@comments" + (comments_r), comments[(comments_r++)]);
+                arr[i] = (Array(tab_n).join(indentation)) + arr[i].replace("@@comments" + (comments_r), comments[(comments_r++)]);
             }
         }
         if (back_tab) {
