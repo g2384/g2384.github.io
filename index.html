@@ -8,216 +8,55 @@
 		<!--[if lt IE 9]>
 		<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
 		<![endif]-->
-		<style>@import url(https://fonts.googleapis.com/css?family=Lato:300italic,700italic,300,700);
-
-body {
-  padding:50px;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  color:#777;
-  font-size:16px;
+		<style>@import "https://fonts.googleapis.com/css?family=Lato:300italic,700italic,300,700";
+body{padding:50px;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;color:#777;font-size:16px}
+h1,h2,h3,h4,h5,h6{color:#222;margin:0 0 20px}
+p,ul,ol,table,pre,dl{margin:0 0 20px}
+h1,h2,h3{line-height:1.1}
+h1{font-size:28px}
+h2{font-size:24px;color:#393939}
+h3,h4,h5,h6{color:#494949}
+a{color:#39c;font-weight:400;text-decoration:none}
+a:hover{color:#1D8DC5;text-decoration:underline}
+.wrapper{max-width:900px;margin:0 auto}
+blockquote{border-left:1px solid #e5e5e5;margin:0;padding:0 0 0 20px;font-style:italic}
+code,pre{font-family:Monaco,Bitstream Vera Sans Mono,Lucida Console,Terminal;color:#333;font-size:12px}
+pre{padding:8px 15px;background:#f8f8f8;border-radius:5px;border:1px solid #e5e5e5;overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th,td{text-align:left;padding:5px 10px;border-bottom:1px solid #e5e5e5}
+dt{color:#444;font-weight:700}
+th{color:#444}
+img{max-width:100%}
+header{width:200px;float:left;position:fixed}
+strong{color:#222;font-weight:700}
+section{max-width:800px;float:right;padding-bottom:50px}
+small{font-size:11px}
+hr{border:0;background:#e5e5e5;height:1px;margin:0 0 20px}
+footer{width:270px;float:left;position:fixed;bottom:50px}
+.text{color:#888}
+.html{color:#093}
+.js{color:#F90}
+.php{color:#4F5B93}
+.py{color:#3776ab}
+.star{text-shadow:0 0 5px #ffe169;color:#ffb803}
+@media print,screen and (max-width: 960px) {
+div.wrapper{width:auto;margin:0}
+header,section,footer{float:none;position:static;width:auto}
+header{padding-right:320px}
+section{border:1px solid #e5e5e5;border-width:1px 0;padding:20px 0;margin:0 0 20px}
+header a small{display:inline}
 }
-
-h1, h2, h3, h4, h5, h6 {
-  color:#222;
-  margin:0 0 20px;
+@media print,screen and (max-width: 720px) {
+body{word-wrap:break-word}
+header{padding:0}
+header p.view{position:static}
+pre,code{word-wrap:normal}
 }
-
-p, ul, ol, table, pre, dl {
-  margin:0 0 20px;
+@media print,screen and (max-width: 480px) {
+body{padding:15px}
 }
-
-h1, h2, h3 {
-  line-height:1.1;
-}
-
-h1 {
-  font-size:28px;
-}
-
-h2 {
-  font-size:24px;
-  color:#393939;
-}
-
-h3, h4, h5, h6 {
-  color:#494949;
-}
-
-a {
-  color:#39c;
-  font-weight:400;
-  text-decoration:none;
-}
-
-a:hover {
-  color:#1D8DC5;
-  text-decoration:underline;
-}
-
-.wrapper {
-  max-width:900px;
-  margin:0 auto;
-}
-
-blockquote {
-  border-left:1px solid #e5e5e5;
-  margin:0;
-  padding:0 0 0 20px;
-  font-style:italic;
-}
-
-code, pre {
-  font-family:Monaco, Bitstream Vera Sans Mono, Lucida Console, Terminal;
-  color:#333;
-  font-size:12px;
-}
-
-pre {
-  padding:8px 15px;
-  background: #f8f8f8;  
-  border-radius:5px;
-  border:1px solid #e5e5e5;
-  overflow-x: auto;
-}
-
-table {
-  width:100%;
-  border-collapse:collapse;
-}
-
-th, td {
-  text-align:left;
-  padding:5px 10px;
-  border-bottom:1px solid #e5e5e5;
-}
-
-dt {
-  color:#444;
-  font-weight:700;
-}
-
-th {
-  color:#444;
-}
-
-img {
-  max-width:100%;
-}
-
-header {
-  width:200px;
-  float:left;
-  position:fixed;
-}
-
-strong {
-  color:#222;
-  font-weight:700;
-}
-
-section {
-  max-width:800px;
-  float:right;
-  padding-bottom:50px;
-}
-
-small {
-  font-size:11px;
-}
-
-hr {
-  border:0;
-  background:#e5e5e5;
-  height:1px;
-  margin:0 0 20px;
-}
-
-footer {
-  width:270px;
-  float:left;
-  position:fixed;
-  bottom:50px;
-}
-.text {
-  color:#888888;
-}
-.html {
-  color:#009933;
-}
-.js {
-  color:#FF9900;
-}
-.php {
-  color:#4F5B93;
-}
-.py{
-  color:#3776ab;
-}
-.star
-{
-text-shadow: 0 0 5px #ffe169;
-color:#ffb803;
-}
-
-@media print, screen and (max-width: 960px) {
-  
-  div.wrapper {
-    width:auto;
-    margin:0;
-  }
-  
-  header, section, footer {
-    float:none;
-    position:static;
-    width:auto;
-  }
-  
-  header {
-    padding-right:320px;
-  }
-  
-  section {
-    border:1px solid #e5e5e5;
-    border-width:1px 0;
-    padding:20px 0;
-    margin:0 0 20px;
-  }
-  
-  header a small {
-    display:inline;
-  }
-}
-
-@media print, screen and (max-width: 720px) {
-  body {
-    word-wrap:break-word;
-  }
-  
-  header {
-    padding:0;
-  }
-  
-  header p.view {
-    position:static;
-  }
-  
-  pre, code {
-    word-wrap:normal;
-  }
-}
-
-@media print, screen and (max-width: 480px) {
-  body {
-    padding:15px;
-  }
-}
-
 @media print {
-  body {
-    padding:0.4in;
-    font-size:12pt;
-    color:#444;
-  }
+body{padding:.4in;font-size:12pt;color:#444}
 }</style>
 	
 	</head>
@@ -231,7 +70,8 @@ color:#ffb803;
 			</header>
 			<section>
 			<h3>Code</h3>
-			<p>	<span class=html>[html]</span> <a href="http://g2384.github.io/work/VHDLformatter.html">VHDL Beautifier, Formatter</a> (2015.1)<span class="star">★</span><br />
+			<p>	<span class=html>[HTML]</span> <a href="http://g2384.github.io/work/highlight.html">Programming Language Highlighter</a> (2015.2)<br />
+				<span class=html>[HTML]</span> <a href="http://g2384.github.io/work/VHDLformatter.html">VHDL Beautifier, Formatter</a> (2015.1)<span class="star">★</span><br />
 				<span class=py>[py]</span> <a href="https://github.com/g2384/g2384.github.io/blob/master/work/WordFrequencyCount.py">词频统计(Word Frequency Counter)</a> (2014.12)<br />
 				<span class=php>[PHP]</span> <a href="https://github.com/g2384/g2384.github.io/blob/master/work/hackernews.php">A better way to read HN</a> | <a href="https://googledrive.com/host/0B4xVwonJgym0QlBYRHN1VWtXUUU/hackernews.html">A simple documentation</a> (2014.5)<span class="star">★</span><br />
 				<span class=php>[PHP]</span> <a href="https://github.com/g2384/g2384.github.io/blob/master/work/ZhihuDailyNews.php">知乎日报网页版(Zhihu Daily News (web))</a> (2014.4)<br />
