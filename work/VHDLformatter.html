@@ -304,6 +304,7 @@ function f() {
     input = input.replace(/[ ]+/g, ' ');
     input = input.replace(/(PORT|PROCESS)[ \r\n]?\(/g, '$1 (');
     input = input.replace(/(MAP)[ \r\n]+\(/g, '$1(');
+    input = input.replace(/(;|THEN)[ ]?([@a-zA-Z])/g, '$1\r\n$2');
 	
 	if(check_alias){
 		var alias=[],subarr=[],o=0,p=0,p2=0,l2=0,i2=0;
@@ -356,6 +357,8 @@ function f() {
             tab_n--;
 			if(str.indexOf("END IF") == 0){
 			if_b=false;
+			}else if(str.indexOf("END ARCHITECTURE") >= 0){
+			tab_n=0;
 			}
         } else if (str.indexOf("ELSE") == 0 && if_b) {
             tab_n--;
@@ -445,12 +448,11 @@ function f() {
 			}else{
 				signAlignPos="";
 			}
-			if(str.indexOf("PORT (") >= 0 && str.indexOf(");") > 0){
-				
+			if(str.regexIndexOf(/PORT (MAP)?\([a-zA-Z0-9_,\- ]+\);/) >= 0){
 				back_tab=false;
 				port_b=false;
 			}
-			//console.log(t,signAlignPos)
+			console.log(str,t,signAlignPos, back_tab, port_b,str.regexIndexOf(/PORT (MAP)?\([a-zA-Z0-9_,\- ]+\);/))
         }
 		if (str.indexOf("(")>=0) {
 			if(port_b){
@@ -513,7 +515,7 @@ function f() {
             forward_tab = false;
         }
         if (str.indexOf("ENTITY ") == 0 && str.indexOf(": ENTITY ") < 0) {
-            tab_n++;
+			tab_n++;
         }else if (str.indexOf("RECORD") == 0) {
             tab_n++;
         }else if (str.indexOf("PACKAGE ") == 0) {
