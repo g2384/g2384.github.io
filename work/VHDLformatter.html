@@ -17,7 +17,7 @@ text-align: center;
 white-space: nowrap;
 border: 1px solid rgb(194, 194, 194);}
 .btn:hover{background-color:#afd9ee}
-#selectAll{display:none;}
+.show{display:none;}
 input[type="checkbox"] + label {
     display:inline-block;
     width:19px;
@@ -91,8 +91,8 @@ document.write("<p>Last modified: "+fetchHeader(location.href,'Last-Modified')+"
 <label><input type="checkbox" id="compress">! EVIL - compress VHDL (\r\n, comments will be removed)</label><br />
 <label><input type="checkbox" id="mix_letter">! EVIL - unreadable (mix upper/lower-case letters)</label><br />
 <input type="button" class="btn" onclick="f()" value="start"/>
-<input type="button" class="btn" id="selectAll" value="Select All" onclick="selectText(document.getElementById('vhdl'))"/><br />
-<label><input type="checkbox" onclick="wordWrap()" id="">Word wrap</label><br />
+<span class="show"><input type="button" class="btn " id="selectAll" value="Select All" onclick="selectText(document.getElementById('vhdl'))"/> 
+<label><input type="checkbox" onclick="wordWrap()" id="">Word wrap</label></span><br />
 <pre id="result"><code class="vhdl" id="vhdl">
 <font style="background-color:#9D9D9D; color:#fff"> output DEMO </font>
 
@@ -194,7 +194,7 @@ function f() {
     var no_format = document.getElementById("no_format").checked;
 	if (no_format){
 		document.getElementById("vhdl").innerHTML = input;
-		document.getElementById("selectAll").style.display = "inline-block";
+		document.querySelector(".show").style.display="inline-block";
 		hljs.highlightBlock(document.getElementById("vhdl"));
 		return;
 	}
@@ -580,7 +580,7 @@ function f() {
 		input=arr.join("");
 	}
     document.getElementById("vhdl").innerHTML = input;
-    document.getElementById("selectAll").style.display = "inline-block";
+    document.querySelector(".show").style.display="inline-block";
     hljs.highlightBlock(document.getElementById("vhdl"));
 }
 </script>
