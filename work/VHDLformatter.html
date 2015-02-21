@@ -24,6 +24,13 @@ input[type="checkbox"] + label {
     height:19px;
     margin:-1px 4px 0 0;
 }
+.wordwrap{
+    white-space: pre-wrap;       /* CSS 3 */
+    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}
 label{cursor:pointer;}
 label:hover{color:#555;}
 
@@ -85,7 +92,7 @@ document.write("<p>Last modified: "+fetchHeader(location.href,'Last-Modified')+"
 <label><input type="checkbox" id="mix_letter">! EVIL - unreadable (mix upper/lower-case letters)</label><br />
 <input type="button" class="btn" onclick="f()" value="start"/>
 <input type="button" class="btn" id="selectAll" value="Select All" onclick="selectText(document.getElementById('vhdl'))"/><br />
-
+<label><input type="checkbox" onclick="wordWrap()" id="">Word wrap</label><br />
 <pre id="result"><code class="vhdl" id="vhdl">
 <font style="background-color:#9D9D9D; color:#fff"> output DEMO </font>
 
@@ -166,6 +173,13 @@ function matchInArray(str, regexArray,replaceArray) {
 		str=str.replace(regexArray[i],replaceArray[i]);
     }
 	return str;
+}
+function wordWrap(){
+var d = document.getElementById("result");
+if(d.className.length==""){
+d.className = "wordwrap";}
+else{
+d.className = "";}
 }
 function noFormat(){
 var t=!(document.getElementById("remove_comments").disabled);
