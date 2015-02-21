@@ -217,7 +217,7 @@ function f() {
         j = 0;
     var tab_n = 1,
         comments_r = 0,
-        str_len = 0;
+        str_len = 0,port_s="",end_port=false;
     var back_tab = false,
         forward_tab = false,
         need_semi = false,
@@ -275,6 +275,24 @@ function f() {
 		if(arr[i].match(/FUNCTION|PROCEDURE/i)!=null){
 			arr[i]=arr[i].replace(/;/g, '@@semicolon');
 		}
+		if(port_s){
+		port_s+=arr[i];
+			var k_port=port_s.split("(").length;
+			if(k_port==port_s.split(")").length){
+				arr[i]=arr[i]+"@@endport";
+				port_s="";
+				port_b=false;
+			}
+		}
+		if((!port_b&&arr[i].regexIndexOf(/([\s:,;\.\(]|^)PORT([\s;,(\.]|$)/i)>=0)||arr[i].regexIndexOf(/:[ ]?=[ ]?\(/)>=0){
+		port_b=true;
+		port_s=arr[i];
+		var k_port=port_s.split("(").length;
+			if(k_port&&k_port==port_s.split(")").length){
+				port_s="";port_b=false;
+				arr[i]=arr[i]+"@@endport";
+			}
+		}
 		if (remove_lines) {
 		    str = arr[i].replace(/[ \t\r\n]/g, '');
 		    if (str.length == 0) {
@@ -283,9 +301,9 @@ function f() {
 		        i--;
 		    }
 		}
-		
     }
     input = arr.join("\r\n");
+	input = input.replace(/[ ]+\);@@endport/g, '\r\n);@@endport');
     input = input.replace(/\r\n\r\n\r\n/g, '\r\n');
     input = input.replace(/[\t ]+/g, ' ');
 	
@@ -309,6 +327,7 @@ function f() {
     input = input.replace(/(;|THEN)[ ]?([a-zA-Z])/g, '$1\r\n$2');
     input = input.replace(/(;|THEN)[ ]?(@@comments[0-9]+)/g, '$1 $2\r\n');
     input = input.replace(/[\r\n ]+RETURN/g, ' RETURN');
+    
 	
 	if(check_alias){
 		var alias=[],subarr=[],o=0,p=0,p2=0,l2=0,i2=0;
@@ -343,8 +362,6 @@ function f() {
     for (i = 0; i < l; i++) {
         str = arr[i];
         str_len = str.length;
-        semi_pos = str.indexOf(";");
-        bra_semi_pos = str.indexOf(");");
         arch_pos = str.indexOf("ARCHITECTURE ");
         process_pos = str.indexOf(": PROCESS");
         if (str.indexOf("ELSIF") == 0) {
@@ -356,12 +373,10 @@ function f() {
 			//if(arr[i-1].indexOf("WHEN") < 0){
 			tab_n--;
 			//}
-        } else if (str.regexIndexOf("^END(([a-zA-Z0-9_ ]+;)|;)") == 0) {
+        } else if (str.regexIndexOf(/^END(([a-zA-Z0-9_ ]+;)|;)/) == 0) {
             tab_n--;
 			if(str.indexOf("END IF") == 0){
 			if_b=false;
-			}else if(str.indexOf("END ARCHITECTURE") >= 0){
-			tab_n=0;
 			}
         } else if (str.indexOf("ELSE") == 0 && if_b) {
             tab_n--;
@@ -396,32 +411,14 @@ function f() {
 			bra_semi_b = false;
 			bra_semi_accept = false;
         }
-        if (need_semi && semi_pos >= 0) {
-            forward_tab = true;
-            need_semi = false;
-        }
-		
-		if (bra_semi_pos >= 0){
-			if(str.indexOf("));")>0){
-				if(port_b){
-				tab_n--;
-				port_b=false;
-				}
-			}else if(bra_semi_pos==0){
-				tab_n--;
-				port_b=false;
-				bra_semi_accept=false;
-			}else if(bra_semi_accept&&bra_semi_pos>0){
-			
-				forward_tab = true;
-				port_b=false;
-				bra_semi_accept=false;
-			}
-		}
 		
         if (str.indexOf("PORT (") >= 0||str.indexOf("PORT MAP") >= 0) {
             back_tab=true;
 			port_b=true;
+			if(str.indexOf("@@endport")>=0){
+			back_tab=false;port_b=false;
+			}
+			
 			if(str.indexOf(");") < 0){
 				align_i1=align_i;
 				var t=str.indexOf("=>");
@@ -446,22 +443,13 @@ function f() {
 			}else{
 				signAlignPos="";
 			}
-			if(str.regexIndexOf(/PORT (MAP)?\([a-zA-Z0-9_,\- ]+\);/) >= 0){
-				back_tab=false;
-				port_b=false;
-			}
         }
 		if(set_false){
 		procfun_b=false;
 		set_false=false;
 		}
 		if (str.indexOf("(")>=0) {
-			if(port_b){
-				if(str.indexOf("PORT MAP(")>=0){
-					bra_semi_accept=true;
-				}
-				bra_semi_b=true;
-			}else if(process_b){
+			if(process_b){
 				if(str.regexIndexOf(/\)[\r\n ]+IS/)<0){
 					process_b=false;}
 			}
@@ -470,17 +458,16 @@ function f() {
 					procfun_b=true;
 					back_tab=true;
 				}
-				if(str.indexOf("(")==str_len-1){
-					back_tab=true;
-				}else if(str.regexIndexOf(/\([ ]+\(/)>=0&&str.indexOf("),")>=0){
-					back_tab=true;
-				}
-				if(str.indexOf("),")>=0||bra_semi_accept){
-				back_tab=false;
-				bra_semi_accept=true;
-				}
 			}
         }
+		if(str.indexOf("@@endport")>=0&&port_b){
+		port_b=false;
+		tab_n--;
+		}
+		if(str.indexOf(":= (")>=0 && str.indexOf("@@endport")<0){
+		port_b=true;
+		back_tab=true;
+		}
 		if(sign_align){
 			if(port_b&&signAlignPos!=""){
 			if(str.indexOf(signAlignPos)>=0){
@@ -541,7 +528,6 @@ function f() {
 		if(procfun_b){
 		if (str.regexIndexOf(/(\))|(RETURN [A-Za-z0-9 ]+)[\r\n ]+IS/)>=0){
 				tab_n--;
-				//procfun_b=false;
 				set_false=true;
 			}
 		}
@@ -556,6 +542,7 @@ function f() {
 		input= input.replace("@@quotes"+k,quotes[k]);
 	}
     input= input.replace(/@@semicolon/g,";");
+    input= input.replace(/@@[a-z]+/g,"");
     document.getElementById("vhdl").innerHTML = input;
     document.getElementById("selectAll").style.display = "inline-block";
     hljs.highlightBlock(document.getElementById("vhdl"));
