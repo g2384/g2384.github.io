@@ -81,6 +81,8 @@ document.write("<p>Last modified: "+fetchHeader(location.href,'Last-Modified')+"
 <label><input type="checkbox" id="check_alias">Check ALIAS (every long name is replaced with ALIAS)</label><br />
 <label><input type="checkbox" id="sign_align">Align signs in PORT()</label><br />
 <label><input type="checkbox" id="use_space">Indent 4 spaces, rather than 1 tab</label><br />
+<label><input type="checkbox" id="compress">! EVIL - compress VHDL (\r\n, comments will be removed)</label><br />
+<label><input type="checkbox" id="mix_letter">! EVIL - unreadable (mix upper/lower-case letters)</label><br />
 <input type="button" class="btn" onclick="f()" value="start"/>
 <input type="button" class="btn" id="selectAll" value="Select All" onclick="selectText(document.getElementById('vhdl'))"/><br />
 
@@ -188,6 +190,11 @@ function f() {
     var check_alias = document.getElementById("check_alias").checked;
     var sign_align = document.getElementById("sign_align").checked;
     var use_space = document.getElementById("use_space").checked;
+    var compress = document.getElementById("compress").checked;
+	if(compress){
+	remove_comments=true;
+	}
+    var mix_letter = document.getElementById("mix_letter").checked;
 	indentation="\t";
 	if(use_space){
 	indentation="    ";
@@ -543,6 +550,21 @@ function f() {
 	}
     input= input.replace(/@@semicolon/g,";");
     input= input.replace(/@@[a-z]+/g,"");
+	if(compress){
+		input = input.replace(/\r\n/g, '');
+    input = input.replace(/[\t ]+/g, ' ');
+	input = input.replace(/[ ]?([&=:\-<>\+|])[ ]?/g, '$1');
+	}if(mix_letter){
+		arr=input.split("");
+		for(var k=0;k<arr.length;k++){
+		if(arr[k] === arr[k].toUpperCase()&&Math.random()>0.5){
+			arr[k]=arr[k].toLowerCase();
+			}else if(Math.random()>0.5){
+			arr[k]=arr[k].toUpperCase();
+			}
+		}
+		input=arr.join("");
+	}
     document.getElementById("vhdl").innerHTML = input;
     document.getElementById("selectAll").style.display = "inline-block";
     hljs.highlightBlock(document.getElementById("vhdl"));
