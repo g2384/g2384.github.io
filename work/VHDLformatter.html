@@ -300,18 +300,23 @@ function f() {
 		port_s+=arr[i];
 			var k_port=port_s.split("(").length;
 			if(k_port==port_s.split(")").length){
-				arr[i]=arr[i]+"@@endport";
+				arr[i]=arr[i]+"@@end";
 				port_s="";
 				port_b=false;
 			}
 		}
-		if((!port_b&&arr[i].regexIndexOf(/([\s:,;\.\(]|^)PORT([\s;,(\.]|$)/i)>=0)||arr[i].regexIndexOf(/:[ ]?=[ ]?\(/)>=0){
+		if((!port_b&&arr[i].regexIndexOf(/(\s|\(|^)(PORT|GENERIC)(\s|\(|$)/i)>=0)||arr[i].regexIndexOf(/:[ ]?=[ ]?\(/)>=0){
+		arr[i] = arr[i].replace(/(PORT|PROCESS|GENERIC)(\s|\()?\(/i, '$1 (');
+		//console.log(arr[i])
 		port_b=true;
 		port_s=arr[i];
 		var k_port=port_s.split("(").length;
 			if(k_port&&k_port==port_s.split(")").length){
 				port_s="";port_b=false;
-				arr[i]=arr[i]+"@@endport";
+				arr[i]=arr[i]+"@@singleend";
+			}else{
+    arr[i] = arr[i].replace(/(PORT|PROCESS|GENERIC) \(([a-zA-Z0-9_\(\) ]+)/i, '$1 (\r\n$2');
+	console.log(arr[i])
 			}
 		}
 		if (remove_lines) {
@@ -323,8 +328,9 @@ function f() {
 		    }
 		}
     }
-    input = arr.join("\r\n");
-	input = input.replace(/[ ]+\);@@endport/g, '\r\n);@@endport');
+	
+    input = arr.join("\r\n");console.log(input)
+	input = input.replace(/([a-zA-Z0-9\); ])\);(@@comments[0-9]+)?@@end/g, '$1\r\n);$2@@end');
     input = input.replace(/\r\n\r\n\r\n/g, '\r\n');
     input = input.replace(/[\t ]+/g, ' ');
 	
@@ -343,7 +349,7 @@ function f() {
     input = input.replace(/ \/ = /g, " /= ");
     input = input.replace(/\r\n[ \t]+--\r\n/g, "\r\n");
     input = input.replace(/[ ]+/g, ' ');
-    input = input.replace(/(PORT|PROCESS)[ \r\n]?\(/g, '$1 (');
+    
     input = input.replace(/(MAP)[ \r\n]+\(/g, '$1(');
     input = input.replace(/(;|THEN)[ ]?([a-zA-Z])/g, '$1\r\n$2');
     input = input.replace(/(;|THEN)[ ]?(@@comments[0-9]+)/g, '$1 $2\r\n');
@@ -436,9 +442,6 @@ function f() {
         if (str.indexOf("PORT (") >= 0||str.indexOf("PORT MAP") >= 0) {
             back_tab=true;
 			port_b=true;
-			if(str.indexOf("@@endport")>=0){
-			back_tab=false;port_b=false;
-			}
 			
 			if(str.indexOf(");") < 0){
 				align_i1=align_i;
@@ -473,22 +476,26 @@ function f() {
 			if(process_b){
 				if(str.regexIndexOf(/\)[\r\n ]+IS/)<0){
 					process_b=false;}
-			}
-			else{
+			} else{
 				if(str.indexOf("PROCEDURE")>=0||str.indexOf("FUNCTION")>=0){
 					procfun_b=true;
 					back_tab=true;
 				}
+				else if((str.indexOf("GENERIC")>=0||str.indexOf(":= (")>=0)){
+					port_b=true;
+			back_tab=true;
+				}
 			}
         }
-		if(str.indexOf("@@endport")>=0&&port_b){
+		if(str.indexOf("@@singleend")>=0){
+		
+			back_tab=false;port_b=false;
+		}
+		if(str.indexOf("@@end")>=0&&port_b){
 		port_b=false;
 		tab_n--;
 		}
-		if(str.indexOf(":= (")>=0 && str.indexOf("@@endport")<0){
-		port_b=true;
-		back_tab=true;
-		}
+		
 		if(sign_align){
 			if(port_b&&signAlignPos!=""){
 			if(str.indexOf(signAlignPos)>=0){
@@ -514,9 +521,7 @@ function f() {
         if (str_len) {
             if (str.indexOf("@@comments") < 0) {
                 arr[i] = (Array(tab_n).join(indentation)) + arr[i];
-            } else if(str.indexOf("@@comments") == 0){
-				arr[i] = (Array(tab_n).join(indentation)) +arr[i].replace("@@comments" + (comments_r), comments[(comments_r++)]);
-			} else {
+            } else {
                 arr[i] = (Array(tab_n).join(indentation)) + arr[i].replace("@@comments" + (comments_r), comments[(comments_r++)]);
             }
         }
