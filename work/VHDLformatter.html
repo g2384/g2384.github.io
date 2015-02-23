@@ -62,7 +62,7 @@ function selectText(element) {
 <h2>VHDL Beautifier, Formatter</h2>
 <h4>Beautify and format your VHDL code</h4>
 <p>
-Proper formatting makes code easier to read and understand.<br />
+Proper formatting makes code easier to read and understand.<br>
 Please make a backup before you replace your code!</p>
 <script>
 function fetchHeader(url, wch) {
@@ -80,19 +80,21 @@ function fetchHeader(url, wch) {
 }
 document.write("<p>Last modified: "+fetchHeader(location.href,'Last-Modified')+"</p>");
 </script>
-<textarea id="in" rows="10" wrap="off"></textarea><br />
+<textarea id="in" rows="10" wrap="off"></textarea><br>
 <label><input type="checkbox" id="no_format" onclick="noFormat()">Only highlight, don't format</label><br>
+<label><input type="checkbox" checked="checked" id="new_line">New line after THEN, semicolon ";"</label><br>
 <label><input type="checkbox" id="remove_comments">Remove commments</label>
  | <label><input type="checkbox" id="remove_lines">Remove blank lines</label>
- | <label><input type="checkbox" id="remove_report">Remove REPORT</label><br />
-<label><input type="checkbox" id="check_alias">Check ALIAS (every long name is replaced with ALIAS)</label><br />
-<label><input type="checkbox" id="sign_align">Align signs in PORT()</label><br />
-<label><input type="checkbox" id="use_space">Indent 4 spaces, rather than 1 tab</label><br />
-<label><input type="checkbox" id="compress">! EVIL - compress VHDL (\r\n, comments will be removed)</label><br />
-<label><input type="checkbox" id="mix_letter">! EVIL - unreadable (mix upper/lower-case letters)</label><br />
+ | <label><input type="checkbox" id="remove_report">Remove REPORT</label><br>
+<label><input type="checkbox" id="check_alias">Check ALIAS (every long name is replaced with ALIAS)</label><br>
+<label><input type="checkbox" id="sign_align">Align signs in PORT()</label><br>
+
+<label><input type="checkbox" id="use_space">Indent 4 spaces, rather than 1 tab</label><br>
+<label><input type="checkbox" id="compress">! EVIL - compress VHDL (\r\n, comments will be removed)</label><br>
+<label><input type="checkbox" id="mix_letter">! EVIL - unreadable (mix upper/lower-case letters)</label><br>
 <input type="button" class="btn" onclick="f()" value="start"/>
 <span class="show"><input type="button" class="btn " id="selectAll" value="Select All" onclick="selectText(document.getElementById('vhdl'))"/> 
-<label><input type="checkbox" onclick="wordWrap()" id="">Word wrap</label></span><br />
+<label><input type="checkbox" onclick="wordWrap()" id="">Word wrap</label></span><br>
 <pre id="result"><code class="vhdl" id="vhdl">
 <font style="background-color:#9D9D9D; color:#fff"> output DEMO </font>
 
@@ -188,6 +190,10 @@ document.getElementById("remove_lines").disabled = t;
 document.getElementById("remove_report").disabled = t;
 document.getElementById("check_alias").disabled = t;
 document.getElementById("sign_align").disabled = t;
+document.getElementById("new_line").disabled = t;
+document.getElementById("use_space").disabled = t;
+document.getElementById("compress").disabled = t;
+document.getElementById("mix_letter").disabled = t;
 }
 function f() {
     var input = document.getElementById("in").value;
@@ -203,6 +209,7 @@ function f() {
     var remove_report = document.getElementById("remove_report").checked;
     var check_alias = document.getElementById("check_alias").checked;
     var sign_align = document.getElementById("sign_align").checked;
+    var new_line = document.getElementById("new_line").checked;
     var use_space = document.getElementById("use_space").checked;
     var compress = document.getElementById("compress").checked;
 	if(compress){
@@ -219,11 +226,18 @@ function f() {
 		
     input = input.replace(/(?:\r\n|\r|\n)/g, '\r\n');
     input = input.replace(/ \r\n/g, '\r\n');
+	input=matchInArray(input, keyword_reg,keyword_cap);
+	input=matchInArray(input, typename_reg,typename_cap);
+	input = input.replace(/\r\n\r\n\r\n/g, '\r\n');
+    input = input.replace(/[\t ]+/g, ' ');
+	input = input.replace(/[ ]+;/g, ';');
     var arr = input.split("\r\n");
     var comments = [],
         comments_i = 0;
     var quotes = [],
 		quotes_i = 0;
+	var singleline = [],
+		singleline_i = 0;
 	var align = [],
 	align_max=[],
 	align_i1=0,
@@ -316,7 +330,12 @@ function f() {
 				arr[i]=arr[i]+"@@singleend";
 			}else{
     arr[i] = arr[i].replace(/(PORT|PROCESS|GENERIC) \(([a-zA-Z0-9_\(\) ]+)/i, '$1 (\r\n$2');
-	console.log(arr[i])
+			}
+		}
+		if(!new_line){
+			if(arr[i].regexIndexOf(/(;|THEN)[ a-z0-9]+[a-z0-9]+/i)>=0){
+			singleline[singleline_i]=arr[i];
+				arr[i]="@@singleline"+singleline_i++;
 			}
 		}
 		if (remove_lines) {
@@ -329,13 +348,11 @@ function f() {
 		}
     }
 	
-    input = arr.join("\r\n");console.log(input)
+    input = arr.join("\r\n");
 	input = input.replace(/([a-zA-Z0-9\); ])\);(@@comments[0-9]+)?@@end/g, '$1\r\n);$2@@end');
-    input = input.replace(/\r\n\r\n\r\n/g, '\r\n');
-    input = input.replace(/[\t ]+/g, ' ');
+    
 	
-	input=matchInArray(input, keyword_reg,keyword_cap);
-	input=matchInArray(input, typename_reg,typename_cap);
+	
 	
     input = input.replace(/[ ]?([&=:\-<>\+|])[ ]?/g, ' $1 ');
     input = input.replace(/[ ]?([,])[ ]?/g, '$1 ');
@@ -354,6 +371,7 @@ function f() {
     input = input.replace(/(;|THEN)[ ]?([a-zA-Z])/g, '$1\r\n$2');
     input = input.replace(/(;|THEN)[ ]?(@@comments[0-9]+)/g, '$1 $2\r\n');
     input = input.replace(/[\r\n ]+RETURN/g, ' RETURN');
+    
     
 	
 	if(check_alias){
@@ -566,6 +584,9 @@ function f() {
 	}
 	for(var k=0;k<quotes_i;k++){
 		input= input.replace("@@quotes"+k,quotes[k]);
+	}
+	for(var k=0;k<singleline_i;k++){
+		input= input.replace("@@singleline"+k,singleline[k]);
 	}
     input= input.replace(/@@semicolon/g,";");
     input= input.replace(/@@[a-z]+/g,"");
