@@ -319,7 +319,6 @@ function f() {
         }
         if ((!port_b && arr[i].regexIndexOf(/(\s|\(|^)(PORT|GENERIC)(\s|\(|$)/) >= 0) || arr[i].regexIndexOf(/:[ ]?=[ ]?\(/) >= 0) {
             arr[i] = arr[i].replace(/(PORT|PROCESS|GENERIC)(\s|\()?\(/, '$1 (');
-            //console.log(arr[i])
             port_b = true;
             port_s = arr[i];
             var k_port = port_s.split("(").length;
@@ -366,6 +365,7 @@ function f() {
     input = input.replace(/(;|THEN)[ ]?([a-zA-Z])/g, '$1\r\n$2');
     input = input.replace(/(;|THEN)[ ]?(@@comments[0-9]+)/g, '$1 $2\r\n');
     input = input.replace(/[\r\n ]+RETURN/g, ' RETURN');
+    input = input.replace(/BEGIN[\r\n ]+/g, 'BEGIN\r\n');
 
     if (check_alias) {
         var alias = [],
@@ -405,11 +405,14 @@ function f() {
     var if_b = false,
         case_b = false,
         procfun_b = false,
+        semi_b = false,
+        begin_ = true,
         set_false = false;
     for (i = 0; i < l; i++) {
         str = arr[i];
         str_len = str.length;
         process_pos = str.indexOf(": PROCESS");
+		begin_=str.indexOf("BEGIN") == 0;
         if (str.indexOf("ELSIF") == 0) {
             tab_n--;
             back_tab = true;
@@ -419,7 +422,7 @@ function f() {
             //if(arr[i-1].indexOf("WHEN") < 0){
             tab_n--;
             //}
-        } else if (str.regexIndexOf(/^END(([a-zA-Z0-9_ ]+;)|;)/) == 0) {
+        } else if (str.regexIndexOf(/^END[^a-zA-Z0-9_]/) == 0) {
             tab_n--;
             if (str.indexOf("END IF") == 0) {
                 if_b = false;
@@ -437,7 +440,7 @@ function f() {
                 tab_n++;
             }
 
-        } else if (str.indexOf("BEGIN") == 0) {
+        } else if (begin_) {
             if (begin_b) {
                 tab_n--;
                 back_tab = true;
@@ -550,6 +553,13 @@ function f() {
             tab_n--;
             forward_tab = false;
         }
+			if(str.indexOf(";")>=0&&semi_b){
+			semi_b=false;
+			tab_n--;
+			}else if(!semi_b&&str.indexOf(";")<0&&str.indexOf("<=")&&(str.indexOf("@@quotes")>=0||str.indexOf("<=")>=0)){
+			tab_n++;
+			semi_b=true;
+			}
         if (str.indexOf("ENTITY ") == 0 && str.indexOf(": ENTITY ") < 0) {
             tab_n++;
         } else if (str.indexOf("RECORD") == 0) {
