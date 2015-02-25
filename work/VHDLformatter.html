@@ -356,9 +356,10 @@ function f() {
     input = input.replace(/\r\n[ \t]+--\r\n/g, "\r\n");
     input = input.replace(/[ ]+/g, ' ');
 var matches = input.match(/'([a-zA-Z]+)\s/g);
+if(matches!=null){
 for(var k=0;k<matches.length;k++){
     input=input.replace(matches[k], matches[k].toUpperCase());
-}
+}}
     input = input.replace(/(MAP)[ \r\n]+\(/g, '$1(');
     input = input.replace(/(;|THEN)[ ]?([a-zA-Z])/g, '$1\r\n$2');
     input = input.replace(/(;|THEN)[ ]?(@@comments[0-9]+)/g, '$1 $2\r\n');
