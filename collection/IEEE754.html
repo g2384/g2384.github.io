@@ -3,6 +3,8 @@
   <title>
     IEEE-754 Floating-Point Conversion
   </title>
+  <style>body{font-family:Consolas;}input{font-family:Consolas;}.sign{color:#046A96;}.expo{color:#ee5500;}.mantissa{color:#33dd00;}
+  </style>
 <script = "javascript">
 function Convert2Bin(outstring, statstring, signBit, power, rounding)
 {
@@ -457,19 +459,6 @@ function UndfCheck(input)
     output = "normal"
   return output;
 }
-function RemoveBlanks(input)
-{
-  output = new String()
-  var start, stop
-  start = 0
-  while ((input.charAt(start) == " ") && (start < input.length))
-    start++
-  stop = input.length - 1
-  while ((input.charAt(stop) == " ") && (stop >= 0))
-    stop--
-  output = input.substring(start, stop + 1)
-  return output
-}
 function Convert2Hex()
 {
   output = new String()
@@ -495,7 +484,7 @@ function numStrClipOff(input, precision)
   numerals = new String()
   tempstr = new String()
   expstr = new String()
-  signstr = new String()
+  signstr = ""
   var locE, stop, expnum, locDP, start, MSD, MSDfound, index, expdelta, digits
   var number
   numerals = "0123456789";
@@ -529,8 +518,6 @@ function numStrClipOff(input, precision)
     start++
     signstr = "-"
   }
-  else
-    signstr = ""
   MSD = start
   MSDfound = false
   while ((MSD < stop) && !MSDfound)
@@ -568,10 +555,7 @@ function numStrClipOff(input, precision)
   tempstr = input.substring(MSD, MSD + number + 1)
   if ( (MSD != start) || (tempstr.indexOf(".") == -1) )
   {
-    result = signstr
-    result += input.substring(MSD, MSD + 1)
-    result += "."
-    result += input.substring(MSD + 1, MSD + number)
+    result = (signstr +input.substring(MSD, MSD + 1)+"." + input.substring(MSD + 1, MSD + number))
     while (digits < precision)
     {
       result += "0"
@@ -633,65 +617,72 @@ function compute(obj, rounding){
   ieee64 = new ieee(64)
   var input, index1, cnst
   input = obj.input.value
-  input = RemoveBlanks(input)
+  input = input.replace(/[^0-9]/g,"");
+  obj.input.value = input;
   ieee64.Dec2Bin(input)
   ieee64.BinString =
     ieee64.Convert2Bin(ieee64.DispStr, ieee64.StatCond64, ieee64.Result[0],
                          ieee64.BinaryPower, false)
-  obj.bin64_0.value = ieee64.BinString.substring(0, 1)
-  obj.bin64_1.value = ieee64.BinString.substring(1, 12)
+						 var output_str="";
+	var prefix='<font class="sign">Sign</font> <font class="expo">Exponent</font> <font class="mantissa">Mantissa</font><br>';
+  output_str = 'Double precision (64 bits):<br>'+prefix+'<font class="sign">'+ieee64.BinString.substring(0, 1)+'</font>';
+  output_str += ('<font class="expo">'+ieee64.BinString.substring(1, 12)+'</font>');
   if ((ieee64.BinaryPower < ieee64.MinExp) ||
       (ieee64.BinaryPower > ieee64.MaxExp))
   {
-    obj.bin64_12.value = ieee64.BinString.substring(12, 13)
-    obj.bin64_12.value += "."
-    obj.bin64_12.value += ieee64.BinString.substring(13, 64)
+    output_str += ('<font class="mantissa">'+ieee64.BinString.substring(12, 13)+'</font>');
+    output_str += ("." + ieee64.BinString.substring(13, 64)+'</font>');
   }
   else
   {
-    obj.bin64_12.value = ieee64.BinString.substring(12, 64)
+    output_str += ('<font class="mantissa">'+ieee64.BinString.substring(12, 64)+'</font>');
   }
-  obj.stat64.value = ieee64.StatCond
+  if (ieee64.StatCond != "normal")
+  output_str +=("<br>Status:" + ieee64.StatCond);
+  
+  output_str +=("<br>Hex: "+ ieee64.Convert2Hex());
+  
   if (ieee64.DispStr != "")
   {
-    obj.dec64.value = ieee64.DispStr
-    obj.dec64sig.value = ""
+    output_str +=("<br>Dec: "+ ieee64.DispStr);
   }
   else{
   ieee64.Convert2Dec()
-    obj.dec64.value = ieee64.DecValue
+  output_str +=("<br>Dec: "+ ieee64.DecValue);
 	}
-  obj.hex64.value = ieee64.Convert2Hex()
+  document.getElementById("bin64_0").innerHTML=output_str;
     cnst = 2102         // 1 (carry bit) + 1023 + 1 + 1022 + 53 + 2 (round bits)
     for (index1 = 0; index1 < cnst; index1++)
       ieee32.BinVal[index1] = ieee64.BinVal[index1]
-  ieee32.BinString =
-    ieee32.Convert2Bin(ieee64.DispStr, ieee64.StatCond64, ieee64.Result[0],
-                         ieee64.BinaryPower, rounding)
-  obj.bin32_0.value = ieee32.BinString.substring(0, 1)
-  obj.bin32_1.value = ieee32.BinString.substring(1, 9)
+  ieee32.BinString = ieee32.Convert2Bin(ieee64.DispStr, ieee64.StatCond64, ieee64.Result[0], ieee64.BinaryPower, rounding)
+						 
+
+  output_str = 'Single precision (32 bits):<br>'+prefix+'<font class="sign">'+ieee32.BinString.substring(0, 1)+'</font>';
+  output_str += ('<font class="expo">'+ieee32.BinString.substring(1, 9)+'</font>');
   if ((ieee32.BinaryPower < ieee32.MinExp) ||
       (ieee32.BinaryPower > ieee32.MaxExp))
   {
-    obj.bin32_9.value = ieee32.BinString.substring(9, 10)
-    obj.bin32_9.value += "."
-    obj.bin32_9.value += ieee32.BinString.substring(10, 32)
+    output_str += ('<font class="mantissa">'+ieee32.BinString.substring(9, 10))
+    output_str += ("." + ieee32.BinString.substring(10, 32)+'</font>');
   }
   else
   {
-    obj.bin32_9.value = ieee32.BinString.substring(9, 32)
+    output_str += ('<font class="mantissa">'+ieee32.BinString.substring(9, 32)+'</font>');
   }
-  obj.stat32.value = ieee32.StatCond
-  obj.hex32.value = ieee32.Convert2Hex()
+  if (ieee32.StatCond != "normal")
+  output_str +=("<br>Status:" + ieee32.StatCond);
+  
+  
+  output_str +=("<br>Hex: "+ ieee32.Convert2Hex());
 if (ieee32.DispStr != "")
   {
-    obj.dec32.value = ieee32.DispStr
-    obj.dec32sig.value = ""
+    output_str +=("<br>Dec: "+ ieee32.DispStr);
   }
   else{
   ieee32.Convert2Dec()
-    obj.dec32.value = ieee32.DecValue
+    output_str +=("<br>Dec: "+ ieee32.DecValue);
 	}
+	document.getElementById("bin32_0").innerHTML=output_str;
 }
 function Convert2Dec()
 {
@@ -733,64 +724,39 @@ function Convert2Dec()
 
   }
 }
+function HextoFP(){
+var a=document.getElementById("hexinput").value;
+if(a.indexOf("0x")<0){a="0x"+a;}
+if(a.length<10){a=(a+"00000000").slice(0,10);
+}
+document.getElementById("result").innerHTML= (a & 0x7fffff | 0x800000) * 1.0 / Math.pow(2,23) * Math.pow(2,  ((a>>23 & 0xff) - 127));
+document.getElementById("hexinput").value=a;}
+function HextoDP(){
+var a=document.getElementById("hexinput").value;
+if(a.indexOf("0x")<0)a="0x"+a;
+if(a.length<18)a=(a+"0000000000000000").slice(0,16);
+document.getElementById("result").innerHTML=  (a & 0xfffff | 0x100000) * 1.0 / Math.pow(2, 52 - 32) * Math.pow(2, ((a >> 52 - 32 & 0x7ff) - 1023));
+document.getElementById("hexinput").value=a;}
 </script>
-<style>
-td{border-right:1px solid #000;}
-</style>
 </head>
 <body>
-<h3>IEEE-754 Floating-Point Conversion</h3><br>
+<h2>IEEE-754 Floating-Point Conversion</h2>
+<h3>Dec -> Float/Double</h3><br>
 <form>
 Input: <input type="text" placeholder="Decimal Floating-Point" onkeyup="compute(this.form, true)" name="input">
 <input type="button" value="Rounded(default)" onClick="compute(this.form, true)">
 <input type="button" value="Not Rounded" onClick="compute(this.form, false)">
 <br>
-Round: uses the IEEE-754 round-to-nearest-value mode.<br>
-<hr>
-Single precision (32 bits):&nbsp;&nbsp;
-Status:
-<input type="text" name="stat32" size=12><br>
-<table border=0><tr><td>
-Sign<br>
-<input type="text" name="bin32_0" size=1>
-</td>
-<td>
-Exponent<br>
-<input type="text" name="bin32_1" size=8>
+Round: uses the IEEE-754 round-to-nearest-value mode.<br><br>
 
-</td>
-<td>
-Mantissa<br>
-<input type="text" name="bin32_9" size=23>
-</td></tr></table>
-Hex:
-<input type="text" name="hex32">
+<div id="bin32_0"></div>
 <br>
-Dec:
-<input type="text" name="dec32">
-
-<hr>
-Double precision (64 bits):&nbsp;&nbsp;
-Status:
-<input type="text" name="stat64" size=12><br>
-<table border=0>
-<tr><td>
-Sign<br>
-<input type="text" name="bin64_0" size=1>
-</td>
-<td>
-Exponent<br>
-<input type="text" name="bin64_1" size=11>
-</td>
-<td>
-Mantissa<br>
-<input type="text" name="bin64_12" size=58>
-</td></tr>
-</table>
-Hex:
-<input type="text" name="hex64"><br>
-Dec:
-<input type="text" name="dec64">
-</form>
+<div id="bin64_0"></div>
+</form><br><hr>
+<h3>Hex(Float/Double) -> Dec</h3><br>
+Input: <input type="text" id="hexinput" placeholder="Input Hex">
+<input type="button" onclick="HextoFP()" value="Hex To Float">
+<input type="button" onclick="HextoDP()" value="Hex To Double"><br>
+<div id="result"></div>
 </body>
 </html>
