@@ -675,7 +675,8 @@ function compute(obj, rounding){
   ieee64 = new ieee(64)
   var input, index1, cnst
   input = obj.input.value
-  input = input.replace(/[^0-9]/g,"");
+  input = input.replace(/^([0-9\-])([0-9]*)[^0-9]/g,"$1$2");
+  //input = input.replace(/^[^0-9\-]/g,"");
   obj.input.value = input;
   ieee64.Dec2Bin(input)
   ieee64.BinString =
