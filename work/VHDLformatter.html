@@ -430,7 +430,8 @@ for(var k=0;k<matches.length;k++){
             if (str.indexOf("END IF") == 0) {
                 if_b = false;
             }
-        } else if (str.indexOf("ELSE") == 0 && if_b) {
+        } else if (str.indexOf("ELSE") == 0) {
+		console.log(arr[i-1],arr[i+1])
             tab_n--;
             if_b = false;
             back_tab = true;
@@ -522,7 +523,7 @@ for(var k=0;k<matches.length;k++){
             port_b = false;
             tab_n--;
         }
-console.log(str, tab_n)
+//console.log(str, tab_n)
         if (sign_align) {
             if (port_b && signAlignPos != "") {
                 if (str.indexOf(signAlignPos) >= 0) {
