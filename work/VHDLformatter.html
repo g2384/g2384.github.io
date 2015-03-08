@@ -254,7 +254,7 @@ function f() {
         port_b = false,
         process_pos = 0;
     for (i = 0; i < l; i++) {
-		n = arr[i].regexIndexOf(/[a-zA-Z0-9\(\&\)%_\+'"]/);
+		n = arr[i].regexIndexOf(/[a-zA-Z0-9\(\&\)%_\+'"|]/);
         p = arr[i].indexOf("--");
         if (n < p && n >= 0) {
             var s = arr[i].substr(p);
