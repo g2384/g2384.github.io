@@ -222,6 +222,7 @@ function f() {
     input = input.replace(/\([\t ]+/g, '\(');
     input = input.replace(/[ ]+;/g, ';');
     input = input.replace(/: PROCESS/g, ':PROCESS');
+    input = input.replace(/: PROCESS \(/g, ':PROCESS(');
     var arr = input.split("\r\n");
     var comments = [],
         comments_i = 0;
@@ -572,7 +573,7 @@ for(var k=0;k<matches.length;k++){
             tab_n++;
         } else if (str.indexOf("FOR ") == 0) {
             tab_n++;
-        } else if (str.indexOf("CASE ") == 0) {
+        } else if (str.indexOf("CASE") == 0) {
             case_b = true;
             tab_n++;
         } else if (str.indexOf("ARCHITECTURE ") == 0) {
