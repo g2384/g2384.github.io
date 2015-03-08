@@ -573,6 +573,8 @@ for(var k=0;k<matches.length;k++){
             tab_n++;
         } else if (str.indexOf("FOR ") == 0) {
             tab_n++;
+        }  else if (str.indexOf(": FOR ") >= 0) {
+            tab_n++;
         } else if (str.indexOf("CASE") == 0) {
             case_b = true;
             tab_n++;
