@@ -819,9 +819,9 @@ Input: <input type="text" id="hexinput" placeholder="Input Hex">
 <div id="result"></div>
 <br><hr><br>
 <h2>Fix-Point <-> Dec Converter</h2><br>
-Bin:<input type="text" class="c" id="bin" size="32"><input type="button" onclick="init(1)" value="Calc">
+Bin: <input type="text" class="c" id="bin" size="32"> <input type="button" onclick="init(1)" value="Calc">
 <br>
-Dec:<input type="text" class="c" id="din" size="32"><input type="button" onclick="init(0)" value="Calc">
+Dec: <input type="text" class="c" id="din" size="32"> <input type="button" onclick="init(0)" value="Calc">
 <div id="fp_r"></div>
 <script>
 function init(s) {
@@ -861,14 +861,12 @@ function fp_to_dec(a) {
     var l = c.length - 1;
     for (var i = 0; i <= l; i++) {
         result += (1 << (l - i)) * c[i];
-        console.log("b:" + result, c[i])
     }
     c = b[1].split("");
 
     l = (c.length - 1)>30?30:(c.length - 1);
     for (var i = 0; i <= l; i++) {
         result += (1 / (1 << (i + 1))) * c[i];
-        console.log("a:" + result, c[i], (1 / (1 << (i + 1))))
     }
 	return result;
 }
@@ -896,14 +894,11 @@ function dec_to_fp(a) {
             k = (c - f) > 0;
             result += k ? "1" : "0";
             c = k ? c - f : c;
-            console.log(result, c, k, c - f,p)
-			
         }
     } else {
         result += "0";
     }
 	return result;
-	
 }
 </script>
 
