@@ -2,7 +2,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <html><head>
   <title>
-    Hex/Bin Calculator | IEEE-754 Conversion
+    Hex/Bin Calculator | IEEE-754 Conversion | Fix-point Bin Conversion
   </title>
   <style>body{font-family:Consolas;}input{font-family:Consolas;}.sign{color:#046A96;}.expo{color:#ee5500;}.mantissa{color:#33dd00;}.c { text-transform: uppercase; }
   </style>
@@ -817,5 +817,95 @@ Input: <input type="text" id="hexinput" placeholder="Input Hex">
 <input type="button" onclick="HextoFP()" value="Hex To Float">
 <input type="button" onclick="HextoDP()" value="Hex To Double"><br>
 <div id="result"></div>
+<br><hr><br>
+<h2>Fix-Point <-> Dec Converter</h2><br>
+Bin:<input type="text" class="c" id="bin" size="32"><input type="button" onclick="init(1)" value="Calc">
+<br>
+Dec:<input type="text" class="c" id="din" size="32"><input type="button" onclick="init(0)" value="Calc">
+<div id="fp_r"></div>
+<script>
+function init(s) {
+    var o, a,str="";
+    var v;
+    if (s) {
+        o = document.getElementById("bin");
+        a = o.value;
+        a = a.replace(/[^01\.]/g, "");
+    } else {
+        o = document.getElementById("din");
+        a = o.value;
+        a = a.replace(/[^0-9\.]/g, "");
+    }
+    v = a.indexOf(".");
+    if (v == 0) {
+        a = "0" + a;
+    } else if (v < 0) {
+        a = a + ".0";
+    }
+    o.value = a;
+	str="-------<br />result:<br />";
+	if(s){
+	str+=fp_to_dec(a);
+	}else{
+	var k=dec_to_fp(a);
+	str+="to Fixed-Point Bin:<br />"+k+"<br />back to Dec:<br />"+fp_to_dec(k);
+	}
+    document.getElementById("fp_r").innerHTML=str;
+}
+
+function fp_to_dec(a) {
+    var result = 0;
+    var b = a.split(".");
+    var c = b[0].split("");
+
+    var l = c.length - 1;
+    for (var i = 0; i <= l; i++) {
+        result += (1 << (l - i)) * c[i];
+        console.log("b:" + result, c[i])
+    }
+    c = b[1].split("");
+
+    l = (c.length - 1)>30?30:(c.length - 1);
+    for (var i = 0; i <= l; i++) {
+        result += (1 / (1 << (i + 1))) * c[i];
+        console.log("a:" + result, c[i], (1 / (1 << (i + 1))))
+    }
+	return result;
+}
+
+function dec_to_fp(a) {
+    var result = "";
+    var b = a.split(".");
+
+    var c = Number(b[0]);
+
+    var k = 0,
+        f = 1, p=1 / (1 << 30),q=1;
+    var p1 = 30,
+        p2 = 60;
+    result = Number(c).toString(2) + ".";
+    c = Number("0." + b[1]);
+    if (c > 0) {
+        for (var i = 1; i < p2; i++) {
+		f=f/2;
+		if(f<p){
+		q=0;
+			f*=10000000000;
+			c*=10000000000;
+			}
+            k = (c - f) > 0;
+            result += k ? "1" : "0";
+            c = k ? c - f : c;
+            console.log(result, c, k, c - f,p)
+			
+        }
+    } else {
+        result += "0";
+    }
+	return result;
+	
+}
+</script>
+
 </body>
 </html>
