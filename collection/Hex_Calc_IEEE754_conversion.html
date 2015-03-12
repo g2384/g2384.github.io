@@ -819,9 +819,8 @@ Input: <input type="text" id="hexinput" placeholder="Input Hex">
 <div id="result"></div>
 <br><hr><br>
 <h2>Fix-Point <-> Dec Converter</h2><br>
-Bin: <input type="text" class="c" id="bin" size="32"> <input type="button" onclick="init(1)" value="Calc">
-<br>
-Dec: <input type="text" class="c" id="din" size="32"> <input type="button" onclick="init(0)" value="Calc">
+Bin: <input type="text" class="c" id="bin" size="32"> <input type="button" onclick="init(1)" value="Calc"><br>
+Dec: <input type="text" class="c" id="din" size="32" value="1.1"> <input type="button" onclick="init(0)" value="Calc">
 <div id="fp_r"></div>
 <script>
 function init(s) {
@@ -845,10 +844,10 @@ function init(s) {
     o.value = a;
 	str="-------<br />result:<br />";
 	if(s){
-	str+=fp_to_dec(a);
+	str+="<strong>to Dec:</strong><br />"+fp_to_dec(a);
 	}else{
 	var k=dec_to_fp(a);
-	str+="to Fixed-Point Bin:<br />"+k+"<br />back to Dec:<br />"+fp_to_dec(k);
+	str+="<strong>to Fixed-Point Bin:</strong><br />"+k+"<br /><strong>back to Dec:</strong><br />"+fp_to_dec(k);
 	}
     document.getElementById("fp_r").innerHTML=str;
 }
@@ -861,39 +860,82 @@ function fp_to_dec(a) {
     var l = c.length - 1;
     for (var i = 0; i <= l; i++) {
         result += (1 << (l - i)) * c[i];
+        //console.log("b:" + result, c[i])
     }
-    c = b[1].split("");
-
-    l = (c.length - 1)>30?30:(c.length - 1);
-    for (var i = 0; i <= l; i++) {
-        result += (1 / (1 << (i + 1))) * c[i];
+    c = b[1].split("");var q=1;
+    l = c.length;
+	var f="1",str1="",r="0",zeros="";
+	//console.log(c)
+    for (var i = 0; i < l; i++) {
+	f=MultStr(f,5);//the second one should be one bit only
+	if(c[i]=="1"){
+	r=NotTrueSumStr(zeros+f,r)
+	//console.log("eeeeeeeeeeeeeeeee "+r)
+	}
+		if(f.match(/^1/g)){zeros+="0";}
+		
     }
-	return result;
+	return result+"."+r;
 }
+function MultStr(a,b){
+//console.log(a,b)
+var c=a.split(""),m=0;
+//var d=b.split("");
+var r="",carry=0;
+for(i=c.length-1;i>=0;i--){
+calc=(parseInt(c[i])*b+carry).toString().split("");
+if(calc.length==1){carry=0;m=parseInt(calc[0]);}else{carry=parseInt(calc[0]);
+m=parseInt(calc[1]);}
+//console.log("calc= "+calc,calc.length);
+r=m+r;
+//console.log("r="+r);
+}
+if(carry){r=carry.toString()+r;}
+//console.log("5* = "+r+"\n-------")
+return r;
+}
+function NotTrueSumStr(a,b){
+var r="",sum=0;
+var n=a.length-b.length;
+b=b+(Array(n+1).join("0"));
+var c=a.split("");
+var d=b.split("");var calc=["0","0"],carry=0;
+console.log(a,b);
+for(i=c.length-1;i>=0;i--){
+//console.log(parseInt(c[i])+"+"+parseInt(d[i])+"+"+carry)
+calc=(parseInt(c[i])+parseInt(d[i])+carry).toString().split("");
 
+if(calc.length==1){carry=0;sum=parseInt(calc[0]);}
+else{carry=parseInt(calc[0]);sum=parseInt(calc[1]);}
+//console.log("calc= "+calc,calc.length);
+r=sum+r;
+
+}
+//console.log("r= "+r+"\n---------")
+
+return r;
+}
 function dec_to_fp(a) {
     var result = "";
     var b = a.split(".");
-
     var c = Number(b[0]);
-
     var k = 0,
-        f = 1, p=1 / (1 << 30),q=1;
+        f = 1, p=1 / (1 << 10);
     var p1 = 30,
-        p2 = 60;
+        p2 = 58;
     result = Number(c).toString(2) + ".";
     c = Number("0." + b[1]);
     if (c > 0) {
         for (var i = 1; i < p2; i++) {
 		f=f/2;
 		if(f<p){
-		q=0;
-			f*=10000000000;
-			c*=10000000000;
+			f*=10;
+			c*=10;
 			}
             k = (c - f) > 0;
             result += k ? "1" : "0";
             c = k ? c - f : c;
+            console.log(result,f, c, k, c - f,p)
         }
     } else {
         result += "0";
