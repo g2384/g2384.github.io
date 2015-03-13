@@ -788,13 +788,17 @@ var a=document.getElementById("hexinput").value;
 if(a.indexOf("0x")<0){a="0x"+a;}
 if(a.length<10){a=(a+"00000000").slice(0,10);
 }
-document.getElementById("result").innerHTML= (a & 0x7fffff | 0x800000) * 1.0 / Math.pow(2,23) * Math.pow(2,  ((a>>23 & 0xff) - 127));
+var r= (a & 0x7fffff | 0x800000) * 1.0 / Math.pow(2,23) * Math.pow(2,  ((a>>23 & 0xff) - 127));
+if(a.toString().match(/0x[89abcdef]/i)){r=-r;}
+document.getElementById("result").innerHTML=r;
 document.getElementById("hexinput").value=a;}
 function HextoDP(){
 var a=document.getElementById("hexinput").value;
 if(a.indexOf("0x")<0)a="0x"+a;
 if(a.length<18)a=(a+"0000000000000000").slice(0,16);
-document.getElementById("result").innerHTML=  (a & 0xfffff | 0x100000) * 1.0 / Math.pow(2, 52 - 32) * Math.pow(2, ((a >> 52 - 32 & 0x7ff) - 1023));
+var r=  (a & 0xfffff | 0x100000) * 1.0 / Math.pow(2, 52 - 32) * Math.pow(2, ((a >> 52 - 32 & 0x7ff) - 1023));
+if(a.toString().match(/0x[89abcdef]/i)){r=-r;}
+document.getElementById("result").innerHTML=r;
 document.getElementById("hexinput").value=a;}
 </script>
 <br><hr><br>
