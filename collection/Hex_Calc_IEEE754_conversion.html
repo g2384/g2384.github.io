@@ -825,6 +825,7 @@ Input: <input type="text" id="hexinput" placeholder="Input Hex">
 <h2>Fix-Point <-> Dec Converter</h2><br>
 Bin: <input type="text" class="c" id="bin" value="11.111"> <input type="button" onclick="init(1)" value="Calc"><br>
 Dec: <input type="text" class="c" id="din" value="1.1"> <input type="button" onclick="init(0)" value="Calc">
+Set Binary Fraction Length:<input type="text" id="b_len" size="2" value="32"> Bits (Max = 32)
 <div id="fp_r"></div>
 <script>
 function init(s) {
@@ -926,7 +927,10 @@ function dec_to_fp(a) {
     var k = 0,
         f = 1, p=1 / (1 << 10);
     var p1 = 30,
-        p2 = 58;
+        p2 = 58,p3=parseInt(document.getElementById("b_len").value);
+	if(p3){
+	p2=p3+1;
+	}
     result = Number(c).toString(2) + ".";
     c = Number("0." + b[1]);
     if (c > 0) {
