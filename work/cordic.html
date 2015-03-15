@@ -1,0 +1,121 @@
+<head><title>Cordic Calculator, Vectoring Mode (Javascript)</title><style>body{font-family:consolas;}</style></head><body>
+<h2>Cordic Calculator, Vectoring Mode (Javascript)</h2>
+x = <input type="text" class="c" id="x" size="32" value="1"><br />
+y = <input type="text" class="c" id="y" size="32" value ="1"><br />
+z = <input type="text" class="c" id="z" size="32" value ="0"><br />
+cycles = <input type="text" class="c" id="cycle" size="32" value ="10"> (1 ~ <span id="a"></span>)<br />
+<input type="button" class="c" size="32" value="Calc" onclick="calc()"><br />
+<label><input type="checkbox" class="c" id="o_bin" size="32" checked>Show binary format</label><br />
+<label><input type="checkbox" class="c" id="o_hex" size="32" checked>Show Hex format</label><br />
+Fixed point binary integer part length:<input type="text" class="c" id="fixed_point_in" size="2" value ="2"><br />
+Fixed point binary fraction part length:<input type="text" class="c" id="fixed_point_fr" size="2" value ="30"><br />
+<strong>Note: to calculate arctan(): set x=1, y=input, z=0;</strong><br />
+
+<div id="r"></div>
+<script>
+function bin2hex(a) {
+    var b = parseInt(a.replace(/ /g, ""), 2).toString(16);
+    var c = "00000000000000" + b.toString();
+    return c.substr(c.length - 8, c.length);
+}
+
+function dec_to_fp(a) {
+    var result = "";
+    a = a.toString();
+    if (a.indexOf(".") < 0) {
+        a = a.toString() + ".0";
+    }
+    var b = a.split(".");
+    var c = Number(b[0]);
+    var k = 0,
+        f = 1,
+        p = 1 / (1 << 10);
+    var p1 = 30,
+        p2 = 58,
+        p3 = parseInt(document.getElementById("fixed_point_fr").value);
+    if (p3) {
+        p2 = p3 + 1;
+    }
+    result = Number(c).toString(2) + ".";
+
+    c = Number("0." + b[1]);
+    if (c > 0) {
+        for (var i = 1; i < p2; i++) {
+            f = f / 2;
+            if (f < p) {
+                f *= 10;
+                c *= 10;
+            }
+            k = (c - f) > 0;
+            result += k ? "1" : "0";
+            c = k ? c - f : c;
+            //console.log(result,f, c, k, c - f,p)
+        }
+    } else {
+        result += "0";
+    }
+    //console.log("original result",result);
+    result = result.replace(/^([01].)/, "000000000000000000$1");
+    //console.log("extend integer",result);
+    result = result + "000000000000000000000000000000000";
+    //console.log("extend fraction",result);
+    c = result.split(".");
+    c[0] = c[0].substr(c[0].length - parseInt(document.getElementById("fixed_point_in").value), c[0].length);
+    c[1] = c[1].substr(0, p3);
+    result = c.join(".");
+    return result;
+}
+two = [1, 0.5, 0.25, 0.125, 0.0625, 0.03125, 0.015625, 0.0078125,
+    0.00390625, 0.001953125, 0.0009765625, 0.00048828125,
+    0.000244140625, 0.0001220703125, 0.00006103515625, 0.000030517578125,
+    0.0000152587890625, 0.00000762939453125, 0.000003814697265625,
+    0.0000019073486328125, 9.5367431640625e-7, 4.76837158203125e-7
+];
+
+function calc() {
+    var bin_b = document.getElementById("o_bin").checked;
+    var hex_b = document.getElementById("o_hex").checked;
+    var x = new Array(),
+        y = new Array(),
+        z = new Array(),
+        e = [0.78539816339745, 0.46364760900081, 0.24497866312686, 0.12435499454676, 0.06241880999596, 0.03123983343027, 0.01562372862048, 0.00781234106010, 0.00390623013197, 0.00195312251648, 0.00097656218956, 0.00048828121119, 0.00024414062015, 0.00012207031189, 0.00006103515617, 0.00003051757812, 0.00001525878906, 0.00000762939453, 0.00000381469727, 0.00000190734863, 0.00000095367432, 0.00000047683716, 0.00000023841858, 0.00000011920929, 0.00000005960464, 0.00000002980232, 0.00000001490116, 0.00000000745058];
+
+    x.push(Number(document.getElementById("x").value));
+    y.push(Number(document.getElementById("y").value));
+    z.push(Number(document.getElementById("z").value));
+    cycle = Number(document.getElementById("cycle").value);
+    var d = 0;
+    var len = x.length;
+    var str = "<br /><strong>result: </strong><br />x[0] = " + x[0] + "; y[0] = " + y[0] + "; z[0] = " + z[0] + "<br />";
+    if (bin_b) {
+        str += "to Fixed-Point Bin: ";
+        str += "x[" + (0) + "] = " + dec_to_fp(x[0]) + "; y[" + (0) + "] = " + dec_to_fp(y[0]) + "; z[" + (0) + "] = " + dec_to_fp(z[0]) + "<br />";
+    }
+    if (hex_b) {
+        str += "to Fixed-Point Hex: ";
+        str += "x[" + (0) + "] = " + bin2hex((dec_to_fp(x[0]).replace(".", ""))) + "; y[" + (0) + "] = " + bin2hex((dec_to_fp(y[0]).replace(".", ""))) + "; z[" + (0) + "] = " + bin2hex((dec_to_fp(z[0]).replace(".", ""))) + "<br />";
+
+    }
+    str += "---------------------<br />";
+    for (var i = 0; i < cycle; i++) {
+        d = -((x[i] * y[i]) >= 0 ? 1 : -1);
+        x.push(Number(x[i] - d * y[i] * two[i]));
+        y.push(Number(y[i] + d * x[i] * two[i]));
+        z.push(Number(z[i] - d * e[i]));
+
+        str += "x[" + (i + 1) + "] = " + x[i + 1] + "; y[" + (i + 1) + "] = " + y[i + 1] + "; z[" + (i + 1) + "] = " + z[i + 1] + "<br />";
+        if (bin_b) {
+            str += "to Fixed-Point Bin: ";
+            str += "x[" + (i + 1) + "] = " + dec_to_fp(x[i + 1]) + "; y[" + (i + 1) + "] = " + dec_to_fp(y[i + 1]) + "; z[" + (i + 1) + "] = " + dec_to_fp(z[i + 1]) + "<br />";
+        }
+        if (hex_b) {
+            str += "to Fixed-Point Hex: ";
+            str += "x[" + (i + 1) + "] = " + bin2hex((dec_to_fp(x[i + 1]).replace(".", ""))) + "; y[" + (i + 1) + "] = " + bin2hex((dec_to_fp(y[i + 1]).replace(".", ""))) + "; z[" + (i + 1) + "] = " + bin2hex((dec_to_fp(z[i + 1]).replace(".", ""))) + "<br />";
+        }
+        str += "---------------------<br />";
+    }
+    document.getElementById("r").innerHTML = str;
+}
+document.getElementById("a").innerHTML = two.length;
+
+</script></body>
