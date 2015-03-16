@@ -54,16 +54,7 @@ function dec_to_fp(a) {
     }else{
 		document.getElementById("fixed_point_fr").value=p2-1;
 	}
-    
-	if(b[0].indexOf("-0")==0){
-	result="11111111111111111111";
-	}else 
-	if(b[0].indexOf("-")==0){
-	result=(~c).toString(2);
-	console.log(a,result);
-	}else{
-	result = c.toString(2);}
-	result+= ".";
+    result = Number(c).toString(2) + ".";
 
     c = Number("0." + b[1]);
     if (c > 0) {
@@ -82,9 +73,7 @@ function dec_to_fp(a) {
         result += "0";
     }
     //console.log("original result",result);
-    result = result.replace(/^([01])/, "$1$1$1$1$1$1$1$1$1$1$1$1$1$1$1$1$1$1$1$1$1$1$1$1$1$1$1$1$1$1$1$1$1$1$1$1$1");
-    //console.log("extend integer",result);
-    result = result + "0000000000000000000000000000000000000000000000000000000000000";
+    result = "00000000000000000"+result + "0000000000000000000000000000000000000000000000000000000000000";
     //console.log("extend fraction",result);
     c = result.split(".");
     c[0] = c[0].substr(c[0].length - parseInt(document.getElementById("fixed_point_in").value), c[0].length);
