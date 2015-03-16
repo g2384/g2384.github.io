@@ -1,19 +1,30 @@
-<head><title>Online Cordic Calculator (Javascript)</title><style>body{font-family:consolas;}</style></head><body>
+<head><title>Online Cordic Calculator (Javascript)</title><style>body{font-family:consolas;}.btn{
+margin: 10px 10px;
+padding: 5px 8px;
+font-size: 16px;
+line-height: 1.33;
+border-radius: 3px;
+color: #333;
+border-color: #ccc;
+cursor: pointer;
+text-align: center;
+white-space: nowrap;
+border: 1px solid rgb(194, 194, 194);}.btn:hover{background-color:#afd9ee}</style></head><body>
 <h2>Online Cordic Calculator (Javascript)</h2>
-x = <input type="text" class="c" id="x" size="32" value="1"><br />
-y = <input type="text" class="c" id="y" size="32" value ="1"><br />
-z = <input type="text" class="c" id="z" size="32" value ="0"><br />
-cycles = <input type="text" class="c" id="cycle" size="32" value ="10"> (1 ~ <span id="a"></span>)<br /><br />
+x = <input type="text" id="x" size="32" value="1"><br />
+y = <input type="text" id="y" size="32" value ="1"><br />
+z = <input type="text" id="z" size="32" value ="0"><br />
+cycles = <input type="text" id="cycle" size="32" value ="10"> (1 ~ <span id="a"></span>)<br /><br />
 <label><input type="radio" name="radAnswer" id="vectoring" checked>Vectoring</label> <label><input type="radio" name="radAnswer" id="rotation">Rotation</label><br />
 
 <label><input type="checkbox" class="c" id="o_bin" size="32" checked>Show binary format</label><br />
 <label><input type="checkbox" class="c" id="o_hex" size="32" checked>Show Hex format</label><br />
 Fixed point binary integer part length:<input type="text" class="c" id="fixed_point_in" size="2" value ="2"><br />
 Fixed point binary fraction part length:<input type="text" class="c" id="fixed_point_fr" size="2" value ="30"><br />
-<input type="button" class="c" size="32" value="Calc" onclick="calc()"><br />
-<strong>Note: <br />
-to calculate arctan():select vectoring mode, set x=1, y=input, z=0; z[n]=arctan();</strong><br />
-<strong>to calculate sine():select vectoring mode, set x=0.607252935, y=0, z=input; x[n]=cos(), y[n]=sin();</strong><br />
+<input type="button" class="btn" size="32" value="Calculate" onclick="calc()"><br />
+<strong>Note: </strong><br />
+to calculate arctan():select vectoring mode, set x=1, y=input, z=0; z[n]=arctan();<br />
+to calculate sine(),cos():select rotation mode, set x=0.607252935, y=0, z=input; x[n]=cos(), y[n]=sin();<br />
 
 <div id="r"></div>
 <script>
