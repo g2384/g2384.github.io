@@ -1,22 +1,27 @@
-<head><title>Cordic Calculator, Vectoring Mode (Javascript)</title><style>body{font-family:consolas;}</style></head><body>
-<h2>Cordic Calculator, Vectoring Mode (Javascript)</h2>
+<head><title>Online Cordic Calculator (Javascript)</title><style>body{font-family:consolas;}</style></head><body>
+<h2>Online Cordic Calculator (Javascript)</h2>
 x = <input type="text" class="c" id="x" size="32" value="1"><br />
 y = <input type="text" class="c" id="y" size="32" value ="1"><br />
 z = <input type="text" class="c" id="z" size="32" value ="0"><br />
-cycles = <input type="text" class="c" id="cycle" size="32" value ="10"> (1 ~ <span id="a"></span>)<br />
-<input type="button" class="c" size="32" value="Calc" onclick="calc()"><br />
+cycles = <input type="text" class="c" id="cycle" size="32" value ="10"> (1 ~ <span id="a"></span>)<br /><br />
+<label><input type="radio" name="radAnswer" id="vectoring" checked>Vectoring</label> <label><input type="radio" name="radAnswer" id="rotation">Rotation</label><br />
+
 <label><input type="checkbox" class="c" id="o_bin" size="32" checked>Show binary format</label><br />
 <label><input type="checkbox" class="c" id="o_hex" size="32" checked>Show Hex format</label><br />
 Fixed point binary integer part length:<input type="text" class="c" id="fixed_point_in" size="2" value ="2"><br />
 Fixed point binary fraction part length:<input type="text" class="c" id="fixed_point_fr" size="2" value ="30"><br />
-<strong>Note: to calculate arctan(): set x=1, y=input, z=0;</strong><br />
+<input type="button" class="c" size="32" value="Calc" onclick="calc()"><br />
+<strong>Note: <br />
+to calculate arctan():select vectoring mode, set x=1, y=input, z=0; z[n]=arctan();</strong><br />
+<strong>to calculate sine():select vectoring mode, set x=0.607252935, y=0, z=input; x[n]=cos(), y[n]=sin();</strong><br />
 
 <div id="r"></div>
 <script>
 function bin2hex(a) {
+var l=Math.ceil((parseInt(document.getElementById("fixed_point_fr").value)+parseInt(document.getElementById("fixed_point_in").value))/4);
     var b = parseInt(a.replace(/ /g, ""), 2).toString(16);
     var c = "00000000000000" + b.toString();
-    return c.substr(c.length - 8, c.length);
+    return c.substr(c.length - l, c.length);
 }
 
 function dec_to_fp(a) {
@@ -33,9 +38,11 @@ function dec_to_fp(a) {
     var p1 = 30,
         p2 = 58,
         p3 = parseInt(document.getElementById("fixed_point_fr").value);
-    if (p3) {
+    if (p3 && p2>p3) {
         p2 = p3 + 1;
-    }
+    }else{
+		document.getElementById("fixed_point_fr").value=p2-1;
+	}
     result = Number(c).toString(2) + ".";
 
     c = Number("0." + b[1]);
@@ -55,9 +62,9 @@ function dec_to_fp(a) {
         result += "0";
     }
     //console.log("original result",result);
-    result = result.replace(/^([01].)/, "000000000000000000$1");
+    result = result.replace(/^([01].)/, "00000000000000000000000000000000000000000000000000000000000$1");
     //console.log("extend integer",result);
-    result = result + "000000000000000000000000000000000";
+    result = result + "0000000000000000000000000000000000000000000000000000000000000";
     //console.log("extend fraction",result);
     c = result.split(".");
     c[0] = c[0].substr(c[0].length - parseInt(document.getElementById("fixed_point_in").value), c[0].length);
@@ -86,30 +93,35 @@ function calc() {
     cycle = Number(document.getElementById("cycle").value);
     var d = 0;
     var len = x.length;
-    var str = "<br /><strong>result: </strong><br />x[0] = " + x[0] + "; y[0] = " + y[0] + "; z[0] = " + z[0] + "<br />";
+    var str = "<br /><strong>RESULT: </strong><br /><strong>Decimal: </strong><br />x[0] = " + x[0] + "; y[0] = " + y[0] + "; z[0] = " + z[0] + "<br />";
     if (bin_b) {
-        str += "to Fixed-Point Bin: ";
+        str += "<strong>to Fixed-Point Bin: </strong><br />";
         str += "x[" + (0) + "] = " + dec_to_fp(x[0]) + "; y[" + (0) + "] = " + dec_to_fp(y[0]) + "; z[" + (0) + "] = " + dec_to_fp(z[0]) + "<br />";
     }
     if (hex_b) {
-        str += "to Fixed-Point Hex: ";
+        str += "<strong>to Fixed-Point Hex: </strong><br />";
         str += "x[" + (0) + "] = " + bin2hex((dec_to_fp(x[0]).replace(".", ""))) + "; y[" + (0) + "] = " + bin2hex((dec_to_fp(y[0]).replace(".", ""))) + "; z[" + (0) + "] = " + bin2hex((dec_to_fp(z[0]).replace(".", ""))) + "<br />";
 
     }
     str += "---------------------<br />";
+	mode=document.getElementById("vectoring").checked;
     for (var i = 0; i < cycle; i++) {
-        d = -((x[i] * y[i]) >= 0 ? 1 : -1);
+	if(mode){
+        d = y[i]< 0 ? 1 : -1;
+		}else{
+		d = z[i]< 0 ? -1 : 1;
+		}
         x.push(Number(x[i] - d * y[i] * two[i]));
         y.push(Number(y[i] + d * x[i] * two[i]));
         z.push(Number(z[i] - d * e[i]));
 
-        str += "x[" + (i + 1) + "] = " + x[i + 1] + "; y[" + (i + 1) + "] = " + y[i + 1] + "; z[" + (i + 1) + "] = " + z[i + 1] + "<br />";
+        str += "<strong>Decimal: </strong><br />x[" + (i + 1) + "] = " + x[i + 1] + "; y[" + (i + 1) + "] = " + y[i + 1] + "; z[" + (i + 1) + "] = " + z[i + 1] + "<br />";
         if (bin_b) {
-            str += "to Fixed-Point Bin: ";
+            str += "<strong>to Fixed-Point Bin: </strong><br />";
             str += "x[" + (i + 1) + "] = " + dec_to_fp(x[i + 1]) + "; y[" + (i + 1) + "] = " + dec_to_fp(y[i + 1]) + "; z[" + (i + 1) + "] = " + dec_to_fp(z[i + 1]) + "<br />";
         }
         if (hex_b) {
-            str += "to Fixed-Point Hex: ";
+            str += "<strong>to Fixed-Point Hex: </strong><br />";
             str += "x[" + (i + 1) + "] = " + bin2hex((dec_to_fp(x[i + 1]).replace(".", ""))) + "; y[" + (i + 1) + "] = " + bin2hex((dec_to_fp(y[i + 1]).replace(".", ""))) + "; z[" + (i + 1) + "] = " + bin2hex((dec_to_fp(z[i + 1]).replace(".", ""))) + "<br />";
         }
         str += "---------------------<br />";
