@@ -54,7 +54,16 @@ function dec_to_fp(a) {
     }else{
 		document.getElementById("fixed_point_fr").value=p2-1;
 	}
-    result = Number(c).toString(2) + ".";
+    
+	if(b[0].indexOf("-0")==0){
+	result="000000000000";
+	}else 
+	if(b[0].indexOf("-")==0){
+	result=(~c).toString(2);
+	console.log(a,result);
+	}else{
+	result = c.toString(2);}
+	result+= ".";
 
     c = Number("0." + b[1]);
     if (c > 0) {
@@ -73,7 +82,7 @@ function dec_to_fp(a) {
         result += "0";
     }
     //console.log("original result",result);
-    result = result.replace(/^([01].)/, "00000000000000000000000000000000000000000000000000000000000$1");
+    result = result.replace(/^([01])/, "$1$1$1$1$1$1$1$1$1$1$1$1$1$1$1$1$1$1$1$1$1$1$1$1$1$1$1$1$1$1$1$1$1$1$1$1$1");
     //console.log("extend integer",result);
     result = result + "0000000000000000000000000000000000000000000000000000000000000";
     //console.log("extend fraction",result);
@@ -106,11 +115,11 @@ function calc() {
     var len = x.length;
     var str = "<br /><strong>RESULT: </strong><br /><strong>Decimal: </strong><br />x[0] = " + x[0] + "; y[0] = " + y[0] + "; z[0] = " + z[0] + "<br />";
     if (bin_b) {
-        str += "<strong>to Fixed-Point Bin: </strong><br />";
+        str += "<strong>to Fixed Point Bin: </strong><br />";
         str += "x[" + (0) + "] = " + dec_to_fp(x[0]) + "; y[" + (0) + "] = " + dec_to_fp(y[0]) + "; z[" + (0) + "] = " + dec_to_fp(z[0]) + "<br />";
     }
     if (hex_b) {
-        str += "<strong>to Fixed-Point Hex: </strong><br />";
+        str += "<strong>to Fixed Point Hex: </strong><br />";
         str += "x[" + (0) + "] = " + bin2hex((dec_to_fp(x[0]).replace(".", ""))) + "; y[" + (0) + "] = " + bin2hex((dec_to_fp(y[0]).replace(".", ""))) + "; z[" + (0) + "] = " + bin2hex((dec_to_fp(z[0]).replace(".", ""))) + "<br />";
 
     }
@@ -128,11 +137,11 @@ function calc() {
 
         str += "<strong>Decimal: </strong><br />x[" + (i + 1) + "] = " + x[i + 1] + "; y[" + (i + 1) + "] = " + y[i + 1] + "; z[" + (i + 1) + "] = " + z[i + 1] + "<br />";
         if (bin_b) {
-            str += "<strong>to Fixed-Point Bin: </strong><br />";
+            str += "<strong>to Fixed Point Bin: </strong><br />";
             str += "x[" + (i + 1) + "] = " + dec_to_fp(x[i + 1]) + "; y[" + (i + 1) + "] = " + dec_to_fp(y[i + 1]) + "; z[" + (i + 1) + "] = " + dec_to_fp(z[i + 1]) + "<br />";
         }
         if (hex_b) {
-            str += "<strong>to Fixed-Point Hex: </strong><br />";
+            str += "<strong>to Fixed Point Hex: </strong><br />";
             str += "x[" + (i + 1) + "] = " + bin2hex((dec_to_fp(x[i + 1]).replace(".", ""))) + "; y[" + (i + 1) + "] = " + bin2hex((dec_to_fp(y[i + 1]).replace(".", ""))) + "; z[" + (i + 1) + "] = " + bin2hex((dec_to_fp(z[i + 1]).replace(".", ""))) + "<br />";
         }
         str += "---------------------<br />";
