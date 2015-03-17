@@ -221,7 +221,7 @@ function f() {
     input = input.replace(/[\t ]+/g, ' ');
     input = input.replace(/\([\t ]+/g, '\(');
     input = input.replace(/[ ]+;/g, ';');
-    input = input.replace(/: PROCESS/gi, ':PROCESS');
+    input = input.replace(/:[ ]*(PROCESS|ENTITY)/gi, ':$1');
     input = input.replace(/:PROCESS[ ]*\(/gi, ':PROCESS(');
     var arr = input.split("\r\n");
     var comments = [],
@@ -346,7 +346,6 @@ function f() {
             }
         }
     }
-
     input = arr.join("\r\n");
     input = input.replace(/([a-zA-Z0-9\); ])\);(@@comments[0-9]+)?@@end/g, '$1\r\n);$2@@end');
     input = input.replace(/[ ]?([&=:\-<>\+|])[ ]?/g, ' $1 ');
@@ -371,6 +370,7 @@ for(var k=0;k<matches.length;k++){
     input = input.replace(/(;|THEN)[ ]?(@@comments[0-9]+)([a-zA-Z])/g, '$1 $2\r\n$3');
     input = input.replace(/[\r\n ]+RETURN/g, ' RETURN');
     input = input.replace(/BEGIN[\r\n ]+/g, 'BEGIN\r\n');
+    input = input.replace(/ (PORT|GENERIC) /g, '\r\n$1 ');
 
     if (check_alias) {
         var alias = [],
@@ -412,7 +412,7 @@ for(var k=0;k<matches.length;k++){
         procfun_b = false,
         semi_b = false,
         begin_ = true,
-        set_false = false;
+        set_false = false,entity_b=false;
     for (i = 0; i < l; i++) {
         str = arr[i];
         str_len = str.length;
@@ -462,6 +462,9 @@ for(var k=0;k<matches.length;k++){
         } else if (str.indexOf(": PROCESS") >= 0) {
             back_tab = true;
             begin_b = true;
+        } else if (str.indexOf(": ENTITY") >= 0) {
+            back_tab = true;
+            entity_b = true;
         } else if (str.indexOf("PROCEDURE ") >= 0) {
             back_tab = true;begin_b = true;
         } 
@@ -524,6 +527,9 @@ for(var k=0;k<matches.length;k++){
         }else if (str.indexOf("@@end") >= 0 && port_b) {
             port_b = false;
             tab_n--;
+			if(entity_b){
+			forward_tab=true;
+			}
         }
 //console.log(str, tab_n)
         if (sign_align) {
