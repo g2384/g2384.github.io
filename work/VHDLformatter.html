@@ -441,7 +441,7 @@ for(var k=0;k<matches.length;k++){
                 back_tab = true;
 				if (arr[i - 1].indexOf("CASE") >= 0&&arr[i - 1].indexOf("END CASE") < 0) {
                 tab_n++;
-				console.log("herer",str)
+				//console.log("herer",str)
             }
             }
            
@@ -584,6 +584,7 @@ for(var k=0;k<matches.length;k++){
             tab_n++;
         } else if (str.indexOf("CASE") == 0) {
             case_b = true;case_n++;
+            tab_n++;
             tab_n++;
         } else if (str.indexOf("ARCHITECTURE ") == 0) {
             tab_n++;
