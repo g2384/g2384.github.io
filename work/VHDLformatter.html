@@ -221,8 +221,8 @@ function f() {
     input = input.replace(/[\t ]+/g, ' ');
     input = input.replace(/\([\t ]+/g, '\(');
     input = input.replace(/[ ]+;/g, ';');
-    input = input.replace(/: PROCESS/g, ':PROCESS');
-    input = input.replace(/: PROCESS \(/g, ':PROCESS(');
+    input = input.replace(/: PROCESS/gi, ':PROCESS');
+    input = input.replace(/:PROCESS[ ]*\(/gi, ':PROCESS(');
     var arr = input.split("\r\n");
     var comments = [],
         comments_i = 0;
