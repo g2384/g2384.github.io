@@ -423,9 +423,6 @@ for(var k=0;k<matches.length;k++){
         } else if (str.indexOf("END CASE") == 0) {
             case_n--;if(!case_n){case_b = false;}
             tab_n--;
-            //if(arr[i-1].indexOf("WHEN") < 0){
-            tab_n--;
-            //}
         } else if (str.regexIndexOf(/^END[^a-zA-Z0-9_]/) == 0) {
             tab_n--;
             if (str.indexOf("END IF") == 0) {
@@ -437,12 +434,29 @@ for(var k=0;k<matches.length;k++){
             back_tab = true;
         } else if (case_b) {
             if (str.indexOf("WHEN") == 0) {
-                tab_n--;
-                back_tab = true;
-				if (arr[i - 1].indexOf("CASE") >= 0&&arr[i - 1].indexOf("END CASE") < 0) {
-                tab_n++;
-				//console.log("herer",str)
-            }
+                
+				if (arr[i - 1].regexIndexOf(/CASE[ a-z0-9A-Z_\(\)]+IS/) >= 0) {
+				if(arr[i - 1].indexOf("WHEN") >= 0){
+					back_tab = true;
+				}if(arr[i + 1].indexOf("WHEN") < 0){
+					back_tab = true;
+				}
+					
+					console.log("h",str)
+				}
+				else if (arr[i + 1].indexOf("WHEN") >= 0&&arr[i - 1].indexOf("WHEN") >= 0){
+					console.log("herer",str)
+				}
+				else if (arr[i + 1].indexOf("END CASE") >= 0&&arr[i - 1].indexOf("WHEN") >= 0){
+					console.log("herer",str)
+				}else if (arr[i + 1].indexOf("END CASE") >= 0){
+					tab_n--;
+				}
+				else{
+					tab_n--;
+					back_tab = true;
+					console.log("else",str)
+				}
             }
            
 			
@@ -584,7 +598,6 @@ for(var k=0;k<matches.length;k++){
             tab_n++;
         } else if (str.indexOf("CASE") == 0) {
             case_b = true;case_n++;
-            tab_n++;
             tab_n++;
         } else if (str.indexOf("ARCHITECTURE ") == 0) {
             tab_n++;
