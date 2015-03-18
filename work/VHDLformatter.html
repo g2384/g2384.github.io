@@ -435,10 +435,8 @@ for(var k=0;k<matches.length;k++){
         } else if (case_b) {
             if (str.indexOf("WHEN") == 0) {
                 
-				if (arr[i - 1].regexIndexOf(/CASE[ a-z0-9A-Z_\(\)]+IS/) >= 0) {
-				if(arr[i - 1].indexOf("WHEN") >= 0){
-					back_tab = true;
-				}if(arr[i + 1].indexOf("WHEN") < 0){
+				if (arr[i - 1].regexIndexOf(/CASE[ a-z0-9A-Z_\(\)\.]+IS/) >= 0) {
+				if(arr[i - 1].indexOf("WHEN") >= 0||arr[i + 1].indexOf("WHEN") < 0){
 					back_tab = true;
 				}
 					
@@ -448,6 +446,9 @@ for(var k=0;k<matches.length;k++){
 					console.log("herer",str)
 				}
 				else if (arr[i + 1].indexOf("END CASE") >= 0&&arr[i - 1].indexOf("WHEN") >= 0){
+					console.log("herer",str)
+				}else if (arr[i - 1].indexOf("WHEN") >= 0&&arr[i + 1].indexOf("WHEN") < 0){
+				back_tab=true;
 					console.log("herer",str)
 				}else if (arr[i + 1].indexOf("END CASE") >= 0){
 					tab_n--;
