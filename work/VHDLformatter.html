@@ -412,7 +412,8 @@ for(var k=0;k<matches.length;k++){
         procfun_b = false,
         semi_b = false,
         begin_ = true,
-        set_false = false,entity_b=false;
+        set_false = false,entity_b=false, first_when_b=false,
+		generic_map_b=false,case_indent=[0,0,0,0,0,0,0];
     for (i = 0; i < l; i++) {
         str = arr[i];
         str_len = str.length;
@@ -421,7 +422,8 @@ for(var k=0;k<matches.length;k++){
             tab_n--;
             back_tab = true;
         } else if (str.indexOf("END CASE") == 0) {
-            case_n--;if(!case_n){case_b = false;}
+            case_n--;
+            tab_n--;
             tab_n--;
         } else if (str.regexIndexOf(/^END[^a-zA-Z0-9_]/) == 0) {
             tab_n--;
@@ -432,35 +434,11 @@ for(var k=0;k<matches.length;k++){
             tab_n--;
             if_b = false;
             back_tab = true;
-        } else if (case_b) {
+        } else if (case_n) {
             if (str.indexOf("WHEN") == 0) {
-                
-				if (arr[i - 1].regexIndexOf(/CASE[ a-z0-9A-Z_\(\)\.]+IS/) >= 0) {
-				if(arr[i - 1].indexOf("WHEN") >= 0||arr[i + 1].indexOf("WHEN") < 0){
-					back_tab = true;
-				}
-					
-					console.log("h",str)
-				}
-				else if (arr[i + 1].indexOf("WHEN") >= 0&&arr[i - 1].indexOf("WHEN") >= 0){
-					console.log("herer",str)
-				}
-				else if (arr[i + 1].indexOf("END CASE") >= 0&&arr[i - 1].indexOf("WHEN") >= 0){
-					console.log("herer",str)
-				}else if (arr[i - 1].indexOf("WHEN") >= 0&&arr[i + 1].indexOf("WHEN") < 0){
-				back_tab=true;
-					console.log("herer",str)
-				}else if (arr[i + 1].indexOf("END CASE") >= 0){
-					tab_n--;
-				}
-				else{
-					tab_n--;
-					back_tab = true;
-					console.log("else",str)
-				}
+                tab_n=case_indent[case_n-1];
+				back_tab = true;
             }
-           
-			
 
         } else if (begin_) {
             if (begin_b) {
@@ -486,6 +464,10 @@ for(var k=0;k<matches.length;k++){
         if (str.indexOf("PORT MAP") >= 0) {
             back_tab = true;
             port_b = true;
+			if(generic_map_b){
+			generic_map_b=false;
+			tab_n++;
+			}
             if (str.indexOf(");") < 0) {
                 align_i1 = align_i;
                 var t = str.indexOf("=>");
@@ -522,6 +504,9 @@ for(var k=0;k<matches.length;k++){
             procfun_b = false;
             set_false = false;
         }
+		if(str.indexOf("GENERIC MAP") >= 0){
+			generic_map_b=true;
+		}
         if (str.indexOf("(") >= 0) {
                 if (str.indexOf("PROCEDURE") >= 0 || str.indexOf("FUNCTION") >= 0) {
                     procfun_b = true;
@@ -546,7 +531,6 @@ for(var k=0;k<matches.length;k++){
 			forward_tab=true;
 			}
         }
-//console.log(str, tab_n)
         if (sign_align) {
             if (port_b && signAlignPos != "") {
                 if (str.indexOf(signAlignPos) >= 0) {
@@ -583,7 +567,7 @@ for(var k=0;k<matches.length;k++){
 			if(str.indexOf(";")>=0&&semi_b){
 			semi_b=false;
 			tab_n--;
-			}else if(!semi_b&&str.indexOf(";")<0&&str.indexOf("=>")<0&&(str.indexOf("@@quotes")>=0||str.indexOf("<=")>=0)){
+			}else if(!semi_b&&str.indexOf(";")<0&&str.indexOf("=>")<0&&(str.indexOf("@@quotes")>=0||(str.indexOf("<=")>=0 && str.indexOf("IF")<0))){
 			tab_n++;
 			semi_b=true;
 			}
@@ -598,8 +582,9 @@ for(var k=0;k<matches.length;k++){
         }  else if (str.indexOf(": FOR ") >= 0) {
             tab_n++;
         } else if (str.indexOf("CASE") == 0) {
-            case_b = true;case_n++;
             tab_n++;
+			case_indent[case_n]=tab_n;
+			case_n++;
         } else if (str.indexOf("ARCHITECTURE ") == 0) {
             tab_n++;
             begin_b = true;
