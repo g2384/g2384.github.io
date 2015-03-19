@@ -412,12 +412,20 @@ for(var k=0;k<matches.length;k++){
         procfun_b = false,
         semi_b = false,
         begin_ = true,
-        set_false = false,entity_b=false, first_when_b=false,
+        set_false = false,entity_b=false, then_b=false,
 		generic_map_b=false,case_indent=[0,0,0,0,0,0,0];
     for (i = 0; i < l; i++) {
         str = arr[i];
         str_len = str.length;
 		begin_=str.indexOf("BEGIN") == 0;
+		if(then_b){
+		arr[i]=" "+arr[i];
+		if(str.indexOf(" THEN") >= 0){
+		then_b=false;
+		back_tab=true;
+		}
+		}
+		
         if (str.indexOf("ELSIF") == 0) {
             tab_n--;
             back_tab = true;
@@ -567,7 +575,7 @@ for(var k=0;k<matches.length;k++){
 			if(str.indexOf(";")>=0&&semi_b){
 			semi_b=false;
 			tab_n--;
-			}else if(!semi_b&&str.indexOf(";")<0&&str.indexOf("=>")<0&&(str.indexOf("@@quotes")>=0||(str.indexOf("<=")>=0 && str.indexOf("IF")<0))){
+			}else if(!semi_b&&str.indexOf(";")<0&&str.indexOf("=>")<0&&(str.indexOf("@@quotes")>=0||(str.indexOf("<=")>=0 && str.indexOf("IF")<0&& str.indexOf("THEN")<0))){
 			tab_n++;
 			semi_b=true;
 			}
@@ -591,6 +599,10 @@ for(var k=0;k<matches.length;k++){
         } else if (str.indexOf("IF") == 0) {
             if_b = true;
             tab_n++;
+			if(str.indexOf(" THEN") < 0){
+				then_b=true;
+				tab_n--;
+			}
         } else if (str.indexOf("COMPONENT ") == 0) {
             tab_n++;
         } else if (str.indexOf("CONFIGURATION ") == 0) {
