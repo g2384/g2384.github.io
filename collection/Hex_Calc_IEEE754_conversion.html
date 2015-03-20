@@ -1,8 +1,9 @@
+
 <!--adapted from: http://babbage.cs.qc.cuny.edu/IEEE-754.old/Decimal.html -->
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <html><head>
   <title>
-    Hex/Bin Calculator | IEEE-754 Conversion | Fix-point Bin Conversion
+    Hex/Bin/Dec Converter | Hex Calculator | IEEE-754 Converter | Fix-point Converter
   </title>
   <style>body{font-family:Consolas;}input{font-family:Consolas;}.sign{color:#046A96;}.expo{color:#ee5500;}.mantissa{color:#33dd00;}.c { text-transform: uppercase; }
   </style>
@@ -10,20 +11,64 @@
 </head>
 <body>
 <script language="JavaScript">
-function conv(form) {
-if(form.numin.value.match(/^[01 ]+$/)&&form.numin2.value.match(/^[01 ]+$/)){
-form.numin.value = parseInt(form.numin.value.replace(/ /g, ""), 2).toString(16);
-form.numin2.value = parseInt(form.numin2.value.replace(/ /g, ""), 2).toString(16);}
-form.Conv.disabled=true;
-x(form);
+(function(){
+ 
+    var convertBase = function (num) {
+        this.from = function (baseFrom) {
+            this.to = function (baseTo) {
+                return parseInt(num, baseFrom).toString(baseTo);
+            };
+            return this;
+        };
+        return this;
+    };
+        
+    // binary to decimal
+    this.bin2dec = function (num) {
+        return convertBase(num).from(2).to(10);
+    };
+    
+    // binary to hexadecimal
+    this.bin2hex = function (num) {
+        return convertBase(num).from(2).to(16).toUpperCase();
+    };
+    
+    // decimal to binary
+    this.dec2bin = function (num) {
+        return convertBase(num).from(10).to(2);
+    };
+    
+    // decimal to hexadecimal
+    this.dec2hex = function (num) {
+        return convertBase(num).from(10).to(16).toUpperCase();
+    };
+    
+    // hexadecimal to binary
+    this.hex2bin = function (num) {
+        return convertBase(num).from(16).to(2);
+    };
+    
+    // hexadecimal to decimal
+    this.hex2dec = function (num) {
+        return convertBase(num).from(16).to(10);
+    };
+    
+    return this;        
+})();
+function conv(){
+var a=document.getElementById("conv_in").value;
+var str="";
+if(a.match(/^[01 ]+$/)) str+="Bin to Dec: "+bin2dec(a)+"<br>";
+if(a.match(/^[01 ]+$/)) str+="Bin to Hex: "+bin2hex(a)+"<br>";
+if(a.match(/^[0-9 ]+$/)) str+="Dec to Bin: "+dec2bin(a)+"<br>";
+if(a.match(/^[0-9 ]+$/)) str+="Dec to Hex: "+dec2hex(a)+"<br>";
+if(a.match(/^[0-9a-fA-F ]+$/)) str+="Hex to Bin: "+hex2bin(a)+"<br>";
+if(a.match(/^[0-9a-fA-F ]+$/)) str+="Hex to Dec: "+hex2dec(a)+"<br>";
+
+document.getElementById("conv_out").innerHTML=str;
 }
 	
 function x(form) {
-if(form.numin.value.match(/^[01 ]+$/)&&form.numin2.value.match(/^[01 ]+$/)){
-form.Conv.disabled=false;
-}else{
-form.Conv.disabled=true;
-}
 var in1=form.numin.value;
 var in2=form.numin2.value;
 if(form.numin.value==''){
@@ -53,13 +98,17 @@ in1+" × "+in2+" = "+Number(Rmlt).toString(16)+"<br>"+
 in1+" ÷ "+in2+" = "+Number(Rquo).toString(16);
 }
 </script>
+<h2>Bin, Hex, Dec Converter</h2>
+<input type="text" class="c" id="conv_in" size="20" value="101">
+<input type="Button" name="Conv" value="Convert" onclick="conv()"><br>
+<div id="conv_out"></div>
+<hr>
 <form>
-<h2>Hex/Bin Numbers Calculator</h2>
-Enter A Hex/Bin: 
+<h2>Hex Calculator</h2>
+Enter A Hex: 
 <input type="text" class="c" name="numin" size="20" onkeyup="x(this.form)"><br>
-Enter B Hex/Bin: 
-<input type="text" class="c" name="numin2" size="20" onkeyup="x(this.form)"><br>
-<input type="Button" name="Conv" value="Convert to Hex" onclick="conv(this.form)" disabled=false>(only if input is Binary)<br>
+Enter B Hex: 
+<input type="text" class="c" name="numin2" size="20" onkeyup="x(this.form)">
 <input type="Button" value="Calculate" onclick="x(this.form)"><br><br>
 <div id="r" class="c"></div>
 </form>
