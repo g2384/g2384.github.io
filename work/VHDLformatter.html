@@ -407,12 +407,12 @@ for(var k=0;k<matches.length;k++){
     arr = input.split("\r\n");
     l = arr.length;
     var signAlignPos = "";
-    var if_b = false,
+    var if_b = 0,white_space="",
         case_b = false,case_n=0,
         procfun_b = false,
         semi_b = false,
         begin_ = true,
-        set_false = false,entity_b=false, then_b=false,
+        set_false = false,entity_b=false, then_b=false,conditional_b=false,
 		generic_map_b=false,case_indent=[0,0,0,0,0,0,0];
     for (i = 0; i < l; i++) {
         str = arr[i];
@@ -425,7 +425,7 @@ for(var k=0;k<matches.length;k++){
 		back_tab=true;
 		}
 		}
-		
+		arr[i]=white_space+arr[i];
         if (str.indexOf("ELSIF") == 0) {
             tab_n--;
             back_tab = true;
@@ -436,11 +436,11 @@ for(var k=0;k<matches.length;k++){
         } else if (str.regexIndexOf(/^END[^a-zA-Z0-9_]/) == 0) {
             tab_n--;
             if (str.indexOf("END IF") == 0) {
-                if_b = false;
+                if_b --;
             }
-        } else if (str.indexOf("ELSE") == 0) {
+        } else if (str.indexOf("ELSE") == 0 && if_b) {
             tab_n--;
-            if_b = false;
+            //if_b = false;
             back_tab = true;
         } else if (case_n) {
             if (str.indexOf("WHEN") == 0) {
@@ -572,13 +572,29 @@ for(var k=0;k<matches.length;k++){
             tab_n--;
             forward_tab = false;
         }
+		if(conditional_b&&str.indexOf(";")>=0){
+		//tab_n--;
+		conditional_b=false;
+		white_space="";
+		}else
 			if(str.indexOf(";")>=0&&semi_b){
 			semi_b=false;
 			tab_n--;
-			}else if(!semi_b&&str.indexOf(";")<0&&str.indexOf("=>")<0&&(str.indexOf("@@quotes")>=0||(str.indexOf("<=")>=0 && str.indexOf("IF")<0&& str.indexOf("THEN")<0))){
+			}else if(!semi_b&&str.indexOf(";")<0){
+			if(!conditional_b){
+			if(str.indexOf("WHEN")>=0&&str.indexOf("<=")>=0){
+			//tab_n++;
+			conditional_b=true;
+			white_space=(Array(str.indexOf("= ")+3).join(" "));
+			}else 
+			if(str.indexOf("=>")<0&&(str.indexOf("@@quotes")>=0||(str.indexOf("<=")>=0 && str.indexOf("IF")<0&& str.indexOf("THEN")<0))){
 			tab_n++;
 			semi_b=true;
 			}
+			
+			}
+			}
+		
         if (str.indexOf("ENTITY ") == 0 && str.indexOf(": ENTITY ") < 0) {
             tab_n++;
         } else if (str.indexOf("RECORD") == 0) {
@@ -597,7 +613,7 @@ for(var k=0;k<matches.length;k++){
             tab_n++;
             begin_b = true;
         } else if (str.indexOf("IF") == 0) {
-            if_b = true;
+            if_b++;
             tab_n++;
 			if(str.indexOf(" THEN") < 0){
 				then_b=true;
