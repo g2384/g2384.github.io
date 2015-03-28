@@ -86,7 +86,7 @@ document.write("<p>Last modified: "+fetchHeader(location.href,'Last-Modified')+"
 <label><input type="checkbox" id="check_alias">Check ALIAS (every long name is replaced with ALIAS)</label><br>
 <label><input type="checkbox" id="sign_align">Align signs in PORT()</label><br>
 
-<label><input type="checkbox" id="use_space">Customise Indentation(tab is \t), rather than 1 tab: </label> <input type="text" id="cust_indent" size="8" onKeyUp="indent_decode()" value="    "/> (<span id="indent_s">four blankspace</span>)<br>
+<label><input type="checkbox" id="use_space">Customise Indentation(tab is \t): </label> <input type="text" id="cust_indent" size="8" onKeyUp="indent_decode()" value="    "/> (<span id="indent_s">four blankspace</span>)<br>
 <label><input type="checkbox" id="compress">! EVIL - compress VHDL (\r\n, comments will be removed)</label><br>
 <label><input type="checkbox" id="mix_letter">! EVIL - unreadable (mix upper/lower-case letters)</label><br>
 <input type="button" class="btn" onclick="f()" value="start"/>
@@ -189,11 +189,11 @@ var cust_indent = document.getElementById("cust_indent").value;
 cust_indent=cust_indent.replace(/\\t/,"	");
 	var count=[" & one "," & two "," & three "," & four "," & five "," & six "," & seven "," & eight "];
 	var p=cust_indent.split("");
-	var s="";var a=0;console.log(p)
+	var s="";var a=0;
 	for(var i=0;i<p.length;i++){
 	var c=cust_indent.substr(i,1);
 	if(c==cust_indent.substr(i+1,1)){
-	a++;console.log(a,c)
+	a++;
 	}else{
 	switch(c){
 	case " ":
@@ -204,7 +204,6 @@ cust_indent=cust_indent.replace(/\\t/,"	");
 	}
 	s+=count[a]+c;
 	a=0;
-	console.log(s,c)
 	}
 	}
 	if(s.length<0){
@@ -281,15 +280,13 @@ function f() {
 		j = 0;
 	var tab_n = 1,
 		str_len = 0,
-		port_s = "",
-		end_port = false;
+		port_s = "";
 	var back_tab = false,
 		forward_tab = false,
 		need_semi = false,
 		semi_pos = 0,
 		begin_b = false,
-		port_b = false,
-		process_pos = 0;
+		port_b = false;
 	for (i = 0; i < l; i++) {
 		n = arr[i].regexIndexOf(/[a-zA-Z0-9\(\&\)%_\+'"|]/);
 		p = arr[i].indexOf("--");
@@ -440,7 +437,6 @@ function f() {
 		case_n = 0,
 		procfun_b = false,
 		semi_b = false,
-		begin_ = true,
 		set_false = false,
 		entity_b = false,
 		then_b = false,
@@ -451,7 +447,6 @@ function f() {
 		str_len = str.length;
 		if (str.replace(/[ \-\t]*/, "").length > 0) {
 			var first_word = str.split(" ")[0];
-			begin_ = str.indexOf("BEGIN") == 0;
 			if (then_b) {
 				arr[i] = " " + arr[i];
 				if (str.indexOf(" THEN") >= 0) {
@@ -480,7 +475,7 @@ function f() {
 					tab_n = case_indent[case_n - 1];
 					back_tab = true;
 				}
-			} else if (begin_) {
+			} else if (first_word=="BEGIN") {
 				if (begin_b) {
 					tab_n--;
 					back_tab = true;
