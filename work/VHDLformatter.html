@@ -2,7 +2,7 @@
 <head>
 <title>VHDL Beautifier, Formatter online</title>
 <style>
-body{margin:0 auto;max-width:960px;tab-size: 4;}
+body{margin:0 auto;max-width:960px;tab-size: 4;  font-family:Helvetica, arial;}
 textarea{width:100%;font-family:Consolas,Courier;}
 .btn{
 margin: 10px 10px;
@@ -86,7 +86,7 @@ document.write("<p>Last modified: "+fetchHeader(location.href,'Last-Modified')+"
 <label><input type="checkbox" id="check_alias">Check ALIAS (every long name is replaced with ALIAS)</label><br>
 <label><input type="checkbox" id="sign_align">Align signs in PORT()</label><br>
 
-<label><input type="checkbox" id="use_space">Customise Indentation(tab is \t): </label> <input type="text" id="cust_indent" size="8" onKeyUp="indent_decode()" value="    "/> (<span id="indent_s">four blankspace</span>)<br>
+<label><input type="checkbox" id="use_space">Customise Indentation (tab is \t): </label> <input type="text" id="cust_indent" size="8" onKeyUp="indent_decode()" value="    "/> (<span id="indent_s">four blankspace</span>)<br>
 <label><input type="checkbox" id="compress">! EVIL - compress VHDL (\r\n, comments will be removed)</label><br>
 <label><input type="checkbox" id="mix_letter">! EVIL - unreadable (mix upper/lower-case letters)</label><br>
 <input type="button" class="btn" onclick="f()" value="start"/>
