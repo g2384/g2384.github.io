@@ -155,14 +155,7 @@ String.prototype.regexLastIndexOf = function(pattern, startIndex) {
 }
 String.prototype.reverse = function() {
 		return this.split('').reverse().join('');
-	}
-	// Array Remove - By John Resig (MIT Licensed)
-Array.prototype.remove = function(from, to) {
-	var rest = this.slice((to || from) + 1 || this.length);
-	this.length = from < 0 ? this.length + from : from;
-	return this.push.apply(this, rest);
-};
-
+}
 function wordWrap() {
 	var d = document.getElementById("result");
 	if (d.className.length == "") {
@@ -186,8 +179,8 @@ function noFormat() {
 }
 function indent_decode(){
 var cust_indent = document.getElementById("cust_indent").value;
-cust_indent=cust_indent.replace(/\\t/,"	");
-	var count=[" & one "," & two "," & three "," & four "," & five "," & six "," & seven "," & eight "];
+cust_indent=cust_indent.replace(/\\t/g,"	");
+	var count=[" & one "," & two "," & three "," & four "," & five "," & six "," & seven "," & eight "," & many "];
 	var p=cust_indent.split("");
 	var s="";var a=0;
 	for(var i=0;i<p.length;i++){
@@ -202,6 +195,7 @@ cust_indent=cust_indent.replace(/\\t/,"	");
 	case "\t":
 	c="tab";	
 	}
+	a=a>8?8:a;
 	s+=count[a]+c;
 	a=0;
 	}
@@ -214,8 +208,9 @@ cust_indent=cust_indent.replace(/\\t/,"	");
 	case "\t":
 	c="tab";	
 	}
+	a=a>8?8:a;
 	s=count[a]+c;
-	}console.log(s)
+	}
 	s=s.replace(/^ & /,"")
 	
 	document.getElementById("indent_s").innerHTML=s;
@@ -314,21 +309,6 @@ function f() {
 	}
 	arr = input.split("\r\n");
 	for (i = 0; i < l; i++) {
-		if (remove_report) {
-			n = arr[i].indexOf("REPORT");
-			p = arr[i].indexOf(";");
-			if (n >= 0) {
-				arr[i] = '';
-				if (p < 0) {
-					need_semi = true;
-				}
-			} else if (need_semi) {
-				arr[i] = '';
-				if (p >= 0) {
-					need_semi = false;
-				}
-			}
-		}
 		k = arr[i].match(/"([^"]+)"/g);
 		if (k != null) {
 			var u = k.length;
@@ -337,6 +317,31 @@ function f() {
 				quotes[quotes_i++] = k[j];
 			}
 		}
+		if (remove_report) {
+			n = arr[i].indexOf("REPORT ");
+			p = arr[i].indexOf(";");
+			if (need_semi){
+				arr[i] = '';
+				if (p >= 0) {
+					need_semi = false;
+				}
+			}
+			if (n >= 0) {
+				arr[i] = '';
+				if (p < 0) {
+					need_semi = true;
+				}
+			}else if(n<0){
+				n = arr[i].indexOf("ASSERT ");
+				if (n >= 0) {
+					arr[i] = '';
+					if (p < 0) {
+						need_semi = true;
+					}
+				}
+			}
+		}
+		
 		if (arr[i].match(/FUNCTION|PROCEDURE/) != null) {
 			arr[i] = arr[i].replace(/;/g, '@@semicolon');
 		}
@@ -384,6 +389,10 @@ function f() {
 	input = input.replace(/ ([\-\*\/=+<>])[ ]*([\-\*\/=+<>]) /g, " $1$2 ");
 	input = input.replace(/\r\n[ \t]+--\r\n/g, "\r\n");
 	input = input.replace(/[ ]+/g, ' ');
+	input = input.replace(/\r\n\r\n\r\n/g, '\r\n');
+	if (remove_lines) {
+		input = input.replace(/(\r\n)*[ \t]*\r\n/g, '\r\n');
+	}
 	var matches = input.match(/'([a-zA-Z]+)\s/g);
 	if (matches != null) {
 		for (var k = 0; k < matches.length; k++) {
