@@ -116,7 +116,7 @@ document.write("<p>Last modified: "+fetchHeader(location.href,'Last-Modified')+"
 	<span class="hljs-keyword">SUBTYPE</span> bit4 <span class="hljs-keyword">IS</span> slv(<span class="hljs-number">3</span> <span class="hljs-keyword">DOWNTO</span> <span class="hljs-number">0</span>); <font style="background-color:#9D9D9D; color:#fff"> (<strong>Check ALIAS</strong> replaces all "<strong>std_logic_vector</strong>" with "<strong>slv</strong>") </font>
 	 
 <span class="hljs-keyword">BEGIN</span>
-	<del><span class="hljs-keyword">REPORT</span> <span class="hljs-string">"Hello World"</span></del>; <font style="background-color:#9D9D9D; color:#fff"> (<strong>Remove REPORT</strong> does this) </font>
+	<del><span class="hljs-keyword">REPORT</span> <span class="hljs-string">"Hello World"</span></del>; <font style="background-color:#9D9D9D; color:#fff"> (Remove REPORT) </font>
 	 
 	stages : <span class="hljs-keyword">PROCESS</span> (rst, clk)
 	<span class="hljs-keyword">BEGIN</span>
@@ -128,7 +128,7 @@ document.write("<p>Last modified: "+fetchHeader(location.href,'Last-Modified')+"
 				<span class="hljs-keyword">WHEN</span> <span class="hljs-string">"0010"</span> =&gt; bit4 &lt;= <span class="hljs-string">"0010"</span>;
 				<span class="hljs-keyword">WHEN</span> <span class="hljs-string">"0100"</span> =&gt; bit4 &lt;= <span class="hljs-string">"0000"</span>;
 				<span class="hljs-keyword">WHEN</span> <span class="hljs-keyword">OTHERS</span> =&gt; 
-					<del><span class="hljs-keyword">REPORT</span> <span class="hljs-string">"Are there any more cases?"</span></del>; <font style="background-color:#9D9D9D; color:#fff"> (<strong>Remove REPORT</strong> does this) </font>
+					<del><span class="hljs-keyword">REPORT</span> <span class="hljs-string">"Are there any more cases?"</span></del>; <font style="background-color:#9D9D9D; color:#fff"> (Remove REPORT) </font>
 			<span class="hljs-keyword">END</span> <span class="hljs-keyword">CASE</span>;
 		<span class="hljs-keyword">ELSIF</span> (clk<span class="hljs-attribute">'event</span> <span class="hljs-keyword">AND</span> clk = <span class="hljs-literal">'1'</span>) <span class="hljs-keyword">THEN</span>
 			<span class="hljs-keyword">IF</span> (bit4 = '<span class="hljs-number">0111</span>') <span class="hljs-keyword">THEN</span>
@@ -136,8 +136,8 @@ document.write("<p>Last modified: "+fetchHeader(location.href,'Last-Modified')+"
 			<span class="hljs-keyword">ELSE</span>
 				bit4 &lt;= <span class="hljs-string">"1111"</span>;
 			<span class="hljs-keyword">END</span> <span class="hljs-keyword">IF</span>;
-			<span class="hljs-comment">-- Sample comments 1;</span> 
-			<span class="hljs-comment">-- Sample comments 2;</span>  <font style="background-color:#9D9D9D; color:#fff"> (<strong>Remove comments</strong> will remove these) </font>
+			<del><span class="hljs-comment">-- Sample comments 1;</span> 
+			<span class="hljs-comment">-- Sample comments 2;</span></del>  <font style="background-color:#9D9D9D; color:#fff"> (Remove comments) </font>
 		<span class="hljs-keyword">END</span> <span class="hljs-keyword">IF</span>;
 		 
 	<span class="hljs-keyword">END</span> <span class="hljs-keyword">PROCESS</span>;
