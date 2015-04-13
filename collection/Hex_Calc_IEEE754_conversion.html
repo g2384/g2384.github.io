@@ -3,7 +3,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <html><head>
   <title>
-    Hex/Bin/Dec Converter | Hex Calculator | IEEE-754 Converter | Fix-point Converter
+    Hex/Bin Calculator | IEEE-754 Conversion | Fix-point Bin Conversion
   </title>
   <style>body{font-family:Consolas;}input{font-family:Consolas;}.sign{color:#046A96;}.expo{color:#ee5500;}.mantissa{color:#33dd00;}.c { text-transform: uppercase; }
   </style>
@@ -989,7 +989,7 @@ function dec_to_fp(a) {
 			f*=10;
 			c*=10;
 			}
-            k = (c - f) > 0;
+            k = (c - f) >= 0;
             result += k ? "1" : "0";
             c = k ? c - f : c;
             //console.log(result,f, c, k, c - f,p)
