@@ -1,5 +1,3 @@
-
-<!--adapted from: http://babbage.cs.qc.cuny.edu/IEEE-754.old/Decimal.html -->
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <html><head>
   <title>
@@ -867,7 +865,7 @@ if(a.indexOf("7F800000")>=0){d="Infinity";}else{
    // console.log(exp_d)
 	str.push("0");
 	var k = exp_d - str[1].length + 23;
-	console.log(k)
+	//console.log(k)
 	if (k > 0) {
 		str[1] += (Array(k).join("0"));
 		d = "1" + str[1].substring(0,k)+"."+str[1].substring(k,str[1].length);
@@ -882,7 +880,7 @@ if(a.indexOf("7F800000")>=0){d="Infinity";}else{
 	} else {
 		d = "1." + str[1];
 	}
-    console.log(d);
+   // console.log(d);
 	d = fp_to_dec(d);
 	if(a.substring(0,1)=="1"){d="-"+d;}
 	if(d.indexOf("e")>=0){d=d.replace(/.0$/,"");}
@@ -1009,12 +1007,12 @@ function fp_to_dec(a) {
 	var b = a.split(".");
 	var c = b[0].split("");
 	var l = c.length - 1;
-	console.log(c)
+	//console.log(c)
 	for (var i = 0; i <= l; i++) {
 	if(c[i]=="1"){
 		result =math.add(math.bignumber(result),math.bignumber(twos[l-i]));
 		}
-		console.log("b:" + result, c[i],twos[l-i])
+	//	console.log("b:" + result, c[i],twos[l-i])
 	}
 	c = b[1].split("");var q=1;
 	l = c.length;
@@ -1106,10 +1104,6 @@ function dec_to_fp(a,p3) {
 <input type="button" onclick='fp_calc(document.getElementById("fp_calc_in").value)' value="Calc">
 <input type="button" onclick='clear_output("fp_calc_result")' value="Clear">
 <div id="fp_calc_result">
-Note: <br>
-A: single precision op, single precision result<br>
-B: mathematical op, single precision result (desired output)<br>
-C: mathematical op, mathematical result<br>
 </div>
 <script>
 function clear_output(a) {
@@ -1134,7 +1128,7 @@ e = e.replace(/×/g, "*");
 	var expr_754=dec_2_ieee754(expr.value);
 	var ev_fp = fp_conv(ev.toString());
 	var ev_fp_754=dec_2_ieee754(ev_fp);
-	var str = e + "<br> = " + expr.value + "(A)<br>... " +expr_754+"<br>... "+ bin2hex(expr_754)+"<br> = "+ ev_fp+"(B)<br>... "+ev_fp_754+"<br>... " + bin2hex(ev_fp_754)+"<br> = " + ev + "(C)<br>A-B: " + math.subtract(math.bignumber(expr.value), math.bignumber(ev_fp)).toString() + "<br>A-C: " + math.subtract(math.bignumber(expr.value), math.bignumber(ev)).toString() + "<br>B-C: " + math.subtract(math.bignumber(ev_fp), math.bignumber(ev)).toString() + "<br><br>";
+	var str = e + "<br> = " + expr.value + " (A, single precision)<br>... " +expr_754+"<br>... "+ bin2hex(expr_754)+"<br> = " + ev + " (B, precise)<br>... "+ ev_fp+" (C, to fp)<br>... "+ev_fp_754+"<br>... " + bin2hex(ev_fp_754)+"<br>A-C: " + math.subtract(math.bignumber(expr.value), math.bignumber(ev_fp)).toString() + "<br>A-B: " + math.subtract(math.bignumber(expr.value), math.bignumber(ev)).toString() + "<br>C-B: " + math.subtract(math.bignumber(ev_fp), math.bignumber(ev)).toString() + "<br><br>";
 	str = str.replace(/\*/g, "×");
 	str = str.replace(/\//g, "÷");
 	k.innerHTML = str + k.innerHTML;
