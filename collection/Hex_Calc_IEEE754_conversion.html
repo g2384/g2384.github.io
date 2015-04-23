@@ -824,7 +824,7 @@ document.getElementById("hexinput").value=a;
 function ieee754Hex_2_dec_single(a){
 var r= (a & 0x7fffff | 0x800000) * 1.0 / Math.pow(2,23) * Math.pow(2,  ((a>>23 & 0xff) - 127));
 if(a.toString().match(/0x[89abcdef]/i)){r=-r;}
-if(a.toString().indexOf("0X7F800000")==0){r="Infinity";}
+if(a.toString().indexOf("7F800000")>=0){r="Infinity";}
 return r;
 }
 function HextoDP(){
@@ -853,6 +853,8 @@ Round: uses the IEEE-754 round-to-nearest-value mode.<br><br>
 </form><br><hr>
 <script>
 function ieee754Hex_2_dec_single_o(a) {
+var d = "";
+if(a.indexOf("7F800000")>=0){d="Infinity";}else{
 	a = parseInt(a.substring(2, 10), 16).toString(2);
 	a = "00000000000000000000000000000000" + a;
 	a = a.substring(a.length - 32, a.length)
@@ -863,12 +865,9 @@ function ieee754Hex_2_dec_single_o(a) {
   //  console.log(exp, d);
 	var exp_d = parseInt(exp, 2).toString(10) - 127;
    // console.log(exp_d)
-	if (str[1] == "undefined") {
-		str[1] = "0";
-	}
-	var d = "";
+	str.push("0");
 	var k = exp_d - str[1].length + 23;
-	//console.log(k)
+	console.log(k)
 	if (k > 0) {
 		str[1] += (Array(k).join("0"));
 		d = "1" + str[1].substring(0,k)+"."+str[1].substring(k,str[1].length);
@@ -883,9 +882,12 @@ function ieee754Hex_2_dec_single_o(a) {
 	} else {
 		d = "1." + str[1];
 	}
-   // console.log(d);
+    console.log(d);
 	d = fp_to_dec(d);
 	if(a.substring(0,1)=="1"){d="-"+d;}
+	if(d.indexOf("e")>=0){d=d.replace(/.0$/,"");}
+	}
+	
 	return d;
 }
 function ieee754(a) {
@@ -924,6 +926,7 @@ function dec_2_ieee754(a){
 		}
 		var k = b[0].length - 1;
 		var expo = 127 + k - expo_int;
+		if(expo<256){
 		var expo_2 = parseInt(expo, 10).toString(2);
 		expo_2 = "00000000" + expo_2;
 		expo_2 = expo_2.substring(expo_2.length - 8, expo_2);
@@ -952,18 +955,21 @@ function dec_2_ieee754(a){
 			}
 		}
 		n += b[1];
+		}else{
+		n="01111111100000000000000000000000";
+		}
 	}
 //	console.log(n)
 	return n;
 }
 </script>
-<h2>Hex(IEEE-754 Float/Double) -> Dec</h2><br>
+<h2>Hex(IEEE-754 Float/Double) -> Dec</h2>
 Input: <input type="text" id="hexinput" placeholder="Input Hex">
 <input type="button" onclick="HextoFP()" value="Hex To Float">
 <input type="button" onclick="HextoDP()" value="Hex To Double"><br>
 <div id="result"></div>
 <br><hr><br>
-<h2>Fix-Point <-> Dec Converter</h2><br>
+<h2>Fix-Point <-> Dec Converter</h2>
 Bin: <input type="text" class="c" id="bin" value="11.111"> <input type="button" onclick="init(1)" value="Calc"><br>
 Dec: <input type="text" class="c" id="din" value="1.1"> <input type="button" onclick="init(0)" value="Calc">
 Set Binary Fraction Length:<input type="text" id="b_len" size="2" value="32"> Bits (Max = 32)
@@ -997,16 +1003,18 @@ function init(s) {
 	}
 	document.getElementById("fp_r").innerHTML=str;
 }
-
+twos=["1","2","4","8","16","32","64","128","256","512","1024","2048","4096","8192","16384","32768","65536","131072","262144","524288","1048576","2097152","4194304","8388608","16777216","33554432","67108864","134217728","268435456","536870912","1073741824","2147483648","4294967296","8589934592","17179869184","34359738368","68719476736","137438953472","274877906944","549755813888","1099511627776","2199023255552","4398046511104","8796093022208","17592186044416","35184372088832","70368744177664","140737488355328","281474976710656","562949953421312","1125899906842624","2251799813685248","4503599627370496","9007199254740992","18014398509481984","36028797018963968","72057594037927936","144115188075855872","288230376151711744","576460752303423488","1152921504606846976","2305843009213693952","4611686018427387904","9223372036854775808","18446744073709551616","36893488147419103232","73786976294838206464","147573952589676412928","295147905179352825856","590295810358705651712","1.180591620717411303424e+21","2.361183241434822606848e+21","4.722366482869645213696e+21","9.444732965739290427392e+21","1.8889465931478580854784e+22","3.7778931862957161709568e+22","7.5557863725914323419136e+22","1.51115727451828646838272e+23","3.02231454903657293676544e+23","6.04462909807314587353088e+23","1.208925819614629174706176e+24","2.417851639229258349412352e+24","4.835703278458516698824704e+24","9.671406556917033397649408e+24","1.9342813113834066795298816e+25","3.8685626227668133590597632e+25","7.7371252455336267181195264e+25","1.54742504910672534362390528e+26","3.09485009821345068724781056e+26","6.18970019642690137449562112e+26","1.237940039285380274899124224e+27","2.475880078570760549798248448e+27","4.951760157141521099596496896e+27","9.903520314283042199192993792e+27","1.9807040628566084398385987584e+28","3.9614081257132168796771975168e+28","7.9228162514264337593543950336e+28","1.58456325028528675187087900672e+29","3.16912650057057350374175801344e+29","6.33825300114114700748351602688e+29","1.267650600228229401496703205376e+30","2.535301200456458802993406410752e+30","5.070602400912917605986812821504e+30","1.0141204801825835211973625643008e+31","2.0282409603651670423947251286016e+31","4.0564819207303340847894502572032e+31","8.1129638414606681695789005144064e+31","1.62259276829213363391578010288128e+32","3.24518553658426726783156020576256e+32","6.49037107316853453566312041152512e+32","1.298074214633706907132624082305024e+33","2.596148429267413814265248164610048e+33","5.192296858534827628530496329220096e+33","1.0384593717069655257060992658440192e+34","2.0769187434139310514121985316880384e+34","4.1538374868278621028243970633760768e+34","8.3076749736557242056487941267521536e+34","1.66153499473114484112975882535043072e+35","3.32306998946228968225951765070086144e+35","6.64613997892457936451903530140172288e+35","1.329227995784915872903807060280344576e+36","2.658455991569831745807614120560689152e+36","5.316911983139663491615228241121378304e+36","1.0633823966279326983230456482242756608e+37","2.1267647932558653966460912964485513216e+37","4.2535295865117307932921825928971026432e+37","8.5070591730234615865843651857942052864e+37","1.70141183460469231731687303715884105728e+38","3.40282366920938463463374607431768211456e+38"];
 function fp_to_dec(a) {
 	var result = 0;
 	var b = a.split(".");
 	var c = b[0].split("");
-
 	var l = c.length - 1;
+	console.log(c)
 	for (var i = 0; i <= l; i++) {
-		result += (1 << (l - i)) * c[i];
-		//console.log("b:" + result, c[i])
+	if(c[i]=="1"){
+		result =math.add(math.bignumber(result),math.bignumber(twos[l-i]));
+		}
+		console.log("b:" + result, c[i],twos[l-i])
 	}
 	c = b[1].split("");var q=1;
 	l = c.length;
@@ -1096,12 +1104,12 @@ function dec_to_fp(a,p3) {
 <h2>Floating-point Expression Evaluator</h2>
 <input id="fp_calc_in" value="1.1*1.1+1.1*1.1">
 <input type="button" onclick='fp_calc(document.getElementById("fp_calc_in").value)' value="Calc">
-<input type="button" onclick='clear_output("fp_calc_result")' value="Clear Output">
+<input type="button" onclick='clear_output("fp_calc_result")' value="Clear">
 <div id="fp_calc_result">
 Note: <br>
 A: single precision op, single precision result<br>
-B: mathematical op, mathematical result<br>
-C: mathematical op, single precision result (desired output)<br>
+B: mathematical op, single precision result (desired output)<br>
+C: mathematical op, mathematical result<br>
 </div>
 <script>
 function clear_output(a) {
