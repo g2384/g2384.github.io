@@ -31,8 +31,9 @@ input[type="checkbox"] + label {
     white-space: -o-pre-wrap;    /* Opera 7 */
     word-wrap: break-word;       /* Internet Explorer 5.5+ */
 }
-label{cursor:pointer;}
+label{cursor:pointer;line-height:1.5em;}
 label:hover{color:#555;}
+form{margin-bottom: 0px;}
 
 .hljs{display:block;overflow-x:auto;padding:.5em;-webkit-text-size-adjust:none}.hljs,.hljs-subst,.hljs-tag .hljs-title,.nginx .hljs-title{color:#000}.hljs-string,.hljs-title,.hljs-constant,.hljs-parent,.hljs-tag .hljs-value,.hljs-rules .hljs-value,.hljs-preprocessor,.hljs-pragma,.haml .hljs-symbol,.ruby .hljs-symbol,.ruby .hljs-symbol .hljs-string,.hljs-template_tag,.django .hljs-variable,.smalltalk .hljs-class,.hljs-addition,.hljs-flow,.hljs-stream,.bash .hljs-variable,.apache .hljs-tag,.apache .hljs-cbracket,.tex .hljs-command,.tex .hljs-special,.erlang_repl .hljs-function_or_atom,.asciidoc .hljs-header,.markdown .hljs-header,.coffeescript .hljs-attribute{color:#800}.smartquote,.hljs-comment,.hljs-annotation,.diff .hljs-header,.hljs-chunk,.asciidoc .hljs-blockquote,.markdown .hljs-blockquote{color:#888}.hljs-number,.hljs-date,.hljs-regexp,.hljs-literal,.hljs-hexcolor,.smalltalk .hljs-symbol,.smalltalk .hljs-char,.go .hljs-constant,.hljs-change,.lasso .hljs-variable,.makefile .hljs-variable,.asciidoc .hljs-bullet,.markdown .hljs-bullet,.asciidoc .hljs-link_url,.markdown .hljs-link_url{color:#080}.hljs-label,.hljs-javadoc,.ruby .hljs-string,.hljs-decorator,.hljs-filter .hljs-argument,.hljs-localvars,.hljs-array,.hljs-attr_selector,.hljs-important,.hljs-pseudo,.hljs-pi,.haml .hljs-bullet,.hljs-doctype,.hljs-deletion,.hljs-envvar,.hljs-shebang,.apache .hljs-sqbracket,.nginx .hljs-built_in,.tex .hljs-formula,.erlang_repl .hljs-reserved,.hljs-prompt,.asciidoc .hljs-link_label,.markdown .hljs-link_label,.vhdl .hljs-attribute,.clojure .hljs-attribute,.asciidoc .hljs-attribute,.lasso .hljs-attribute,.coffeescript .hljs-property,.hljs-phony{color:#88f}.hljs-keyword,.hljs-id,.hljs-title,.hljs-built_in,.css .hljs-tag,.hljs-javadoctag,.hljs-phpdoc,.hljs-dartdoc,.hljs-yardoctag,.smalltalk .hljs-class,.hljs-winutils,.bash .hljs-variable,.apache .hljs-tag,.hljs-type,.hljs-typename,.tex .hljs-command,.asciidoc .hljs-strong,.markdown .hljs-strong,.hljs-request,.hljs-status{font-weight:700}.asciidoc .hljs-emphasis,.markdown .hljs-emphasis{font-style:italic}.nginx .hljs-built_in{font-weight:400}.coffeescript .javascript,.javascript .xml,.lasso .markup,.tex .hljs-formula,.xml .javascript,.xml .vbscript,.xml .css,.xml .hljs-cdata{opacity:.5}
 </style>
@@ -78,6 +79,10 @@ function fetchHeader(url, wch) {
 document.write("<p>Last modified: "+fetchHeader(location.href,'Last-Modified')+"</p>");
 </script>
 <textarea id="in" rows="10" wrap="off"></textarea><br>
+<form id="keyword">Keyword Case: 
+<label><input type="radio" name="keywordcase" value="UpperCase" checked="checked">UPPERCASE</label> 
+| <label><input type="radio" name="keywordcase" value="LowerCase">lowercase</label> 
+| <label><input type="radio" name="keywordcase" value="DefaultCase">Default</label></form>
 <label><input type="checkbox" id="no_format" onclick="noFormat()">Only highlight, don't format</label><br>
 <label><input type="checkbox" checked="checked" id="new_line">New line after THEN, semicolon ";"</label><br>
 <label><input type="checkbox" id="remove_comments">Remove commments</label>
@@ -85,6 +90,7 @@ document.write("<p>Last modified: "+fetchHeader(location.href,'Last-Modified')+"
  | <label><input type="checkbox" id="remove_report">Remove REPORT</label><br>
 <label><input type="checkbox" id="check_alias">Check ALIAS (every long name is replaced with ALIAS)</label><br>
 <label><input type="checkbox" id="sign_align">Align signs in PORT()</label><br>
+
 
 <label><input type="checkbox" id="use_space">Customise Indentation (tab is \t): </label> <input type="text" id="cust_indent" size="8" onKeyUp="indent_decode()" value="    "/> (<span id="indent_s">four blankspace</span>)<br>
 <label><input type="checkbox" id="compress">! EVIL - compress VHDL (\r\n, comments will be removed)</label><br>
@@ -136,12 +142,12 @@ document.write("<p>Last modified: "+fetchHeader(location.href,'Last-Modified')+"
 			<span class="hljs-keyword">ELSE</span>
 				bit4 &lt;= <span class="hljs-string">"1111"</span>;
 			<span class="hljs-keyword">END</span> <span class="hljs-keyword">IF</span>;
-			<del><span class="hljs-comment">-- Sample comments 1;</span> 
-			<span class="hljs-comment">-- Sample comments 2;</span></del>  <font style="background-color:#9D9D9D; color:#fff"> (Remove comments) </font>
+			<del><span class="hljs-comment">-- Sample comments 1;</span> </del> 
+			<del> <span class="hljs-comment">-- Sample comments 2;</span></del>  <font style="background-color:#9D9D9D; color:#fff"> (Remove comments) </font>
 		<span class="hljs-keyword">END</span> <span class="hljs-keyword">IF</span>;
 		 
 	<span class="hljs-keyword">END</span> <span class="hljs-keyword">PROCESS</span>;
-<span class="hljs-keyword">END</span> BEH;</code></pre>
+<span class="hljs-keyword">END</span> EXA;</code></pre>
 <script>
 String.prototype.regexIndexOf = function(pattern, startIndex) {
 	startIndex = startIndex || 0;
@@ -233,6 +239,8 @@ function f() {
 	var use_space = document.getElementById("use_space").checked;
 	var compress = document.getElementById("compress").checked;
 	var cust_indent = document.getElementById("cust_indent").value;
+	var keywordcase = document.getElementById("keyword").elements.namedItem("keywordcase").value;
+	console.log(keywordcase)
 	if (compress) {
 		remove_comments = true;
 	}
@@ -298,6 +306,15 @@ function f() {
 		}
 	}
 	input = arr.join("\r\n");
+	if(keywordcase == "LowerCase"){
+	for (var k = 0; k < keyword.length; k++) {
+	keyword[k]=keyword[k].toLowerCase();
+	}
+	}else if(keywordcase == "DefaultCase"){
+	for (var k = 0; k < keyword.length; k++) {
+	keyword[k]=keyword[k].charAt(0) + keyword[k].slice(1).toLowerCase();
+	}
+	}
 	for (var k = 0; k < keyword.length; k++) {
 		input = input.replace(new RegExp("([^a-zA-Z0-9_]|^)" + keyword[k] + "([^a-zA-Z0-9_]|$)", 'gi'), "$1" + keyword[k] + "$2");
 	}
