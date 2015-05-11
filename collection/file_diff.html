@@ -25,7 +25,7 @@ diff_match_patch.prototype.diff_cleanupEfficiency=function(a){for(var b=!1,c=[],
 diff_match_patch.prototype.diff_cleanupMerge=function(a){a.push([0,""]);for(var b=0,c=0,d=0,e="",f="",g;b<a.length;)switch(a[b][0]){case 1:d++;f+=a[b][1];b++;break;case -1:c++;e+=a[b][1];b++;break;case 0:1<c+d?(0!==c&&0!==d&&(g=this.diff_commonPrefix(f,e),0!==g&&(0<b-c-d&&0==a[b-c-d-1][0]?a[b-c-d-1][1]+=f.substring(0,g):(a.splice(0,0,[0,f.substring(0,g)]),b++),f=f.substring(g),e=e.substring(g)),g=this.diff_commonSuffix(f,e),0!==g&&(a[b][1]=f.substring(f.length-g)+a[b][1],f=f.substring(0,f.length-
 g),e=e.substring(0,e.length-g))),0===c?a.splice(b-d,c+d,[1,f]):0===d?a.splice(b-c,c+d,[-1,e]):a.splice(b-c-d,c+d,[-1,e],[1,f]),b=b-c-d+(c?1:0)+(d?1:0)+1):0!==b&&0==a[b-1][0]?(a[b-1][1]+=a[b][1],a.splice(b,1)):b++,c=d=0,f=e=""}""===a[a.length-1][1]&&a.pop();c=!1;for(b=1;b<a.length-1;)0==a[b-1][0]&&0==a[b+1][0]&&(a[b][1].substring(a[b][1].length-a[b-1][1].length)==a[b-1][1]?(a[b][1]=a[b-1][1]+a[b][1].substring(0,a[b][1].length-a[b-1][1].length),a[b+1][1]=a[b-1][1]+a[b+1][1],a.splice(b-1,1),c=!0):a[b][1].substring(0,
 a[b+1][1].length)==a[b+1][1]&&(a[b-1][1]+=a[b+1][1],a[b][1]=a[b][1].substring(a[b+1][1].length)+a[b+1][1],a.splice(b+1,1),c=!0)),b++;c&&this.diff_cleanupMerge(a)};diff_match_patch.prototype.diff_xIndex=function(a,b){var c=0,d=0,e=0,f=0,g;for(g=0;g<a.length;g++){1!==a[g][0]&&(c+=a[g][1].length);-1!==a[g][0]&&(d+=a[g][1].length);if(c>b)break;e=c;f=d}return a.length!=g&&-1===a[g][0]?f:f+(b-e)};
-diff_match_patch.prototype.diff_prettyHtml=function(a){for(var b=[],c=/&/g,d=/</g,e=/>/g,f=/\n/g,g=0;g<a.length;g++){var h=a[g][0],j=a[g][1],j=j.replace(c,"&amp;").replace(d,"&lt;").replace(e,"&gt;").replace(f,"\r\n<br>");switch(h){case 1:b[g]='<ins style="background:#90FF90;">'+j+"</ins>";break;case -1:b[g]='<del style="background:#FFA8A8;">'+j+"</del>";break;case 0:b[g]="<span>"+j+"</span>"}}return b.join("")};
+diff_match_patch.prototype.diff_prettyHtml=function(a){for(var b=[],c=/&/g,d=/</g,e=/>/g,f=/\n/g,g=0;g<a.length;g++){var h=a[g][0],j=a[g][1],j=j.replace(c,"&amp;").replace(d,"&lt;").replace(e,"&gt;").replace(f,"\r\n");switch(h){case 1:b[g]='<ins style="background:#90FF90;">'+j+"</ins>";break;case -1:b[g]='<del style="background:#FFA8A8;">'+j+"</del>";break;case 0:b[g]="<span>"+j+"</span>"}}return b.join("")};
 diff_match_patch.prototype.diff_text1=function(a){for(var b=[],c=0;c<a.length;c++)1!==a[c][0]&&(b[c]=a[c][1]);return b.join("")};diff_match_patch.prototype.diff_text2=function(a){for(var b=[],c=0;c<a.length;c++)-1!==a[c][0]&&(b[c]=a[c][1]);return b.join("")};diff_match_patch.prototype.diff_levenshtein=function(a){for(var b=0,c=0,d=0,e=0;e<a.length;e++){var f=a[e][0],g=a[e][1];switch(f){case 1:c+=g.length;break;case -1:d+=g.length;break;case 0:b+=Math.max(c,d),d=c=0}}return b+=Math.max(c,d)};
 diff_match_patch.prototype.diff_toDelta=function(a){for(var b=[],c=0;c<a.length;c++)switch(a[c][0]){case 1:b[c]="+"+encodeURI(a[c][1]);break;case -1:b[c]="-"+a[c][1].length;break;case 0:b[c]="="+a[c][1].length}return b.join("\t").replace(/%20/g," ")};
 diff_match_patch.prototype.diff_fromDelta=function(a,b){for(var c=[],d=0,e=0,f=b.split(/\t/g),g=0;g<f.length;g++){var h=f[g].substring(1);switch(f[g].charAt(0)){case "+":try{c[d++]=[1,decodeURI(h)]}catch(j){throw Error("Illegal escape in diff_fromDelta: "+h);}break;case "-":case "=":var i=parseInt(h,10);if(isNaN(i)||0>i)throw Error("Invalid number in diff_fromDelta: "+h);h=a.substring(e,e+=i);"="==f[g].charAt(0)?c[d++]=[0,h]:c[d++]=[-1,h];break;default:if(f[g])throw Error("Invalid diff operation in diff_fromDelta: "+
@@ -50,7 +50,10 @@ diff_match_patch.prototype.patch_fromText=function(a){var b=[];if(!a)return b;a=
 parseInt(e[4],10));for(c++;c<a.length;){e=a[c].charAt(0);try{var g=decodeURI(a[c].substring(1))}catch(h){throw Error("Illegal escape in patch_fromText: "+g);}if("-"==e)f.diffs.push([-1,g]);else if("+"==e)f.diffs.push([1,g]);else if(" "==e)f.diffs.push([0,g]);else if("@"==e)break;else if(""!==e)throw Error('Invalid patch mode "'+e+'" in: '+g);c++}}return b};diff_match_patch.patch_obj=function(){this.diffs=[];this.start2=this.start1=null;this.length2=this.length1=0};
 diff_match_patch.patch_obj.prototype.toString=function(){var a,b;a=0===this.length1?this.start1+",0":1==this.length1?this.start1+1:this.start1+1+","+this.length1;b=0===this.length2?this.start2+",0":1==this.length2?this.start2+1:this.start2+1+","+this.length2;a=["@@ -"+a+" +"+b+" @@\n"];var c;for(b=0;b<this.diffs.length;b++){switch(this.diffs[b][0]){case 1:c="+";break;case -1:c="-";break;case 0:c=" "}a[b+1]=c+encodeURI(this.diffs[b][1])+"\n"}return a.join("").replace(/%20/g," ")};
 this.diff_match_patch=diff_match_patch;this.DIFF_DELETE=-1;this.DIFF_INSERT=1;this.DIFF_EQUAL=0;})()
-</script><style type="text/css"></style>
+</script>
+<style type="text/css">
+body{tab-size: 4;}
+</style>
 </head>
 
 <body>
@@ -64,6 +67,8 @@ var dmp = new diff_match_patch();
 function launch() {
   var text1 = document.getElementById('text1').value;
   var text2 = document.getElementById('text2').value;
+  text1=text1.replace(/\t/g,"&#09;");
+  text2=text2.replace(/\t/g,"&#09;");
   dmp.Diff_Timeout = parseFloat(document.getElementById('timeout').value);
   dmp.Diff_EditCost = parseFloat(document.getElementById('editcost').value);
 
@@ -77,13 +82,13 @@ var outputdiv=document.getElementById('outputdiv');
   if (document.getElementById('efficiency').checked) {
     dmp.diff_cleanupEfficiency(d);
   }
-  if (document.getElementById('monospaced').checked) {
-    outputdiv.style.fontFamily="Consolas";
-  }else{
-   outputdiv.style.fontFamily="Arial";
-  }
+  
   var ds = dmp.diff_prettyHtml(d);
-  outputdiv.innerHTML = ds + '<hr>Time: ' + (ms_end - ms_start) / 1000 + 's';
+  console.log(ds.length);
+  console.log(ds)
+  ds=ds.replace(/&amp;#09;/g,"&#09;");
+  console.log(ds.length);
+  outputdiv.innerHTML = '<pre style="margin:0;padding:0;">'+ds + '</pre><hr>Time: ' + (ms_end - ms_start) / 1000 + 's';
 }
 </script>
 
@@ -101,7 +106,6 @@ My animation's comical, unusual, and whimsical,
 I'm quite adept at funny gags, comedic theory I have read,
 From wicked puns and stupid jokes to anvils that drop on your head.</textarea></td>
 </tr></tbody></table>
-<label><input type="checkbox" name="monospaced" id="monospaced">use monospaced font</label><br>
 Timeout: <input type="text" size="3" maxlength="5" value="1" id="timeout"> seconds. (Type '0' for unlimited computation.)<br>
 
 <h3>Post-diff cleanup:</h3>
