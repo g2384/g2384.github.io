@@ -309,15 +309,7 @@ function f() {
 		}
 	}
 	input = arr.join("\r\n");
-	if(keywordcase == "LowerCase"){
-	for (var k = 0; k < keyword.length; k++) {
-	keyword[k]=keyword[k].toLowerCase();
-	}
-	}else if(keywordcase == "DefaultCase"){
-	for (var k = 0; k < keyword.length; k++) {
-	keyword[k]=keyword[k].charAt(0) + keyword[k].slice(1).toLowerCase();
-	}
-	}
+	
 	for (var k = 0; k < keyword.length; k++) {
 		input = input.replace(new RegExp("([^a-zA-Z0-9_]|^)" + keyword[k] + "([^a-zA-Z0-9_]|$)", 'gi'), "$1" + keyword[k] + "$2");
 	}
@@ -668,7 +660,9 @@ function f() {
 			}
 		}
 	}
+	
 	input = arr.join("\r\n");
+	
 	if (sign_align) {
 		for (var k = 0; k < align_i; k++) {
 			input = input.replace("@@align" + k, Array((align_max[k] - align[k] + 2)).join(" "));
@@ -685,6 +679,29 @@ function f() {
 	}
 	input = input.replace(/@@semicolon/g, ";");
 	input = input.replace(/@@[a-z]+/g, "");
+	if(keywordcase == "LowerCase"){
+	for (var k = 0; k < keyword.length; k++) {
+	keyword[k]=keyword[k].toLowerCase();
+	}
+	for (var k = 0; k < typename.length; k++) {
+	typename[k]=typename[k].toLowerCase();
+	}
+	}else if(keywordcase == "DefaultCase"){
+	for (var k = 0; k < keyword.length; k++) {
+	keyword[k]=keyword[k].charAt(0) + keyword[k].slice(1).toLowerCase();
+	}
+	for (var k = 0; k < typename.length; k++) {
+	typename[k]=typename[k].charAt(0) + typename[k].slice(1).toLowerCase();
+	}
+	}
+	if(keywordcase!="UpperCase"){
+	for (var k = 0; k < keyword.length; k++) {
+		input = input.replace(new RegExp("([^a-zA-Z0-9_]|^)" + keyword[k] + "([^a-zA-Z0-9_]|$)", 'gi'), "$1" + keyword[k] + "$2");
+	}
+	for (var k = 0; k < typename.length; k++) {
+		input = input.replace(new RegExp("([^a-zA-Z0-9_]|^)" + typename[k] + "([^a-zA-Z0-9_]|$)", 'gi'), "$1" + typename[k] + "$2");
+	}
+	}
 	if (compress) {
 		input = input.replace(/\r\n/g, '');
 		input = input.replace(/[\t ]+/g, ' ');
