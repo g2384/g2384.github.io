@@ -3,7 +3,24 @@
 <head>
 <title>Javascript Tools</title>
 </head>
-<style>span {
+<style>
+body{font-family:Consolas;}
+a{color:#0071C2;cursor:pointer;text-decoration:none;}
+a:hover{text-decoration:underline;}
+input[type="button"]{
+margin: 10px 10px;
+padding: 5px 8px;
+font-size: 16px;
+line-height: 1.33;
+border-radius: 3px;
+color: #333;
+border-color: #ccc;
+cursor: pointer;
+text-align: center;
+white-space: nowrap;
+border: 1px solid rgb(194, 194, 194);}
+input[type="button"]:hover{background-color:#afd9ee;}
+span {
 cursor:pointer;
 margin-left:-5px;
 text-align: center;
@@ -12,13 +29,6 @@ font-size:10px;
 display: inline-block;
 border: 1px solid #838B8B;
 line-height:200%
-}
-#color{
-background-color:#fff;
-position:fixed;
-right:0px;
-top:0px;
-font-size:2em;
 }
 </style>
 <script>
@@ -228,53 +238,119 @@ document.getElementById("holder").innerHTML=e.value;
 }
 
 function GenerateList(){
+var r=document.getElementById("holder");
+
 var str=document.getElementById("txt").value;
 var arr=str.split("+");
+
 var l=arr.length;
-var k,result="";
-k=arr[1].split("~");
-for(var i=k[0];i<=k[1];i++){
-result=result+arr[0]+i+arr[2]+"\n";
+if(l!=4){
+console.log(str)
+r.innerHTML+="\nwrong syntax";
+}else{
+console.log(arr,Number(arr[1]))
+var result="";
+for(var i=Number(arr[1]);i<=Number(arr[2]);i++){
+result=result+arr[0]+i+arr[3]+"\n";
 }
-document.getElementById("holder").innerHTML=result;
+r.innerHTML=result;
+}
+}
+function escapeRegExp(str) {
+  return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+}
+String.prototype.regexIndexOf = function(pattern, startIndex) {
+	startIndex = startIndex || 0;
+	var searchResult = this.substr(startIndex).search(pattern);
+	return (-1 === searchResult) ? -1 : searchResult + startIndex;
+}
+function AlignText() {
+    var r = document.getElementById("txt").value;
+    r = r.replace(/[\r\n]+/g, "\n");
+    r = r.replace(/\n[ \s]+/g, "\n");
+    a = r.split("\n");
+    var p = new Array();
+    var reg = new Array();
+    var max = new Array();
+    var ind = new Array();
+
+    for (var i = 0; i < a.length; i++) {
+        console.log(i)
+        if (a[i].indexOf("Align") > 0 || a[0].indexOf("align")) {
+            p = a[i].split(" ");
+            a.splice(i, 1);
+            break;
+        }
+    }
+    
+    
+	p.splice(0,1);
+	var l = p.length;
+    for (var j = 0; j < l; j++) {
+        if (p[j] != "_") {
+            reg.push(new RegExp(escapeRegExp(p[j]), ''))
+        } else {
+            reg.push(new RegExp('(^|[^a-zA-Z0-9_])(' + escapeRegExp(p[j]) + ')([^a-zA-Z0-9_]|$)', ''))
+        }
+        max.push(-1)
+    }
+	var new_a = new Array(a.length);
+   console.log(reg)
+    var k = 0;
+	for (var j = 0; j < l; j++) {
+		for (var i = 0; i < a.length; i++) {
+			b = a[i].regexIndexOf(reg[j]);
+			if (reg[j].toString().indexOf("(^|[^a-zA-Z0-9_])")>0) {
+				b+=1;
+			}
+			ind.push(b);
+			if (b > max[j]) {
+				max[j] = b;
+			}
+		}
+		for (var i = 0; i < a.length; i++) {
+		if(ind[k]>=0){
+			new_a[i] = a[i].substr(0, ind[k]);
+			console.log(new_a[i], "start")
+			new_a[i] += (Array(max[j] - ind[k] + 1).join(" ") + a[i].substr(ind[k], p[j].length));
+			console.log(new_a[i], j)
+			new_a[i] += a[i].substring(ind[k] + p[j].length, a[i].length);
+			console.log(new_a[i], j)
+			k++;
+			a[i]=new_a[i];
+			}
+		}
+	}
+    document.getElementById("holder").innerHTML = new_a.join("\n");
 }
 function demo(x){
+var r=document.getElementById("txt");
 switch(x){
-case 1:document.getElementById("txt").value="1	a\n2	b";
+case 1:r.value="1	a\n2	b";
 break;
-case 2:document.getElementById("txt").value="No.+0~100+=";
+case 2:r.value="No.+0+100+=";
 break;
-}
-}
-
-function colorpanel(){
-var a=["#000000","#000033","#000066","#000099","#0000ff","#003366","#003399","#006600","#006699","#0066cc","#00dd00","#00ff00","#10845a","#111111","#123456","#173101","#222222","#331100","#333333","#333366","#336699","#363636","#374853","#3b5998","#444444","#454545","#4d4d4d","#511000","#555555","#56a83c","#654321","#660000","#666666","#6699cc","#777777","#7f7f7f","#808080","#888888","#906090","#918010","#990000","#999999","#9999cc","#99cccc","#99ccff","#a73111","#aaaaaa","#bbbbbb","#c0c0c0","#cc0000","#cccc99","#cccccc","#cccccc","#ccccff","#ccffff","#d4d4d4","#d6d6d6","#d9d9d9","#dddddd","#dedede","#e0e0e0","#e1e1e1","#e3e3e3","#e4e4e4","#e5e5e5","#e6e6e6","#e7e7e7","#e8e8e8","#e9e9e9","#eaeaea","#ebebeb","#ededed","#eeeeee","#efefef","#f0f0f0","#f1f1f1","#f2f2f2","#f2f7fc","#f3f3f3","#f4f4f4","#f5f5f5","#f6f6f6","#f7f7f7","#f8f8f8","#f9f9f9","#fafafa","#fcfcfc","#fefefe","#ff0000","#ff6600","#ff9900","#ffcccc","#ffff00","#ffffcc","#ffffff"];
-var l=a.length;
-for(var i=0;i<l;i++){
-document.getElementById('colorpanel').innerHTML+=('<span onmouseover="dispC(this)" onclick="holdC(this)" style="background-color:'+a[i]+'">&nbsp;</span>');
+case 3:r.value="Align = ;\na = 1;\nVeryLoooooooongName = 0;\nVeryLongNumber = 1234567890;"
+break;
 }
 }
 </script>
-<body onload="colorpanel()">
+<body>
 <textarea rows="10" style="width:100%;font-size:16px;" id="txt">1	a
-2	b</textarea>
+2	b
+</textarea>
 
-<input type="button" value="Generate Table" id="GenerateTable" onclick="GenerateTable()"><input type="button" value="Demo" onclick="demo(1)"><br>
-<input type="button" value="Generate List" id="GenerateList" onclick="GenerateList()"><input type="button" value="Demo" onclick="demo(2)"> (format: [prefix]+[start]~[end]+[suffix])<br>
-<input type="button" onclick="CountLines();" value="Count Duplicates in List">
+1. <input type="button" value="Generate Table" id="GenerateTable" onclick="GenerateTable()"><a class="btn" onclick="demo(1)">Demo</a><br>
+2. <input type="button" value="Generate List" id="GenerateList" onclick="GenerateList()"><a class="btn" onclick="demo(2)">Demo</a> (format: "[prefix]+[start]+[end]+[suffix]")<br>
+3. <input type="button" value="Align text" id="GenerateList" onclick="AlignText()"><a class="btn" onclick="demo(3)">Demo</a> (Syntax: "Align[blankspace][1st_match][blankspace][2nd_match][blankspace]...\n Text Text Text")<br>
+4. <input type="button" onclick="CountLines();" value="Count Duplicates in List">
 sort by: 
 <label for="sortby_count"><input type="radio" name="sortby" value="count" checked="checked" id="sortby_count"> Count</label>
-<label for="sortby_line"><input type="radio" name="sortby" value="line" id="sortby_line"> Line</label> | (Use this to find duplicate lines, or to count the number of repeats.)<br>
-<input type="button" onclick="CountWords();" value="Count Character Occurrences"> (Use this to display the frequency of each character and character code contained in the text)<br>
+<label for="sortby_line"><input type="radio" name="sortby" value="line" id="sortby_line"> Line</label> | (Find duplicate lines, count the number of repeats.)<br>
+5. <input type="button" onclick="CountWords();" value="Count Character Occurrences"> (Analyse frequency of each character contained in the text)<br>
 <a href="http://textmechanic.com/Count-Text.html">A more powerful text counter</a>
+<br>
 <pre id="holder"></pre>
-<div id="color"></div>
-<br><hr>
-CSS Color Combinations: http://www.colorcombos.com/<br>
-Popular 
-<span style="background-color:#ebebeb;width:40px;" data-word="#ebebeb">Bkg</span>
-<span style="background-color:#545454;width:40px;" data-word="#545454">Text</span>
-<span style="background-color:#21769B;width:40px;" data-word="#21769B">Link</span><br>
-<div id="colorpanel"></div>
 </body>
+
 </html>
