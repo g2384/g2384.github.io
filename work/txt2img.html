@@ -1,3 +1,4 @@
+
 <html>
 <head>
 <meta charset="UTF-8" />
@@ -35,7 +36,7 @@ Text 2 Image
 		<td><label>Each line:</label><input size="4" id='len' value="40" />letters</td>
 	</tr>
 	<tr>
-		<td><canvas id="text" width="50" height="50"></canvas><br>
+		<td>Text color:<canvas id="text" width="25" height="25"></canvas><br>
 		R: <input type="range" id="red" min="0" max="255" value="0"
 			onchange="changeColor();" /><br>
 		G: <input type="range" id="green" min="0" max="255"
@@ -44,7 +45,14 @@ Text 2 Image
 			onchange="changeColor();" /><br>
 		Color: <input type=text size="7" id="showcolor"></input></td>
 	</tr>
-
+	<tr>
+		<td>
+		Border left: <input type="text" id="border_left" size="4" value="10"/><br>
+		Border right: <input type="text" id="border_right" size="4" value="10"/><br>
+		Border top: <input type="text" id="border_top" size="4" value="10"/><br>
+		Border bottom: <input type="text" id="border_bottom" size="4" value="10"/><br>
+		</td>
+	</tr>
 	<tr>
 		<td>
 		<button onclick="textToImg();">Generate</button>
@@ -67,6 +75,10 @@ Text 2 Image
 		var fontName = $('fontName').value || 'Arial';
 		var fontWeight = $('fontWeight').value || 'normal';
 		var txt = $("txt").value;
+		var border_left = parseInt($('border_left').value);
+		var border_right = parseInt($('border_right').value);
+		var border_top = parseInt($('border_top').value);
+		var border_bottom = parseInt($('border_bottom').value);
 		var canvas = $('canvas');
 		if (txt == '') {
 			txt='Test 中文';
@@ -74,8 +86,8 @@ Text 2 Image
 		if (len > txt.length) {
 			len = txt.length;
 		}
-		canvas.width = fontSize * len;
-		canvas.height = fontSize * (3 / 2)
+		canvas.width = fontSize * len+border_left+border_right;
+		canvas.height = border_top+border_bottom+fontSize * (3 / 2)
 				* (Math.ceil(txt.length / len) + txt.split('\n').length - 1);
 		var context = canvas.getContext('2d');
 		context.clearRect(0, 0, canvas.width, canvas.height);
@@ -88,15 +100,14 @@ Text 2 Image
 			while (text.length > len) {
 				var txtLine = text.substring(0, len);
 				text = text.substring(len);
-				context.fillText(txtLine, 0, fontSize * (3 / 2) * i++,
-						canvas.width);
+				context.fillText(txtLine, border_left, border_top+fontSize * (3 / 2) * i++,	canvas.width);
 			}
-			context.fillText(text, 0, fontSize * (3 / 2) * i, canvas.width);
+			context.fillText(text, border_left, border_top+fontSize * (3 / 2) * i, canvas.width);
 		}
 		var txtArray = txt.split('\n');
 		for ( var j = 0; j < txtArray.length; j++) {
 			fillTxt(txtArray[j]);
-			context.fillText('\n', 0, fontSize * (3 / 2) * i++, canvas.width);
+			context.fillText('\n', border_left, border_top+fontSize * (3 / 2) * i++, canvas.width);
 		}
 		var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
 		var img = $("img");
