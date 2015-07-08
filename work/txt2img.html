@@ -55,6 +55,14 @@ Text 2 Image
 	</tr>
 	<tr>
 		<td>
+		<form id="language">
+		<label><input type=radio name=lang value=English>English</label>
+		<label><input type=radio name=lang value=Chinese checked=checked>Chinese</label>
+		</form>
+		</td>
+	</tr>
+	<tr>
+		<td>
 		<button onclick="textToImg();">Generate</button>
 		</td>
 	</tr>
@@ -80,13 +88,18 @@ Text 2 Image
 		var border_top = parseInt($('border_top').value);
 		var border_bottom = parseInt($('border_bottom').value);
 		var canvas = $('canvas');
+		var lang = $("language").elements.namedItem("lang").value;
 		if (txt == '') {
 			txt='Test 中文';
 		}
 		if (len > txt.length) {
 			len = txt.length;
 		}
+		if(lang=="Chinese"){
 		canvas.width = fontSize * len+border_left+border_right;
+		}else{
+		canvas.width = fontSize * len/2+border_left+border_right;
+		}
 		canvas.height = border_top+border_bottom+fontSize * (3 / 2)
 				* (Math.ceil(txt.length / len) + txt.split('\n').length - 1);
 		var context = canvas.getContext('2d');
@@ -96,6 +109,7 @@ Text 2 Image
 		context.textBaseline = 'top';
 		canvas.style.display = 'none';
 		console.log(txt.length);
+		
 		function fillTxt(text) {
 			while (text.length > len) {
 				var txtLine = text.substring(0, len);
