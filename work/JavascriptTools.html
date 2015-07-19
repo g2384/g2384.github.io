@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -297,9 +298,20 @@ function AlignText() {
 	var new_a = new Array(a.length);
    console.log(reg)
     var k = 0;
+	var x = new Array(l+1);
+	for (var i = 0; i < l+1; i++) {
+		x[i] = new Array(a.length+1);
+	}
 	for (var j = 0; j < l; j++) {
 		for (var i = 0; i < a.length; i++) {
-			b = a[i].regexIndexOf(reg[j]);
+			b = a[i].regexIndexOf(reg[j],x[j][i]);
+			x[j+1][i]=b;
+			/*var kkk='';
+			for (var u = 0; u < l+1; u++) {
+				kkk+=x[u].join(';');
+				kkk+='   '
+			}
+			console.log(kkk)*/
 			if (reg[j].toString().indexOf("(^|[^a-zA-Z0-9_])")>0) {
 				b+=1;
 			}
@@ -311,11 +323,11 @@ function AlignText() {
 		for (var i = 0; i < a.length; i++) {
 		if(ind[k]>=0){
 			new_a[i] = a[i].substr(0, ind[k]);
-			console.log(new_a[i], "start")
+			//console.log(new_a[i], "start")
 			new_a[i] += (Array(max[j] - ind[k] + 1).join(" ") + a[i].substr(ind[k], p[j].length));
-			console.log(new_a[i], j)
+			//console.log(new_a[i], j)
 			new_a[i] += a[i].substring(ind[k] + p[j].length, a[i].length);
-			console.log(new_a[i], j)
+			//console.log(new_a[i], j)
 			k++;
 			a[i]=new_a[i];
 			}
@@ -330,7 +342,7 @@ case 1:r.value="1	a\n2	b";
 break;
 case 2:r.value="No.+0+100+=";
 break;
-case 3:r.value="Align = ;\na = 1;\nVeryLoooooooongName = 0;\nVeryLongNumber = 1234567890;"
+case 3:r.value="Align = ; = ;\na = 1; b = 2;\nVeryLoooooooongName = 0; second = 1;\nVeryLongNumber = 1234567890; c = 10 ;"
 break;
 }
 }
