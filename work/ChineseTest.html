@@ -1,0 +1,209 @@
+<html>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>!function(n){"use strict";function t(n,t){var r=(65535&n)+(65535&t),e=(n>>16)+(t>>16)+(r>>16);return e<<16|65535&r}function r(n,t){return n<<t|n>>>32-t}function e(n,e,u,o,c,f){return t(r(t(t(e,n),t(o,f)),c),u)}function u(n,t,r,u,o,c,f){return e(t&r|~t&u,n,t,o,c,f)}function o(n,t,r,u,o,c,f){return e(t&u|r&~u,n,t,o,c,f)}function c(n,t,r,u,o,c,f){return e(t^r^u,n,t,o,c,f)}function f(n,t,r,u,o,c,f){return e(r^(t|~u),n,t,o,c,f)}function i(n,r){n[r>>5]|=128<<r%32,n[(r+64>>>9<<4)+14]=r;var e,i,a,h,d,g=1732584193,l=-271733879,v=-1732584194,C=271733878;for(e=0;e<n.length;e+=16)i=g,a=l,h=v,d=C,g=u(g,l,v,C,n[e],7,-680876936),C=u(C,g,l,v,n[e+1],12,-389564586),v=u(v,C,g,l,n[e+2],17,606105819),l=u(l,v,C,g,n[e+3],22,-1044525330),g=u(g,l,v,C,n[e+4],7,-176418897),C=u(C,g,l,v,n[e+5],12,1200080426),v=u(v,C,g,l,n[e+6],17,-1473231341),l=u(l,v,C,g,n[e+7],22,-45705983),g=u(g,l,v,C,n[e+8],7,1770035416),C=u(C,g,l,v,n[e+9],12,-1958414417),v=u(v,C,g,l,n[e+10],17,-42063),l=u(l,v,C,g,n[e+11],22,-1990404162),g=u(g,l,v,C,n[e+12],7,1804603682),C=u(C,g,l,v,n[e+13],12,-40341101),v=u(v,C,g,l,n[e+14],17,-1502002290),l=u(l,v,C,g,n[e+15],22,1236535329),g=o(g,l,v,C,n[e+1],5,-165796510),C=o(C,g,l,v,n[e+6],9,-1069501632),v=o(v,C,g,l,n[e+11],14,643717713),l=o(l,v,C,g,n[e],20,-373897302),g=o(g,l,v,C,n[e+5],5,-701558691),C=o(C,g,l,v,n[e+10],9,38016083),v=o(v,C,g,l,n[e+15],14,-660478335),l=o(l,v,C,g,n[e+4],20,-405537848),g=o(g,l,v,C,n[e+9],5,568446438),C=o(C,g,l,v,n[e+14],9,-1019803690),v=o(v,C,g,l,n[e+3],14,-187363961),l=o(l,v,C,g,n[e+8],20,1163531501),g=o(g,l,v,C,n[e+13],5,-1444681467),C=o(C,g,l,v,n[e+2],9,-51403784),v=o(v,C,g,l,n[e+7],14,1735328473),l=o(l,v,C,g,n[e+12],20,-1926607734),g=c(g,l,v,C,n[e+5],4,-378558),C=c(C,g,l,v,n[e+8],11,-2022574463),v=c(v,C,g,l,n[e+11],16,1839030562),l=c(l,v,C,g,n[e+14],23,-35309556),g=c(g,l,v,C,n[e+1],4,-1530992060),C=c(C,g,l,v,n[e+4],11,1272893353),v=c(v,C,g,l,n[e+7],16,-155497632),l=c(l,v,C,g,n[e+10],23,-1094730640),g=c(g,l,v,C,n[e+13],4,681279174),C=c(C,g,l,v,n[e],11,-358537222),v=c(v,C,g,l,n[e+3],16,-722521979),l=c(l,v,C,g,n[e+6],23,76029189),g=c(g,l,v,C,n[e+9],4,-640364487),C=c(C,g,l,v,n[e+12],11,-421815835),v=c(v,C,g,l,n[e+15],16,530742520),l=c(l,v,C,g,n[e+2],23,-995338651),g=f(g,l,v,C,n[e],6,-198630844),C=f(C,g,l,v,n[e+7],10,1126891415),v=f(v,C,g,l,n[e+14],15,-1416354905),l=f(l,v,C,g,n[e+5],21,-57434055),g=f(g,l,v,C,n[e+12],6,1700485571),C=f(C,g,l,v,n[e+3],10,-1894986606),v=f(v,C,g,l,n[e+10],15,-1051523),l=f(l,v,C,g,n[e+1],21,-2054922799),g=f(g,l,v,C,n[e+8],6,1873313359),C=f(C,g,l,v,n[e+15],10,-30611744),v=f(v,C,g,l,n[e+6],15,-1560198380),l=f(l,v,C,g,n[e+13],21,1309151649),g=f(g,l,v,C,n[e+4],6,-145523070),C=f(C,g,l,v,n[e+11],10,-1120210379),v=f(v,C,g,l,n[e+2],15,718787259),l=f(l,v,C,g,n[e+9],21,-343485551),g=t(g,i),l=t(l,a),v=t(v,h),C=t(C,d);return[g,l,v,C]}function a(n){var t,r="";for(t=0;t<32*n.length;t+=8)r+=String.fromCharCode(n[t>>5]>>>t%32&255);return r}function h(n){var t,r=[];for(r[(n.length>>2)-1]=void 0,t=0;t<r.length;t+=1)r[t]=0;for(t=0;t<8*n.length;t+=8)r[t>>5]|=(255&n.charCodeAt(t/8))<<t%32;return r}function d(n){return a(i(h(n),8*n.length))}function g(n,t){var r,e,u=h(n),o=[],c=[];for(o[15]=c[15]=void 0,u.length>16&&(u=i(u,8*n.length)),r=0;16>r;r+=1)o[r]=909522486^u[r],c[r]=1549556828^u[r];return e=i(o.concat(h(t)),512+8*t.length),a(i(c.concat(e),640))}function l(n){var t,r,e="0123456789abcdef",u="";for(r=0;r<n.length;r+=1)t=n.charCodeAt(r),u+=e.charAt(t>>>4&15)+e.charAt(15&t);return u}function v(n){return unescape(encodeURIComponent(n))}function C(n){return d(v(n))}function m(n){return l(C(n))}function s(n,t){return g(v(n),v(t))}function A(n,t){return l(s(n,t))}function p(n,t,r){return t?r?s(t,n):A(t,n):r?C(n):m(n)}"function"==typeof define&&define.amd?define(function(){return p}):n.md5=p}(this);</script>
+<meta charset="UTF-8"><style>body{max-width:600px;margin:0 auto;}#c{font-size:50px;width:100%;text-align:center}.ans{cursor:pointer;text-align:center;font-size:25px;width:40%;display:inline-block;border:2px solid #e7ecf0;padding:6px 0;margin:3px 3px;}
+.ans:hover{background-color:#eee;}
+.wrong{background-color:#FFB3B3;border:2px solid #FF0000;}
+.wrong:hover{background-color:#FFB3B3;border:2px solid #FF0000;}
+.right{background-color:#C5FFC8;border:2px solid #06FF00;}
+.right:hover{background-color:#C5FFC8;border:2px solid #06FF00;}
+.consolas{font-family:'Consolas';font-size:20px;text-align:left;}
+#p{height:20px;font-size:18px;background-color:#eee;display:block;}
+.sel{cursor:pointer;text-align:left;font-size:25px;width:100%;display:inline-block;border:2px solid #e7ecf0;padding:6px 0;margin:3px 3px;}
+</style>
+<body>
+<div id='p'></div>
+<div id='c'></div>
+<div id='r'></div>
+</body>
+<script>
+a = document.getElementById('c');
+b = document.getElementById('r');
+progress = document.getElementById('p');
+var count = 0;
+var mistake = 0;
+var arr = [], pinyin = [], arr_e=[];
+
+book6_char = ["附","显","格","宁","艺","术","复","壮","男","堂","钟","庄","严","随","局","寄","好","翻","识","了","欣","赏","育","增","姑","套","庆","难","贵","吸","引","神","玻","璃","担","演","尾","巴","拍","令","态","肚","背","与","埋","金","虽","无","养","送","肯","夫","挖","遍","产","比","粮","食","换","勤","私","愿","必","须","拆","巨","周","围","牌","禁","止","内","角","洞","钻","补","屋","及","修","邻","居","劝","丢","未","拔","助","盼","秧","忽","半","倒","毒","龙","怕","妻","女","志","除","剪","克","困","胜","吐","俩","透","消","躺","整","另","楚","而","且","倍","似","乎","继","续","研","究","军","览","帝","朝","彩","还","重","炉","紫","烟","遥","银","篇","精","祖","政","治","却","亡","初","投","悲","痛","划","伤","米","喂","端","庭","少","乐","受","业","毕","战","领","忘","尊","敬","束","贡","献","批","疼","创","侵","曲","特","灵","琴","省","愤","义","勇","鼓","抗","略","者","共"];
+book1_2_word_c=["一点儿","下午","东西","中华","中文","为什么","今天","今年","以后","你们","光明","公园","再见","冬天","前面","动物","动物园","古老","可是","右面","同学","名字","后门","后面","告诉","哥哥","哪里","喜欢","夏天","大人","大家","大门","太阳","奶奶","好看","妈妈","姐姐","学习","学校","学生","它们","对不起","工作","左面","开学","开心","开花","快乐","我们","房间","收拾","放假","放学","教室","新年","方向","早上","明白","星期","昨天","月亮","朋友","本子","校车","母亲","水果","汉字","汉语","没关系","海洋","游泳","热闹","爷爷","爸爸","牛奶","玩具","生日","种子","老师","花园","觉得","谢谢","身体","这么","面包","高兴"];
+book1_2_word_p=["yī diǎn er","xià wǔ","dōng xī","zhōng huá","zhōng wén","wèi shé me","jīn tiān","jīn nián","yǐ hòu","nǐ men","guāng míng","gōng yuán","zài jiàn","dōng tiān","qián miàn","dòng wù","dòng wù yuán","gǔ lǎo","kě shì","yòu miàn","tóng xué","míng zì","hòu mén","hòu miàn","gào sù","gē gē","nǎ lǐ","xǐ huān","xià tiān","dà rén","dà jiā","dà mén","tài yáng","nǎi nai","hǎo kàn","mā mā","jiě jiě","xué xí","xué xiào","xué shēng","tā men","duì bù qǐ","gōng zuò","zuǒ miàn","kāi xué","kāi xīn","kāi huā","kuài lè","wǒ men","fáng jiān","shōu shí","fàng jià","fàng xué","jiào shì","xīn nián","fāng xiàng","zǎo shang","míng bái","xīng qí","zuó tiān","yuè liàng","péng yǒu","běn zi","xiào chē","mǔ qīn","shuǐ guǒ","hàn zì","hàn yǔ","méi guān xì","hǎi yáng","yóu yǒng","rè nào","yé yé","bà ba","niú nǎi","wán jù","shēng rì","zhǒng zǐ","lǎo shī","huā yuán","jué dé","xiè xiè","shēn tǐ","zhè me","miàn bāo","gāo xìng"];
+book1_2_word_e=["A little","in the afternoon","Thing","China","Chinese language","Why","Today","this year","Later","you guys","Bright","Park","Goodbye","Winter","Front","Animal","Zoo","Old","But","right side","Schoolmate, classmate","name","back door","Behind","Tell","Brother","Where","Love, like","Summer","grown-ups","Everyone","Door","Sun","Grandmother","good-looking, nice","Mom","Sister","Learn","School","Student","They","I am sorry","jobs","Left","School","Happy","Flowering","Happy","We","Room","Pack","Holiday","classes are over","Classroom","new Year","Direction","Morning","Understand","Week","Yesterday","Moon","Friend","Book","school bus","Mother","Fruit","Chinese character","Chinese","It's ok","Ocean","Swim","Lively","Grandfather","Father","milk","Toy","Birthday","Seed","Teacher","Garden","Feel","Thank you","Body","So","Bread","Happy"];
+lvl2_char = ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "百", "了", "到", "是", "的", "儿", "个", "好", "和", "家", "见", "开", "看", "白", "蓝", "黄", "黑", "红", "绿", "爸", "妈", "奶", "门", "们", "面", "年", "人", "认", "水", "火", "天", "地", "田", "禾", "山", "石", "日", "月", "云", "雨", "雪", "电", "风", "太", "阳", "上", "下", "大", "小", "多", "少", "左", "右", "出", "入", "去", "来", "高", "前", "后", "坐", "立", "老", "师", "同", "学", "生", "习", "说", "手", "体", "口", "头", "身", "目", "耳", "土", "中", "外", "文", "我", "你", "他", "东", "西", "南", "北", "方", "春", "夏", "秋", "冬", "季", "向", "校", "新", "兴", "爷", "衣", "有", "鱼", "羊", "虫", "鸟", "牛", "马", "草", "花", "木", "园", "早", "这", "真", "祝", "走", "足", "车", "穿", "戴", "热", "闹", "爱", "帽"];
+book6_char_p = ["fù","xiǎn","gé","níng","yì","shù","fù","zhuàng","nán","táng","zhōng","zhuāng","yán","suí","jú","jì","hǎo","fān","shí","le","xīn","shǎng","yù","zēng","gū","tào","qìng","nán","guì","xī","yǐn","shén","bō","lí","dān","yǎn","wěi","bā","pāi","lìng","tài","dù","bèi","yǔ","mái","jīn","suī","wú","yǎng","sòng","kěn","fū","wā","biàn","chǎn","bǐ","liáng","shí","huàn","qín","sī","yuàn","bì","xū","chāi","jù","zhōu","wéi","pái","jìn","zhǐ","nèi","jiǎo","dòng","zuān","bǔ","wū","jí","xiū","lín","jū","quàn","diū","wèi","bá","zhù","pàn","yāng","hū","bàn","dào","dú","lóng","pà","qī","nǚ","zhì","chú","jiǎn","kè","kùn","shèng","tǔ","liǎ","tòu","xiāo","tǎng","zhěng","lìng","chǔ","ér","qiě","bèi","shì","hū","jì","xù","yán","jiū","jūn","lǎn","dì","cháo","cǎi","hái","zhòng","lú","zǐ","yān","yáo","yín","piān","jīng","zǔ","zhèng","zhì","què","wáng","chū","tóu","bēi","tòng","huà","shāng","mǐ","wèi","duān","tíng","shǎo","lè","shòu","yè","bì","zhàn","lǐng","wàng","zūn","jìng","shù","gòng","xiàn","pī","téng","chuàng","qīn","qū","tè","líng","qín","shěng","fèn","yì","yǒng","gǔ","kàng","è","zhě","gòng"];
+lvl2_char_p = ["yī", "èr", "sān", "sì", "wǔ", "liù", "qī", "bā", "jiǔ", "shí", "bǎi", "le", "dào", "shì", "de", "er", "gè", "hǎo", "hé", "jiā", "jiàn", "kāi", "kàn", "bái", "lán", "huáng", "hēi", "hóng", "lǜ", "bà", "mā", "nǎi", "mén", "men", "miàn", "nián", "rén", "rèn", "shuǐ", "huǒ", "tiān", "de", "tián", "hé", "shān", "shí", "rì", "yuè", "yún", "yǔ", "xuě", "diàn", "fēng", "tài", "yáng", "shàng", "xià", "dà", "xiǎo", "duō", "shǎo", "zuǒ", "yòu", "chū", "rù", "qù", "lái", "gāo", "qián", "hòu", "zuò", "lì", "lǎo", "shī", "tóng", "xué", "shēng", "xí", "shuō", "shǒu", "tǐ", "kǒu", "tóu", "shēn", "mù", "ěr", "tǔ", "zhōng", "wài", "wén", "wǒ", "nǐ", "tā", "dōng", "xī", "nán", "běi", "fāng", "chūn", "xià", "qiū", "dōng", "jì", "xiàng", "xiào", "xīn", "xìng", "yé", "yī", "yǒu", "yú", "yáng", "chóng", "niǎo", "niú", "mǎ", "cǎo", "huā", "mù", "yuán", "zǎo", "zhè", "zhēn", "zhù", "zǒu", "zú", "chē", "chuān", "dài", "rè", "nào", "ài", "mào"];
+pinyincopy = ["ā","","āi","ái","ǎi","ài","ān","ǎn","àn","āng","áng","àng","āo","áo","ǎo","ào","bā","bá","bǎ","bà","bái","bǎi","bài","bān","bǎn","bàn","bāng","bǎng","bàng","bāo","báo","bǎo","bào","bēi","běi","bèi","bēn","běn","bèn","bēng","béng","bèng","bī","bí","bǐ","bì","biān","biǎn","biàn","biāo","biǎo","biē","bié","biě","biè","bīn","bìn","bīng","bǐng","bìng","bō","bó","bo","bǔ","bù","cā","cāi","cái","cǎi","cài","cān","cán","cǎn","càn","cāng","cáng","cāo","cáo","cǎo","cè","céng","cèng","cī","cí","cǐ","cì","cōng","cóng","còu","cū","cù","cuān","cuàn","cuī","cuì","cūn","cún","cùn","cuō","cuò","chā","chá","chà","chāi","chái","chān","chán","chǎn","chàn","chāng","cháng","chǎng","chàng","chāo","cháo","chǎo","chē","chě","chè","chén","chèn","chēng","chéng","chěng","chèng","chī","chí","chǐ","chì","chōng","chóng","chǒng","chòng","chōu","chóu","chǒu","chòu","chū","chú","chǔ","chù","chuān","chuán","chuǎn","chuàn","chuāng","chuáng","chuǎng","chuàng","chuī","chuí","chūn","chún","chǔn","chuō","dā","dá","dǎ","dà","dāi","dǎi","dài","dān","dǎn","dàn","dāng","dǎng","dàng","dāo","dǎo","dào","de","dé","dēng","děng","dèng","dī","dí","dǐ","dì","diān","diǎn","diàn","diāo","diào","diē","dié","dīng","dǐng","dìng","diū","dōng","dǒng","dòng","dōu","dǒu","dòu","dū","dú","dǔ","dù","duān","duǎn","duàn","duī","duì","dūn","dùn","duō","duó","duǒ","duò","ē","é","è","ēn","ér","ěr","èr","fā","fá","fǎ","fà","fān","fán","fǎn","fàn","fāng","fáng","fǎng","fàng","fēi","féi","fěi","fèi","fēn","fén","fěn","fèn","fēng","féng","fěng","fèng","fó","fǒu","fū","fú","fǔ","fù","gāi","gǎi","gài","gān","gǎn","gàn","gāng","gǎng","gàng","gāo","gǎo","gào","gē","gé","gè","gěi","gēn","gēng","gěng","gèng","gōng","gǒng","gòng","gōu","gǒu","gòu","gū","gǔ","gù","guā","guǎ","guà","guāi","guǎi","guài","guān","guǎn","guàn","guāng","guǎng","guàng","guī","guǐ","guì","gǔn","gùn","guō","guó","guǒ","guò","hā","há","hái","hǎi","hài","hān","hán","hǎn","hàn","hāng","háng","háo","hǎo","hào","hē","hé","hè","hēi","hén","hěn","hèn","hēng","héng","hōng","hóng","hǒng","hóu","hǒu","hòu","hū","hú","hǔ","hù","huā","huá","huà","huái","huài","huān","huán","huǎn","huàn","huāng","huáng","huǎng","huàng","huī","huí","huǐ","huì","hūn","hún","hùn","huō","huó","huǒ","huò","jī","jí","jǐ","jì","jiā","jiá","jiǎ","jià","jiān","jiǎn","jiàn","jiāng","jiǎng","jiàng","jiāo","jiáo","jiǎo","jiào","jiē","jié","jiě","jiè","jīn","jǐn","jìn","jīng","jǐng","jìng","jiǒng","jiū","jiǔ","jiù","jū","jú","jǔ","jù","juān","juǎn","juàn","juē","jué","juè","jūn","jùn","kā","kǎ","kāi","kǎi","kān","kǎn","kàn","kāng","káng","kàng","kǎo","kào","kē","ké","kě","kè","kěn","kēng","kōng","kǒng","kòng","kōu","kǒu","kòu","kū","kǔ","kù","kuā","kuǎ","kuà","kuài","kuān","kuǎn","kuāng","kuáng","kuàng","kuī","kuí","kuì","kūn","kǔn","kùn","kuò","lā","là","lái","lài","lán","lǎn","làn","láng","lǎng","làng","lāo","láo","lǎo","lào","lè","le","léi","lěi","lèi","léng","lěng","lèng","lí","lǐ","lì","lián","liǎn","liàn","liáng","liǎng","liàng","liáo","liǎo","liào","liè","līn","lín","lǐn","lìn","líng","lǐng","lìng","liū","liú","liǔ","liù","lóng","lǒng","lóu","lǒu","lòu","lū","lú","lǔ","lù","luán","luǎn","luàn","lūn","lún","lùn","luó","luǒ","luò","lǘ","lǚ","lǜ","lüè","mā","má","mǎ","mà","ma","mái","mǎi","mài","mán","mǎn","màn","máng","mǎng","māo","máo","mǎo","mào","me","méi","měi","mèi","mén","mèn","men","méng","měng","mèng","mī","mí","mǐ","mì","mián","miǎn","miàn","miāo","miáo","miǎo","miào","miè","mín","mǐn","míng","mìng","miù","mō","mó","mǒ","mò","móu","mǒu","mǔ","mù","ná","nǎ","nà","nǎi","nài","nān","nán","nàn","nāng","náng","náo","nǎo","nào","ne","něi","nèi","nèn","néng","nī","ní","nǐ","nì","niān","nián","niǎn","niàn","niáng","niàng","niǎo","niào","niē","niè","nín","níng","nǐng","nìng","niú","niǔ","niù","nóng","nòng","nú","nǔ","nù","nuǎn","nüè","nuó","nuò","nǚ","o","ōu","ǒu","òu","pā","pá","pà","pāi","pái","pài","pān","pán","pàn","pāng","páng","pǎng","pàng","pāo","páo","pǎo","pào","pēi","péi","pèi","pēn","pén","pēng","péng","pěng","pèng","pī","pí","pǐ","pì","piān","pián","piàn","piāo","piáo","piǎo","piào","piē","pīn","pín","pǐn","pìn","pīng","píng","pō","pó","pò","pōu","pū","pú","pǔ","pù","qī","qí","qǐ","qì","qiā","qià","qiān","qián","qiǎn","qiàn","qiāng","qiáng","qiǎng","qiàng","qiāo","qiáo","qiǎo","qiào","qiē","qié","qiě","qiè","qīn","qín","qǐn","qìn","qīng","qíng","qǐng","qìng","qióng","qiū","qiú","qū","qú","qǔ","qù","quān","quán","quǎn","quàn","quē","qué","què","qún","rán","rǎn","ráng","rǎng","ràng","ráo","rǎo","rào","rě","rè","rén","rěn","rèn","rēng","réng","rì","róng","róu","ròu","rú","rǔ","rù","ruǎn","ruǐ","ruì","rùn","ruò","sā","sǎ","sà","sāi","sài","sān","sǎn","sàn","sāng","sǎng","sàng","sāo","sǎo","sè","sēn","sēng","sī","sǐ","sì","sōng","sǒng","sòng","sōu","sǒu","sòu","sū","sú","sù","suān","suàn","suī","suí","suì","sūn","sǔn","suō","suǒ","shā","shá","shǎ","shà","shāi","shài","shān","shǎn","shàn","shāng","shǎng","shàng","shāo","sháo","shǎo","shào","shē","shé","shě","shè","shēn","shén","shěn","shèn","shēng","shéng","shěng","shèng","shī","shí","shǐ","shì","shōu","shǒu","shòu","shū","shú","shǔ","shù","shuā","shuǎ","shuāi","shuǎi","shuài","shuān","shuāng","shuǎng","shuí","shuǐ","shuì","shǔn","shùn","shuō","shuò","tā","tǎ","tà","tāi","tái","tài","tān","tán","tǎn","tàn","tāng","táng","tǎng","tàng","tāo","táo","tǎo","tào","tè","téng","tī","tí","tǐ","tì","tiān","tián","tiǎn","tiāo","tiáo","tiào","tiē","tiě","tīng","tíng","tǐng","tōng","tóng","tǒng","tòng","tōu","tóu","tòu","tū","tú","tǔ","tù","tuān","tuán","tuī","tuí","tuǐ","tuì","tūn","tún","tuō","tuó","tuǒ","tuò","wā","wá","wǎ","wà","wāi","wǎi","wài","wān","wán","wǎn","wàn","wāng","wáng","wǎng","wàng","wēi","wéi","wěi","wèi","wēn","wén","wěn","wèn","wēng","wō","wǒ","wò","wū","wú","wǔ","wù","xī","xí","xǐ","xì","xiā","xiá","xià","xiān","xián","xiǎn","xiàn","xiāng","xiáng","xiǎng","xiàng","xiāo","xiáo","xiǎo","xiào","xiē","xié","xiě","xiè","xīn","xìn","xīng","xíng","xǐng","xìng","xiōng","xióng","xiū","xiǔ","xiù","xū","xú","xǔ","xù","xuān","xuán","xuǎn","xuàn","xuē","xué","xuě","xuè","xūn","xún","xùn","yā","yá","yǎ","yà","yān","yán","yǎn","yàn","yāng","yáng","yǎng","yàng","yāo","yáo","yǎo","yào","yē","yé","yě","yè","yī","yí","yǐ","yì","yīn","yín","yǐn","yìn","yīng","yíng","yǐng","yìng","yo","yōng","yǒng","yòng","yōu","yóu","yǒu","yòu","yū","yú","yǔ","yù","yuān","yuán","yuǎn","yuàn","yuē","yuè","yūn","yún","yǔn","yùn","zā","zá","zǎ","zāi","zǎi","zài","zán","zǎn","zàn","zāng","zàng","zāo","záo","zǎo","zào","zé","zéi","zěn","zēng","zèng","zī","zǐ","zì","zōng","zǒng","zòng","zōu","zǒu","zòu","zū","zú","zǔ","zuān","zuǎn","zuàn","zuǐ","zuì","zūn","zuō","zuó","zuǒ","zuò","zhā","zhá","zhǎ","zhà","zhāi","zhái","zhǎi","zhài","zhān","zhǎn","zhàn","zhāng","zhǎng","zhàng","zhāo","zhǎo","zhào","zhē","zhé","zhě","zhè","zhe","zhēn","zhěn","zhèn","zhēng","zhěng","zhèng","zhī","zhí","zhǐ","zhì","zhōng","zhǒng","zhòng","zhōu","zhóu","zhǒu","zhòu","zhū","zhú","zhǔ","zhù","zhuā","zhǎo","zhuài","zhuān","zhuǎn","zhuàn","zhuāng","zhuàng","zhuī","zhuì","zhūn","zhǔn","zhuō","zhuó"];
+var num=parseInt(Math.random()*arr.length);
+
+
+function shuffle(array) {
+    var currentIndex = array.length,
+        temporaryValue, randomIndex;
+
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
+
+        // Pick a remaining element...
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+
+        // And swap it with the current element.
+        temporaryValue = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temporaryValue;
+    }
+
+    return array;
+}
+var pinyinlength = pinyincopy.length;
+var test_num = 100;
+var arr_len = arr.length;
+
+function p(n) {
+	if (arr_e.length==0){
+    var s = '',
+        str = '';
+    var ans = Array(4);
+    var number = 0;
+    ans[0] = '<span class="ans" id="ans0" onclick="ans_click(0)">' + pinyin[n] + '</span>';
+    number = n;
+    str = ' ' + pinyin[n] + ' ';
+    for (i = 1; i < 4; i++) {
+        number = parseInt(Math.random() * pinyinlength);
+        while (str.indexOf(' ' + pinyincopy[number] + ' ') >= 0) {
+            number = parseInt(Math.random() * pinyinlength);
+        }
+        str += ' ' + pinyincopy[number] + ' ';
+        ans[i] = '<span class="ans" id="ans' + i.toString() + '" onclick="ans_click(' + i.toString() + ')">' + pinyincopy[number] + '</span>';
+    }
+    ans = shuffle(ans)
+    return ans.join('\n')
+	}else{
+		var l = arr[n].length,s='',
+		str = '';
+		var ans = Array(4);
+		var p = pinyin[n].split(' ');
+		ans[0] = '<span class="ans" id="ans0" onclick="ans_click(0)">' + pinyin[n] + '</span>';
+		str = ' ' + pinyin[n] + ' ';
+		for (i = 1; i < 4; i++) {
+			s='';
+			for (var k=0;k<l;k++){
+				if(parseInt(Math.random()*2)==0){
+				s+=pinyincopy[parseInt(Math.random() * pinyinlength)]+' ';
+				}else{
+					s+=p[k]+' ';
+				}
+			}
+			s=s.substring(0,s.length-1);
+			while (str.indexOf(' ' + s + ' ') >= 0) {
+				s='';
+				for (var k=0;k<l;k++){
+					s+=pinyincopy[parseInt(Math.random() * pinyinlength)]+' ';
+				}
+				s=s.substring(0,s.length-1);
+			}
+			str += ' ' + s + ' ';
+			ans[i] = '<span class="ans" id="ans' + i.toString() + '" onclick="ans_click(' + i.toString() + ')">' + s + '</span>';
+		}
+		ans = shuffle(ans)
+		return ans.join('\n')
+	}
+}
+var date = new Date();
+var d = date.getFullYear() + '' + (date.getMonth() + 1) + '' + date.getDate();
+function first(n){
+    if(arr_e.length>0){
+		a.innerHTML = arr[n]+'<br>'+arr_e[n];
+	}else{
+		a.innerHTML = arr[n];
+	}
+    b.innerHTML = p(n);
+    progress.innerHTML = count.toString() + '/' + test_num;
+}
+function set(str){
+	switch(str){
+		case 'book1_2_word':
+			arr=book1_2_word_c;
+			arr_e=book1_2_word_e;
+			pinyin=book1_2_word_p;
+			n=parseInt(Math.random() * arr.length);
+			
+			first(n);
+			break;
+		case 'book6_char':
+			arr=book6_char;
+			pinyin=book6_char_p;
+			n=parseInt(Math.random() * arr.length);
+			first(n);
+			break;
+		case 'lvl2_char':
+			arr=lvl2_char;
+			pinyin=lvl2_char_p;
+			n=parseInt(Math.random() * arr.length);
+			first(n);
+			break;
+	}
+	if(test_num>arr.length){
+				test_num=arr.length;
+	}
+}
+if (localStorage['ChineseTest'] != d) {
+    a.innerHTML = "Choose one<br><span class='sel' onclick='set(\"book1_2_word\")'>Book 1 & 2 words ("+book1_2_word_c.length+")</span><br><span class='sel' onclick='set(\"book6_char\")'>Book 6 characters ("+book6_char.length+")</span><br><span class='sel' onclick='set(\"lvl2_char\")'>HSK lvl 2 characters ("+lvl2_char.length+")</span>";
+} else {
+    a.innerHTML = "<span class='consolas'>Conguatulations!<br>You have done today's exercise.<br><br>Today's Key:<br>" + localStorage['TodayKey'] + "</span>";
+	b.innerHTML = "<br>Start a new one<br><span class='sel' onclick='set(\"book1_2_word\")'>Book 1 & 2 words ("+book1_2_word_c.length+")</span><br><span class='sel' onclick='set(\"book6_char\")'>Book 6 characters ("+book6_char.length+")</span><br><span class='sel' onclick='set(\"lvl2_char\")'>HSK lvl 2 characters ("+lvl2_char.length+")</span>";
+}
+
+function next(n) {
+	if(arr_e.length>0){
+		a.innerHTML = arr[n]+'<br>'+arr_e[n];
+	}else{
+		a.innerHTML = arr[n];
+	}
+    b.innerHTML = p(n);
+}
+
+function fin() {
+    var s1 = md5(d);
+    console.log(s1)
+    var s2 = mistake < 10 ? ('0' + mistake).toString() : mistake.toString()
+    var s3 = s1.substr(0, 4) + s2 + s1.substr(4, 1);
+    a.innerHTML = "<span class='consolas'>Conguatulations!<br>You have done today's exercise.<br><br>Today's Key:<br>" + s3 + "</span>";
+    a.style.textAlign = 'left';
+    a.style.fontSize = '20px';
+    b.innerHTML = '';
+    localStorage['ChineseTest'] = d;
+    localStorage['TodayKey'] = s3;
+}
+var timeoutID;
+
+function ans_click(n) {
+    c = document.getElementById('ans' + n.toString());
+    if (n == 0) {
+        c.className += ' right';
+        arr.splice(num, 1)
+		if(arr_e.length>0){
+			arr_e.splice(num, 1)
+			
+		}
+        pinyin.splice(num, 1)
+        count++;
+        progress.innerHTML = count.toString() + '/' + test_num
+        if (count<test_num) {
+            num = parseInt(Math.random() * arr.length);
+            timeoutID = window.setTimeout(function() {
+                next(num)
+            }, 500);
+        } else {
+            timeoutID = window.setTimeout(function() {
+                fin()
+            }, 500);
+
+        }
+    } else {
+        mistake++;
+        c.className += ' wrong';
+    }
+}
+</script>
+
+</html>
