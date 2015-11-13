@@ -1,0 +1,79 @@
+<html>
+<style>.i {width:50px;}
+body{font-size:16px;}
+table{border: 1px solid #ccc;border-spacing: 0;}
+td,th{border: 1px solid #d0d0d0;}
+.quantity{color:#dd4b39;border-right: 0px;border-bottom: 0px;background-color:#DBFDFF;}
+.profit{color:#444;border-left: 0px;border-top: 0px;background-color:#EFFEFF;}
+.a_p{color:#4285f4;border-bottom: 0px;border-left: 0px;background-color:#FFE0EA;}
+.b_p{color:#73AD21;border-top: 0px;border-right: 0px;background-color:#F0FFDB;}
+.bold{font-weight: bold;}
+</style>
+<script>
+function roundto(x, n){
+var k=Math.pow(10,n)
+return Math.round(x * k) / k;
+}
+function gen(){
+a_p=Number(document.getElementById('a_p').value);
+a_r1=Number(document.getElementById('a_r1').value);
+a_r2=Number(document.getElementById('a_r2').value);
+a_u=Number(document.getElementById('a_u').value);
+b_p=Number(document.getElementById('b_p').value);
+b_r1=Number(document.getElementById('b_r1').value);
+b_r2=Number(document.getElementById('b_r2').value);
+b_u=Number(document.getElementById('b_u').value);
+c_x=Number(document.getElementById('c_x').value);
+c_c=Number(document.getElementById('c_c').value);
+n1=(a_r2-a_r1)/a_u;
+n2=(b_r2-b_r1)/b_u;
+s1='';
+s='<tr><th> </th>';
+for(i=0;i<=n1;i++){
+s+='<th colspan="2">'+(a_r1+a_u*i).toString()+"</th>";
+}
+s+='</tr>';
+for(k=0;k<=n2;k++){
+s1='<tr>';
+s1+='<td rowspan="2" class="bold">'+(b_r1+b_u*k).toString()+'</td>'
+for(i=0;i<=n1;i++){
+	a_quantity=a_r1+a_u*i;
+	b_quantity=b_r1+b_u*k;
+	q=a_quantity+b_quantity;
+	price=c_c+c_x*q;
+	a_profit=(price-a_p)*a_quantity
+	b_profit=(price-b_p)*b_quantity
+s1+='<td class="quantity">'+roundto(q,2).toString()+'</td>';
+s1+='<td class="a_p">'+roundto(a_profit,2).toString()+"</td>";
+}
+s1+='</tr>';
+
+s1+='<tr>';
+for(i=0;i<=n1;i++){
+	a_quantity=a_r1+a_u*i;
+	b_quantity=b_r1+b_u*k;
+	q=a_quantity+b_quantity;
+	price=c_c+c_x*q;
+	a_profit=(price-a_p)*a_quantity
+	b_profit=(price-b_p)*b_quantity
+s1+='<td class="b_p">'+roundto(b_profit,2).toString()+'</td>';
+s1+='<td class="profit">'+roundto(price,2).toString()+"</td>";
+}
+s1+='</tr>';
+
+
+s+=s1;
+}
+document.getElementById('a').innerHTML="<table><tbody>"+s+"</tbody></table>";
+}
+</script>
+Unit price of A: <input type="text" id='a_p' class='i' value='36'/><br>
+-> Range of A: <input type="text" class='i' id='a_r1' value='20'/> - <input type="text" class='i' id='a_r2' value='30'/><br>
+-> Resolution of A: <input type="text" class='i' id='a_u' value='2'/><br>
+Unit price of B: <input type="text" class='i' id='b_p' value='31'/><br>
+-> Range of B: <input type="text" class='i' id='b_r1' value='26'/> - <input type="text" class='i' id='b_r2' value='36'/><br>
+-> Resolution of B: <input type="text" class='i' id='b_u' value='2'/><br>
+Equation of demand curve: <input type="text" class='i' id='c_x' value='-1'/> x + <input type="text" class='i' id='c_c' value='120'/><br>
+<input type="button" onclick="gen();" value="Generate"/><br><br>
+<div id='a'></div>
+</html>
