@@ -10,8 +10,9 @@
 .consolas{font-family:'Consolas';font-size:20px;text-align:left;}
 #p{height:20px;font-size:18px;background-color:#eee;display:block;}
 .sel{cursor:pointer;text-align:left;font-size:25px;width:100%;display:inline-block;border:2px solid #e7ecf0;padding:6px 0;margin:3px 3px;}
+small{font-size:16px;}
 </style>
-<body>
+<body onload='load();'>
 <div id='p'></div>
 <div id='c'></div>
 <div id='r'></div>
@@ -117,9 +118,12 @@ function first(n){
 		a.innerHTML = arr[n];
 	}
     b.innerHTML = p(n);
-    progress.innerHTML = count.toString() + '/' + test_num;
+    progress.innerHTML = '<span style="float:left">'+count.toString() + '/' + test_num+'</span>'+'<span style="float:right;cursor:pointer;" onclick="load();">Home</span>';
 }
 function set(str){
+var upperlimit=document.getElementById('upperlimit').value;
+upperlimit=upperlimit.replace(/[^0-9]/,'')
+    test_num = parseInt(upperlimit);
 	switch(str){
 		case 'book1_2_word':
 			arr=book1_2_word_c;
@@ -146,11 +150,16 @@ function set(str){
 				test_num=arr.length;
 	}
 }
+var list="Choose one<br><span class='sel' onclick='set(\"book1_2_word\")'>Book 1 & 2 words ("+book1_2_word_c.length+")</span><br><span class='sel' onclick='set(\"book6_char\")'>Book 6 characters ("+book6_char.length+")</span><br><span class='sel' onclick='set(\"lvl2_char\")'>HSK lvl 2 characters ("+lvl2_char.length+")</span><br><small>How many words would you like to test: <input type='input' style='width:60px;' id='upperlimit' value=80></small>";
+function load(){
+progress.innerHTML ='';
+b.innerHTML = '';
 if (localStorage['ChineseTest'] != d) {
-    a.innerHTML = "Choose one<br><span class='sel' onclick='set(\"book1_2_word\")'>Book 1 & 2 words ("+book1_2_word_c.length+")</span><br><span class='sel' onclick='set(\"book6_char\")'>Book 6 characters ("+book6_char.length+")</span><br><span class='sel' onclick='set(\"lvl2_char\")'>HSK lvl 2 characters ("+lvl2_char.length+")</span>";
+    a.innerHTML = list;
 } else {
-    a.innerHTML = "<span class='consolas'>Conguatulations!<br>You have done today's exercise.<br><br>Today's Key:<br>" + localStorage['TodayKey'] + "</span>";
-	b.innerHTML = "<br>Start a new one<br><span class='sel' onclick='set(\"book1_2_word\")'>Book 1 & 2 words ("+book1_2_word_c.length+")</span><br><span class='sel' onclick='set(\"book6_char\")'>Book 6 characters ("+book6_char.length+")</span><br><span class='sel' onclick='set(\"lvl2_char\")'>HSK lvl 2 characters ("+lvl2_char.length+")</span>";
+    a.innerHTML = "<span class='consolas'>Well done!<br>You have done today's exercise.<br><br>Today's Key:<br>" + localStorage['TodayKey'] + "</span>";
+	b.innerHTML = list;
+}
 }
 
 function next(n) {
@@ -167,7 +176,7 @@ function fin() {
     console.log(s1)
     var s2 = mistake < 10 ? ('0' + mistake).toString() : mistake.toString()
     var s3 = s1.substr(0, 4) + s2 + s1.substr(4, 1);
-    a.innerHTML = "<span class='consolas'>Conguatulations!<br>You have done today's exercise.<br><br>Today's Key:<br>" + s3 + "</span>";
+    a.innerHTML = "<span class='consolas'>Well done!<br>You have done today's exercise.<br><br>Today's Key:<br>" + s3 + "</span>";
     a.style.textAlign = 'left';
     a.style.fontSize = '20px';
     b.innerHTML = '';
@@ -187,7 +196,7 @@ function ans_click(n) {
 		}
         pinyin.splice(num, 1)
         count++;
-        progress.innerHTML = count.toString() + '/' + test_num
+        progress.innerHTML = '<span style="float:left">'+count.toString() + '/' + test_num+'</span>'+'<span style="float:right;cursor:pointer;" onclick="load();">Home</span>';
         if (count<test_num) {
             num = parseInt(Math.random() * arr.length);
             timeoutID = window.setTimeout(function() {
