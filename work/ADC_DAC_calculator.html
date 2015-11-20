@@ -1,0 +1,45 @@
+<html>
+<script>
+
+
+function gen(){
+var lv=Number(document.getElementById('lv').value);
+var hv=Number(document.getElementById('hv').value);
+var n=Number(document.getElementById('n').value);
+var inp=Number(document.getElementById('inp').value);
+max=Math.pow(2,n)-1;
+
+re=(inp/max)*(hv-lv)+lv
+console.log(max,inp, n, lv, hv, re)
+document.getElementById('result').innerHTML=re;
+}
+
+function gen_a2d(){
+var lv=Number(document.getElementById('lv').value);
+var hv=Number(document.getElementById('hv').value);
+var n=Number(document.getElementById('n').value);
+var inp_a=Number(document.getElementById('inp_a').value);
+
+max=Math.pow(2,n)-1;
+
+re=(inp_a-lv)/(hv-lv)*max;
+console.log(max,inp, n, lv, hv, re)
+document.getElementById('result').innerHTML=re;
+}
+</script>
+
+
+Lowest Voltage: <input type='text' id='lv' value='0.4'/> V <br>
+Highest Voltage: <input type='text' id='hv' value='1.4'/> V <br>
+Number of digital bits:  <input type='text' id='n' value='8'/> <br>
+Given Input digital number:  <input type='text' id='inp' value='8'/> 
+<form style='display:inline-block;'>
+<input type="radio" name="format" value="Dec" checked> Dec
+<input type="radio" name="format" value="Hex"> Hex
+<input type="radio" name="format" value="Bin"> Bin
+</form>
+<input type='button' value='Calculate Analogue Output' onclick='gen();'/><br>
+Known Output Analogue voltage:  <input type='text' id='inp_a' value='1.3077'/> 
+<input type='button' value='Calculate Digital Input' onclick='gen_a2d();'/><br>
+<div id='result'></div>
+</html>
