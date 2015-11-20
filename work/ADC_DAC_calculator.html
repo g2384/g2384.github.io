@@ -1,6 +1,8 @@
 <html>
 <script>
-
+function dec2bin(num) {
+	return parseInt(num, 10).toString(2);
+}
 
 function gen(){
 var lv=Number(document.getElementById('lv').value);
@@ -9,7 +11,7 @@ var n=Number(document.getElementById('n').value);
 var inp=Number(document.getElementById('inp').value);
 max=Math.pow(2,n)-1;
 
-re=(inp/max)*(hv-lv)+lv
+re=roundto((inp/max)*(hv-lv)+lv,2);
 console.log(max,inp, n, lv, hv, re)
 document.getElementById('result').innerHTML=re;
 }
@@ -22,9 +24,20 @@ var inp_a=Number(document.getElementById('inp_a').value);
 
 max=Math.pow(2,n)-1;
 
-re=(inp_a-lv)/(hv-lv)*max;
-console.log(max,inp, n, lv, hv, re)
-document.getElementById('result').innerHTML=re;
+re=roundto((inp_a-lv)/(hv-lv)*max,2);
+console.log(max,inp, n, lv, hv, re);
+re_rounded=Math.round(re);
+bin=dec2bin(re_rounded);
+s='Dec: '+re+'<br>Bin: '+bin +'(Converted from '+re_rounded +')<br>';
+re_rounded_2=re_rounded+1;
+s+='Note: <br>'+re_rounded_2+'(Dec) = '+dec2bin(re_rounded_2)+'(Bin)<br>';
+re_rounded_2=re_rounded-1;
+s+=re_rounded_2+'(Dec) = '+dec2bin(re_rounded_2)+'(Bin)';
+document.getElementById('result').innerHTML=s;
+}
+function roundto(x, n){
+var k=Math.pow(10,n)
+return Math.round(x * k) / k;
 }
 </script>
 
