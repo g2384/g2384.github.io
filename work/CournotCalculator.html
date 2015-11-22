@@ -64,7 +64,12 @@ s1+='</tr>';
 
 s+=s1;
 }
-document.getElementById('a').innerHTML="<table><tbody>"+s+"</tbody></table>";
+
+Nash_q='Nash equilibrium: A = ' + roundto((c_c+b_p-2*a_p)/(3*c_x*-1),2).toString()+', B = '+roundto((c_c+a_p-2*b_p)/(3*c_x*-1),2).toString();
+
+document.getElementById('a').innerHTML="<table><tbody>"+s+"</tbody></table><br>"+Nash_q;
+
+
 }
 </script>
 Unit price of A: <input type="text" id='a_p' class='i' value='36'/><br>
