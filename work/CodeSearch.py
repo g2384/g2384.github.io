@@ -19,6 +19,7 @@ file_type = ['.cpp', '.h']
 def merge(tempfile, file_type): # merge all files
     file_name =  os.path.basename(sys.argv[0])
     path = os.getcwd()
+    all_file = []
     all_file = fun(path,all_file)
     # print len(all_file)
 
@@ -129,21 +130,35 @@ if __name__ == "__main__":
                'test' gives false
     """
     #sys.argv = ["wordcount.py", '-m', "-f(Detector)"]
-    sys.argv = ["wordcount.py", '-m', "-fa(Detector)"]
+    
+    sys.argv = ["wordcount.py", '-m', "-fa(Detector)", "-t(cpp,h)"]
+    global file_type
     s = ''
+    f = ''
     if len(sys.argv) > 1:
         for i in range(len(sys.argv)):
             if i > 0:                    
                 s += sys.argv[i]
-        if s.find('-m')>=0:
-            merge(tempfile, file_type)
         a = s.find('-f(')
         if a >= 0:
-            b = s.find(')')
+            b = s.find(')', a)
             inp = s[a+3:b]
-            find(tempfile, inp)
+            f = 'f'
         a = s.find('-fa(')
         if a >= 0:
-            b = s.find(')')
+            b = s.find(')', a)
             inp = s[a+4:b]
+            f = 'fa'
+        a = s.find('-t(')
+        if a>=0:
+            b = s.find(')', a)
+            i = s[a+3: b]
+            file_type = re.split('[^a-z0-9A-Z]', i)
+            for i in range(len(file_type)):
+                file_type[i] = '.'+file_type[i]
+        if s.find('-m')>=0:
+            merge(tempfile, file_type)
+        if f == 'f':
+            find(tempfile, inp)
+        elif f == 'fa':
             find(tempfile, inp, exact_search=False)
