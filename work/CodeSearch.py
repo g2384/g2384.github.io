@@ -14,7 +14,7 @@ def fun(path,all_file): # get all files in this dir, including subfolders
 
 
 tempfile="~TempFile.txt~"
-file_type = ['.cpp', '.h']
+global file_type
 
 def merge(tempfile, file_type): # merge all files
     file_name =  os.path.basename(sys.argv[0])
@@ -29,18 +29,32 @@ def merge(tempfile, file_type): # merge all files
 
     count=0
     with open(tempfile, "wb") as outfile:
-        for f in all_file:
-            f_name, f_ext = os.path.splitext(f)
-            if(f!=file_name and f_ext in file_type):
-                print(f)
-                count +=1
-                outfile.write("\r\n#UnIquE$tR|ng::"+f+"\r\n")
-                with open(f, "rb") as infile:
-                    outfile.write(infile.read())
-    print 'merged '+str(count) + ' files'
+    
+        if len(file_type)>0:
+            for f in all_file:
+                f_name, f_ext = os.path.splitext(f)
+            
+                if(f!=file_name and f_ext in file_type):
+                    print(f)
+                    count +=1
+                    outfile.write("\r\n#UnIquE$tR|ng::"+f+"\r\n")
+                    with open(f, "rb") as infile:
+                        outfile.write(infile.read())
+        
+        else:
+            for f in all_file:
+                if(f!=file_name):
+                    #print(f)
+                    count +=1
+                    outfile.write("\r\n#UnIquE$tR|ng::"+f+"\r\n")
+                    with open(f, "rb") as infile:
+                        outfile.write(infile.read())
+             
+    print 'Merged '+str(count) + ' files'
 
 def search(a, reg, reg2=''): # search the string a
     exact_search = False
+    found_something = False
     if reg2=='':
         exact_search = True
     for i in range(1,len(a)):
@@ -54,7 +68,7 @@ def search(a, reg, reg2=''): # search the string a
                     pos = re.search(reg2, lines[l])
             if pos >0:
                 if found == False:
-                    print('\n\n===========\nFound in file "' + lines[0]+'"') 
+                    print('\n\n===========\n Found in file "' + lines[0]+'"') 
                 found = True
                 found_something = True
                 print('\n\n\nline '+str(l)+': ')
@@ -101,40 +115,58 @@ def vague_reg(inp):
     return re.compile(first_reg +   inp  + last_reg)
 
 def find(tempfile, inp, exact_search=True):
-    f = open(tempfile, "r")
-    s = f.read()
-    a = s.split('#UnIquE$tR|ng::')
-    reg = re.compile(r"""[^a-zA-Z0-9_]""" +inp + r"""[^a-zA-Z0-9_]""")
-    found_something = False
-    print 'looking for "' + inp + '"'
-    if exact_search == False:
-        search(a, reg, reg2 = vague_reg(inp))
-    else:
-        search(a, reg)
+    with open(fName, 'r') as f:
+        try:
+            s = f.read()
+            a = s.split('#UnIquE$tR|ng::')
+            reg = re.compile(r"""[^a-zA-Z0-9_]""" +inp + r"""[^a-zA-Z0-9_]""")
+            print 'Searching "' + inp + '"'
+            if exact_search == False:
+                found_something = search(a, reg, reg2 = vague_reg(inp))
+            else:
+                found_something = search(a, reg)
+            if found_something == False:
+                print 'Cannot find "' + inp + '"'
+        except:
+            print 'please execute "python merge.py -m" first'
 
 
 if __name__ == "__main__":
     """ cmd:
-      -m: merge all files all update the temp file
+      -m: merge all files and update the temp file.
+          This command must be used when merge.py is used first time in a folder.
+          It is not necessary to use this command if merge.py is not used first time. 
       -f: find string, match case. 
           e.g. -f(Test), 
-               'Test' gives true, 
+               'Test' gives true,
+               'Test()' gives true, 
                'AddTest' gives false, 
                '_Test' gives false, 
                'test' gives false
       -fa: find string, match case, can appear in a part of a string. 
           e.g. -fa(Test), 
-               'Test' gives true, 
+               'Test' gives true,
+               'Test()' gives true,
                'AddTest' gives true, 
                '_Test' gives true
                'test' gives false
+      -t: specify the type of target files. (Optional)
+          e.g. -t(cpp,h) will find all keywords in .cpp file and .h file
+          acceptable syntax: -t(cpp,h), -t(cpp, h), -t(.cpp, .h)
+          
+    in Linux terminal, place this file in your code folder
+      python merge.py -m -f(Hello) -t(cpp,h)
     """
-    #sys.argv = ["wordcount.py", '-m', "-f(Detector)"]
-    
-    sys.argv = ["wordcount.py", '-m', "-fa(Detector)", "-t(cpp,h)"]
+
+    # in windows, place this file in your code folder.
+    # use Python IDLE to open this file.
+    # the following line to give commands.
+    #sys.argv = ["anything.py", '-m', "-f(Detector)"]
+    #sys.argv = ["anything.py", '-m', "-fa(Detector)", "-t(cpp,h)"]
     global file_type
     s = ''
     f = ''
+    file_type = []
     if len(sys.argv) > 1:
         for i in range(len(sys.argv)):
             if i > 0:                    
@@ -153,7 +185,7 @@ if __name__ == "__main__":
         if a>=0:
             b = s.find(')', a)
             i = s[a+3: b]
-            file_type = re.split('[^a-z0-9A-Z]', i)
+            file_type = re.split('[^a-z0-9A-Z]+', i)
             for i in range(len(file_type)):
                 file_type[i] = '.'+file_type[i]
         if s.find('-m')>=0:
