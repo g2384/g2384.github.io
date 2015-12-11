@@ -1,0 +1,921 @@
+<html>
+<script type='text/javascript' src='SudokuSolver.js'></script>
+<script>
+var allowedBitFields = [10];
+	
+allowedBitFields[0] = 0;
+allowedBitFields[1] = 1;
+allowedBitFields[2] = 1 << 1;
+allowedBitFields[3] = 1 << 2;
+allowedBitFields[4] = 1 << 3;
+allowedBitFields[5] = 1 << 4;
+allowedBitFields[6] = 1 << 5;
+allowedBitFields[7] = 1 << 6;
+allowedBitFields[8] = 1 << 7;
+allowedBitFields[9] = 1 << 8;
+
+var allAllowed = 0x1FF;
+
+function solveSudoku(puzzleText) {
+	var startTime = new Date().getTime();
+	var board = parseSudoku(puzzleText);
+	
+	if (board == 0) {
+		return "Board does not contain enough numbers";
+	}
+	else {
+		var allowedValues = [9];
+
+		for (var x = 0; x < 9; x++) {
+			allowedValues[x] = [9];
+			
+			for (var y = 0; y < 9; y++) {
+				allowedValues[x][y] = allAllowed;
+			}
+		}
+		
+		var placedNumberCount = 0;
+
+		for (var x = 0; x < 9; x++) {
+			for (var y = 0; y < 9; y++) {
+				if (board[x][y] > 0) {
+					allowedValues[x][y] = 0;
+					applyAllowedValuesMask(board, allowedValues, x, y);
+					placedNumberCount++;
+				}
+			}
+		}
+	
+		placedNumberCount = applyRulesSudoku(board, allowedValues, placedNumberCount);
+		
+		var solution = "";
+		
+		for (var x = 0; x < 9; x++) {
+			if (x == 3 || x == 6) {
+				solution += "\n";
+			}				
+		
+			for (var y = 0; y < 9; y++) {
+				if (y == 3 || y == 6) {
+					solution += " ";
+				}
+				
+				solution += board[x][y];
+			}
+			
+			solution += "\n"
+		}
+		
+		if (placedNumberCount >= 81) {
+			solution += "success " + (new Date().getTime() - startTime) + "ms";
+		}
+		else {
+			solution += "failure " + (new Date().getTime() - startTime) + "ms";
+		}
+		
+		return solution;
+	}
+}
+
+function applyRulesSudoku(board, allowedValues, placedNumberCount) {
+	var lastPlacedNumbersCount = 0;
+  
+	while (placedNumberCount - lastPlacedNumbersCount > 3 && placedNumberCount < 68 && placedNumberCount > 10) {
+		lastPlacedNumbersCount = placedNumberCount;
+		placedNumberCount += moveNothingElseAllowed(board, allowedValues);
+		placedNumberCount += moveNoOtherRowOrColumnAllowed(board, allowedValues);
+		placedNumberCount += moveNothingElseAllowed(board, allowedValues);
+		if (placedNumberCount < 35) {
+			applyNakedPairs(board, allowedValues);
+			applyLineCandidatevarraints(board, allowedValues);
+		}
+	}
+  
+	if (placedNumberCount < 81) {
+		var bruteForcedBoard = attemptBruteForce(board, allowedValues, placedNumberCount);
+
+		if (bruteForcedBoard != null) {
+			placedNumberCount = 0;
+			
+			for (var x = 0; x < 9; x++) {
+				for (var y = 0; y < 9; y++) {
+					board[x][y] = bruteForcedBoard[x][y];
+					
+					if (bruteForcedBoard[x][y] > 0) {
+						placedNumberCount++;
+					}
+				}
+			}
+		}
+	}
+	
+	return placedNumberCount;
+}
+
+function attemptBruteForce(board, allowedValues, placedNumberCount) {
+	for (var x = 0; x < 9; x++) {
+		var allowedValuesRow = allowedValues[x];
+		var boardRow = board[x];
+		
+		for (var y = 0; y < 9; y++) {
+			if (boardRow[y] == 0) {
+				for (var value = 1; value <= 9; value++) {
+					if ((allowedValuesRow[y] & allowedBitFields[value]) > 0) {
+						var testBoard = copyGameMatrix(board);
+						var testAllowedValues = copyGameMatrix(allowedValues);
+						setValue(testBoard, testAllowedValues, value, x, y);
+						
+						var placedNumbers = applyRulesSudoku(testBoard, testAllowedValues, placedNumberCount + 1);
+						
+						if (placedNumbers == 81) {
+							return testBoard;
+						}
+					}
+				}
+				
+				return null;
+			}
+		}
+	}
+	
+	return null;
+}
+
+function moveNoOtherRowOrColumnAllowed(board, allowedValues) {
+	
+	var moveCount = 0;
+	
+	for (var value = 1; value <= 9; value++) {
+		var allowedBitField = allowedBitFields[value];
+		
+		for (var x = 0; x < 9; x++) {
+			var allowedY = -1;
+			var allowedValuesRow = allowedValues[x];
+			
+			for (var y = 0; y < 9; y++) {
+				if ((allowedValuesRow[y] & allowedBitField) > 0) {
+					if (allowedY < 0) {
+						allowedY = y;
+					}
+					else {
+						allowedY = -1;
+						break;
+					}
+				}
+			}
+			
+			if (allowedY >= 0) {
+				setValue(board, allowedValues, value, x, allowedY);
+				moveCount++;
+			}
+		}
+		
+		for (var y = 0; y < 9; y++) {
+			var allowedX = -1;
+			
+			for (var x = 0; x < 9; x++) {
+				if ((allowedValues[x][y] & allowedBitField) > 0) {
+					if (allowedX < 0) {
+						allowedX = x;
+					}
+					else {
+						allowedX = -1;
+						break;
+					}
+				}
+			}
+			
+			if (allowedX >= 0) {
+				setValue(board, allowedValues, value, allowedX, y);
+				moveCount++;
+			}
+		}
+	}
+
+	return moveCount;
+}
+
+function moveNothingElseAllowed(board, allowedValues) {
+	var moveCount = 0;
+	
+	for (var x = 0; x < 9; x++) {
+		var allowedValuesRow = allowedValues[x];
+		
+		for (var y = 0; y < 9; y++) {
+			var currentAllowedValues = allowedValuesRow[y];
+			if (countSetBits(currentAllowedValues) == 1) {
+				setValue(board, allowedValues, getLastSetBitIndex(currentAllowedValues), x, y);
+				moveCount++;
+			}
+		}
+	}
+
+	return moveCount;
+}
+
+function applyNakedPairs(board, allowedValues) {
+	for (var x = 0; x < 9; x++) {
+		for (var y = 0; y < 9; y++) {
+			var valueX = allowedValues[x][y];
+			
+			if (countSetBits(valueX) == 2) {
+				for (var scanningY = y + 1; scanningY < 9; scanningY++) {
+					if (allowedValues[x][scanningY] == valueX) {
+						var removeMaskX = ~valueX;
+						
+						for (var applyY = 0; applyY < 9; applyY++) {
+							if (applyY != y && applyY != scanningY) {
+								allowedValues[x][applyY] &= removeMaskX;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	for (var y = 0; y < 9; y++) {
+		for (var x = 0; x < 9; x++) {
+			var valueY = allowedValues[x][y];
+			
+			if (valueY != 0 && countSetBits(valueY) == 2) {
+				for (var scanningX = x + 1; scanningX < 9; scanningX++) {
+					if (allowedValues[scanningX][y] == valueY) {
+						var removeMaskY = ~valueY;
+						
+						for (var applyX = 0; applyX < 9; applyX++) {
+							if (applyX != x && applyX != scanningX) {
+								allowedValues[applyX][y] &= removeMaskY;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+function applyLineCandidatevarraints(board, allowedValues) {
+	for (var value = 1; value <= 9; value++) {
+		var valueMask = allowedBitFields[value];
+		var valueRemoveMask = ~valueMask;
+		var sectionAvailabilityColumn = [9];
+		
+		for (var x = 0; x < 9; x++) {
+			var finalX = x;
+			
+			for (var y = 0; y < 9; y++) {
+				if ((allowedValues[finalX][y] & valueMask) != 0) {
+					sectionAvailabilityColumn[finalX] |= (1 << (y / 3));
+				}
+			}
+			
+			if (finalX == 2 || finalX == 5 || finalX == 8) {
+				for (var scanningX = finalX - 2; scanningX <= finalX; scanningX++) {
+					var bitCountX = countSetBits(sectionAvailabilityColumn[scanningX]);
+					
+					if (bitCountX == 1) {
+						for (var applyX = finalX - 2; applyX <= finalX; applyX++) {
+							if (scanningX != applyX) {
+								for (var applySectionY = 0; applySectionY < 3; applySectionY++) {
+									if ((sectionAvailabilityColumn[scanningX] & (1 << applySectionY)) != 0) {
+										for (var applyY = applySectionY * 3; applyY < (applySectionY + 1) * 3; applyY++) {
+											allowedValues[applyX][applyY] &= valueRemoveMask;
+										}
+									}
+								}
+							}
+						}
+					}
+					
+					if (bitCountX == 2 && scanningX < finalX) {
+						for (var scanningSecondPairX = scanningX + 1; scanningSecondPairX <= finalX; scanningSecondPairX++) {
+							if (sectionAvailabilityColumn[scanningX] == sectionAvailabilityColumn[scanningSecondPairX]) {
+								var applyX;
+								
+								if (scanningSecondPairX != finalX) {
+									applyX = finalX;
+								}
+								else if (scanningSecondPairX - scanningX > 1) {
+									applyX = scanningSecondPairX - 1;
+								}
+								else {
+									applyX = scanningX - 1;
+								}
+								
+								for (var applySectionY = 0; applySectionY < 3; applySectionY++) {
+									if ((sectionAvailabilityColumn[scanningX] & (1 << applySectionY)) != 0) {
+										for (var applyY = applySectionY * 3; applyY < (applySectionY + 1) * 3; applyY++) {
+											allowedValues[applyX][applyY] &= valueRemoveMask;
+										}
+									}
+								}
+								
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		var sectionAvailabilityRow = [9];
+		
+		for (var y = 0; y < 9; y++) {
+			var finalY = y;
+			
+			for (var x = 0; x < 9; x++) {
+				if ((allowedValues[x][finalY] & valueMask) != 0) {
+					sectionAvailabilityRow[finalY] |= (1 << (x / 3));
+				}
+			}
+			
+			if (finalY == 2 || finalY == 5 || finalY == 8) {
+				for (var scanningY = finalY - 2; scanningY <= finalY; scanningY++) {
+					var bitCountY = countSetBits(sectionAvailabilityRow[scanningY]);
+					
+					if (bitCountY == 1) {
+						for (var applyY = finalY - 2; applyY <= finalY; applyY++) {
+							if (scanningY != applyY) {
+								for (var applySectionX = 0; applySectionX < 3; applySectionX++) {
+									if ((sectionAvailabilityRow[scanningY] & (1 << applySectionX)) != 0) {
+										for (var applyX = applySectionX * 3; applyX < (applySectionX + 1) * 3; applyX++) {
+											allowedValues[applyX][applyY] &= valueRemoveMask;
+										}
+									}
+								}
+							}
+						}
+					}
+					
+					if (bitCountY == 2 && scanningY < finalY) {
+						for (var scanningSecondPairY = scanningY + 1; scanningSecondPairY <= finalY; scanningSecondPairY++) {
+							if (sectionAvailabilityRow[scanningY] == sectionAvailabilityRow[scanningSecondPairY]) {
+								var applyY;
+								
+								if (scanningSecondPairY != finalY) {
+									applyY = finalY;
+								}
+								else if (scanningSecondPairY - scanningY > 1) {
+									applyY = scanningSecondPairY - 1;
+								}
+								else {
+									applyY = scanningY - 1;
+								}
+								
+								for (var applySectionX = 0; applySectionX < 3; applySectionX++) {
+									if ((sectionAvailabilityRow[scanningY] & (1 << applySectionX)) != 0) {
+										for (var applyX = applySectionX * 3; applyX < (applySectionX + 1) * 3; applyX++) {
+											allowedValues[applyX][applyY] &= valueRemoveMask;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+function applyAllowedValuesMask(board, allowedValues, x, y) {
+	var mask = ~allowedBitFields[board[x][y]];
+	
+	for (var maskApplyX = 0; maskApplyX < 9; maskApplyX++) {
+		allowedValues[maskApplyX][y] &= mask;
+	}
+	
+	var allowedValuesRow = allowedValues[x];
+	
+	for (var maskApplyY = 0; maskApplyY < 9; maskApplyY++) {
+		allowedValuesRow[maskApplyY] &= mask;
+	}
+	
+	var sectionX1 = 0;
+	var sectionX2 = 0;
+	
+	switch (x) {
+		case 0:
+			sectionX1 = x + 1;
+			sectionX2 = x + 2;
+			break;
+		case 1:
+			sectionX1 = x - 1;
+			sectionX2 = x + 1;
+			break;
+		case 2:
+			sectionX1 = x - 2;
+			sectionX2 = x - 1;
+			break;
+		case 3:
+			sectionX1 = x + 1;
+			sectionX2 = x + 2;
+			break;
+		case 4:
+			sectionX1 = x - 1;
+			sectionX2 = x + 1;
+			break;
+		case 5:
+			sectionX1 = x - 2;
+			sectionX2 = x - 1;
+			break;
+		case 6:
+			sectionX1 = x + 1;
+			sectionX2 = x + 2;
+			break;
+		case 7:
+			sectionX1 = x - 1;
+			sectionX2 = x + 1;
+			break;
+		case 8:
+			sectionX1 = x - 2;
+			sectionX2 = x - 1;
+			break;
+			
+	}
+
+	var sectionY1 = 0;
+	var sectionY2 = 0;
+	
+	switch (y) {
+		case 0:
+			sectionY1 = y + 1;
+			sectionY2 = y + 2;
+			break;
+		case 1:
+			sectionY1 = y - 1;
+			sectionY2 = y + 1;
+			break;
+		case 2:
+			sectionY1 = y - 2;
+			sectionY2 = y - 1;
+			break;
+		case 3:
+			sectionY1 = y + 1;
+			sectionY2 = y + 2;
+			break;
+		case 4:
+			sectionY1 = y - 1;
+			sectionY2 = y + 1;
+			break;
+		case 5:
+			sectionY1 = y - 2;
+			sectionY2 = y - 1;
+			break;
+		case 6:
+			sectionY1 = y + 1;
+			sectionY2 = y + 2;
+			break;
+		case 7:
+			sectionY1 = y - 1;
+			sectionY2 = y + 1;
+			break;
+		case 8:
+			sectionY1 = y - 2;
+			sectionY2 = y - 1;
+			break;
+	}
+	
+	var allowedValuesRow1 = allowedValues[sectionX1];
+	var allowedValuesRow2 = allowedValues[sectionX2];
+	
+	allowedValuesRow1[sectionY1] &= mask;
+	allowedValuesRow1[sectionY2] &= mask;
+	allowedValuesRow2[sectionY1] &= mask;
+	allowedValuesRow2[sectionY2] &= mask;
+}
+
+function setValue(board, allowedValues, value, x, y) {
+	board[x][y] = value;
+	allowedValues[x][y] = 0;
+	applyAllowedValuesMask(board, allowedValues, x, y);
+}
+
+function getLastSetBitIndex(value) {
+	var bitIndex = 0;
+	
+	while (value > 0) {
+		bitIndex++;
+		value >>= 1;
+	}
+	
+	return bitIndex;
+}
+
+function countSetBits(value) {
+	var count = 0;
+	
+	while (value > 0) {
+		value = value & (value - 1);
+		count++;
+	}
+	
+	return count;
+}
+
+function copyGameMatrix(matrix) {
+	var copy = [matrix.length];
+	
+	for (var i = 0; i < matrix.length; i++) {
+		copy[i] = matrix[i].slice(0);
+	}
+	
+	return copy;
+}
+
+function parseSudoku(puzzleText) {
+	var board = [9];
+	
+	for (var i = 0; i < 9; i++) {
+		board[i] = [9];
+	}
+	
+	var count = 0;
+	
+	for (var i = 0; i < puzzleText.length && count < 81; i++) {
+		var letter = puzzleText.charAt(i);
+		
+		if (letter <= '9' && letter >= '0') {
+			board[Math.floor(count / 9)][count % 9] = letter;
+			count++;
+		}
+	}
+	
+	if (count >= 81) {
+		return board;
+	}
+	else {
+		return 0;
+	}
+}
+function solve(){
+var str=solveSudoku(document.getElementById('in').innerHTML);
+var str2=solveSudokuStepByStep(document.getElementById('in').innerHTML);
+document.getElementById('out').innerHTML=str2.replace(/\n/g,'<br>')+'-----------<br>'+str.replace(/\n/g,'<br>')+'<br>';
+}
+
+
+function solveSudokuStepByStep(puzzleText) {
+	var board = parseSudoku(puzzleText);
+	var allAllowed = 0x1FF;
+	if (board == 0) {
+		return "Board does not contain enough numbers";
+	}
+	else {
+		var allowedValues = [9];
+
+		for (var x = 0; x < 9; x++) {
+			allowedValues[x] = [9];
+			
+			for (var y = 0; y < 9; y++) {
+				allowedValues[x][y] = allAllowed;
+			}
+		}
+		
+		var placedNumberCount = 0;
+
+		for (var x = 0; x < 9; x++) {
+			for (var y = 0; y < 9; y++) {
+				if (board[x][y] > 0) {
+					allowedValues[x][y] = 0;
+					applyAllowedValuesMask(board, allowedValues, x, y);
+					placedNumberCount++;
+				}
+			}
+		}
+	var solution = '<strong>input:</strong> <br>'+printBoard(board, 9);
+	var num='.';
+	var step=0;
+	while(num!=''){
+		num=NothingElseAllowed(board, allowedValues);
+		if(num!=''){
+		step++;
+		solution+='<strong>step '+ step +':</strong>\n';
+		solution+=num+'\n'
+		solution += printBoard(board, 9);
+		}else{
+		num = NoOtherRowOrColumnAllowed(board, allowedValues);
+		if(num!=''){
+		step++;
+		solution+='<strong>step '+ step +':</strong>\n';
+		solution+=num+'\n'
+		solution += printBoard(board, 9);
+		}else{
+		num=NakedPairs(board, allowedValues);
+		if(num!=''){
+		step++;
+		solution+='<strong>step '+ step +':</strong>\n';
+		solution+='Found naked pairs\n'
+		LineCandidatevarraints(board, allowedValues)
+		//step++;
+		//solution+='<strong>step '+ step +':</strong>\n';
+		//solution+=num+'\n'
+		}
+		
+		}
+		}
+	}
+		
+		return solution;
+	}
+}
+function printBoard(board, s){
+var solution = "";
+if (s==9){
+for (var x = 0; x < 9; x++) {
+			if (x == 3 || x == 6) {
+				solution += "\n";
+			}				
+		
+			for (var y = 0; y < 9; y++) {
+				if (y == 3 || y == 6) {
+					solution += " ";
+				}
+				
+				solution += board[x][y];
+			}
+			
+			solution += "\n"
+		}
+	}else{
+		for (var x = 0; x < 9; x++) {
+		for (var y = 0; y < 9; y++) {
+		solution += board[x][y];
+		}
+		}
+		
+	}
+		return solution+'\n'
+}
+function NothingElseAllowed(board,allowedValues){
+var str=''
+for (var x = 0; x < 9; x++) {
+		var allowedValuesRow = allowedValues[x];
+		
+		for (var y = 0; y < 9; y++) {
+			var currentAllowedValues = allowedValuesRow[y];
+			if (countSetBits(currentAllowedValues) == 1) {
+			var value=getLastSetBitIndex(currentAllowedValues)
+				setValue(board, allowedValues, value, x, y);
+			
+				str+=logInfo('Only candidate: ', value, x, y)
+			}
+		}
+	}
+	return str;
+}
+
+function NoOtherRowOrColumnAllowed(board, allowedValues) {
+	var moveCount = 0;
+	var str='';
+	for (var value = 1; value <= 9; value++) {
+		var allowedBitField = allowedBitFields[value];
+		
+		for (var x = 0; x < 9; x++) {
+			var allowedY = -1;
+			var allowedValuesRow = allowedValues[x];
+			
+			for (var y = 0; y < 9; y++) {
+				if ((allowedValuesRow[y] & allowedBitField) > 0) {
+					if (allowedY < 0) {
+						allowedY = y;
+					}
+					else {
+						allowedY = -1;
+						break;
+					}
+				}
+			}
+			
+			if (allowedY >= 0) {
+				setValue(board, allowedValues, value, x, allowedY);
+				moveCount++;
+				str+=logInfo('No other places allowed: ', value, x, allowedY)
+			}
+		}
+		
+		for (var y = 0; y < 9; y++) {
+			var allowedX = -1;
+			
+			for (var x = 0; x < 9; x++) {
+				if ((allowedValues[x][y] & allowedBitField) > 0) {
+					if (allowedX < 0) {
+						allowedX = x;
+					}
+					else {
+						allowedX = -1;
+						break;
+					}
+				}
+			}
+			
+			if (allowedX >= 0) {
+				setValue(board, allowedValues, value, allowedX, y);
+				moveCount++;
+				str+=logInfo('No other places allowed: ', value, allowedX, y)
+			}
+		}
+	}
+
+	return str;
+}
+
+function NakedPairs(board, allowedValues) {
+var s=false;
+	for (var x = 0; x < 9; x++) {
+		for (var y = 0; y < 9; y++) {
+			var valueX = allowedValues[x][y];
+			
+			if (countSetBits(valueX) == 2) {
+				for (var scanningY = y + 1; scanningY < 9; scanningY++) {
+					if (allowedValues[x][scanningY] == valueX) {
+						var removeMaskX = ~valueX;
+						
+						for (var applyY = 0; applyY < 9; applyY++) {
+							if (applyY != y && applyY != scanningY) {
+								var c=allowedValues[x][applyY];
+								
+								allowedValues[x][applyY] &= removeMaskX;
+								if(allowedValues[x][applyY]!=c){
+								s=true
+								}
+								console.log(c, allowedValues[x][applyY])
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	for (var y = 0; y < 9; y++) {
+		for (var x = 0; x < 9; x++) {
+			var valueY = allowedValues[x][y];
+			
+			if (valueY != 0 && countSetBits(valueY) == 2) {
+				for (var scanningX = x + 1; scanningX < 9; scanningX++) {
+					if (allowedValues[scanningX][y] == valueY) {
+						var removeMaskY = ~valueY;
+						
+						for (var applyX = 0; applyX < 9; applyX++) {
+							if (applyX != x && applyX != scanningX) {
+								var c=allowedValues[applyX][y]
+								allowedValues[applyX][y] &= removeMaskY;
+								
+								if(allowedValues[applyX][y]!=c){
+								s=true
+								}
+								console.log(c, allowedValues[applyX][y])
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	if (s){
+	return '.'
+	}else{return ''}
+}
+function LineCandidatevarraints(board, allowedValues) {
+	for (var value = 1; value <= 9; value++) {
+		var valueMask = allowedBitFields[value];
+		var valueRemoveMask = ~valueMask;
+		var sectionAvailabilityColumn = [9];
+		
+		for (var x = 0; x < 9; x++) {
+			var finalX = x;
+			
+			for (var y = 0; y < 9; y++) {
+				if ((allowedValues[finalX][y] & valueMask) != 0) {
+					sectionAvailabilityColumn[finalX] |= (1 << (y / 3));
+				}
+			}
+			
+			if (finalX == 2 || finalX == 5 || finalX == 8) {
+				for (var scanningX = finalX - 2; scanningX <= finalX; scanningX++) {
+					var bitCountX = countSetBits(sectionAvailabilityColumn[scanningX]);
+					
+					if (bitCountX == 1) {
+						for (var applyX = finalX - 2; applyX <= finalX; applyX++) {
+							if (scanningX != applyX) {
+								for (var applySectionY = 0; applySectionY < 3; applySectionY++) {
+									if ((sectionAvailabilityColumn[scanningX] & (1 << applySectionY)) != 0) {
+										for (var applyY = applySectionY * 3; applyY < (applySectionY + 1) * 3; applyY++) {
+											c=allowedValues[applyX][applyY];
+											allowedValues[applyX][applyY] &= valueRemoveMask;
+											console.log(c, allowedValues[applyX][applyY])
+										}
+									}
+								}
+							}
+						}
+					}
+					
+					if (bitCountX == 2 && scanningX < finalX) {
+						for (var scanningSecondPairX = scanningX + 1; scanningSecondPairX <= finalX; scanningSecondPairX++) {
+							if (sectionAvailabilityColumn[scanningX] == sectionAvailabilityColumn[scanningSecondPairX]) {
+								var applyX;
+								
+								if (scanningSecondPairX != finalX) {
+									applyX = finalX;
+								}
+								else if (scanningSecondPairX - scanningX > 1) {
+									applyX = scanningSecondPairX - 1;
+								}
+								else {
+									applyX = scanningX - 1;
+								}
+								
+								for (var applySectionY = 0; applySectionY < 3; applySectionY++) {
+									if ((sectionAvailabilityColumn[scanningX] & (1 << applySectionY)) != 0) {
+										for (var applyY = applySectionY * 3; applyY < (applySectionY + 1) * 3; applyY++) {
+											c=allowedValues[applyX][applyY]
+											allowedValues[applyX][applyY] &= valueRemoveMask;
+											console.log(c, allowedValues[applyX][applyY])
+										}
+									}
+								}
+								
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		var sectionAvailabilityRow = [9];
+		
+		for (var y = 0; y < 9; y++) {
+			var finalY = y;
+			
+			for (var x = 0; x < 9; x++) {
+				if ((allowedValues[x][finalY] & valueMask) != 0) {
+					sectionAvailabilityRow[finalY] |= (1 << (x / 3));
+				}
+			}
+			
+			if (finalY == 2 || finalY == 5 || finalY == 8) {
+				for (var scanningY = finalY - 2; scanningY <= finalY; scanningY++) {
+					var bitCountY = countSetBits(sectionAvailabilityRow[scanningY]);
+					
+					if (bitCountY == 1) {
+						for (var applyY = finalY - 2; applyY <= finalY; applyY++) {
+							if (scanningY != applyY) {
+								for (var applySectionX = 0; applySectionX < 3; applySectionX++) {
+									if ((sectionAvailabilityRow[scanningY] & (1 << applySectionX)) != 0) {
+										for (var applyX = applySectionX * 3; applyX < (applySectionX + 1) * 3; applyX++) {
+											c=allowedValues[applyX][applyY]
+											allowedValues[applyX][applyY] &= valueRemoveMask;
+											console.log(c, allowedValues[applyX][applyY])
+										}
+									}
+								}
+							}
+						}
+					}
+					
+					if (bitCountY == 2 && scanningY < finalY) {
+						for (var scanningSecondPairY = scanningY + 1; scanningSecondPairY <= finalY; scanningSecondPairY++) {
+							if (sectionAvailabilityRow[scanningY] == sectionAvailabilityRow[scanningSecondPairY]) {
+								var applyY;
+								
+								if (scanningSecondPairY != finalY) {
+									applyY = finalY;
+								}
+								else if (scanningSecondPairY - scanningY > 1) {
+									applyY = scanningSecondPairY - 1;
+								}
+								else {
+									applyY = scanningY - 1;
+								}
+								
+								for (var applySectionX = 0; applySectionX < 3; applySectionX++) {
+									if ((sectionAvailabilityRow[scanningY] & (1 << applySectionX)) != 0) {
+										for (var applyX = applySectionX * 3; applyX < (applySectionX + 1) * 3; applyX++) {
+											c=allowedValues[applyX][applyY]
+											allowedValues[applyX][applyY] &= valueRemoveMask;
+											console.log(c, allowedValues[applyX][applyY])
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+function logInfo(info, value, x, y){
+return info+value+' @ Row = '+(x+1)+', Column = '+(y+1)+'\n';
+}
+
+</script>
+<textarea id='in'>700000501203107000061000000800060000400500003005902800900041060000000140040800000</textarea>
+<input type='button' onclick='solve()' value='solve'>
+<div id='out'></div>
+</html>
+
