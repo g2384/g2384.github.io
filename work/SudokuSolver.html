@@ -18,6 +18,7 @@ var block = [
 var column = [[1, 2],[0, 2],[0, 1],[4, 5],[3, 5],[3, 4],[7, 8],[6, 8],[6, 7]]
 var candidates = [9];
 var candidatesJoin = [9];
+var removings = '';
 for (var x = 0; x < 9; x++) {
     candidates[x] = [9];
     candidatesJoin[x] = [9];
@@ -28,8 +29,8 @@ for (var x = 0; x < 9; x++) {
 }
 
 function solve() {
-    var str = solveSudoku(document.getElementById('in').innerHTML);
-    var str2 = solveSudokuStepByStep(document.getElementById('in').innerHTML);
+    var str = solveSudoku(document.getElementById('in').value);
+    var str2 = solveSudokuStepByStep(document.getElementById('in').value);
     document.getElementById('out').innerHTML = str2.replace(/\n/g, '<br>') + '-----------<br>final answer: <br><br>' + str.replace(/\n/g, '<br>') + '<br>';
 }
 
@@ -46,16 +47,19 @@ function solveSudokuStepByStep(puzzleText) {
             }
         }
         var solution = '<strong>input:</strong> <br>' + printBoard(board, 9, []);
-        for (i = 0; i < 9; i++) {
-            //console.log(candidatesJoin[i])
-        }
+        
         var num = '.';
         var step = 0;
         //console.log(candidatesJoin)
-        while (num != '') { // solve by using easy methods first
+        while (num != '' && step<15) { // solve by using easy methods first
+		console.log(printcandidates(candidates))
+		for (i = 0; i < 9; i++) {
+				console.log(candidatesJoin[i])
+			}
             num = SoleCandidate(board, candidates);
-            //console.log(printcandidates(candidates))
+            
                 //num='';
+			
             if (num != '') {
                 step++;
                 solution += parseResult(num, board, step)
@@ -67,12 +71,15 @@ function solveSudokuStepByStep(puzzleText) {
                     solution += parseResult(num, board, step)
                 } else {
                     num = blockRowColumn(board, candidates);
+					//console.log(num)
                     if (num != '') {
                         step++;
                         solution += parseResult(num, board, step)
-                        num = ''
-                    }
-
+                        
+                    }else{
+					//num = doublePairs(board, candidates)
+					}
+					//num = ''
                 }
             }
         }
@@ -84,13 +91,13 @@ function parseResult(num, board, step) {
     var solution = '<strong>step ' + step + ':</strong>\n';
     a = num.split('\n')
     var kk = [];
-    console.log(a, a.length)
+    //console.log(a, a.length)
     for (var k = 0; k < a.length - 1; k++) {
         var a2 = a[k].split(',')
-        console.log(a2[0].indexOf('cannot appear') >= 0)
+        //console.log(a2[0].indexOf('cannot appear') >= 0)
         if (a2[0].indexOf('cannot appear') >= 0) {
             solution += logInfo(a2[1] + ' ' + a2[0], parseInt(a2[2]), a2[3], 0)
-            console.log(solution)
+            //console.log(solution)
         } else {
 
             kk.push([parseInt(a2[2]), parseInt(a2[3])])
@@ -258,97 +265,226 @@ function UniqueCandidate(board, candidates) {
 }
 
 function blockRowColumn(board, candidates) {
+var str = '';
     for (var i = 0; i < 9; i++) {
         var s1 = '',
             s2 = '',
             s3 = '',
+			s4 = '',
+            s5 = '',
+            s6 = '',
             s = '',
-            str = '',
-            j_a = [];
-        console.log('blockRowColumn', i)
+            
+            j_a = [], j_a2 = [];
+			j_ac=[block[i][0][1], block[i][1][1], block[i][2][1]];
+			j_ar=[block[i][0][0], block[i][3][0], block[i][6][0]];
+        //console.log('blockRowColumn', i)
         for (var j = 0; j < 3; j++) {
             var j2 = j * 3;
+			var j3 = j+ 3*j;
             j_a.push(block[i][j2][0])
             //console.log('j_a', j_a, block[i][j2][0])
             s1 += candidatesJoin[block[i][j2][0]][block[i][0][1]];
             s2 += candidatesJoin[block[i][j2][0]][block[i][1][1]];
             s3 += candidatesJoin[block[i][j2][0]][block[i][2][1]];
-            //console.log(s1, block[i][j2][0], block[i][0][1], '///', s2, block[i][j2][0], block[i][1][1], '///', s3, block[i][j2][0], block[i][2][1])
+			
+			j_a2.push(block[i][j3][1])
+			s4 += candidatesJoin[block[i][0][0]][block[i][j3][1]];
+            s5 += candidatesJoin[block[i][3][0]][block[i][j3][1]];
+            s6 += candidatesJoin[block[i][6][0]][block[i][j3][1]];
+			
+            //console.log(s4, block[i][0][0], block[i][j][1], '///', s5, block[i][3][0], block[i][j+3][1], '///', s6, block[i][6][0], block[i][j+6][1])
         }
         u_s1 = unique(s1);
         u_s2 = unique(s2);
         u_s3 = unique(s3);
-        //console.log('blockRowColumn', 'unique str', u_s1, u_s2, u_s3)
+        u_s4 = unique(s4);
+        u_s5 = unique(s5);
+        u_s6 = unique(s6);
+        //console.log('blockRowColumn', 'unique str', u_s4, u_s5, u_s6)
 
-        s = u_s1 + u_s2 + u_s3
-        var a = []
+        //console.log(a)
+        
+		str+=find_uniquestr(board, u_s1, u_s2, u_s3,j_a, '', j_ac, 'column', i)
+		str+=find_uniquestr(board, u_s4, u_s5, u_s6,j_a2, '', j_ar, 'row', i)
+    }
+	//console.log(str)
+    return str
+}
+
+function find_uniquestr(board, u_s1, u_s2, u_s3,j_a, str, j_ac, setting, i){
+s=u_s1 + u_s2 + u_s3;
+var a = [];
+var b;
         for (var j = 1; j < 10; j++) {
             var re = new RegExp(j.toString(), "g");
             if (s.length == s.replace(re, '').length + 1) {
                 a.push([j, i])
+				//console.log('a', j, i, s, setting)
             }
         }
-        //console.log(a)
-        for (var j = 0; j < a.length; j++) {
+		
+		for (var j = 0; j < a.length; j++) {
             var x = a[j][1]
             var col = -1;
             if (u_s1.indexOf(a[j][0]) >= 0) {
-                col = block[i][0][1];
+                col = j_ac[0];
             } else if (u_s2.indexOf(a[j][0]) >= 0) {
-                col = block[i][1][1];
+                col = j_ac[1];
             } else if (u_s3.indexOf(a[j][0]) >= 0) {
-                col = block[i][2][1];
+                col = j_ac[2];
             }
+			
             var j_a_str = j_a.join('/');
             var j_copy = j_a_str.split('/')
-            var known = check(board, a[j][0], col, 'c');
-            if (col>0) {
+            var known = check(board, a[j][0], col, setting);
+			//console.log('a', a[j][0], i, s, setting, col, known, j_a_str)
+            if (col>=0) {
                 if (known == false) {
-                    RemovingCandidates(candidates, a[j][0], col, j_a, 'c');
-                    for (var p = 0; p < 3; p++) {
-                        console.log(j_copy.join(', '), col)
-                        if (candidatesJoin[j_copy[p]][col].indexOf(a[j][0]) < 0) {
-                            j_copy[p] = '';
-                        } else {
-                            j_copy[p]++;
-                        }
+                    b=RemovingCandidates(candidates, a[j][0]-1, col, j_a, setting);
+					if(b==false){
+						if(setting=='column'){
+							for (var p = 0; p < 3; p++) {
+								//console.log(j_copy.join(', '), col)
+								if (candidatesJoin[j_copy[p]][col].indexOf(a[j][0]) < 0) {
+									j_copy[p] = '';
+								} else {
+									j_copy[p]++;
+								}
 
-                    }
+							}
+						}else if(setting=='row'){
+							for (var p = 0; p < 3; p++) {
+								//console.log(j_copy.join(', '), col)
+								if (candidatesJoin[col][j_copy[p]].indexOf(a[j][0]) < 0) {
+									j_copy[p] = '';
+								} else {
+									j_copy[p]++;
+								}
+
+							}
+						}
                     j_a_str = j_copy.join('/');
                     j_a_str = j_a_str.replace(/\/+/g, '/')
                     j_a_str = j_a_str.replace(/\/$/g, '')
-                    str += 'cannot appear at column ' + ',' + a[j][0] + ',' + col + ',' + j_a_str + '\n';
-                    //console.log('cannot appear at column ' + ',' + a[j][0] + ',' + col + ',' + j_a_str + ', ' + i)
+                    j_a_str = j_a_str.replace(/^\//g, '')
+					if(j_a_str.length>0){
+						var s__='cannot appear at ' + setting + ' ,' + a[j][0] + ',' + col + ',' + j_a_str + '\n';
+						//console.log(s__ + i, '\n'+str)
+						//console.log(removings.indexOf(s__))
+						if(removings.indexOf(s__)<0){
+							str += s__;
+							removings +=s__;
+						}
+					}
+					}
+                    
                 }
             }
         }
+		//console.log('return str', str)
+		return str
+}
+function doublePairs(board, candidates){
+//not finished
+	var str = '';
+    for (var i = 0; i < 9; i++) {
+        var s1 = '',
+            s2 = '',
+            s3 = '',
+			s4 = '',
+            s5 = '',
+            s6 = '',
+            s = '',
+            
+            j_a = [], j_a2 = [];
+			j_ac=[block[i][0][1], block[i][1][1], block[i][2][1]];
+			j_ar=[block[i][0][0], block[i][3][0], block[i][6][0]];
+        //console.log('blockRowColumn', i)
+        for (var j = 0; j < 3; j++) {
+            var j2 = j * 3;
+			var j3 = j+ 3*j;
+            j_a.push(block[i][j2][0])
+            //console.log('j_a', j_a, block[i][j2][0])
+            s1 += candidatesJoin[block[i][j2][0]][block[i][0][1]];
+            s2 += candidatesJoin[block[i][j2][0]][block[i][1][1]];
+            s3 += candidatesJoin[block[i][j2][0]][block[i][2][1]];
+			
+			j_a2.push(block[i][j3][1])
+			s4 += candidatesJoin[block[i][0][0]][block[i][j3][1]];
+            s5 += candidatesJoin[block[i][3][0]][block[i][j3][1]];
+            s6 += candidatesJoin[block[i][6][0]][block[i][j3][1]];
+			
+            //console.log(s4, block[i][0][0], block[i][j][1], '///', s5, block[i][3][0], block[i][j+3][1], '///', s6, block[i][6][0], block[i][j+6][1])
+        }
+        u_s1 = unique(s1);
+        u_s2 = unique(s2);
+        u_s3 = unique(s3);
+        u_s4 = unique(s4);
+        u_s5 = unique(s5);
+        u_s6 = unique(s6);
+        //console.log('blockRowColumn', 'unique str', u_s4, u_s5, u_s6)
 
+        //console.log(a)
+        
+		str+=find_uniquestr(board, u_s1, u_s2, u_s3,j_a, '', j_ac, 'column', i)
+		str+=find_uniquestr(board, u_s4, u_s5, u_s6,j_a2, '', j_ar, 'row', i)
     }
+	//console.log(str)
     return str
 }
-
 function RemovingCandidates(candidates, value, x, except, s) { // remove candidates from a row, column, block
-    var str = except.join('')
+    var str = except.join('');
+	var b=true;
     switch (s) {
-        case 'c':
-            console.log(value, x)
+        case 'column':
+            //console.log(value, x)
             for (var i = 0; i < 9; i++) {
+			if(candidates[i][x][value]){
+				//console.log('RemovingCandidates', i, x, candidatesJoin[i][x], value+1)
+				}
                 if (str.indexOf(i) < 0) {
+					if(b&&candidates[i][x][value]){
+					b=false;
+					}
                     candidates[i][x][value] = '';
                     candidatesJoin[i][x] = candidates[i][x].join('');
+					
+                }
+				
+            }
+
+            break;
+		case 'row':
+            //console.log(value, x)
+            for (var i = 0; i < 9; i++) {
+                if (str.indexOf(i) < 0) {
+				if(b&&candidates[i][x][value]){
+					b=false;
+					}
+                    candidates[x][i][value] = '';
+                    candidatesJoin[x][i] = candidates[x][i].join('');
                 }
             }
 
             break;
     }
+	return b;
 }
 
 function check(board, value, pos, s) { // if a value is appeared at a row, column, block
     var k = false;
     switch (s) {
-        case 'c':
+        case 'column':
             for (var i = 0; i < 9; i++) {
                 if (board[i][pos] == value) {
+                    k = true;
+                }
+            }
+            break;
+		case 'row':
+            for (var i = 0; i < 9; i++) {
+                if (board[pos][i] == value) {
                     k = true;
                 }
             }
@@ -370,14 +506,23 @@ function unique(s) { // remove duplicate chars in a string
 
 function logInfo(info, value, x, y) {
     if (info.indexOf('cannot appear at') >= 0) {
+		if(info.indexOf('column')>=0){
         return info + (value + 1) + ' (except for row ' + x + ')\n';
+		}else if(info.indexOf('row')>=0){
+		return info + (value + 1) + ' (except for column ' + x + ')\n';
+		}
     } else {
         return info + value + ' @ Row = ' + (x + 1) + ', Column = ' + (y + 1) + '\n';
     }
 }
 
 </script>
-<textarea id='in'>700000501203107000061000000800060000400500003005902800900041060000000140040800000</textarea>
+<textarea id='in'>704000501203157406561000000800060000400508603605902804900041060300000140140800000</textarea>
+<!--000010000510008000023700000000050010800931004096080500000800100900500820050060090-->
+<!--080010000510008000023700081000050918875931264196080500000800100901500820058160090-->
+<!--080016050510008600623795481030657918875931264196082500067829145941573826258164090-->
+<!--700000501203107000061000000800060000400500003005902800900041060000000140040800000-->
+<!--704000501203157406561000000800060000400508603605902804900041060300000140140800000-->
 <input type='button' onclick='solve()' value='solve'>
 <div id='out'></div>
 </html>
