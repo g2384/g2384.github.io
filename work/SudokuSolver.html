@@ -1,3 +1,4 @@
+
 <html>
 <style>.r{color:red;}
 textarea {
@@ -62,7 +63,7 @@ function solveSudokuStepByStep(puzzleText) {
         var num = '.';
         var step = 0;
         //console.log(candidatesJoin)
-        while (num != '' && step<5) { // solve by using easy methods first
+        while (num != '' && step<30) { // solve by using easy methods first
 			console.log(printcandidates(candidates))
 			for (i = 0; i < 9; i++) {
 				console.log(candidatesJoin[i].join('; '))
@@ -79,29 +80,34 @@ function solveSudokuStepByStep(puzzleText) {
                     step++;
                     solution += parseResult(num, board, step)
                 } else {
+				var new_=false;
                     num = blockRowColumn(board, candidates);
 					//console.log(num)
 					//console.log('blockRowColumn', num, step)
                     if (num != '') {
                         step++;
-                        solution += parseResult(num, board, step)
-						
+                        solution += parseResult(num, board, step+' Column/Row Interaction')
+						new_=true;
 					}
 						
 					num = doublePairs(board, candidates)
 					if(num!=''){
 						console.log('doublePairs',num)
 						step++;
-                        solution += parseResult(num, board, step)
+                        solution += parseResult(num, board, step+' Double Pairs')
+						new_=true;
 					}
 					num = NakedPair(board, candidates)
 					//num = ''
 					if(num!=''){
-						console.log('doublePairs',num)
+						console.log('NakedPair',num)
 						step++;
-                        solution += parseResult(num, board, step)
+                        solution += parseResult(num, board, step+' Naked Pairs')
+						new_=true;
 					}
-					//num=''
+					if(new_){
+					num='.'
+					}
                 }
             }
         }
@@ -347,7 +353,7 @@ var b;
             var re = new RegExp(j.toString(), "g");
             if (s.length == s.replace(re, '').length + 1) {
                 a.push([j, i])
-				//console.log('a', j, i, s, setting)
+				console.log('blockRowColumn:', j, i, s, setting)
             }
         }
 		
@@ -365,7 +371,7 @@ var b;
             var j_a_str = j_a.join('/');
             var j_copy = j_a_str.split('/')
             var known = check(board, a[j][0], col, setting);
-			//console.log('a', a[j][0], i, s, setting, col, known, j_a_str)
+			console.log('blockRowColumn', a[j][0], i, s, setting, col, known, j_a_str)
             if (col>=0) {
                 if (known == false) {
                     b=RemovingCandidates(candidates, a[j][0]-1, col, j_a, setting);
@@ -554,8 +560,8 @@ function NakedPair(board, candidates) {
     return str;
 }
 function NakedPairs_fun(board, candidates, ss, pos, removed, b,str, i, j, setting){
-            console.log(i, j)
-            console.log(candidatesJoin[i][j])
+            //console.log(i, j)
+            //console.log(candidatesJoin[i][j])
             if (candidatesJoin[i][j].length == 2) {
                 if (b) {
                     if (ss == candidatesJoin[i][j]) {
@@ -564,7 +570,7 @@ function NakedPairs_fun(board, candidates, ss, pos, removed, b,str, i, j, settin
                         bb[0]--;
                         bb[1]--;
 						if(setting=='row'){
-						console.log(candidatesJoin[i].join(''), ss)
+						//console.log(candidatesJoin[i].join(''), ss)
 						if(unique(candidatesJoin[i].join(''))!=ss){
                         for (k = 0; k < 9; k++) {
 							
@@ -573,7 +579,7 @@ function NakedPairs_fun(board, candidates, ss, pos, removed, b,str, i, j, settin
                                     candidates[i][k][bb[0]] = '';
                                     candidates[i][k][bb[1]] = '';
                                     candidatesJoin[i][k] = candidates[i][k].join('')
-                                    console.log('remove', ss, candidatesJoin[i][k], i, k)
+                          //          console.log('remove', ss, candidatesJoin[i][k], i, k)
 
                                 }
                             }
@@ -591,7 +597,7 @@ function NakedPairs_fun(board, candidates, ss, pos, removed, b,str, i, j, settin
 						for (var k = 0; k < 9; k++) {
 						s_t+=candidatesJoin[k][j];
 						}
-						console.log('column', s_t,unique(s_t), ss,j)
+						//console.log('column', s_t,unique(s_t), ss,j)
 						if(unique(s_t)!=ss){
 						
                         for (k = 0; k < 9; k++) {
@@ -658,7 +664,7 @@ function RemovingCandidates(candidates, value, x, except, s) { // remove candida
             //console.log(value, x)
             for (var i = 0; i < 9; i++) {
                 if (str.indexOf(i) < 0) {
-				if(b&&candidates[i][x][value]){
+				if(b&&candidates[x][i][value]){
 					b=false;
 					}
                     candidates[x][i][value] = '';
@@ -716,7 +722,7 @@ function logInfo(info, value, x, y) {
 }
 
 </script>
-<textarea id='in'>400270600798156234020840007237468951849531726561792843082015479070024300004087002</textarea>
+<textarea id='in'>000805249907040060504906000310000407400000183000413600000054906095020004040090000</textarea>
 <!--000010000510008000023700000000050010800931004096080500000800100900500820050060090--><!--23 steps-->
 <!--700000501203107000061000000800060000400500003005902800900041060000000140040800000-->
 <!--704000501203157406561000000800060000400508603605902804900041060300000140140800000-->
