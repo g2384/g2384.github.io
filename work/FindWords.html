@@ -84,7 +84,7 @@ function search() {
     var r_div = document.getElementById('r');
 	var final_s = '----------<br>' + 'Found ';
     if (final.length > 0) {
-        r_div.innerHTML =  + final.length + final_s + ' words<br>' + final.join('<br>')
+        r_div.innerHTML =  final_s + final.length + ' words<br>' + final.join('<br>')
     } else {
         r_div.innerHTML = final_s + 'nothing'
     }
