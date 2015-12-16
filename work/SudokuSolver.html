@@ -506,22 +506,28 @@ function find_uniquestr_2(board, u_s,u_s2,u_sc,u_sc_board, uni,other,candidates,
 			//console.log(j, u_sc)
 			for(var k=0;k<6;k++){
 			//console.log(b,candidates[other[k][0]][other[k][1]][j-1],candidates[other[k][0]][other[k][1]][j-1]!='',b&&candidates[other[k][0]][other[k][1]][j-1]!='')
-			//if(b&&candidates[other[k][0]][other[k][1]][j-1]!=''){
-			//	b=false;
-			//}
 			//console.log(other[k][0],other[k][1])
 			candidates[other[k][0]][other[k][1]][j-1]=''
 			candidatesJoin[other[k][0]][other[k][1]]=candidates[other[k][0]][other[k][1]].join('')
-			
 			}
-			//if(b==false){
-			var s__='can only appear at ' + setting + ' ,' + arr.join('/') + ',' + j+','+ (Math.floor(i/3)+1)  +',column'+ '\n';
+			var row=Math.floor(i/3);
+			for(var k=0;k<3;k++){
+				if(candidates[row][other[k][1]][j-1]==''){
+					arr[k]=''
+				}
+			}
+			var arr_s = arr.join('/');
+                    arr_s = arr_s.replace(/\/+/g, '/')
+                    arr_s = arr_s.replace(/\/$/g, '')
+                    arr_s = arr_s.replace(/^\//g, '')
+			
+			var s__='can only appear at ' + setting + ' ,' + arr_s + ',' + j+','+ (row+1)  +',column'+ '\n';
 			if(removings_doublePairs.indexOf(s__)<0){
 							str += s__;
 							removings_doublePairs +=s__;
 						}
-			//console.log(s__)
-			//}
+			
+			
 			//console.log('a', j, i, s, setting)
 			//console.log(u_s,u_s2,other[0][0], other[0][1])
 		}
@@ -735,7 +741,7 @@ function logInfo(info, value, x, y) {
 
 </script>
 <textarea id='in'>600000000020536000050010900130400000004020700000001045003060010400892070000000006</textarea>
-<!--000010000510008000023700000000050010800931004096080500000800100900500820050060090--><!--23 steps-->
+<!--000010000510008000023700000000050010800931004096080500000800100900500820050060090--><!--22 steps-->
 <!--700000501203107000061000000800060000400500003005902800900041060000000140040800000-->
 <!--704000501203157406561000000800060000400508603605902804900041060300000140140800000-->
 <!--583010206174026300296050700639041502720000009005290600307062000052170063960000027-->
