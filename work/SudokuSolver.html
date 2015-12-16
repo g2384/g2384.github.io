@@ -1,5 +1,3 @@
-
-
 <html>
 <style>body{font-size:16px;font-family: consolas;}.r{color:red;}
 textarea {
@@ -7,6 +5,12 @@ textarea {
 	height: 120px;
 	padding: 5px;
 	font-size:16px;
+}
+input[type='text']{
+margin: 5px 5px;
+padding: 5px 8px;
+line-height: 1.33;
+width:50px;
 }
 .btn{
 margin: 10px 10px;
@@ -44,8 +48,15 @@ var removings_doublePairs = '';
 var removings_nakedPairs = '';
 
 function solve() {
-    var str = solveSudoku(document.getElementById('in').value);
-    var str2 = solveSudokuStepByStep(document.getElementById('in').value);
+var s=document.getElementById('in').value;
+var u=document.getElementById('u').value;
+var re = new RegExp(u, "g");
+if(u!=0){
+s=s.replace(re,'0');
+}
+s=s.replace(/[^0-9]+/g,'')
+    var str = solveSudoku(s);
+    var str2 = solveSudokuStepByStep(s);
     document.getElementById('out').innerHTML = str2.replace(/\n/g, '<br>') + '-----------<br>final answer: <br><br>' + str.replace(/\n/g, '<br>') + '<br>';
 }
 
@@ -748,6 +759,8 @@ function logInfo(info, value, x, y) {
 <!--096000100070619030321800069069000800240900613003000940930108006000790380002000590-->
 <!--400270600798156234020840007237468951849531726561792843082015479070024300004087002--><!--naked pairs-->
 <br>
+
+Unkown place is represented by <input type='text' id='u' value='0'><br>
 <input type='button' class='btn' onclick='solve()' value='solve'>
 <div id='out'></div>
 </html>
