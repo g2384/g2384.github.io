@@ -61,21 +61,21 @@ s=s.replace(/[^0-9]+/g,'')
 }
 
 function solveSudokuStepByStep(puzzleText) {
- removings_blockRowColumn = '';
- removings_doublePairs = '';
- removings_nakedPairs = '';
+    removings_blockRowColumn = '';
+    removings_doublePairs = '';
+    removings_nakedPairs = '';
     var board = parseSudoku(puzzleText);
     if (board == 0) {
         return "Board does not contain enough numbers";
     } else {
-	for (var x = 0; x < 9; x++) {
-    candidates[x] = [9];
-    candidatesJoin[x] = [9];
-    for (var y = 0; y < 9; y++) {
-        candidates[x][y] = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
-        candidatesJoin[x][y] = '';
-    }
-}
+        for (var x = 0; x < 9; x++) {
+            candidates[x] = [9];
+            candidatesJoin[x] = [9];
+            for (var y = 0; y < 9; y++) {
+                candidates[x][y] = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
+                candidatesJoin[x][y] = '';
+            }
+        }
         for (var x = 0; x < 9; x++) {
             for (var y = 0; y < 9; y++) {
                 if (board[x][y] > 0) {
@@ -84,55 +84,57 @@ function solveSudokuStepByStep(puzzleText) {
             }
         }
         var solution = '<strong>input:</strong> <br>' + printBoard(board, 9, []);
-        
+
         var num = '.';
         var step = 0;
         //console.log(candidatesJoin)
-        while (num != '' && step<30) { // solve by using easy methods first
-			//console.log(printcandidates(candidates))
-			for (i = 0; i < 9; i++) {
-				//console.log(candidatesJoin[i].join('; '))
-			}
+        while (num != '' && step < 30) { // solve by using easy methods first
+            //console.log(printcandidates(candidates))
+            for (i = 0; i < 9; i++) {
+                //console.log(candidatesJoin[i].join('; '))
+            }
+            var o = false;
             num = SoleCandidate(board, candidates);
             if (num != '') {
                 step++;
                 solution += parseResult(num, board, step)
-            } else {
-                num = UniqueCandidate(board, candidates);
-                //num='';
-				//console.log('UniqueCandidate')
+                o = true
+            }
+            num = UniqueCandidate(board, candidates);
+            if (num != '') {
+                step++;
+                solution += parseResult(num, board, step)
+                o = true
+            }
+            if (o == false) {
+
+                var new_ = false;
+                num = blockRowColumn(board, candidates);
+                //console.log(num)
+                //console.log('blockRowColumn', num, step)
                 if (num != '') {
                     step++;
-                    solution += parseResult(num, board, step)
-                } else {
-				var new_=false;
-                    num = blockRowColumn(board, candidates);
-					//console.log(num)
-					//console.log('blockRowColumn', num, step)
-                    if (num != '') {
-                        step++;
-                        solution += parseResult(num, board, step+' Column/Row Interaction')
-						new_=true;
-					}
-					num = doublePairs(board, candidates)
-					if(num!=''){
-						//console.log('doublePairs',num)
-						step++;
-                        solution += parseResult(num, board, step+' Double Pairs')
-						new_=true;
-					}
-					num = NakedPair(board, candidates)
-					//num = ''
-					if(num!=''){
-						//console.log('NakedPair',num)
-						step++;
-                        solution += parseResult(num, board, step+' Naked Pairs')
-						new_=true;
-					}
-					
-					if(new_){
-					num='.'
-					}
+                    solution += parseResult(num, board, step + ' Column/Row Interaction')
+                    new_ = true;
+                }
+                num = doublePairs(board, candidates)
+                if (num != '') {
+                    //console.log('doublePairs',num)
+                    step++;
+                    solution += parseResult(num, board, step + ' Double Pairs')
+                    new_ = true;
+                }
+                num = NakedPair(board, candidates)
+                    //num = ''
+                if (num != '') {
+                    //console.log('NakedPair',num)
+                    step++;
+                    solution += parseResult(num, board, step + ' Naked Pairs')
+                    new_ = true;
+                }
+
+                if (new_) {
+                    num = '.'
                 }
             }
         }
@@ -169,6 +171,12 @@ function parseResult(num, board, step) {
         while (unsorted) {
             unsorted = false;
             for (var k = 0; k < kk.length - 1; k++) {
+			if (kk[k][1] > kk[k + 1][1] && kk[k][0] == kk[k + 1][0]) {
+                    var s = kk[k];
+                    kk[k] = kk[k + 1];
+                    kk[k + 1] = s;
+                    unsorted = true;
+               }else 
                 if (kk[k][0] > kk[k + 1][0]) {
                     var s = kk[k];
                     kk[k] = kk[k + 1];
@@ -759,7 +767,6 @@ function logInfo(info, value, x, y) {
 <!--096000100070619030321800069069000800240900613003000940930108006000790380002000590-->
 <!--400270600798156234020840007237468951849531726561792843082015479070024300004087002--><!--naked pairs-->
 <br>
-
 Unkown place is represented by <input type='text' id='u' value='0'><br>
 <input type='button' class='btn' onclick='solve()' value='solve'>
 <div id='out'></div>
