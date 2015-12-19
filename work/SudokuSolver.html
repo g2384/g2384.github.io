@@ -56,11 +56,11 @@ s=s.replace(re,'0');
 }
 s=s.replace(/[^0-9]+/g,'')
     var str = solveSudoku(s);
-    var str2 = solveSudokuStepByStep(s);
-    document.getElementById('out').innerHTML = str2.replace(/\n/g, '<br>') + '-----------<br>final answer: <br><br>' + str.replace(/\n/g, '<br>') + '<br>';
+    var str2 = solveSudokuStepByStep(s, str);
+    document.getElementById('out').innerHTML = str2.replace(/\n/g, '<br>') + '-----------<br>Correct answer: <br><br>' + str.replace(/\n/g, '<br>') + '<br>';
 }
 
-function solveSudokuStepByStep(puzzleText) {
+function solveSudokuStepByStep(puzzleText, corr) {
     removings_blockRowColumn = '';
     removings_doublePairs = '';
     removings_nakedPairs = '';
@@ -84,7 +84,6 @@ function solveSudokuStepByStep(puzzleText) {
             }
         }
         var solution = '<strong>input:</strong> <br>' + printBoard(board, 9, []);
-
         var num = '.';
         var step = 0;
         //console.log(candidatesJoin)
@@ -100,12 +99,20 @@ function solveSudokuStepByStep(puzzleText) {
                 solution += parseResult(num, board, step)
                 o = true
             }
+			
+			for (i = 0; i < 9; i++) {
+                //console.log(candidatesJoin[i].join('; '))
+            }
+			
             num = UniqueCandidate(board, candidates);
             if (num != '') {
                 step++;
                 solution += parseResult(num, board, step)
                 o = true
             }
+			if(o){
+			num='.'
+			}else
             if (o == false) {
 
                 var new_ = false;
@@ -124,7 +131,7 @@ function solveSudokuStepByStep(puzzleText) {
                     solution += parseResult(num, board, step + ' Double Pairs')
                     new_ = true;
                 }
-                num = NakedPair(board, candidates)
+                num = NakedPair_new(board, candidates)
                     //num = ''
                 if (num != '') {
                     //console.log('NakedPair',num)
@@ -138,7 +145,34 @@ function solveSudokuStepByStep(puzzleText) {
                 }
             }
         }
-        return solution;
+
+        var final_r = printBoard(board, 9, []);
+        var final_c = corr.replace(/[^0-9]/g, '');
+        final_r = final_r.replace(/[^0-9]/g, '');
+        f1 = final_c.split('')
+        f2 = final_r.split('')
+        var final_p = ''
+        var wrong = false;
+        for (var i = 0; i < 81; i++) {
+            if (f1[i] != f2[i]&&f2[i]!=0) {
+                f2[i] = '<span class="r">' + f2[i] + '</span>';
+                wrong = true;
+            }
+            if (i > 0) {
+                if (i % 9 == 0) {
+                    final_p += '\n'
+                } else if (i % 3 == 0) {
+                    final_p += ' '
+                }
+                
+            }
+			final_p += f2[i]
+        }
+        if (wrong) {
+            return solution + '\n\nSorry, got a wrong solution(wrong numbers are highlighted in red): \n' + final_p;
+        } else {
+            return solution;
+        }
     }
 }
 
@@ -157,6 +191,8 @@ function parseResult(num, board, step) {
 		
 			solution += a2[2] +' '+ a2[0] + a2[3] +' except for '+a2[4]+' '+ a2[1]+'<br>';
 		}else if(a2[0].indexOf('naked pairs')>=0){
+		solution += a2[0]+'<br>';
+		}else if(a2[0].indexOf('naked triple')>=0){
 		solution += a2[0]+'<br>';
 		}else {
 
@@ -260,13 +296,8 @@ function RefineCandidates(board, candidates, x, y) {
     for (var i = 0; i < 3; i++) {
         for (var j = 0; j < 3; j++) {
             candidates[r * 3 + i][c * 3 + j][n] = "";
-            //console.log(r*3+i,c*3+j,n,'....')
         }
     }
-    //console.log('----')
-    //console.log('3*3', candidates[7][4].join(''))
-    //console.log(printcandidates(candidates))
-    //console.log('------------')
 
     for (var i = 0; i < 9; i++) {
         candidatesJoin[i][y] = candidates[i][y].join('');
@@ -449,110 +480,160 @@ var b;
 		//console.log('return str', str)
 		return str
 }
-function doublePairs(board, candidates){
-//not finished, under test, only rows are considered
-	var str = '';
-	var arr=[[0,1,2,3,4,5],[3,4,5,6,7,8],[0,1,2,6,7,8]]
-	var arr2=[[6,7,8],[0,1,2],[3,4,5]]
-	for (i = 0; i < 9; i++) {
-				//console.log(candidatesJoin[i].join('; '))
-			}
-	var s_c = [27],s_cc=[27], s_c2=[27], s_cc_board=[27],s_r=[9],u_s_c=[9], u_s_r=[9];var s_c_a_unique=[27];
-	var s_c_a=[27], other_part=[27];
-	//console.log('start')
-	
-	for (var j = 0; j < 9; j++) {
-	for(var i=0;i<3;i++){
-	var kk=j*3+i;
-	s_c_a[kk]='';
-	s_c[kk]='';
-	s_c2[kk]='';
-	s_cc[kk]='';
-	s_cc_board[kk]='';
-	other_part[kk]=[];
-	other_part[kk].push([column[j][0],arr2[i][0]]);
-	other_part[kk].push([column[j][0],arr2[i][1]]);
-	other_part[kk].push([column[j][0],arr2[i][2]]);
-	other_part[kk].push([column[j][1],arr2[i][0]]);
-	other_part[kk].push([column[j][1],arr2[i][1]]);
-	other_part[kk].push([column[j][1],arr2[i][2]]);
-	//console.log(other_part[kk].join(','))
-	s_c_a[kk]+=board[j][arr2[i][0]];
-	s_c_a[kk]+=board[j][arr2[i][1]];
-	s_c_a[kk]+=board[j][arr2[i][2]];
-		for (var k = 0; k < 6; k++) {
-			
-				s_c[kk] += candidatesJoin[column[j][0]][arr[i][k]];// column_1
-				s_c2[kk] += candidatesJoin[column[j][1]][arr[i][k]];// column_2
-				s_cc[kk] += candidatesJoin[j][arr[i][k]];// center
-				s_cc_board[kk] += board[j][arr[i][k]];// center, known
-				//console.log('s_c['+kk+']',candidatesJoin[column[j][0]][arr[i][k]],s_c[kk], j, arr[i][k], column[j][1], column[j][0])
-				//console.log('s_c2['+kk+']',candidatesJoin[column[j][1]][arr[i][k]], s_c2[kk], j, arr[i][k], column[j][1], column[j][0])
-			}
-		}
+function doublePairs(board, candidates) {
+    //not finished, under test, only rows are considered
+    var str = '';
+    var arr = [[0, 1, 2, 3, 4, 5], [3, 4, 5, 6, 7, 8], [0, 1, 2, 6, 7, 8]]
+    var arr2 = [[6, 7, 8], [0, 1, 2], [3, 4, 5]]
+    for (i = 0; i < 9; i++) {
+        //console.log(candidatesJoin[i].join('; '))
     }
-	for (var j = 0; j < 9; j++) {
-		u_s_r[j] = unique(candidatesJoin[j].join('')); // row
-		
-	}
-	for (var j = 0; j < 27; j++) {
-	s_c_a_unique[j]=unique(s_c_a[j])
-	}
-		
+    var s_c = [27],
+        s_cc = [27],
+        s_c2 = [27],
+        s_cc_board = [27];
+    var s_c_a_unique = [27];
+    var s_c_a = [27],
+        other_part = [27];
+	//row
+    for (var j = 0; j < 9; j++) {
+        for (var i = 0; i < 3; i++) {
+            var kk = j * 3 + i;
+            s_c_a[kk] = '';
+            s_c[kk] = '';
+            s_c2[kk] = '';
+            s_cc[kk] = '';
+            s_cc_board[kk] = '';
+            other_part[kk] = [];
+            other_part[kk].push([column[j][0], arr2[i][0]]);
+            other_part[kk].push([column[j][0], arr2[i][1]]);
+            other_part[kk].push([column[j][0], arr2[i][2]]);
+            other_part[kk].push([column[j][1], arr2[i][0]]);
+            other_part[kk].push([column[j][1], arr2[i][1]]);
+            other_part[kk].push([column[j][1], arr2[i][2]]);
+            s_c_a[kk] += board[j][arr2[i][0]];
+            s_c_a[kk] += board[j][arr2[i][1]];
+            s_c_a[kk] += board[j][arr2[i][2]];
+            for (var k = 0; k < 6; k++) {
+                s_c[kk] += candidatesJoin[column[j][0]][arr[i][k]]; // column_1
+                s_c2[kk] += candidatesJoin[column[j][1]][arr[i][k]]; // column_2
+                s_cc[kk] += candidatesJoin[j][arr[i][k]]; // center
+                s_cc_board[kk] += board[j][arr[i][k]]; // center, known
+            }
+        }
+    }
+    for (var j = 0; j < 27; j++) {
+        s_c_a_unique[j] = unique(s_c_a[j])
+    }
     for (var i = 0; i < 27; i++) {
-	//console.log(s_c[i],unique(s_c[i]),s_c2[i],unique(s_c2[i]))
-		str+=find_uniquestr_2(board, unique(s_c[i]),unique(s_c2[i]),unique(s_cc[i]), unique(s_cc_board[i]), s_c_a_unique[i],other_part[i], candidates, 'row', i)
-		//str+=find_uniquestr_2(board, u_s_r, 'row', i)
+        str += find_uniquestr_2(board, unique(s_c[i]), unique(s_c2[i]), unique(s_cc[i]), unique(s_cc_board[i]), s_c_a_unique[i], other_part[i], candidates, 'row', i)
     }
-	//console.log(str)
+	
+	//console.log('column')
+	//column
+	for (var j = 0; j < 9; j++) {
+        for (var i = 0; i < 3; i++) {
+            var kk = j * 3 + i;
+            s_c_a[kk] = '';
+            s_c[kk] = '';
+            s_c2[kk] = '';
+            s_cc[kk] = '';
+            s_cc_board[kk] = '';
+			other_part[kk] = [];
+            other_part[kk].push([column[j][0], arr2[i][0]]);
+            other_part[kk].push([column[j][0], arr2[i][1]]);
+            other_part[kk].push([column[j][0], arr2[i][2]]);
+            other_part[kk].push([column[j][1], arr2[i][0]]);
+            other_part[kk].push([column[j][1], arr2[i][1]]);
+            other_part[kk].push([column[j][1], arr2[i][2]]);
+			//console.log(other_part[kk].join(' '))
+            s_c_a[kk] += board[arr2[i][0]][j];
+            s_c_a[kk] += board[arr2[i][1]][j];
+            s_c_a[kk] += board[arr2[i][2]][j];
+            for (var k = 0; k < 6; k++) {
+                s_c[kk] += candidatesJoin[arr[i][k]][column[j][0]]; // column_1
+                s_c2[kk] += candidatesJoin[arr[i][k]][column[j][1]]; // column_2
+                s_cc[kk] += candidatesJoin[arr[i][k]][j]; // center
+                s_cc_board[kk] += board[arr[i][k]][j]; // center, known
+            }
+        }
+    }
+    for (var j = 0; j < 27; j++) {
+        s_c_a_unique[j] = unique(s_c_a[j])
+    }
+    for (var i = 0; i < 27; i++) {
+        str += find_uniquestr_2(board, unique(s_c[i]), unique(s_c2[i]), unique(s_cc[i]), unique(s_cc_board[i]), s_c_a_unique[i], other_part[i], candidates, 'col', i)
+    }
     return str
 }
-function find_uniquestr_2(board, u_s,u_s2,u_sc,u_sc_board, uni,other,candidates,setting, i){
-	var a = [];
-	var s=u_s+u_s2;
-	var str=''
-	//console.log(i, u_s, u_s2, setting, uni,u_sc)
-	var uni__=uni.toString();
-	var arr=[other[0][1]+1,other[1][1]+1,other[2][1]+1]
-	for (var j = 1; j < 10; j++) {
-	var j_s=j.toString();
-		var re = new RegExp(j_s, "g");
-		var b=true;
-		if(uni__.indexOf(j_s)<0&&u_sc_board.indexOf(j_s)<0){
-		
-		if (s.length == s.replace(re, '').length + 2 && u_sc.length == u_sc.replace(re,'').length) {
-			// if two columns has it, the other column does not have it.
-			//console.log(j, u_sc)
-			for(var k=0;k<6;k++){
-			//console.log(b,candidates[other[k][0]][other[k][1]][j-1],candidates[other[k][0]][other[k][1]][j-1]!='',b&&candidates[other[k][0]][other[k][1]][j-1]!='')
-			//console.log(other[k][0],other[k][1])
-			candidates[other[k][0]][other[k][1]][j-1]=''
-			candidatesJoin[other[k][0]][other[k][1]]=candidates[other[k][0]][other[k][1]].join('')
+
+function find_uniquestr_2(board, u_s, u_s2, u_sc, u_sc_board, uni, other, candidates, setting, i) {
+    var a = [];
+    var s = u_s + u_s2;
+    var str = ''
+        //console.log(i, u_s, u_s2, setting, uni,u_sc)
+    var uni__ = uni.toString();
+    var arr = [other[0][1] + 1, other[1][1] + 1, other[2][1] + 1]
+    for (var j = 1; j < 10; j++) {
+        var j_s = j.toString();
+        var re = new RegExp(j_s, "g");
+        var b = true;
+        if (uni__.indexOf(j_s) < 0 && u_sc_board.indexOf(j_s) < 0) {
+            if (s.length == s.replace(re, '').length + 2 && u_sc.length == u_sc.replace(re, '').length) {
+			if(setting=='row'){
+                // if two columns has it, the other column does not have it.
+                for (var k = 0; k < 6; k++) {
+                    candidates[other[k][0]][other[k][1]][j - 1] = ''
+                    candidatesJoin[other[k][0]][other[k][1]] = candidates[other[k][0]][other[k][1]].join('')
+                }
+                var row = Math.floor(i / 3);
+                for (var k = 0; k < 3; k++) {
+                    if (candidates[row][other[k][1]][j - 1] == '') {
+                        arr[k] = ''
+                    }
+                }
+                var arr_s = arr.join('/');
+                arr_s = arr_s.replace(/\/+/g, '/')
+                arr_s = arr_s.replace(/\/$/g, '')
+                arr_s = arr_s.replace(/^\//g, '')
+
+                var s__ = 'can only appear at ' + setting + ' ,' + arr_s + ',' + j + ',' + (row + 1) + ',column' + '\n';
+                if (removings_doublePairs.indexOf(s__) < 0) {
+                    str += s__;
+                    removings_doublePairs += s__;
+                }
+
 			}
-			var row=Math.floor(i/3);
-			for(var k=0;k<3;k++){
-				if(candidates[row][other[k][1]][j-1]==''){
-					arr[k]=''
-				}
+			if(setting=='col'){
+			
+			
+			 // if two columns has it, the other column does not have it.
+                for (var k = 0; k < 6; k++) {
+				//console.log('col, other', other[k].join(','))
+                    candidates[other[k][1]][other[k][0]][j - 1] = ''
+                    candidatesJoin[other[k][1]][other[k][0]] = candidates[other[k][1]][other[k][0]].join('')
+                }
+                var row = Math.floor(i / 3);
+                for (var k = 0; k < 3; k++) {
+                    if (candidates[other[k][1]][row][j - 1] == '') {
+                        arr[k] = ''
+                    }
+                }
+                var arr_s = arr.join('/');
+                arr_s = arr_s.replace(/\/+/g, '/')
+                arr_s = arr_s.replace(/\/$/g, '')
+                arr_s = arr_s.replace(/^\//g, '')
+
+                var s__ = 'can only appear at ' + setting + ' ,' + arr_s + ',' + j + ',' + (row + 1) + ',row' + '\n';
+                if (removings_doublePairs.indexOf(s__) < 0) {
+                    str += s__;
+                    removings_doublePairs += s__;
+                }
 			}
-			var arr_s = arr.join('/');
-                    arr_s = arr_s.replace(/\/+/g, '/')
-                    arr_s = arr_s.replace(/\/$/g, '')
-                    arr_s = arr_s.replace(/^\//g, '')
-			
-			var s__='can only appear at ' + setting + ' ,' + arr_s + ',' + j+','+ (row+1)  +',column'+ '\n';
-			if(removings_doublePairs.indexOf(s__)<0){
-							str += s__;
-							removings_doublePairs +=s__;
-						}
-			
-			
-			//console.log('a', j, i, s, setting)
-			//console.log(u_s,u_s2,other[0][0], other[0][1])
-		}
-		}
-	}
-	return str
+            }
+        }
+    }
+    return str
 }
 function NakedPair(board, candidates) {
     //works for column and rows
@@ -675,6 +756,307 @@ function NakedPairs_fun(board, candidates, ss, pos, removed, b, str, i, j, setti
     }
     return [ss, pos, removed, b, str];
 }
+function NakedPair_new(board, candidates){
+var lib=[[0,0], [1,3], [2,6], [3,1], [4,4], [5,7], [6,2], [7,5], [8,8]]
+var str=''
+for (i = 0; i < 9; i++) {
+                console.log(candidatesJoin[i].join('; '))
+            }
+	for(var i=0;i<9;i++){
+	//row
+		var e=[];
+		var t=false;
+		for(var j=0;j<9;j++){
+			
+			var c=candidatesJoin[lib[i][0]][j];
+			var l=c.length;
+			if(l<4){
+				
+				if(l==2){
+					for(var k=0;k<e.length;k++){
+					if(c==e[k][1]){
+						var b=c.split('')
+						for(var n=0;n<9;n++){
+							if(board[lib[i][0]][n]==0){
+							if(n!=e[k][0]&&n!=j){
+								if(t==false){
+									if(candidates[lib[i][0]][n][b[0]]!=''){
+										t=true
+									}else if(candidates[lib[i][0]][n][b[1]]!=''){
+										t=true
+									}
+								}
+									candidates[lib[i][0]][n][b[0]-1]='';
+									candidates[lib[i][0]][n][b[1]-1]='';
+									candidatesJoin[lib[i][0]][n]=candidates[lib[i][0]][n].join('');
+								}
+							}
+						}
+						if(t){
+						var s__ = 'naked pairs ' + c + ' @ row ' + (lib[i][0] + 1) + '\n';
+						//console.log(s__)
+                        if (removings_nakedPairs.indexOf(s__) < 0) {
+                            str += s__;
+                            removings_nakedPairs += s__;
+                        }
+						}
+					}
+					}
+				}
+				e.push([j,c])
+			}
+			
+		}
+		//row, triple:
+		if(t==false){
+		for(var j=0;j<e.length;j++){
+			if(e[j][1].length==3){
+			var a=e[j][1].split('');
+			var b=[a[0]+a[1],a[0]+a[2],a[1]+a[2]];
+			var t1=false, t2=false;
+			var pos=0;
+			for(var k=0;k<e.length;k++){
+					if(t1==false){
+						if(b[0]==e[k][1]||b[1]==e[k][1]||b[2]==e[k][1]){
+							t1=true;
+							pos=k;
+						}
+					}else{
+						if(k!=pos){
+						if(b[0]==e[k][1]||b[1]==e[k][1]||b[2]==e[k][1]){
+							for(var n=0;n<9;n++){
+							if(board[lib[i][0]][n]==0){
+							if(n!=e[j][0]&&n!=e[k][0]&&n!=e[pos][0]){
+								if(t==false){
+									if(candidates[lib[i][0]][n][b[0]]!=''){
+										t=true
+									}else if(candidates[lib[i][0]][n][b[1]]!=''){
+										t=true
+									}
+								}
+									candidates[lib[i][0]][n][b[0]-1]='';
+									candidates[lib[i][0]][n][b[1]-1]='';
+									candidatesJoin[lib[i][0]][n]=candidates[lib[i][0]][n].join('');
+								}
+							}
+							}
+							if(t){
+						var s__ = 'naked triple ' + e[j][1] + ' @ row ' + (lib[i][0] + 1) + '\n';
+						console.log(s__)
+                        if (removings_nakedPairs.indexOf(s__) < 0) {
+                            str += s__;
+                            removings_nakedPairs += s__;
+                        }
+						}
+						}
+						}
+					}
+				
+			}
+			}
+		}
+		}
+		
+		
+// column
+		e=[];t=false;
+		for(var j=0;j<9;j++){
+			var c=candidatesJoin[j][lib[i][0]];
+			var l=c.length;
+			if(l<4){
+				if( l==2){
+				for(var k=0;k<e.length;k++){
+					if(c==e[k][1]){
+						var b=c.split('')
+						for(var n=0;n<9;n++){
+							if(board[n][lib[i][0]]==0){
+								if(n!=e[k][0]&&n!=j){
+								if(t==false){
+									if(candidates[n][lib[i][0]][b[0]]!=''){
+										t=true
+									}else if(candidates[n][lib[i][0]][b[1]]!=''){
+										t=true
+									}
+								}
+								
+									candidates[n][lib[i][0]][b[0]-1]='';
+									candidates[n][lib[i][0]][b[1]-1]='';
+									candidatesJoin[n][lib[i][0]]=candidates[n][lib[i][0]].join('');
+								}
+							}
+						}
+						if(t){
+						var s__ = 'naked pairs ' + c + ' @ column ' + (lib[i][0] + 1) + '\n';
+						console.log(s__)
+                        if (removings_nakedPairs.indexOf(s__) < 0) {
+                            str += s__;
+                            removings_nakedPairs += s__;
+                        }}
+					}}
+				}else if(l==3){
+					
+					}
+				e.push([j,c])
+			}
+			
+		}
+		// column, triple
+		if(t==false){
+		for(var j=0;j<e.length;j++){
+			if(e[j][1].length==3){
+			var a=e[j][1].split('');
+			var b=[a[0]+a[1],a[0]+a[2],a[1]+a[2]];
+			var t1=false, t2=false;
+			var pos=0;
+			for(var k=0;k<e.length;k++){
+					if(t1==false){
+						if(b[0]==e[k][1]||b[1]==e[k][1]||b[2]==e[k][1]){
+							t1=true;
+							pos=k;
+						}
+					}else{
+						if(k!=pos){
+						if(b[0]==e[k][1]||b[1]==e[k][1]||b[2]==e[k][1]){
+							for(var n=0;n<9;n++){
+							if(board[n][lib[i][0]]==0){
+							if(n!=e[j][0]&&n!=e[k][0]&&n!=e[pos][0]){
+								if(t==false){
+									if(candidates[n][lib[i][0]][b[0]]!=''){
+										t=true
+									}else if(candidates[n][lib[i][0]][b[1]]!=''){
+										t=true
+									}
+								}
+									candidates[n][lib[i][0]][b[0]-1]='';
+									candidates[n][lib[i][0]][b[1]-1]='';
+									candidatesJoin[n][lib[i][0]]=candidates[n][lib[i][0]].join('');
+								}
+							}
+							}
+							if(t){
+						var s__ = 'naked triple ' + e[j][1] + ' @ row ' + (lib[i][0] + 1) + '\n';
+						console.log(s__)
+                        if (removings_nakedPairs.indexOf(s__) < 0) {
+                            str += s__;
+                            removings_nakedPairs += s__;
+                        }
+						}
+						}
+						}
+					}
+				
+			}
+			}
+		}
+		}
+		// block
+		e=[];t=false;
+		for(var j=0;j<9;j++){
+			var x=block[i][j][0];
+			var y=block[i][j][1];
+			var c=candidatesJoin[x][y];
+			var l=c.length;
+			if(l<4){
+			if(l==2){
+				for(var k=0;k<e.length;k++){
+					if(c==e[k][1]){
+						var b=c.split('')
+						for(var n=0;n<9;n++){
+							var xn=block[i][n][0];
+							var yn=block[i][n][1];
+							if(board[x][y]==0){
+								if(xn!=e[k][0]&&yn!=e[k][1]&&n!=j){
+								if(t==false){
+									if(candidates[xn][yn][b[0]-1]!=''){
+										t=true
+									}else if(candidates[xn][yn][b[1]-1]!=''){
+										t=true
+									}
+								}
+								
+									candidates[xn][yn][b[0]-1]='';
+									candidates[xn][yn][b[1]-1]='';
+									candidatesJoin[xn][yn]=candidates[xn][yn].join('');
+								}
+							}
+						}
+						if(t){
+						var s__ = 'naked pairs ' + c + ' @ block ' + (i + 1) + '\n';
+						console.log(s__)
+                        if (removings_nakedPairs.indexOf(s__) < 0) {
+                            str += s__;
+                            removings_nakedPairs += s__;
+                        }}
+					}
+				}}
+				else if(l==3){
+					
+					}
+				e.push([x,y,c])
+			}
+			
+		}
+		//block triple
+if(t==false){
+		for(var j=0;j<e.length;j++){
+			if(e[j][2].length==3){
+			var a=e[j][2].split('');
+			var b=[a[0]+a[1],a[0]+a[2],a[1]+a[2]];
+			var t1=false, t2=false;
+			var pos=0;
+			for(var k=0;k<e.length;k++){
+					if(t1==false){
+						if(b[0]==e[k][2]||b[1]==e[k][2]||b[2]==e[k][2]){
+							t1=true;
+							pos=k;
+						}
+					}else{
+						if(k!=pos){
+						if(b[0]==e[k][2]||b[1]==e[k][2]||b[2]==e[k][2]){
+							for(var n=0;n<9;n++){
+							var xn=block[i][n][0];
+							var yn=block[i][n][1];
+							if(board[x][y]==0){
+								if(xn!=e[k][0]&&yn!=e[k][1]&&xn!=e[pos][0]&&yn!=e[pos][1]&&xn!=e[j][0]&&yn!=e[j][1]){
+								if(t==false){
+									if(candidates[xn][yn][b[0]-1]!=''){
+										t=true
+									}else if(candidates[xn][yn][b[1]-1]!=''){
+										t=true
+									}
+								}
+								
+									candidates[xn][yn][b[0]-1]='';
+									candidates[xn][yn][b[1]-1]='';
+									candidatesJoin[xn][yn]=candidates[xn][yn].join('');
+								}
+							}
+							}
+							if(t){
+						var s__ = 'naked triple ' + e[j][2] + ' @ block ' + (i + 1) + '\n';
+						console.log(s__)
+                        if (removings_nakedPairs.indexOf(s__) < 0) {
+                            str += s__;
+                            removings_nakedPairs += s__;
+                        }
+						}
+						}
+						}
+					}
+				
+			}
+			}
+		}
+		}
+
+	}
+for (i = 0; i < 9; i++) {
+                console.log(candidatesJoin[i].join('; '))
+            }
+			console.log(str)
+return str;
+
+}
 function RemovingCandidates(candidates, value, x, except, s) { // remove candidates from a row, column, block
     var str = except.join('');
 	var b=true;
@@ -759,13 +1141,20 @@ function logInfo(info, value, x, y) {
 }
 
 </script>
-<textarea id='in'>600000000020536000050010900130400000004020700000001045003060010400892070000000006</textarea>
+<textarea id='in'>600802735702356940300407062100975024200183079079624003400560207067240300920738406</textarea>
 <!--000010000510008000023700000000050010800931004096080500000800100900500820050060090--><!--22 steps-->
+<!--800200047006005200000600009087000090009000500060090810500002000003900000210006008--><!--12 steps-->
+<!--600000000020536000050010900130400000004020700000001045003060010400892070000000006--><!--17 steps-->
+<!--096000100070619030321800069069000800240900613003000940930108006000790380002000590--><!--15 steps-->
+<!--400270600798156234020840007237468951849531726561792843082015479070024300004087002--><!--naked pairs, 7 steps-->
 <!--700000501203107000061000000800060000400500003005902800900041060000000140040800000-->
-<!--704000501203157406561000000800060000400508603605902804900041060300000140140800000-->
-<!--583010206174026300296050700639041502720000009005290600307062000052170063960000027-->
-<!--096000100070619030321800069069000800240900613003000940930108006000790380002000590-->
-<!--400270600798156234020840007237468951849531726561792843082015479070024300004087002--><!--naked pairs-->
+<!--704000501203157406561000000800060000400508603605902804900041060300000140140800000--><!--naked pairs-->
+<!--5830102061740263002960507006390415027200000090052906003070620000052170063960000027-->
+<!--300605000000030670010000080001062003002009050709000004000976000600000400020800007--><!--naked triple-->
+<!--004000658201050039065003012428000065006805924050000087010200546642591873507000291--><!--naked triple-->
+<!--004107900000000000100904008045000230000503000019000760500206009000000000007305600-->
+<!--600802735702356940300407062100975024200183079079624003400560207067240300920738406--><!--naked triple-->
+
 <br>
 Unkown place is represented by <input type='text' id='u' value='0'><br>
 <input type='button' class='btn' onclick='solve()' value='solve'>
