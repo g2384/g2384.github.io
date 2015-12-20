@@ -99,26 +99,20 @@ function solveSudokuStepByStep(puzzleText, corr) {
                 solution += parseResult(num, board, step)
                 o = true
             }
-			
-			for (i = 0; i < 9; i++) {
-                //console.log(candidatesJoin[i].join('; '))
-            }
-			
+
             num = UniqueCandidate(board, candidates);
             if (num != '') {
                 step++;
                 solution += parseResult(num, board, step)
                 o = true
             }
-			if(o){
-			num='.'
-			}else
-            if (o == false) {
+            if (o) {
+                num = '.'
+            } else{
 
                 var new_ = false;
                 num = blockRowColumn(board, candidates);
                 //console.log(num)
-                //console.log('blockRowColumn', num, step)
                 if (num != '') {
                     step++;
                     solution += parseResult(num, board, step + ' Column/Row Interaction')
@@ -126,7 +120,6 @@ function solveSudokuStepByStep(puzzleText, corr) {
                 }
                 num = doublePairs(board, candidates)
                 if (num != '') {
-                    //console.log('doublePairs',num)
                     step++;
                     solution += parseResult(num, board, step + ' Double Pairs')
                     new_ = true;
@@ -134,7 +127,6 @@ function solveSudokuStepByStep(puzzleText, corr) {
                 num = NakedPair_new(board, candidates)
                     //num = ''
                 if (num != '') {
-                    //console.log('NakedPair',num)
                     step++;
                     solution += parseResult(num, board, step + ' Naked Pairs')
                     new_ = true;
@@ -142,7 +134,13 @@ function solveSudokuStepByStep(puzzleText, corr) {
 
                 if (new_) {
                     num = '.'
-                }
+                }else{
+					num = ForcingChain(board, candidates)
+					if (num != '') {
+                    step++;
+                    solution += parseResult(num, board, step+' Forcing Chain')
+					}
+				}
             }
         }
 
@@ -154,7 +152,7 @@ function solveSudokuStepByStep(puzzleText, corr) {
         var final_p = ''
         var wrong = false;
         for (var i = 0; i < 81; i++) {
-            if (f1[i] != f2[i]&&f2[i]!=0) {
+            if (f1[i] != f2[i] && f2[i] != 0) {
                 f2[i] = '<span class="r">' + f2[i] + '</span>';
                 wrong = true;
             }
@@ -164,9 +162,9 @@ function solveSudokuStepByStep(puzzleText, corr) {
                 } else if (i % 3 == 0) {
                     final_p += ' '
                 }
-                
+
             }
-			final_p += f2[i]
+            final_p += f2[i]
         }
         if (wrong) {
             return solution + '\n\nSorry, got a wrong solution(wrong numbers are highlighted in red): \n' + final_p;
@@ -178,7 +176,7 @@ function solveSudokuStepByStep(puzzleText, corr) {
 
 function parseResult(num, board, step) {
     var solution = '<strong>step ' + step + ':</strong>\n';
-    a = num.split('\n')
+    var a = num.split('\n')
     var kk = [];
     //console.log('step: '+step)
     for (var k = 0; k < a.length - 1; k++) {
@@ -194,8 +192,11 @@ function parseResult(num, board, step) {
 		solution += a2[0]+'<br>';
 		}else if(a2[0].indexOf('naked triple')>=0){
 		solution += a2[0]+'<br>';
+		}else if(a2[0].indexOf('hidden triple')>=0){
+		solution += a2[0]+'<br>';
+		}else if(a2[0].indexOf('test')>=0){
+		solution += a2[0]+'<br>';
 		}else {
-
             kk.push([parseInt(a2[2]), parseInt(a2[3])])
             solution += logInfo(a2[0], a2[1], parseInt(a2[2]), parseInt(a2[3]))
         }
@@ -635,136 +636,12 @@ function find_uniquestr_2(board, u_s, u_s2, u_sc, u_sc_board, uni, other, candid
     }
     return str
 }
-function NakedPair(board, candidates) {
-    //works for column and rows
-    var b = false,
-        b2 = false;
-    var str = '';
-    for (var i = 0; i < 9; i++) {
-        b = false;
-        b2 = false;
-        var ss = '';
-        var pos = -1;
-        var removed = false;
-        var ss2 = '';
-        var pos2 = -1;
-        var removed2 = false;
-        for (var j = 0; j < 9; j++) {
-            a = NakedPairs_fun(board, candidates, ss, pos, removed, b, str, i, j, 'row')
-            ss = a[0]
-            pos = a[1]
-            removed = a[2]
-            b = a[3]
-            str = a[4]
-        }
-    }
-    for (var i = 0; i < 9; i++) {
-        b = false;
-        b2 = false;
-        var ss = '';
-        var pos = -1;
-        var removed = false;
-        var ss2 = '';
-        var pos2 = -1;
-        var removed2 = false;
-        for (var j = 0; j < 9; j++) {
-            a = NakedPairs_fun(board, candidates, ss, pos, removed, b, str, j, i, 'column')
-            ss = a[0]
-            pos = a[1]
-            removed = a[2]
-            b = a[3]
-            str = a[4]
-        }
-    }
-    return str;
-}
-
-function NakedPairs_fun(board, candidates, ss, pos, removed, b, str, i, j, setting) {
-    //console.log(i, j)
-    //console.log(candidatesJoin[i][j])
-    if (candidatesJoin[i][j].length == 2) {
-        if (b) {
-            if (ss == candidatesJoin[i][j]) {
-                //console.log('found', candidatesJoin[i][j], ss, i, j, pos)
-                var bb = ss.split('')
-                bb[0]--;
-                bb[1]--;
-                if (setting == 'row') {
-                    //console.log(candidatesJoin[i].join(''), ss)
-                    if (unique(candidatesJoin[i].join('')) != ss) {
-                        for (k = 0; k < 9; k++) {
-                            if (k != pos && k != j) {
-                                if (candidatesJoin[i][k].length > 0) {
-                                    candidates[i][k][bb[0]] = '';
-                                    candidates[i][k][bb[1]] = '';
-                                    candidatesJoin[i][k] = candidates[i][k].join('')
-                                   // console.log('remove', ss, candidatesJoin[i][k], i, k)
-
-                                }
-                            }
-                        }
-
-                        var s__ = 'naked pairs ' + ss + ' @ ' + setting + ' ' + (i + 1) + '\n';
-                        if (removings_nakedPairs.indexOf(s__) < 0) {
-                            str += s__;
-                            removings_nakedPairs += s__;
-                        }
-                    }
-                } else if (setting = 'column') {
-                    var s_t = ''
-                    for (var k = 0; k < 9; k++) {
-                        s_t += candidatesJoin[k][j];
-                    }
-                    //console.log('column', s_t,unique(s_t), ss,j, i, pos)
-                    if (unique(s_t) != ss) {
-
-                        for (k = 0; k < 9; k++) {
-                            if (k != pos && k != i) {
-                                if (candidatesJoin[k][j].length > 0) {
-                                    candidates[k][j][bb[0]] = '';
-                                    candidates[k][j][bb[1]] = '';
-                                    candidatesJoin[k][j] = candidates[k][j].join('')
-                                    //console.log('remove', ss, candidatesJoin[k][j],  k,j, pos, i)
-
-                                }
-                            }
-                        }
-
-                        var s__ = 'naked pairs ' + ss + ' @ ' + setting + ' ' + (j + 1) + '\n';
-
-                        if (removings_nakedPairs.indexOf(s__) < 0) {
-                            str += s__;
-                            removings_nakedPairs += s__;
-                        }
-                    }
-                }
-
-                for (var g = 0; g < 9; g++) {
-                   // console.log(candidatesJoin[g].join('; '))
-                }
-            }
-        } else {
-            ss = candidatesJoin[i][j];
-           // console.log('NakedPair', setting, candidatesJoin[i][j], i, j)
-            if (setting == 'row') {
-                pos = j;
-            } else if (setting == 'column') {
-                pos = i;
-            }
-            b = true;
-        }
-    }
-    return [ss, pos, removed, b, str];
-}
 function NakedPair_new(board, candidates){
 var lib=[[0,0], [1,3], [2,6], [3,1], [4,4], [5,7], [6,2], [7,5], [8,8]]
 var str=''
-for (i = 0; i < 9; i++) {
-                console.log(candidatesJoin[i].join('; '))
-            }
 	for(var i=0;i<9;i++){
 	//row
-		var e=[];
+		var e=[]; var e2=[];
 		var t=false;
 		for(var j=0;j<9;j++){
 			
@@ -780,9 +657,9 @@ for (i = 0; i < 9; i++) {
 							if(board[lib[i][0]][n]==0){
 							if(n!=e[k][0]&&n!=j){
 								if(t==false){
-									if(candidates[lib[i][0]][n][b[0]]!=''){
+									if(candidates[lib[i][0]][n][b[0]-1]!=''){
 										t=true
-									}else if(candidates[lib[i][0]][n][b[1]]!=''){
+									}else if(candidates[lib[i][0]][n][b[1]-1]!=''){
 										t=true
 									}
 								}
@@ -802,6 +679,7 @@ for (i = 0; i < 9; i++) {
 						}
 					}
 					}
+					e2.push([j,c])
 				}
 				e.push([j,c])
 			}
@@ -827,15 +705,19 @@ for (i = 0; i < 9; i++) {
 							for(var n=0;n<9;n++){
 							if(board[lib[i][0]][n]==0){
 							if(n!=e[j][0]&&n!=e[k][0]&&n!=e[pos][0]){
+							
 								if(t==false){
-									if(candidates[lib[i][0]][n][b[0]]!=''){
+									if(candidates[lib[i][0]][n][a[0]-1]!=''){
 										t=true
-									}else if(candidates[lib[i][0]][n][b[1]]!=''){
+									}else if(candidates[lib[i][0]][n][a[1]-1]!=''){
+										t=true
+									}else if(candidates[lib[i][0]][n][a[2]-1]!=''){
 										t=true
 									}
 								}
-									candidates[lib[i][0]][n][b[0]-1]='';
-									candidates[lib[i][0]][n][b[1]-1]='';
+									candidates[lib[i][0]][n][a[0]-1]='';
+									candidates[lib[i][0]][n][a[1]-1]='';
+									candidates[lib[i][0]][n][a[2]-1]='';
 									candidatesJoin[lib[i][0]][n]=candidates[lib[i][0]][n].join('');
 								}
 							}
@@ -856,10 +738,47 @@ for (i = 0; i < 9; i++) {
 			}
 		}
 		}
+		//row hidden triple
+		if(t==false&&e2.length>2){
+			var e3=Combo_hiddenpair(e2)
+			if(e3.length==2){
+			var a=e3[1].split('')
+				for(var n=0;n<9;n++){
+						if(board[lib[i][0]][n]==0){
+							if(e3[0].indexOf(n)<0){
+							
+								if(t==false){
+									if(candidates[lib[i][0]][n][a[0]-1]!=''){
+										t=true
+									}else if(candidates[lib[i][0]][n][a[1]-1]!=''){
+										t=true
+									}else if(candidates[lib[i][0]][n][a[2]-1]!=''){
+										t=true
+									}
+								}
+									candidates[lib[i][0]][n][a[0]-1]='';
+									candidates[lib[i][0]][n][a[1]-1]='';
+									candidates[lib[i][0]][n][a[2]-1]='';
+									candidatesJoin[lib[i][0]][n]=candidates[lib[i][0]][n].join('');
+								}
+							}
+							}
+							if(t){
+						var s__ = 'hidden triple ' + e3[1] + ' @ row ' + (lib[i][0] + 1) + '\n';
+						console.log(s__)
+                        if (removings_nakedPairs.indexOf(s__) < 0) {
+                            str += s__;
+                            removings_nakedPairs += s__;
+                        }
+						}
+			
+			
+		}
+		}
 		
 		
 // column
-		e=[];t=false;
+		e=[];t=false;e2=[];
 		for(var j=0;j<9;j++){
 			var c=candidatesJoin[j][lib[i][0]];
 			var l=c.length;
@@ -872,9 +791,9 @@ for (i = 0; i < 9; i++) {
 							if(board[n][lib[i][0]]==0){
 								if(n!=e[k][0]&&n!=j){
 								if(t==false){
-									if(candidates[n][lib[i][0]][b[0]]!=''){
+									if(candidates[n][lib[i][0]][b[0]-1]!=''){
 										t=true
-									}else if(candidates[n][lib[i][0]][b[1]]!=''){
+									}else if(candidates[n][lib[i][0]][b[1]-1]!=''){
 										t=true
 									}
 								}
@@ -893,9 +812,8 @@ for (i = 0; i < 9; i++) {
                             removings_nakedPairs += s__;
                         }}
 					}}
-				}else if(l==3){
-					
-					}
+					e2.push([j,c])
+				}
 				e.push([j,c])
 			}
 			
@@ -921,21 +839,23 @@ for (i = 0; i < 9; i++) {
 							if(board[n][lib[i][0]]==0){
 							if(n!=e[j][0]&&n!=e[k][0]&&n!=e[pos][0]){
 								if(t==false){
-									if(candidates[n][lib[i][0]][b[0]]!=''){
+									if(candidates[n][lib[i][0]][a[0]-1]!=''){
 										t=true
-									}else if(candidates[n][lib[i][0]][b[1]]!=''){
+									}else if(candidates[n][lib[i][0]][a[1]-1]!=''){
+										t=true
+									}else if(candidates[n][lib[i][0]][a[2]-1]!=''){
 										t=true
 									}
 								}
-									candidates[n][lib[i][0]][b[0]-1]='';
-									candidates[n][lib[i][0]][b[1]-1]='';
+									candidates[n][lib[i][0]][a[0]-1]='';
+									candidates[n][lib[i][0]][a[1]-1]='';
+									candidates[n][lib[i][0]][a[2]-1]='';
 									candidatesJoin[n][lib[i][0]]=candidates[n][lib[i][0]].join('');
 								}
 							}
 							}
 							if(t){
-						var s__ = 'naked triple ' + e[j][1] + ' @ row ' + (lib[i][0] + 1) + '\n';
-						console.log(s__)
+						var s__ = 'naked triple ' + e[j][1] + ' @ column ' + (lib[i][0] + 1) + '\n';
                         if (removings_nakedPairs.indexOf(s__) < 0) {
                             str += s__;
                             removings_nakedPairs += s__;
@@ -949,8 +869,43 @@ for (i = 0; i < 9; i++) {
 			}
 		}
 		}
+		//column hidden triple
+		if(t==false&&e2.length>2){
+			var e3=Combo_hiddenpair(e2)
+			if(e3.length==2){
+			var a=e3[1].split('')
+			for(var n=0;n<9;n++){
+							if(board[n][lib[i][0]]==0){
+							if(e3[0].indexOf(n)<0){
+								if(t==false){
+									if(candidates[n][lib[i][0]][a[0]-1]!=''){
+										t=true
+									}else if(candidates[n][lib[i][0]][a[1]-1]!=''){
+										t=true
+									}else if(candidates[n][lib[i][0]][a[2]-1]!=''){
+										t=true
+									}
+								}
+									candidates[n][lib[i][0]][a[0]-1]='';
+									candidates[n][lib[i][0]][a[1]-1]='';
+									candidates[n][lib[i][0]][a[2]-1]='';
+									candidatesJoin[n][lib[i][0]]=candidates[n][lib[i][0]].join('');
+								}
+							}
+							}
+							if(t){
+						var s__ = 'hidden triple ' + e3[1] + ' @ column ' + (lib[i][0] + 1) + '\n';
+						console.log(s__)
+                        if (removings_nakedPairs.indexOf(s__) < 0) {
+                            str += s__;
+                            removings_nakedPairs += s__;
+                        }
+						}
+		}}
+		
+		
 		// block
-		e=[];t=false;
+		e=[];t=false;e2=[];
 		for(var j=0;j<9;j++){
 			var x=block[i][j][0];
 			var y=block[i][j][1];
@@ -988,10 +943,10 @@ for (i = 0; i < 9; i++) {
                             removings_nakedPairs += s__;
                         }}
 					}
-				}}
-				else if(l==3){
-					
-					}
+				}
+				e2.push([x,y,c])
+				}
+				
 				e.push([x,y,c])
 			}
 			
@@ -1019,15 +974,18 @@ if(t==false){
 							if(board[x][y]==0){
 								if(xn!=e[k][0]&&yn!=e[k][1]&&xn!=e[pos][0]&&yn!=e[pos][1]&&xn!=e[j][0]&&yn!=e[j][1]){
 								if(t==false){
-									if(candidates[xn][yn][b[0]-1]!=''){
+									if(candidates[xn][yn][a[0]-1]!=''){
 										t=true
-									}else if(candidates[xn][yn][b[1]-1]!=''){
+									}else if(candidates[xn][yn][a[1]-1]!=''){
+										t=true
+									}else if(candidates[xn][yn][a[2]-1]!=''){
 										t=true
 									}
 								}
 								
-									candidates[xn][yn][b[0]-1]='';
-									candidates[xn][yn][b[1]-1]='';
+									candidates[xn][yn][a[0]-1]='';
+									candidates[xn][yn][a[1]-1]='';
+									candidates[xn][yn][a[2]-1]='';
 									candidatesJoin[xn][yn]=candidates[xn][yn].join('');
 								}
 							}
@@ -1050,13 +1008,199 @@ if(t==false){
 		}
 
 	}
-for (i = 0; i < 9; i++) {
-                console.log(candidatesJoin[i].join('; '))
-            }
-			console.log(str)
+	//block hidden triple
+	if(t==false&&e2.length>2){
+			var e3=Combo_hiddenpair(e2)
+			console.log(e3,e2, 'hidden')
+			if(e3.length==3){
+			var a=e3[2].split('')
+			for(var n=0;n<9;n++){
+				var xn=block[i][n][0];
+							var yn=block[i][n][1];
+							if(board[x][y]==0){
+								if(e3[0].indexOf(xn)<0&&e3[1].indexOf(yn)<0){
+								if(t==false){
+									if(candidates[xn][yn][a[0]-1]!=''){
+										t=true
+									}else if(candidates[xn][yn][a[1]-1]!=''){
+										t=true
+									}else if(candidates[xn][yn][a[2]-1]!=''){
+										t=true
+									}
+								}
+								
+									candidates[xn][yn][a[0]-1]='';
+									candidates[xn][yn][a[1]-1]='';
+									candidates[xn][yn][a[2]-1]='';
+									candidatesJoin[xn][yn]=candidates[xn][yn].join('');
+								}
+							}
+							}
+							if(t){
+						var s__ = 'hidden triple ' + e[j][2] + ' @ block ' + (i + 1) + '\n';
+                        if (removings_nakedPairs.indexOf(s__) < 0) {
+                            str += s__;
+                            removings_nakedPairs += s__;
+                        }
+						}
+			
+	}}
 return str;
 
 }
+function ForcingChain(board, candidates){
+	var b_c = [9];
+	var b2_c = [9];
+	var c_c = [9];
+	var cj_c = [9];
+	var a=[];
+	var str='';
+	var m_step=10;
+	var sol=printBoard_oneline(board)
+	for(var i=0;i<9;i++){
+		b_c[i]=[9];
+			c_c[i]=[9];
+			cj_c[i]=[9];
+		for(var j=0;j<9;j++){
+			cj_c[i][j]=candidatesJoin[i][j];
+			c_c[i][j]=[9];
+			if(candidatesJoin[i][j].length==2){
+					a.push([i,j])
+				}
+	}
+	}
+	for(var i=0;i<a.length;i++){
+		for(var i2=0;i2<9;i2++){
+			for(var j=0;j<9;j++){
+				b_c[i2][j]=board[i2][j];
+				candidatesJoin[i2][j]=cj_c[i2][j];
+				for(var n=0;n<9;n++){
+					c_c[i2][j][n]=candidates[i2][j][n];
+				}
+			}
+		}
+		var s=cj_c[a[i][0]][a[i][1]].split('');
+		FillValue(b_c, c_c, s[0],a[i][0], a[i][1]);
+		var step1=0;
+		var sol1='',sol2='';
+		var num='.'
+		while(num!=''&&step1<m_step){
+			var o = false;
+            num = SoleCandidate(b_c, c_c);
+            if (num != '') {
+			step1++;
+                o = true
+            }
+			
+            num = UniqueCandidate(b_c, c_c);
+            if (num != '') {
+                step1++;
+                o = true
+            }
+            if (o) {
+                num = '.'
+            }
+		}
+		sol1=printBoard_oneline(b_c)
+		for(var i2=0;i2<9;i2++){
+		b2_c[i2]=[9];
+			for(var j=0;j<9;j++){
+				b2_c[i2][j]=board[i2][j];
+				candidatesJoin[i2][j]=cj_c[i2][j];
+				for(var n=0;n<9;n++){
+					c_c[i2][j][n]=candidates[i2][j][n];
+				}
+			}
+		}
+		FillValue(b2_c, c_c, s[1],a[i][0], a[i][1]);
+		num='.';var step2=0;
+		while(num!=''&&step2<m_step){
+			var o = false;
+            num = SoleCandidate(b2_c, c_c);
+            if (num != '') {
+                step2++;
+                o = true
+            }
+
+            num = UniqueCandidate(b2_c, c_c);
+            if (num != '') {
+                step2++;
+                o = true
+            }
+            if (o) {
+                num = '.'
+            }
+		}
+		for(var i3=0;i3<9;i3++){
+						for(var j3=0;j3<9;j3++){
+						candidatesJoin[i3][j3]=cj_c[i3][j3];
+						}
+					}
+		for(var i2=0;i2<9;i2++){
+			for(var j2=0;j2<9;j2++){
+				if(board[i2][j2]==0){
+					if(b_c[i2][j2]==b2_c[i2][j2]&&b_c[i2][j2]!=0){
+					if(str==''){
+						str='forcing chain test '+s[0]+'('+step1+' steps)/'+s[1]+'('+step2+' steps) @ row = '+(a[i][0]+1)+' col = '+(a[i][1]+1)+'\n';
+					}
+					FillValue(board, candidates, b_c[i2][j2],i2, j2);
+					str+='matches, '+ b_c[i2][j2]+','+i2+','+j2+'\n'
+					i=100;
+					
+					}
+				}
+	
+			}
+		}
+	}
+	return str
+}
+function printBoard_oneline(board){
+var s=''
+for(var i=0;i<9;i++){
+		for(var j=0;j<9;j++){
+		s+=board[i][j];
+		}}return s;
+}
+function Combo_hiddenpair(a){
+//console.log(a.length)
+switch(a.length){
+	case 3:
+		var b=[[0,1,2]]
+		break;
+	case 4:
+		var b=[[0,1,2], [0,1,3], [0,2,3], [1,2,3]]
+		break;
+	case 5:
+		var b=[[0,1,2], [0,1,3],[0,1,4], [0,2,3],[0,2,4], [0,3,4], [1,2,3],[1,2,4], [1,3,4], [2,3,4]]
+		break;
+	case 6:
+		var b=[[0,1,2], [0,1,3],[0,1,4],[0,1,5], [0,2,3],[0,2,4],[0,2,5], [0,3,4],[0,3,5],[0,4,5], [1,2,3],[1,2,4],[1,2,5], [1,3,4],[1,3,5],[1,4,5], [2,3,4],[2,3,5],[2,4,5],[3,4,5]]
+		break;
+	
+	
+}
+if(a[0].length==2){
+for(var i=0;i<b.length;i++){
+		var s=unique(a[b[i][0]][1]+a[b[i][1]][1]+a[b[i][2]][1])
+		if(s.length==3){
+			var t=a[b[i][0]][0]+''+a[b[i][1]][0]+''+a[b[i][2]][0]
+			return [t, s]
+		}
+	}
+}else{
+for(var i=0;i<b.length;i++){
+		var s=unique(a[b[i][0]][2]+a[b[i][1]][2]+a[b[i][2]][2])
+		if(s.length==3){
+			var t=a[b[i][0]][0]+''+a[b[i][1]][0]+''+a[b[i][2]][0]
+			var r=a[b[i][0]][1]+''+a[b[i][1]][1]+''+a[b[i][2]][1]
+			return [t,r, s]
+		}
+	}
+}
+	return []
+}
+
 function RemovingCandidates(candidates, value, x, except, s) { // remove candidates from a row, column, block
     var str = except.join('');
 	var b=true;
@@ -1147,13 +1291,13 @@ function logInfo(info, value, x, y) {
 <!--600000000020536000050010900130400000004020700000001045003060010400892070000000006--><!--17 steps-->
 <!--096000100070619030321800069069000800240900613003000940930108006000790380002000590--><!--15 steps-->
 <!--400270600798156234020840007237468951849531726561792843082015479070024300004087002--><!--naked pairs, 7 steps-->
+<!--004000658201050039065003012428000065006805924050000087010200546642591873507000291--><!--16 steps, naked triple-->
 <!--700000501203107000061000000800060000400500003005902800900041060000000140040800000-->
 <!--704000501203157406561000000800060000400508603605902804900041060300000140140800000--><!--naked pairs-->
-<!--5830102061740263002960507006390415027200000090052906003070620000052170063960000027-->
 <!--300605000000030670010000080001062003002009050709000004000976000600000400020800007--><!--naked triple-->
-<!--004000658201050039065003012428000065006805924050000087010200546642591873507000291--><!--naked triple-->
 <!--004107900000000000100904008045000230000503000019000760500206009000000000007305600-->
 <!--600802735702356940300407062100975024200183079079624003400560207067240300920738406--><!--naked triple-->
+<!--000500039039041257005039680090320060008956740000018920046105300087090510050000000--><!---->
 
 <br>
 Unkown place is represented by <input type='text' id='u' value='0'><br>
