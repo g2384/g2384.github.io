@@ -46,7 +46,8 @@ var candidatesJoin = [9];
 var removings_blockRowColumn = '';
 var removings_doublePairs = '';
 var removings_nakedPairs = '';
-
+var removings_swordfish = '';
+var swordfishx=[],swordfishy=[],swordfishv=[];
 function solve() {
 var s=document.getElementById('in').value;
 var u=document.getElementById('u').value;
@@ -67,7 +68,9 @@ function solveSudokuStepByStep(puzzleText, corr) {
     removings_blockRowColumn = '';
     removings_doublePairs = '';
     removings_nakedPairs = '';
+    removings_swordfish = '';
     var board = parseSudoku(puzzleText);
+	swordfishx=[],swordfishy=[];
     if (board == 0) {
         return "Board does not contain enough numbers";
     } else {
@@ -109,6 +112,47 @@ function solveSudokuStepByStep(puzzleText, corr) {
                 solution += parseResult(num, board, step)
                 o = true
             }
+			var sw='';
+			for(var i=0;i<swordfishx.length;i++){
+				if(swordfishx[i].length>0){
+					for(var j=0;j<swordfishx[i].length;j++){
+						var p=board[swordfishx[i][j]][swordfishy[i][j]];
+						if(p>0){
+							sw=swordfishv[i]+' @ ';
+							if(p==swordfishv[i]){
+								for(var m=j%2;m<6;m+=2){
+									var mx=swordfishx[i][m];
+									var my=swordfishy[i][m];
+									if(board[mx][my]==0){
+										FillValue(board, candidates, swordfishv[i], mx, my)
+										sw+='['+(mx+1)+','+(my+1)+']'
+									}
+								}
+							}else{
+								var m1=0;
+								if(j%2==0){
+									m1=1;
+								}
+								for(var m=m1;m<6;m+=2){
+									var mx=swordfishx[i][m];
+									var my=swordfishy[i][m];
+									if(board[mx][my]==0){
+										FillValue(board, candidates, swordfishv[i], mx, my)
+										sw+='['+(mx+1)+','+(my+1)+']'
+									}
+								}
+							}
+							j=6;
+							swordfishx[i]=[];
+							swordfishy[i]=[];
+							swordfishv[i]=0;
+						}
+					}
+				}
+			}
+			if(sw.indexOf('[')>0){
+			solution+='Applied the results from swordfish '+sw+'\n\n'
+			}
             if (o) {
                 num = '.'
             } else{
@@ -126,6 +170,7 @@ function solveSudokuStepByStep(puzzleText, corr) {
                     solution += parseResult(num, board, step + ' Double Pairs')
                     new_ = true;
                 }
+				
                 if (new_) {
                     num = '.'
                 }else{
@@ -135,10 +180,28 @@ function solveSudokuStepByStep(puzzleText, corr) {
 						solution += parseResult(num, board, step + ' Naked Pairs')
 						new_ = true;
 					}else{
-						num = ForcingChain(board, candidates)
-						if (num != '') {
+						num = SwordFish(board, candidates);
+						if(num.length>0){
 							step++;
-							solution += parseResult(num, board, step+' Forcing Chain')
+							var te='sword fish ';
+							var te2='';
+							swordfishx.push(num[1]);
+							swordfishy.push(num[0]);
+							swordfishv.push(num[2]);
+							if(num[1].length==4){
+								te='x-wing ';
+							}
+							for(var l=0;l<num[0].length;l++){
+							te2+='['+(num[1][l]+1)+','+(num[0][l]+1)+']'
+							}
+							te2=' '+te2+';'
+							solution += '<strong>step ' + step + ':</strong>\nFound '+te+num[2]+' @'+te2+'\n\n';
+						}else{
+							num = ForcingChain(board, candidates)
+							if (num != '') {
+								step++;
+								solution += parseResult(num, board, step+' Forcing Chain')
+							}
 						}
 					}
 				}
@@ -725,7 +788,6 @@ var str=''
 							}
 							if(t){
 						var s__ = 'naked triple ' + e[j][1] + ' @ row ' + (lib[i][0] + 1) + '\n';
-						console.log(s__)
                         if (removings_nakedPairs.indexOf(s__) < 0) {
                             str += s__;
                             removings_nakedPairs += s__;
@@ -766,7 +828,6 @@ var str=''
 							}
 							if(t){
 						var s__ = 'hidden triple ' + e3[1] + ' @ row ' + (lib[i][0] + 1) + '\n';
-						console.log(s__)
                         if (removings_nakedPairs.indexOf(s__) < 0) {
                             str += s__;
                             removings_nakedPairs += s__;
@@ -807,7 +868,6 @@ var str=''
 						}
 						if(t){
 						var s__ = 'naked pairs ' + c + ' @ column ' + (lib[i][0] + 1) + '\n';
-						console.log(s__)
                         if (removings_nakedPairs.indexOf(s__) < 0) {
                             str += s__;
                             removings_nakedPairs += s__;
@@ -896,7 +956,6 @@ var str=''
 							}
 							if(t){
 						var s__ = 'hidden triple ' + e3[1] + ' @ column ' + (lib[i][0] + 1) + '\n';
-						console.log(s__)
                         if (removings_nakedPairs.indexOf(s__) < 0) {
                             str += s__;
                             removings_nakedPairs += s__;
@@ -938,7 +997,6 @@ var str=''
 						}
 						if(t){
 						var s__ = 'naked pairs ' + c + ' @ block ' + (i + 1) + '\n';
-						console.log(s__)
                         if (removings_nakedPairs.indexOf(s__) < 0) {
                             str += s__;
                             removings_nakedPairs += s__;
@@ -993,7 +1051,6 @@ if(t==false){
 							}
 							if(t){
 						var s__ = 'naked triple ' + e[j][2] + ' @ block ' + (i + 1) + '\n';
-						console.log(s__)
                         if (removings_nakedPairs.indexOf(s__) < 0) {
                             str += s__;
                             removings_nakedPairs += s__;
@@ -1012,7 +1069,6 @@ if(t==false){
 	//block hidden triple
 	if(t==false&&e2.length>2){
 			var e3=Combo_hiddenpair(e2)
-			console.log(e3,e2, 'hidden')
 			if(e3.length==3){
 			var a=e3[2].split('')
 			for(var n=0;n<9;n++){
@@ -1164,7 +1220,6 @@ for(var i=0;i<9;i++){
 		}}return s;
 }
 function Combo_hiddenpair(a){
-//console.log(a.length)
 switch(a.length){
 	case 3:
 		var b=[[0,1,2]]
@@ -1202,6 +1257,91 @@ for(var i=0;i<b.length;i++){
 	return []
 }
 
+function SwordFish(board, candidates){
+	for(var i=0;i<9;i++){
+		for(var j=0;j<9;j++){
+			if(board[i][j]==0&& candidatesJoin[i][j].length<4){
+				var a=candidatesJoin[i][j].split('')
+				for(var k=0;k<a.length;k++){
+					var b=a[k]-1,x=0,y=0;
+					for(var l=0;l<9;l++){
+						if(candidates[i][l][b]==a[k]){
+							x=l;
+						}
+						if(candidates[l][j][b]==a[k]){
+							y=l;
+						}
+					}
+					if(Math.floor(x/3)!=Math.floor(j/3)&&Math.floor(y/3)!=Math.floor(i/3)){
+					if(x!=0&&y!=0){
+						var s=SwordFish_cont(board, candidates, i, j, b, a[k], x, y)
+						if(s.length>0){
+							return s
+						}
+					}}
+				}
+			}
+		}
+	}
+	return [];
+}
+function SwordFish_cont(board, candidates, i, j, b, a, x, y){
+var posx=[j,j,0,0,x,x];
+var posy=[i,y,y,0,0,i];
+var pos4x=[j,j,x,x];
+var pos4y=[i,y,y,i];
+var t=true;
+	if(candidates[y][x][b]==a){
+		for(var k=0;k<4;k++){
+			if(candidatesJoin[pos4y[k]][pos4x[k]].length!=2){
+				t=false;
+			}
+		}
+		if(t){
+			var s='x-wings'+a+pos4x.join('')+','+ pos4y.join('')
+			if(removings_swordfish.indexOf(s)<0){
+				console.log(x, y, 'x-wings')
+				removings_swordfish += s;
+				return [pos4x, pos4y,a]
+			}
+		}
+		return [];
+	}
+	for(var n=0;n<9;n++){
+		if(candidates[posy[2]][n][b]==a){
+			if(posx[1]!=n){
+				posx[2]=n;
+				posx[3]=n;
+				for(var n1=0;n1<9;n1++){
+					if(candidates[n1][posx[3]][b]==a){
+						if(posy[2]!=n1){
+							posy[3]=n1;
+							posy[4]=n1;
+							if(candidates[posy[4]][posx[4]][b]==a){
+								var t=false;
+								for(var m=0;m<6;m++){
+									var s1='swordfish,'+a+','+posx[m]+','+ posy[m]
+									if(removings_swordfish.indexOf(s1)<0){
+										console.log(s1)
+										removings_swordfish += s1;
+									}else{
+										t=true
+									}
+								}
+								if(t==false){
+								return [posx, posy,a]
+								}else{
+								return [];
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	return [];
+}
 function RemovingCandidates(candidates, value, x, except, s) { // remove candidates from a row, column, block
     var str = except.join('');
 	var b=true;
