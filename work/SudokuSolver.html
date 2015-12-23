@@ -182,7 +182,7 @@ function solveSudokuStepByStep(puzzleText, corr) {
 					}else{
 						num = SwordFish(board, candidates);
 						if(num.length>0){
-							step++;
+							//step++;
 							var te='sword fish ';
 							var te2='';
 							swordfishx.push(num[1]);
@@ -195,7 +195,7 @@ function solveSudokuStepByStep(puzzleText, corr) {
 							te2+='['+(num[1][l]+1)+','+(num[0][l]+1)+']'
 							}
 							te2=' '+te2+';'
-							solution += '<strong>step ' + step + ':</strong>\nFound '+te+num[2]+' @'+te2+'\n\n';
+							//solution += '<strong>step ' + step + ':</strong>\nFound '+te+num[2]+' @'+te2+'\n\n';
 						}else{
 							num = ForcingChain(board, candidates)
 							if (num != '') {
