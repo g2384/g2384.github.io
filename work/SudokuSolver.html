@@ -55,9 +55,12 @@ if(u!=0){
 s=s.replace(re,'0');
 }
 s=s.replace(/[^0-9]+/g,'')
+var s2=s.replace(/0/g,'');
+var out=document.getElementById('out');
+out.innerHTML = s2.length+' known <br>';
     var str = solveSudoku(s);
     var str2 = solveSudokuStepByStep(s, str);
-    document.getElementById('out').innerHTML = str2.replace(/\n/g, '<br>') + '-----------<br>Correct answer: <br><br>' + str.replace(/\n/g, '<br>') + '<br>';
+    out.innerHTML += str2.replace(/\n/g, '<br>') + '-----------<br>Correct answer: <br><br>' + str.replace(/\n/g, '<br>') + '<br>';
 }
 
 function solveSudokuStepByStep(puzzleText, corr) {
@@ -109,7 +112,6 @@ function solveSudokuStepByStep(puzzleText, corr) {
             if (o) {
                 num = '.'
             } else{
-
                 var new_ = false;
                 num = blockRowColumn(board, candidates);
                 //console.log(num)
@@ -124,21 +126,20 @@ function solveSudokuStepByStep(puzzleText, corr) {
                     solution += parseResult(num, board, step + ' Double Pairs')
                     new_ = true;
                 }
-                num = NakedPair_new(board, candidates)
-                    //num = ''
-                if (num != '') {
-                    step++;
-                    solution += parseResult(num, board, step + ' Naked Pairs')
-                    new_ = true;
-                }
-
                 if (new_) {
                     num = '.'
                 }else{
-					num = ForcingChain(board, candidates)
+					num = NakedPair_new(board, candidates)
 					if (num != '') {
-                    step++;
-                    solution += parseResult(num, board, step+' Forcing Chain')
+						step++;
+						solution += parseResult(num, board, step + ' Naked Pairs')
+						new_ = true;
+					}else{
+						num = ForcingChain(board, candidates)
+						if (num != '') {
+							step++;
+							solution += parseResult(num, board, step+' Forcing Chain')
+						}
 					}
 				}
             }
@@ -1055,7 +1056,7 @@ function ForcingChain(board, candidates){
 	var cj_c = [9];
 	var a=[];
 	var str='';
-	var m_step=10;
+	var m_step=1;
 	var sol=printBoard_oneline(board)
 	for(var i=0;i<9;i++){
 		b_c[i]=[9];
