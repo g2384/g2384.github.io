@@ -115,7 +115,7 @@ def vague_reg(inp):
     return re.compile(first_reg +   inp  + last_reg)
 
 def find(tempfile, inp, exact_search=True):
-    with open(fName, 'r') as f:
+    with open(tempfile, 'r') as f:
         try:
             s = f.read()
             a = s.split('#UnIquE$tR|ng::')
@@ -158,9 +158,9 @@ if __name__ == "__main__":
       python merge.py -m -f(Hello) -t(cpp,h)
     """
 
-    # in windows, place this file in your code folder.
-    # use Python IDLE to open this file.
-    # the following line to give commands.
+    # In windows, place this file in your code folder,
+    # use Python IDLE to open this file,
+    # uncomment one of the following lines.
     #sys.argv = ["anything.py", '-m', "-f(Detector)"]
     #sys.argv = ["anything.py", '-m', "-fa(Detector)", "-t(cpp,h)"]
     global file_type
