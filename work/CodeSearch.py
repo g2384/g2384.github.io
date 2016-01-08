@@ -82,8 +82,6 @@ def search(a, reg, reg2=''): # search the string a
                     print(lines[l-1])
                     print(lines[l])
                     print(lines[l+1])
-            
-                
     return found_something
 
 def vague_reg(inp):
@@ -111,15 +109,17 @@ def vague_reg(inp):
     elif('QWERTYUIOPASDFGHJKLZXCVBNM'.find(last)>=0):
         endding = 'LET'
         last_reg = '[^A-Z]'
-    #print(initial, endding, first_reg, last_reg)
     return re.compile(first_reg +   inp  + last_reg)
 
-def find(tempfile, inp, exact_search=True):
+def find(tempfile, inp, exact_search = True, ignore_case = False):
     with open(tempfile, 'r') as f:
         try:
             s = f.read()
             a = s.split('#UnIquE$tR|ng::')
-            reg = re.compile(r"""[^a-zA-Z0-9_]""" +inp + r"""[^a-zA-Z0-9_]""")
+            if ignore_case:
+                reg = re.compile(r"""[^a-zA-Z0-9_]""" +inp + r"""[^a-zA-Z0-9_]""", re.I)
+            else:
+                reg = re.compile(r"""[^a-zA-Z0-9_]""" +inp + r"""[^a-zA-Z0-9_]""")
             print 'Searching "' + inp + '"'
             if exact_search == False:
                 found_something = search(a, reg, reg2 = vague_reg(inp))
@@ -143,54 +143,56 @@ if __name__ == "__main__":
                'AddTest' gives false, 
                '_Test' gives false, 
                'test' gives false
-      -fa: find string, match case, can appear in a part of a string. 
-          e.g. -fa(Test), 
+      -a: find string, match case, can appear in a part of a string. 
+          e.g. 'python merge.py -m -f(Test) -a -t(cpp,h)', 
                'Test' gives true,
                'Test()' gives true,
                'AddTest' gives true, 
                '_Test' gives true
                'test' gives false
+      -i: ignore case. 
+          e.g. 'python merge.py -m -f(void) -i -t(cpp,h)', 
+               'Test' gives true,
+               'test' gives true
       -t: specify the type of target files. (Optional)
           e.g. -t(cpp,h) will find all keywords in .cpp file and .h file
           acceptable syntax: -t(cpp,h), -t(cpp, h), -t(.cpp, .h)
           
-    in Linux terminal, place this file in your code folder
-      python merge.py -m -f(Hello) -t(cpp,h)
+    in Linux, place this file in your code folder,
+    type the following line in terminal
+      python merge.py -m -f(void) -t(cpp,h)
     """
 
-    # In windows, place this file in your code folder,
-    # use Python IDLE to open this file,
-    # uncomment one of the following lines.
-    #sys.argv = ["anything.py", '-m', "-f(Detector)"]
-    #sys.argv = ["anything.py", '-m', "-fa(Detector)", "-t(cpp,h)"]
+    # in windows, place this file in your code folder.
+    # use Python IDLE to open this file.
+    # the following line to give commands.
+    #sys.argv = ["anything.py", '-m', "-f(detectcolor)", '-i', "-t(cpp,h)"]
+    #sys.argv = ["anything.py", '-m', "-f(Detector)", "-a", "-t(cpp,h)"]
     global file_type
-    s = ''
     f = ''
     file_type = []
     if len(sys.argv) > 1:
-        for i in range(len(sys.argv)):
-            if i > 0:                    
-                s += sys.argv[i]
+        s = ' '+(' ').join(sys.argv)+' '
         a = s.find('-f(')
         if a >= 0:
             b = s.find(')', a)
             inp = s[a+3:b]
             f = 'f'
-        a = s.find('-fa(')
-        if a >= 0:
-            b = s.find(')', a)
-            inp = s[a+4:b]
-            f = 'fa'
         a = s.find('-t(')
-        if a>=0:
+        if a >= 0:
             b = s.find(')', a)
             i = s[a+3: b]
             file_type = re.split('[^a-z0-9A-Z]+', i)
             for i in range(len(file_type)):
                 file_type[i] = '.'+file_type[i]
-        if s.find('-m')>=0:
+        exact_search = True
+        if s.find(' -a ') >= 0:
+            exact_search = False
+        ignore_case = False
+        if s.find(' -i ') >= 0:
+            ignore_case = True
+        if s.find(' -m ') >= 0:
             merge(tempfile, file_type)
         if f == 'f':
-            find(tempfile, inp)
-        elif f == 'fa':
-            find(tempfile, inp, exact_search=False)
+            find(tempfile, inp, exact_search, ignore_case)
+            
