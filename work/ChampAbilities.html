@@ -25,8 +25,9 @@ text-align: center;
 white-space: nowrap;
 border: 1px solid rgb(194, 194, 194);}
 .btn:hover{color:red;}
-label{cursor: pointer;margin:2px 5px; padding:2px; display:inline-block; border:1px solid #888;border-radius:4px;}
+label{cursor: pointer;margin:2px 5px; padding:2px; display:inline-block; border:1px solid #aaa;border-radius:4px;}
 #sel{line-height:1em;margin-bottom:20px;}
+#sel input{cursor: pointer;}
 input:checked+span {
     color:red;
 }
@@ -140,7 +141,7 @@ R:
 </script>
 
 <textarea id='in'>
-blind,untargetable, invulnerable,dash(through wall),dash,stun(entangle/knock up),slow,slow attack speed,forced action|consume health,consume mana,consume energy|AD ratio,AP ratio, health ratio,target's health ratio|spell vamp,gain movement speed,gain attack range,gain attack speed,gain health,gain energy, gain mana, gain armor, gain magic resistance,gain critical strike chance|magic damage, physical damage,true damage|cooldown reduction,sight,reset autoattack timer,remove crowd control,bonus attack damage,take reduced damage,reduce target's magic resistance, return damage,shield,stealth, revive,AOE|pet,trap,poison
+blind,untargetable, invulnerable,dash(through wall),dash,stun(entangle/knock up),slow,slow attack speed,forced action|consume health,consume mana,consume energy|AD ratio,AP ratio, health ratio,target's health ratio|spell vamp,gain movement speed,gain attack range,gain attack speed,gain health,gain energy, gain mana, gain armor, gain magic resistance,gain critical strike chance|magic damage, physical damage,true damage|cooldown reduction,sight,reset autoattack timer,remove crowd control,bonus attack damage,take reduced damage,reduce target's magic resistance, return damage,shield,stealth, revive,AOE|pet/summoned unit,trap,poison
 Aatrox:consume health
 passive:gain attack speed,untargetable, invulnerable,revive
 Q:AD ratio,dash(through wall),knock up,physical damage,AOE
@@ -182,7 +183,7 @@ passive:stun
 Q:AP ratio, magic damage,gain mana,cooldown reduction
 W:magic damage, AP ratio,AOE
 E:AP ratio, magic damage,gain armor, gain magic resistance, return damage, gain movement speed
-R:AP ratio, magic damage,pet,AOE
+R:AP ratio, magic damage,pet/summoned unit,AOE
 Ashe:consume mana
 passive:slow, gain critical strike chance
 Q:gain attack speed, AD ratio, physical damage
@@ -190,7 +191,7 @@ W:AD ratio, physical damage, slow,AOE
 E:sight
 R:stun, AP ratio, magic damage,AOE
 Azir:consume mana
-passive:
+passive:pet/summoned unit
 Q:AP ratio, magic damage, AOE, slow
 W:gain attack speed, magic damage, AP ratio
 E:dash(through wall),AP ratio, magic damage, health ratio, shield
