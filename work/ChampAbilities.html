@@ -1,0 +1,209 @@
+<html>
+<style>body{font-size:16px;font-family: consolas;}.r{color:red;}
+textarea {
+	width: 600px;
+	height: 120px;
+	padding: 5px;
+	font-size:16px;
+}
+input[type='text']{
+margin: 5px 5px;
+padding: 5px 8px;
+line-height: 1.33;
+width:50px;
+}
+.btn{
+margin: 10px 10px;
+padding: 5px 8px;
+font-size: 16px;
+line-height: 1.33;
+border-radius: 3px;
+color: #333;
+background-color: #fff;
+cursor: pointer;
+text-align: center;
+white-space: nowrap;
+border: 1px solid rgb(194, 194, 194);}
+.btn:hover{color:red;}
+label{cursor: pointer;margin:2px 5px; padding:2px; display:inline-block; border:1px solid #888;border-radius:4px;}
+#sel{line-height:1em;margin-bottom:20px;}
+input:checked+span {
+    color:red;
+}
+.name{color:#980000;display:inline;}
+.abi{color:#737373;display:inline;}</style>
+<script>
+var category=[];
+var b=[];
+function parse(){
+var a=document.getElementById('in');
+var a1=a.innerHTML;
+a1=a1.replace(/[\r\n]+/g,'\n');
+b=a1.split('\n');
+var cat=b[0].split(',');
+var c=document.getElementById('sel');
+var s=''
+for(var i=0;i<cat.length;i++){
+if(cat[i].length>0){
+if(cat[i].indexOf('|')>0){
+
+var p=cat[i].split('|')
+s+='<label><input type="checkbox" onclick="filter()" id="'+p[0]+'"><span>'+p[0]+'</span></label><br><br><label><input type="checkbox" onclick="filter()" id="'+p[1]+'"><span>'+p[1]+'</span></label>'
+category.push(p[0])
+category.push(p[1])
+}else{
+category.push(cat[i])
+s+='<label><input type="checkbox" onclick="filter()" id="'+cat[i]+'"><span>'+cat[i]+'</span></label>'
+}
+}
+}
+c.innerHTML=s;
+document.getElementById('out').innerHTML='<br>Currently have '+category.length+' categories, '+Math.floor((b.length-1)/6)+' champions'
+}
+function filter(){
+var on=[];
+var t=[];
+var s='Searching for champions with ';
+for(var i=0;i<category.length;i++){
+if(document.getElementById(category[i]).checked){
+on.push(category[i])
+t.push(0)
+s+='<strong>'+category[i]+'</strong>, '
+}
+}
+s+=' abilities<br>'
+s=s.replace(',  abilities',' abilities')
+var l=on.length;
+var lb=b.length-1;
+if(l>0){
+
+for(var i=1;i<lb;){
+	for(var j=0;j<l;j++){
+		t[j]=0;
+	}
+	var name=b[i].split(':')[0];
+	var s_t=''
+	for(var k=0;k<7;k++){
+		//console.log(lb,k,i+k,b[i+k])
+		if(k==0){
+		var str='';
+		}else{
+		var str=b[i+k].split(':')[0];
+		}
+		var tk=false;
+		for(var j=0;j<l;j++){
+			if(b[i+k].indexOf(on[j])>0){
+				
+				t[j]=1;
+				if(tk==false){
+					s_t+=str+'<div class="abi">('+on[j];
+				}else{
+					s_t+=', '+on[j];
+				}
+				tk=true;
+			}else{
+				
+			}
+		}
+		if(tk){
+			s_t+=')</div>, ';
+		}
+	}
+	var t2=t.join('')
+	if(t2.indexOf(0)<0){
+	s+='<div class="name">'+name+'</div>: '+s_t+'<br>'
+	}
+	i+=6;
+	if(i>=lb){
+		i=lb;
+	}
+}
+s=s.replace(/, <br>/g,'<br>')
+if(s.indexOf(':')<0){
+s+='Did not find anything.'
+}
+}else{
+s='';
+}
+document.getElementById('out').innerHTML=s;
+
+}
+/*
+
+passive:
+Q:
+W:
+E:
+R:
+
+*/
+</script>
+
+<textarea id='in'>
+blind,untargetable, invulnerable,dash(through wall),dash,stun(entangle/knock up),slow,slow attack speed,forced action|consume health,consume mana,consume energy|AD ratio,AP ratio, health ratio,target's health ratio|spell vamp,gain movement speed,gain attack range,gain attack speed,gain health,gain energy, gain mana, gain armor, gain magic resistance,gain critical strike chance|magic damage, physical damage,true damage|cooldown reduction,sight,reset autoattack timer,remove crowd control,bonus attack damage,take reduced damage,reduce target's magic resistance, return damage,shield,stealth, revive,AOE|pet,trap,poison
+Aatrox:consume health
+passive:gain attack speed,untargetable, invulnerable,revive
+Q:AD ratio,dash(through wall),knock up,physical damage,AOE
+W:AD ratio,gain health,physical damage
+E:AP ratio, AD ratio, slow,magic damage
+R:gain attack speed,AP ratio,magic damage,gain attack range
+Ahri:consume mana
+passive:gain health
+Q:AP ratio, true damage,magic damage, gain movement speed,AOE
+W:magic damage, AP ratio
+E:forced action,magic damage, AP ratio,AOE
+R:dash(through wall),magic damage, AP ratio,AOE
+Akali:consume energy
+passive:AP ratio, spell vamp,AD ratio
+Q:magic damage, AP ratio, gain energy
+W:slow, sight, stealth, gain movement speed,AOE
+E:AP ratio, AD ratio, physical damage
+R:dash,magic damage, AP ratio
+Alistar:consume mana
+passive:gain movement speed, AP ratio, magic damage
+Q:stun, magic damage, AP ratio,AOE
+W:AP ratio, magic damage, forced action,stun
+E:AP ratio, gain health,cooldown reduction
+R:remove crowd control,bonus attack damage,take reduced damage
+Amumu:consume mana
+passive:reduce target's magic resistance
+Q:AP ratio, magic damage, stun
+W:magic damage, AP ratio, target's health ratio,AOE
+E:physical damage, AP ratio, take reduced damage, cooldown reduction,AOE
+R:magic damage, AP ratio, stun,AOE
+Anivia:consume mana
+passive:revive
+Q:AP ratio, magic damage, stun, slow,AOE
+W:forced action, sight,AOE
+E:magic damage, AP ratio
+R:magic damage, AP ratio, slow, slow attack speed,AOE
+Annie:consume mana
+passive:stun
+Q:AP ratio, magic damage,gain mana,cooldown reduction
+W:magic damage, AP ratio,AOE
+E:AP ratio, magic damage,gain armor, gain magic resistance, return damage, gain movement speed
+R:AP ratio, magic damage,pet,AOE
+Ashe:consume mana
+passive:slow, gain critical strike chance
+Q:gain attack speed, AD ratio, physical damage
+W:AD ratio, physical damage, slow,AOE
+E:sight
+R:stun, AP ratio, magic damage,AOE
+Azir:consume mana
+passive:
+Q:AP ratio, magic damage, AOE, slow
+W:gain attack speed, magic damage, AP ratio
+E:dash(through wall),AP ratio, magic damage, health ratio, shield
+R:AP ratio, magic damage, forced action, gain movement speed
+Teemo:consume mana
+passive: stealth,gain attack speed
+Q:blind,magic damage
+W:gain movement speed
+E:poison,AP ratio,magic damage
+R:trap,AP ratio,poison, slow,sight,magic damage, AOE
+
+</textarea><br>
+<input type='button' class=btn onclick='parse()' value='Generate'/>
+<div id='sel'></div>
+<div id='out'></div>
+</html>
