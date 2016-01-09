@@ -77,14 +77,41 @@ s=s.replace(',  abilities',' abilities')
 var l=on.length;
 var lb=b.length-1;
 if(l>0){
-
+if(l==1){
+for(var i=1;i<lb;){
+	t[0]=0;
+	var name=b[i].split(':')[0];
+	var s_t=''
+	for(var k=0;k<6;k++){
+		//console.log(lb,k,i+k,b[i+k])
+		if(k==0){
+			var str='';
+		}else{
+			var str=b[i+k].split(':')[0];
+		}
+		if(b[i+k].indexOf(on[0])>0){
+			t[0]=1;
+			s_t+=str;
+			console.log(str, k, b[i+k])
+		}
+		
+	}
+	if(t[0]==1){
+	s+='<div class="name">'+name+'</div>: '+s_t+'<br>'
+	}
+	i+=6;
+	if(i>=lb){
+		i=lb;
+	}
+}
+}else{
 for(var i=1;i<lb;){
 	for(var j=0;j<l;j++){
 		t[j]=0;
 	}
 	var name=b[i].split(':')[0];
 	var s_t=''
-	for(var k=0;k<7;k++){
+	for(var k=0;k<6;k++){
 		//console.log(lb,k,i+k,b[i+k])
 		if(k==0){
 		var str='';
@@ -94,7 +121,6 @@ for(var i=1;i<lb;){
 		var tk=false;
 		for(var j=0;j<l;j++){
 			if(b[i+k].indexOf(on[j])>0){
-				
 				t[j]=1;
 				if(tk==false){
 					s_t+=str+'<div class="abi">('+on[j];
@@ -119,6 +145,7 @@ for(var i=1;i<lb;){
 		i=lb;
 	}
 }
+}
 s=s.replace(/, <br>/g,'<br>')
 if(s.indexOf(':')<0){
 s+='Did not find anything.'
@@ -141,7 +168,7 @@ R:
 </script>
 
 <textarea id='in'>
-blind,untargetable, invulnerable,dash(through wall),dash,stun(entangle/knock up),slow,slow attack speed,forced action|consume health,consume mana,consume energy|AD ratio,AP ratio, health ratio,target's health ratio|spell vamp,gain movement speed,gain attack range,gain attack speed,gain health,gain energy, gain mana, gain armor, gain magic resistance,gain critical strike chance|magic damage, physical damage,true damage|cooldown reduction,sight,reset autoattack timer,remove crowd control,bonus attack damage,take reduced damage,reduce target's magic resistance, return damage,shield,stealth, revive,AOE|pet/summoned unit,trap,poison
+blind,silence,untargetable, invulnerable,dash(through wall),dash,through wall,stun(entangle/knock up/stasis),slow,slow attack speed,forced action|consume health,consume mana,consume energy|AD ratio,AP ratio, health ratio,mana ratio,target's health ratio|spell vamp,gain movement speed,gain attack range,gain attack speed,gain health,gain energy, gain mana, gain armor, gain magic resistance,gain critical strike chance|magic damage, physical damage,true damage|cooldown reduction,sight,reset autoattack timer,remove crowd control,bonus attack damage,take reduced damage,reduce target's magic resistance, return damage,shield,stealth, revive,AOE|pet/summoned unit,trap,poison,collectable units
 Aatrox:consume health
 passive:gain attack speed,untargetable, invulnerable,revive
 Q:AD ratio,dash(through wall),knock up,physical damage,AOE
@@ -162,24 +189,24 @@ E:AP ratio, AD ratio, physical damage
 R:dash,magic damage, AP ratio
 Alistar:consume mana
 passive:gain movement speed, AP ratio, magic damage
-Q:stun, magic damage, AP ratio,AOE
-W:AP ratio, magic damage, forced action,stun
+Q:stun(entangle/knock up/stasis), magic damage, AP ratio,AOE
+W:AP ratio, magic damage, forced action,stun(entangle/knock up/stasis)
 E:AP ratio, gain health,cooldown reduction
 R:remove crowd control,bonus attack damage,take reduced damage
 Amumu:consume mana
 passive:reduce target's magic resistance
-Q:AP ratio, magic damage, stun
+Q:AP ratio, magic damage, stun(entangle/knock up/stasis)
 W:magic damage, AP ratio, target's health ratio,AOE
 E:physical damage, AP ratio, take reduced damage, cooldown reduction,AOE
-R:magic damage, AP ratio, stun,AOE
+R:magic damage, AP ratio, stun(entangle/knock up/stasis),AOE
 Anivia:consume mana
 passive:revive
-Q:AP ratio, magic damage, stun, slow,AOE
+Q:AP ratio, magic damage, stun(entangle/knock up/stasis), slow,AOE
 W:forced action, sight,AOE
 E:magic damage, AP ratio
 R:magic damage, AP ratio, slow, slow attack speed,AOE
 Annie:consume mana
-passive:stun
+passive:stun(entangle/knock up/stasis)
 Q:AP ratio, magic damage,gain mana,cooldown reduction
 W:magic damage, AP ratio,AOE
 E:AP ratio, magic damage,gain armor, gain magic resistance, return damage, gain movement speed
@@ -189,13 +216,25 @@ passive:slow, gain critical strike chance
 Q:gain attack speed, AD ratio, physical damage
 W:AD ratio, physical damage, slow,AOE
 E:sight
-R:stun, AP ratio, magic damage,AOE
+R:stun(entangle/knock up/stasis), AP ratio, magic damage,AOE
 Azir:consume mana
 passive:pet/summoned unit
 Q:AP ratio, magic damage, AOE, slow
 W:gain attack speed, magic damage, AP ratio
 E:dash(through wall),AP ratio, magic damage, health ratio, shield
 R:AP ratio, magic damage, forced action, gain movement speed
+Bard:consume mana
+passive:collectable units, gain mana, AP ratio, bonus attack damage,slow
+Q:AP ratio, magic damage, slow, stun(entangle/knock up/stasis), AOE
+W:gain health, gain movement speed, AP ratio
+E:gain movement speed, through wall
+R:stun(entangle/knock up/stasis), AOE
+Blitzcrank:consume mana
+passive:shield, mana ratio,
+Q:AP ratio, magic damage, stun(entangle/knock up/stasis), forced action, AOE
+W:gain attack speed, gain movement speed
+E:stun(entangle/knock up/stasis), physical damage, AD ratio
+R:AP ratio, AOEmagic damage, silence
 Teemo:consume mana
 passive: stealth,gain attack speed
 Q:blind,magic damage
