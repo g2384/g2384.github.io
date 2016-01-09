@@ -1,4 +1,5 @@
 <html>
+<title>LOL Champions' Properties Filter</title>
 <style>body{font-size:16px;font-family: consolas;}.r{color:red;}
 textarea {
 	width: 600px;
@@ -91,7 +92,7 @@ for(var i=1;i<lb;){
 		}
 		if(b[i+k].indexOf(on[0])>0){
 			t[0]=1;
-			s_t+=str;
+			s_t+=str+', ';
 			console.log(str, k, b[i+k])
 		}
 		
@@ -147,9 +148,11 @@ for(var i=1;i<lb;){
 }
 }
 s=s.replace(/, <br>/g,'<br>')
+
 if(s.indexOf(':')<0){
 s+='Did not find anything.'
 }
+s=s.replace(/: <br>/g,'<br>')
 }else{
 s='';
 }
@@ -166,9 +169,9 @@ R:
 
 */
 </script>
-
+<h2>LOL Champions' Properties Filter</h2>
 <textarea id='in'>
-blind,silence,untargetable, invulnerable,dash(through wall),dash,through wall,stun(entangle/knock up/stasis),slow,slow attack speed,forced action|consume health,consume mana,consume energy|AD ratio,AP ratio, health ratio,mana ratio,target's health ratio|spell vamp,gain movement speed,gain attack range,gain attack speed,gain health,gain energy, gain mana, gain armor, gain magic resistance,gain critical strike chance|magic damage, physical damage,true damage|cooldown reduction,sight,reset autoattack timer,remove crowd control,bonus attack damage,take reduced damage,reduce target's magic resistance, return damage,shield,stealth, revive,AOE|pet/summoned unit,trap,poison,collectable units
+blind,silence,untargetable, invulnerable,dash(through wall),dash,dash to target(through wall),through wall,stun(entangle/knock up/stasis),slow,slow attack speed,forced action|consume health,consume mana,consume energy|AD ratio,AP ratio, health ratio,mana ratio,target's health ratio|spell vamp,gain movement speed,gain attack range,gain attack speed,gain health,gain energy, gain mana, gain armor, gain magic resistance,gain critical strike chance|magic damage, physical damage,true damage|cooldown reduction,sight,reset autoattack timer,remove crowd control,bonus attack damage,take reduced damage,reduce target's magic resistance, return damage,shield,stealth, revive,AOE|pet/summoned unit,trap,poison/ablaze,collectable units,bounce between targets
 Aatrox:consume health
 passive:gain attack speed,untargetable, invulnerable,revive
 Q:AD ratio,dash(through wall),knock up,physical damage,AOE
@@ -215,7 +218,7 @@ Ashe:consume mana
 passive:slow, gain critical strike chance
 Q:gain attack speed, AD ratio, physical damage
 W:AD ratio, physical damage, slow,AOE
-E:sight
+E:sight, AOE
 R:stun(entangle/knock up/stasis), AP ratio, magic damage,AOE
 Azir:consume mana
 passive:pet/summoned unit
@@ -235,12 +238,24 @@ Q:AP ratio, magic damage, stun(entangle/knock up/stasis), forced action, AOE
 W:gain attack speed, gain movement speed
 E:stun(entangle/knock up/stasis), physical damage, AD ratio
 R:AP ratio, AOEmagic damage, silence
+Brand: consume mana
+passive: health ratio, magic damage, poison/ablaze
+Q:stun, AP ratio, magic damage, AOE
+W:AP ratio, magic damage, AOE
+E:AP ratio magic damage
+R:AP ratio, magic damage, bounce between targets
+Braum:consume mana
+passive:stun, magic damage
+Q:health ratio, slow, magic damage
+W:gain armor,gain magic resistance, dash to target(through wall)
+E:shield, intercept projectiles, gain movement speed
+R:AP ratio, magic damage, stun(entangle/knock up/stasis), slow
 Teemo:consume mana
 passive: stealth,gain attack speed
 Q:blind,magic damage
 W:gain movement speed
-E:poison,AP ratio,magic damage
-R:trap,AP ratio,poison, slow,sight,magic damage, AOE
+E:poison/ablaze,AP ratio,magic damage
+R:trap,AP ratio,poison/ablaze, slow,sight,magic damage, AOE
 
 </textarea><br>
 <input type='button' class=btn onclick='parse()' value='Generate'/>
