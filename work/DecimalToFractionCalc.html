@@ -64,6 +64,11 @@ r.innerHTML=b[0];
 					rr.push(i);
 				}
 			}else{
+				rr.unshift(i);
+			}
+		}else if(s_r[i].indexOf(b_t3)>=0){
+			if(s_r[i].length==bl3){
+				//console.log(i,s_r[i],s_n[i]);
 				rr.push(i);
 			}
 		}else if(s_r[i].indexOf(b_t2)>=0){
@@ -72,11 +77,6 @@ r.innerHTML=b[0];
 					//console.log(i,s_r[i],s_n[i]);
 					rr.push(i);
 				}
-			}
-		}else if(s_r[i].indexOf(b_t3)>=0){
-			if(s_r[i].length==bl3){
-				//console.log(i,s_r[i],s_n[i]);
-				rr.push(i);
 			}
 		}
 	}
