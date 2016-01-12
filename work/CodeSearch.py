@@ -137,50 +137,50 @@ if __name__ == "__main__":
           This command must be used when merge.py is used first time in a folder.
           It is not necessary to use this command if merge.py is not used first time. 
       -f: find string, match case. 
-          e.g. -f{Test}, 
+          e.g. -f[Test], 
                'Test' gives true,
                'Test()' gives true, 
                'AddTest' gives false, 
                '_Test' gives false, 
                'test' gives false
       -a: find string, match case, can appear in a part of a string. 
-          e.g. 'python merge.py -m -f{Test} -a -t{cpp,h}', 
+          e.g. 'python merge.py -m -f[Test] -a -t[cpp,h]', 
                'Test' gives true,
                'Test()' gives true,
                'AddTest' gives true, 
                '_Test' gives true
                'test' gives false
       -i: ignore case. 
-          e.g. 'python merge.py -m -f{void} -i -t{cpp,h}', 
+          e.g. 'python merge.py -m -f[void] -i -t[cpp,h]', 
                'Test' gives true,
                'test' gives true
       -t: specify the type of target files. (Optional)
-          e.g. -t{cpp,h} will find all keywords in .cpp file and .h file
-          acceptable syntax: -t{cpp,h}, -t{cpp, h}, -t{.cpp, .h}
+          e.g. -t[cpp,h] will find all keywords in .cpp file and .h file
+          acceptable syntax: -t[cpp,h], -t[cpp, h], -t[.cpp, .h]
           
     in Linux, place this file in your code folder,
     type the following line in terminal
-      python merge.py -m -f{void} -t{cpp,h}
+      python merge.py -m -f[void] -t[cpp,h]
     """
 
     # in windows, place this file in your code folder.
     # use Python IDLE to open this file.
     # the following line to give commands.
-    #sys.argv = ["anything.py", '-m', "-f{detectcolor}", '-i', "-t{cpp,h}"]
-    #sys.argv = ["anything.py", '-m', "-f{Detector}", "-a", "-t{cpp,h}"]
+    #sys.argv = ["anything.py", '-m', "-f[detectcolor]", '-i', "-t[cpp,h]"]
+    #sys.argv = ["anything.py", '-m', "-f[Detector]", "-a", "-t[cpp,h]"]
     global file_type
     f = ''
     file_type = []
     if len(sys.argv) > 1:
         s = ' '+(' ').join(sys.argv)+' '
-        a = s.find('-f{')
+        a = s.find('-f[')
         if a >= 0:
-            b = s.find('}', a)
+            b = s.find(']', a)
             inp = s[a+3:b]
             f = 'f'
-        a = s.find('-t{')
+        a = s.find('-t[')
         if a >= 0:
-            b = s.find('}', a)
+            b = s.find(']', a)
             i = s[a+3: b]
             file_type = re.split('[^a-z0-9A-Z]+', i)
             for i in range(len(file_type)):
