@@ -112,23 +112,23 @@ def vague_reg(inp):
     return re.compile(first_reg +   inp  + last_reg)
 
 def find(tempfile, inp, exact_search = True, ignore_case = False):
-    with open(tempfile, 'r') as f:
-        try:
-            s = f.read()
-            a = s.split('#UnIquE$tR|ng::')
-            if ignore_case:
-                reg = re.compile(r"""[^a-zA-Z0-9_]""" +inp + r"""[^a-zA-Z0-9_]""", re.I)
-            else:
-                reg = re.compile(r"""[^a-zA-Z0-9_]""" +inp + r"""[^a-zA-Z0-9_]""")
-            print 'Searching "' + inp + '"'
-            if exact_search == False:
-                found_something = search(a, reg, reg2 = vague_reg(inp))
-            else:
-                found_something = search(a, reg)
-            if found_something == False:
-                print 'Cannot find "' + inp + '"'
-        except:
-            print 'please execute "python merge.py -m" first'
+    try:
+        f = open(tempfile, 'r')
+        s = f.read()
+        a = s.split('#UnIquE$tR|ng::')
+        if ignore_case:
+            reg = re.compile(r"""[^a-zA-Z0-9_]""" +inp + r"""[^a-zA-Z0-9_]""", re.I)
+        else:
+            reg = re.compile(r"""[^a-zA-Z0-9_]""" +inp + r"""[^a-zA-Z0-9_]""")
+        print 'Searching "' + inp + '"'
+        if exact_search == False:
+            found_something = search(a, reg, reg2 = vague_reg(inp))
+        else:
+            found_something = search(a, reg)
+        if found_something == False:
+            print 'Cannot find "' + inp + '"'
+    except:
+        print 'please execute "python merge.py -m" first'
 
 
 if __name__ == "__main__":
@@ -167,7 +167,7 @@ if __name__ == "__main__":
     # use Python IDLE to open this file.
     # the following line to give commands.
     #sys.argv = ["anything.py", '-m', "-f[detectcolor]", '-i', "-t[cpp,h]"]
-    #sys.argv = ["anything.py", '-m', "-f[Detector]", "-a", "-t[cpp,h]"]
+    sys.argv = ["anything.py", '-m',"-f[\.center]",'-i', "-t[cpp,h]"]
     global file_type
     f = ''
     file_type = []
