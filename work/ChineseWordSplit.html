@@ -1,0 +1,231 @@
+<html>
+<meta charset="UTF-8">
+<title>Chinese Words Split</title>
+<style>body{font-size:16px;font-family: consolas;}.r{color:red;}
+textarea {
+	width: 600px;
+	height: 120px;
+	padding: 5px;
+	font-size:16px;
+}
+.btn{
+margin: 10px 10px;
+padding: 5px 8px;
+font-size: 16px;
+line-height: 1.33;
+border-radius: 3px;
+color: #333;
+background-color: #fff;
+cursor: pointer;
+text-align: center;
+white-space: nowrap;
+border: 1px solid rgb(194, 194, 194);}
+.btn:hover{color:red;}
+.sec{color:red;}</style>
+<script>
+// 0:subject
+// 1:verb
+// 2:adverb
+// 3:adj
+// 4:surname
+// 5:given name
+// 6:property noun
+// 7:title
+lib=["你","0,100a",
+"好","2,3,100b",
+"很","2",
+"棒","3",
+"笨","3",
+"真","2,102b",
+"可",'101a,102a,103a',
+'乐','101b,103b',
+'非','104a',
+'常','104b',
+'聪','105a',
+'明','105b',
+'南','108a,109a',
+'京','108b,109b',
+'市','109c,111a',
+'长','110a,111b',
+'江','110b,4',
+'大','106a,107a',
+'桥','106b,107b',];
+sec=["0,2,3","100",'101','6','7,4,5','6,7,4,5'];
+word=['102','2','103','3','104','2','105','3','106','5','107','6','110','6','108','6','109','6','111','7']
+sec_e=['subject','verb','adverb','adj','surname','given name','noun','title']
+
+function parse(){
+	var o=document.getElementById('in');
+	var s=o.value;
+	s=s.replace(/[，\n]/g,' ');
+	s=s.replace(/ $/g,'');
+	var info='';
+	var a=s.split(' ');
+	//console.log(s,a)
+	for(var i=0;i<a.length;i++){
+		console.log(a[i])
+		var b=[],bc=[],w=[];
+		a1=a[i].split('');
+		for(var k=0;k<a1.length;k++){
+			for(var j=0;j<lib.length;j+=2){
+				if(lib[j]==a1[k]){
+					var libc=lib[j+1].replace(/[a-z]/g,'')
+					b.push(libc.split(','));
+					bc.push(lib[j+1].split(','));//order is important (可真!=真可)
+					w.push(a1[k])
+				}
+			}
+		}
+		var str=check(b,a1.length,w,bc);
+		if(str!=''){
+		info+='<span class="sec">'+a[i]+'</span>:<br>'+str+'<br><br>';
+		}else{
+		info+='cannot understand <span class="sec">'+a[i]+'</span><br><br>';
+		}
+	}
+	document.getElementById('out').innerHTML=info;
+}
+function check(b,c,w,bc){
+	var tmp=[],tmp_=[],tmpc=[];//all possible structure
+	var info='';
+	//console.log(b.length)
+	var t=allPossibleCases(b);//all combinations
+	var tc=allPossibleCases(bc);//all combinations
+	//console.log(t.length)
+	for(var i=0;i<t.length;i++){
+		var p=(t[i].split(',')).unique();
+		var p_=p.join(',')
+		tmp.push(p_.split(','))
+		tmp_.push(p_)
+		tmpc.push(p_.split(','))
+		
+	}
+	for(var i=0;i<word.length;i+=2){// replace words with properties(subject, adj, verb...)
+		for(var j=0;j<tmp.length;j++){
+			for(var k=0;k<tmp[j].length;k++){
+				if(tmp[j][k]==word[i]){
+					tmp[j][k]=word[i+1];
+					tmp_[j]=tmp[j].join(',');
+					tmp_[j]=tmp_[j].replace(/6(,6)*/g,'6')//a noun can be formed by many nouns
+				}
+			}
+		}
+	}
+	//for(var j=0;j<tmp.length;j++){
+	//	console.log(tmp_[j])
+	//}
+	for(var i=0;i<sec.length;i++){
+		for(var j=0;j<tmp.length;j++){
+			if(tmp_[j]==sec[i]&&ValidWords(tmpc[j],tc[j])){
+				var at=tmp[j];
+				var w_t=[];
+				var ta=t[j].split(',')
+				var prev=ta[0];
+				var st=w[0];
+				//console.log(ta, ta.length)
+				for(var k=1;k<ta.length;k++){
+					//console.log('prev='+prev+', next='+ta[k]+', st='+st)
+					if(ta[k]==prev){
+						st+=w[k];
+					}else{
+						w_t.push(st);
+						st=w[k];
+					}
+					prev=ta[k];
+				}
+				w_t.push(st);
+				var str=''
+				for(var k=0;k<at.length;k++){
+					if(parseInt(at[k])>sec_e.length){
+						str+=w_t + ' = phrase\n'
+					}else{
+						str+=w_t[k]+' = '+sec_e[parseInt(at[k])]+'<br>';
+					}
+				}
+				if(info.indexOf('<br>'+str)<0){
+				info+='<br>'+str;
+				}
+			}
+		}
+	}
+	return info
+}
+function ValidWords(a,b){//order is important (可真!=真可), 110b must follow 110a
+	var c=0;
+	var alphabet="abc";
+	var v=true;
+	var p=0;
+	var ba=b.split(',');
+	console.log(a.join(','))
+	console.log(b)
+	var m=false;
+	for(var i=0;i<a.length&&c<ba.length&&v;i++,c++){
+		var s1=ba[c].replace(/[a-z]/g,'');
+		var last=ba[c].substr(ba[c].length-1,1);
+		console.log(i,c,last,p,ba[c],a[i],m)
+		if(s1!=ba[c]){
+			if(s1==a[i]){
+				m=true;
+				//console.log(last,alphabet.indexOf(last),p)
+				if(alphabet.indexOf(last)!=p){
+					v=false;
+					console.log('not valid', p)
+				}else{
+					i--;
+					p++;
+				}
+			}else{
+				p=0;
+				if(m){
+					c--;
+					m=false;
+				}
+			}
+		}else{
+			p=0;
+			if(m){
+				c--;
+				m=false;
+			}
+		}
+	}
+	return v;
+}
+function allPossibleCases(arr) {
+  if (arr.length == 1) {
+    return arr[0];
+  } else {
+    var result = [];
+    var allCasesOfRest = allPossibleCases(arr.slice(1));  // recur with the rest of array
+    for (var i = 0; i < allCasesOfRest.length; i++) {
+      for (var j = 0; j < arr[0].length; j++) {
+        result.push(arr[0][j] +','+ allCasesOfRest[i]);
+      }
+    }
+    return result;
+  }
+
+}
+Array.prototype.unique = function(mutate) {
+    var unique = this.reduce(function(accum, current) {
+        if (accum.indexOf(current) < 0) {
+            accum.push(current);
+        }
+        return accum;
+    }, []);
+    if (mutate) {
+        this.length = 0;
+        for (var i = 0; i < unique.length; ++i) {
+            this.push(unique[i]);
+        }
+        return this;
+    }
+    return unique;
+}
+</script>
+
+<textarea id='in'>你好，你好棒，你可真笨，你真可乐，你非常聪明，南京市长江大桥
+</textarea><br>
+<input type='button' class=btn onclick='parse()' value='Generate'/>
+<div id='out'></div>
+</html>
