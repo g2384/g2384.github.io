@@ -25,7 +25,7 @@ border: 1px solid rgb(194, 194, 194);}
 <script>
 // version 2, library format has changed, functions have changed
 
-// 0:subject
+// 0:pronoun
 // 1:verb
 // 2:adverb
 // 3:adj
@@ -36,8 +36,8 @@ border: 1px solid rgb(194, 194, 194);}
 // 8:noun
 // 9:object
 lib1=[
-"你","0,9",
-'我','0,9',
+"你","0",
+'我','0',
 "好","2,3",
 "很","2",
 "棒","3",
@@ -64,237 +64,247 @@ lib2=["你","1001b",
 '桥','1062b,1072b',
 '欢','1121b',
 '迎','1122b'];
-sec=["0,2,3","100",'101','6','7,4,5,1,9','6,7,4,5,1,9','6,7,4,5','6,1,9','7,4,5','0,1,9','1,9','0,1,8'];
+sec=["0,2,3","100",'101','6','7,4,5,1,9','6,7,4,5,1,9','7,4,5,1,0','6,7,4,5,1,0','6,7,4,5','6,1,9','6,1,0','7,4,5','0,1,0','1,0','0,1,9','1,9','0,1,8'];
 word=['102','2','103','3','104','2','105','3','106','5','107','6','110','6','108','6','109','6','111','7','112','1','113','8']
-sec_e=['subject','verb','adverb','adj','surname','given name','noun','title','noun','object']
+sec_e=['pronoun','verb','adverb','adj','surname','given name','noun','title','noun','object']
 alphabet='0abc';
-function InfoSplit(a,t){
-	var ll=a.length;
-	var l1=a.substr(0,ll-2);
-	var l2=a.substr(ll-2,1);
-	var l3=a.substr(ll-1,1);
-	var ln=alphabet.indexOf(l3).toString();
-	var expect=l1+(parseInt(l2)+1).toString()+l3;
-	var fin=l1+ln+l3;
-	if(t==0){
-		if(l2=='1'){
-			return [l1,expect];
-		}else{
-			return [];
-		}
-	}else{
-		if(a==fin){
-			return [l1,''];
-		}else{
-			return [l1,expect];
-		}
-	}
-}
-function parse(){
-var start = new Date().getTime();
-	var o=document.getElementById('in');
-	var s=o.value;
-	s=s.replace(/[，\n]/g,' ');
-	s=s.replace(/[ ]+$/g,'');
-	var info='';
-	var a=s.split(' ');
-	//console.log(s,a)
-	for(var i=0;i<a.length;i++){
-		console.log(a[i])
-		var b=[],bc=[],w=[];
-		a1=a[i].split('');
-		for(var j=0;j<lib1.length;j+=2){
-			if(lib1[j]==a1[0]){
-				var liba=lib1[j+1].split(',');
-				for(var k=0;k<liba.length;k++){
-					b.push([liba[k],'']);
-				}
-			}
-		}
-		for(var j=0;j<lib2.length;j+=2){
-			if(lib2[j]==a1[0]){
-				var liba=lib2[j+1].split(',')
-				for(var k=0;k<liba.length;k++){
-					var ll=InfoSplit(liba[k],0)
-					b.push(ll)
-				}
-			}
-		}
-		
-		var b_len=[];
-		var bl2=0;
-		var bl=b.length;
-		b_len.push(bl-bl2)
-		for(var k=1;k<a1.length;k++){
-		//for(var ii=0;ii<b.length;ii++){
-		//	console.log(ii + ' - ',b[ii].join(','))
-		//}
-			for(var i2=0;i2<bl;i2++){
-				var bstr=b[i2][b[i2].length-1];
-				var bcopy=b[i2].join(',');
-				bcopy=bcopy.split(',');
-				bcopy.pop();
-				if(bstr!=''){
-					for(var j=0;j<lib2.length;j+=2){
-						if(lib2[j]==a1[k]){
-							var liba=lib2[j+1].split(',')
-							for(var k2=0;k2<liba.length;k2++){
-								if(bstr==liba[k2]){
-									var ll=InfoSplit(liba[k2],1)
-									//console.log(bcopy.concat(ll))
-									b.push(bcopy.concat(ll));
-								}
-							}
-						}
-					}
-				}else{
-					for(var j=0;j<lib1.length;j+=2){
-						if(lib1[j]==a1[k]){
-							var liba=lib1[j+1].split(',');
-							for(var k2=0;k2<liba.length;k2++){
-								b.push(bcopy.concat([liba[k2],'']));
-							}
-						}
-					}
-					for(var j=0;j<lib2.length;j+=2){
-						if(lib2[j]==a1[k]){
-							var liba=lib2[j+1].split(',')
-							for(var k2=0;k2<liba.length;k2++){
-							//console.log(liba[k2])
-									var ll=InfoSplit(liba[k2],0)
-								//	console.log('new: ',liba[k2],bcopy.concat(ll))
-									b.push(bcopy.concat(ll));
-							}
-						}
-					}
-				}
-			}
-			for(var j=0;j<b_len[k-1];j++){
-				b.shift();
-			}
-			bl2=bl;
-			bl=b.length;
-			b_len.push(bl-bl2)
-		}
-		//for(var ii=0;ii<b.length;ii++){
-		//	console.log(ii + ' - ',b[ii].join(','))
-		//}
-		for(var j=0;j<b.length;j++){
-			if(b[j].length<a1.length+1){
-				b.shift();
-				j--;
-			}else{
-				j=b.length;
-			}
-		}
-		for(var j=0;j<b.length;j++){
-			if(b[j][a1.length]!=''){
-				b[j]=[];
-			}
-		}
-		console.log('all comb: ' + b.length)
-		//for(var ii=0;ii<b.length;ii++){
-		//	console.log(ii + ' - ',b[ii].join(','))
-		//}
-		
-		var str=check(b,a1);
-		if(str!=''){
-		info+='<span class="sec">'+a[i]+'</span>:<br>'+str+'<br><br>';
-		}else{
-		info+='cannot understand <span class="sec">'+a[i]+'</span><br><br>';
-		}
-	}
-	var end = new Date().getTime();
-	var time = 'Execution time: ' + (end - start) + 'ms';
-	document.getElementById('out').innerHTML=info+time;
-
-}
-function check(t,w){
-	var tmp=[],tmp_=[],tmpc=[];//all possible structure
-	var info='';
-	var checked='';
-	var c=w.length;
-	for(var i=0;i<t.length;i++){
-		var p=(t[i]).unique();
-		var p_=p.join(',')
-		p_=p_.replace(/,$/,'');
-		//console.log(p_)
-		tmp.push(p_.split(','))
-		tmp_.push(p_)
-		tmpc.push(p_.split(','))
-		
-	}
-	for(var i=0;i<word.length;i+=2){// replace words with properties(subject, adj, verb...)
-		for(var j=0;j<tmp.length;j++){
-			for(var k=0;k<tmp[j].length;k++){
-				if(tmp[j][k]==word[i]){
-					tmp[j][k]=word[i+1];
-					tmp_[j]=tmp[j].join(',');
-					tmp_[j]=tmp_[j].replace(/6(,6)*/g,'6')//a noun can be formed by many nouns
-				}
-			}
-		}
-	}
-	//for(var j=0;j<tmp.length;j++){
-	//	console.log(tmp_[j])
-	//}
-	//console.log(w.join(','))
-	for(var i=0;i<sec.length;i++){
-		for(var j=0;j<tmp.length;j++){
-			if(tmp_[j]==sec[i]&&checked.indexOf(tmp_[j])<0){
-				checked+=tmp_[j];
-				var at=tmp[j];
-				var w_t=[];
-				var prev=t[j][0];
-				var st=w[0];
-				console.log('found: '+tmp_[j])
-				for(var k=1;k<t[j].length-1;k++){
-					//console.log('prev='+prev+', next='+t[j][k]+', st='+st)
-					if(t[j][k]==prev){
-						st+=w[k];
-					}else{
-						w_t.push(st);
-						st=w[k];
-					}
-					prev=t[j][k];
-				}
-				//console.log('prev='+prev+', next='+t[j][k]+', st='+st)
-				w_t.push(st);
-				var str=''
-				for(var k=0;k<at.length;k++){
-					if(parseInt(at[k])>sec_e.length){
-						str+=w_t + ' = phrase\n'
-					}else{
-						str+=w_t[k]+' = '+sec_e[parseInt(at[k])]+'<br>';
-					}
-				}
-				//if(info.indexOf('<br>'+str)<0){
-				info+='<br>'+str;
-				//}
-			}
-		}
-	}
-	return info
-}
-Array.prototype.unique = function(mutate) {
-    var unique = this.reduce(function(accum, current) {
-        if (accum.indexOf(current) < 0) {
-            accum.push(current);
+function InfoSplit(a, t) {
+    var ll = a.length;
+    var l1 = a.substr(0, ll - 2);
+    var l2 = a.substr(ll - 2, 1);
+    var l3 = a.substr(ll - 1, 1);
+    var ln = alphabet.indexOf(l3).toString();
+    var expect = l1 + (parseInt(l2) + 1).toString() + l3;
+    var fin = l1 + ln + l3;
+    if (t == 0) {
+        if (l2 == '1') {
+            return [l1, expect];
+        } else {
+            return [];
         }
-        return accum;
-    }, []);
-    if (mutate) {
-        this.length = 0;
-        for (var i = 0; i < unique.length; ++i) {
-            this.push(unique[i]);
+    } else {
+        if (a == fin) {
+            return [l1, ''];
+        } else {
+            return [l1, expect];
         }
-        return this;
     }
-    return unique;
 }
+
+function parse() {
+    var start = new Date().getTime();
+    var o = document.getElementById('in');
+    var s = o.value;
+    s = s.replace(/[，\n]/g, ' ');
+    s = s.replace(/[ ]+$/g, '');
+    var info = '';
+    var a = s.split(' ');
+    //console.log(s,a)
+    for (var i = 0; i < a.length; i++) {
+        console.log(a[i])
+        var b = [],
+            w = [];
+        a1 = a[i].split('');
+        for (var j = 0; j < lib1.length; j += 2) {
+            if (lib1[j] == a1[0]) {
+                var liba = lib1[j + 1].split(',');
+                for (var k = 0; k < liba.length; k++) {
+                    b.push([liba[k], '']);
+                }
+            }
+        }
+        for (var j = 0; j < lib2.length; j += 2) {
+            if (lib2[j] == a1[0]) {
+                var liba = lib2[j + 1].split(',')
+                for (var k = 0; k < liba.length; k++) {
+                    var ll = InfoSplit(liba[k], 0)
+                    b.push(ll)
+                }
+            }
+        }
+
+        var b_len = [];
+        var bl2 = 0;
+        var bl = b.length;
+        b_len.push(bl - bl2)
+        for (var k = 1; k < a1.length; k++) {
+            //for(var ii=0;ii<b.length;ii++){
+            //	console.log(ii + ' - ',b[ii].join(','))
+            //}
+            for (var i2 = 0; i2 < bl; i2++) {
+                var bstr = b[i2][b[i2].length - 1];
+                var bcopy = b[i2].join(',');
+                bcopy = bcopy.split(',');
+                bcopy.pop();
+                if (bstr != '') {
+                    for (var j = 0; j < lib2.length; j += 2) {
+                        if (lib2[j] == a1[k]) {
+                            var liba = lib2[j + 1].split(',')
+                            for (var k2 = 0; k2 < liba.length; k2++) {
+                                if (bstr == liba[k2]) {
+                                    var ll = InfoSplit(liba[k2], 1)
+                                        //console.log(bcopy.concat(ll))
+                                    b.push(bcopy.concat(ll));
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    for (var j = 0; j < lib1.length; j += 2) {
+                        if (lib1[j] == a1[k]) {
+                            var liba = lib1[j + 1].split(',');
+                            for (var k2 = 0; k2 < liba.length; k2++) {
+                                b.push(bcopy.concat([liba[k2], '']));
+                            }
+                        }
+                    }
+                    for (var j = 0; j < lib2.length; j += 2) {
+                        if (lib2[j] == a1[k]) {
+                            var liba = lib2[j + 1].split(',')
+                            for (var k2 = 0; k2 < liba.length; k2++) {
+                                //console.log(liba[k2])
+                                var ll = InfoSplit(liba[k2], 0)
+                                    //	console.log('new: ',liba[k2],bcopy.concat(ll))
+                                b.push(bcopy.concat(ll));
+                            }
+                        }
+                    }
+                }
+            }
+            for (var j = 0; j < b_len[k - 1]; j++) {
+                b.shift();
+            }
+            bl2 = bl;
+            bl = b.length;
+            b_len.push(bl - bl2)
+        }
+        //for(var ii=0;ii<b.length;ii++){
+        //	console.log(ii + ' - ',b[ii].join(','))
+        //}
+        for (var j = 0; j < b.length; j++) {
+            if (b[j].length < a1.length + 1) {
+                b.shift();
+                j--;
+            } else {
+                j = b.length;
+            }
+        }
+        var bc = deepCopy(b);
+        for (var j = 0; j < b.length; j++) {
+            if (b[j][a1.length] != '') {
+                b[j] = [];
+                bc[j] = [];
+            }
+		
+            for (var k = 1; k < bc[j].length; k++) {
+                if (bc[j][k - 1] == bc[j][k]) {
+                    bc[j][k - 1] = '';
+                }
+            }
+			 for (var k = 0; k < bc[j].length; k++) {
+				for (var i2 = 0; i2 < word.length; i2 += 2) { // replace words with properties(subject, adj, verb...)
+					if (bc[j][k] == word[i2]) {
+						bc[j][k] = word[i2 + 1];
+					}
+				}
+			}
+        }
+        console.log('all comb: ' + b.length)
+        //for (var ii = 0; ii < b.length; ii++) {
+        //    console.log(ii + ' - ',b[ii].join(','))
+        //    console.log(ii + ' - ',bc[ii].join(','))
+        //}
+
+        var str = check(b, a1, bc);
+        if (str != '') {
+            info += '<span class="sec">' + a[i] + '</span>:<br>' + str + '<br><br>';
+        } else {
+            info += 'cannot understand <span class="sec">' + a[i] + '</span><br><br>';
+        }
+    }
+    var end = new Date().getTime();
+    var time = 'Execution time: ' + (end - start) + 'ms';
+    document.getElementById('out').innerHTML = info + time;
+}
+
+function check(tc, w, t) {
+    var tmp = [],
+        tmp_ = [];
+       // tmpc = []; //all possible structure
+    var info = '';
+    var checked = '';
+    for (var i = 0; i < t.length; i++) {
+        var p_ = t[i].clean('')
+        tmp.push(p_)
+        tmp_.push(p_.join(','))
+        //tmpc.push(p_)
+    }
+	var c=tmp.length;
+    
+    //for (var j = 0; j < tmp.length; j++) {
+    //    console.log(tmp_[j])
+    //}
+    //console.log(w.join(','))
+    for (var i = 0; i < sec.length; i++) {
+        for (var j = 0; j < c; j++) {
+			tmp_[j]=tmp_[j].replace(/6(,6)*/g,'6');
+            if (tmp_[j] == sec[i] && checked.indexOf(tmp_[j]) < 0) {
+                checked += tmp_[j];
+                var at = tmp[j];
+                var w_t = [];
+                var prev = tc[j][0];
+                var st = w[0];
+                console.log('found: ' + tmp_[j])
+                //console.log(tc[j])
+                for (var k = 1; k < tc[j].length - 1; k++) {
+                    //console.log('prev=' + prev + ', next=' + t[j][k] + ', st=' + st)
+                    if (tc[j][k] == prev) {
+                        st += w[k];
+                    } else {
+                        w_t.push(st);
+                        st = w[k];
+                    }
+                    prev = tc[j][k];
+                }
+                //console.log('prev='+prev+', next='+t[j][k]+', st='+st)
+                w_t.push(st);
+                var str = ''
+                for (var k = 0; k < at.length; k++) {
+                    if (parseInt(at[k]) > sec_e.length) {
+                        str += w_t + ' = phrase\n'
+                    } else {
+                        str += w_t[k] + ' = ' + sec_e[parseInt(at[k])] + '<br>';
+                    }
+                }
+                info += '<br>' + str;
+            }
+        }
+    }
+    return info
+}
+
+function deepCopy(o) {
+    var out, v, key;
+    out = Array.isArray(o) ? [] : {};
+    for (key in o) {
+        v = o[key];
+        out[key] = (typeof v === "object") ? deepCopy(v) : v;
+    }
+    return out;
+}
+Array.prototype.clean = function(deleteValue) {
+    for (var i = 0; i < this.length; i++) {
+        if (this[i] == deleteValue) {
+            this.splice(i, 1);
+            i--;
+        }
+    }
+    return this;
+};
+
 </script>
 
-<textarea id='in'>你好，你好棒，你可真笨，你真可乐，你爱可乐，你非常聪明，南京市长江大桥欢迎你
+<textarea id='in'>你好，你好棒，你可真笨，你真可乐，你爱可乐，我爱你，你非常聪明，南京市长江大桥欢迎你
 </textarea><br>
 <input type='button' class=btn onclick='parse()' value='Generate'/>
 <div id='out'></div>
