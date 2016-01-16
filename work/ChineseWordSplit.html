@@ -23,6 +23,8 @@ border: 1px solid rgb(194, 194, 194);}
 .btn:hover{color:red;}
 .sec{color:red;}</style>
 <script>
+// version 2, library format has changed, functions have changed
+
 // 0:subject
 // 1:verb
 // 2:adverb
@@ -31,34 +33,69 @@ border: 1px solid rgb(194, 194, 194);}
 // 5:given name
 // 6:property noun
 // 7:title
-lib=["你","0,100a",
-"好","2,3,100b",
+// 8:noun
+// 9:object
+lib1=[
+"你","0,9",
+'我','0,9',
+"好","2,3",
 "很","2",
 "棒","3",
 "笨","3",
-"真","2,102b",
-"可",'101a,102a,103a',
-'乐','101b,103b',
-'非','104a',
-'常','104b',
-'聪','105a',
-'明','105b',
-'南','108a,109a',
-'京','108b,109b',
-'市','109c,111a',
-'长','110a,111b',
-'江','110b,4',
-'大','106a,107a',
-'桥','106b,107b',];
-sec=["0,2,3","100",'101','6','7,4,5','6,7,4,5'];
-word=['102','2','103','3','104','2','105','3','106','5','107','6','110','6','108','6','109','6','111','7']
-sec_e=['subject','verb','adverb','adj','surname','given name','noun','title']
-
+"真","2",
+'江',"4",
+'爱','1',
+];
+lib2=["你","1001b",
+"好","1002b",
+"真","1022b",
+"可",'1011b,1021b,1031b,1131b',
+'乐','1012b,1032b,1132b',
+'非','1041b',
+'常','1042b',
+'聪','1051b',
+'明','1052b',
+'南','1081b,1091c',
+'京','1082b,1092c',
+'市','1093c,1111b',
+'长','1101b,1112b',
+'江','1102b',
+'大','1061b,1071b',
+'桥','1062b,1072b',
+'欢','1121b',
+'迎','1122b'];
+sec=["0,2,3","100",'101','6','7,4,5,1,9','6,7,4,5,1,9','6,7,4,5','6,1,9','7,4,5','0,1,9','1,9','0,1,8'];
+word=['102','2','103','3','104','2','105','3','106','5','107','6','110','6','108','6','109','6','111','7','112','1','113','8']
+sec_e=['subject','verb','adverb','adj','surname','given name','noun','title','noun','object']
+alphabet='0abc';
+function InfoSplit(a,t){
+	var ll=a.length;
+	var l1=a.substr(0,ll-2);
+	var l2=a.substr(ll-2,1);
+	var l3=a.substr(ll-1,1);
+	var ln=alphabet.indexOf(l3).toString();
+	var expect=l1+(parseInt(l2)+1).toString()+l3;
+	var fin=l1+ln+l3;
+	if(t==0){
+		if(l2=='1'){
+			return [l1,expect];
+		}else{
+			return [];
+		}
+	}else{
+		if(a==fin){
+			return [l1,''];
+		}else{
+			return [l1,expect];
+		}
+	}
+}
 function parse(){
+var start = new Date().getTime();
 	var o=document.getElementById('in');
 	var s=o.value;
 	s=s.replace(/[，\n]/g,' ');
-	s=s.replace(/ $/g,'');
+	s=s.replace(/[ ]+$/g,'');
 	var info='';
 	var a=s.split(' ');
 	//console.log(s,a)
@@ -66,35 +103,122 @@ function parse(){
 		console.log(a[i])
 		var b=[],bc=[],w=[];
 		a1=a[i].split('');
-		for(var k=0;k<a1.length;k++){
-			for(var j=0;j<lib.length;j+=2){
-				if(lib[j]==a1[k]){
-					var libc=lib[j+1].replace(/[a-z]/g,'')
-					b.push(libc.split(','));
-					bc.push(lib[j+1].split(','));//order is important (可真!=真可)
-					w.push(a1[k])
+		for(var j=0;j<lib1.length;j+=2){
+			if(lib1[j]==a1[0]){
+				var liba=lib1[j+1].split(',');
+				for(var k=0;k<liba.length;k++){
+					b.push([liba[k],'']);
 				}
 			}
 		}
-		var str=check(b,a1.length,w,bc);
+		for(var j=0;j<lib2.length;j+=2){
+			if(lib2[j]==a1[0]){
+				var liba=lib2[j+1].split(',')
+				for(var k=0;k<liba.length;k++){
+					var ll=InfoSplit(liba[k],0)
+					b.push(ll)
+				}
+			}
+		}
+		
+		var b_len=[];
+		var bl2=0;
+		var bl=b.length;
+		b_len.push(bl-bl2)
+		for(var k=1;k<a1.length;k++){
+		//for(var ii=0;ii<b.length;ii++){
+		//	console.log(ii + ' - ',b[ii].join(','))
+		//}
+			for(var i2=0;i2<bl;i2++){
+				var bstr=b[i2][b[i2].length-1];
+				var bcopy=b[i2].join(',');
+				bcopy=bcopy.split(',');
+				bcopy.pop();
+				if(bstr!=''){
+					for(var j=0;j<lib2.length;j+=2){
+						if(lib2[j]==a1[k]){
+							var liba=lib2[j+1].split(',')
+							for(var k2=0;k2<liba.length;k2++){
+								if(bstr==liba[k2]){
+									var ll=InfoSplit(liba[k2],1)
+									//console.log(bcopy.concat(ll))
+									b.push(bcopy.concat(ll));
+								}
+							}
+						}
+					}
+				}else{
+					for(var j=0;j<lib1.length;j+=2){
+						if(lib1[j]==a1[k]){
+							var liba=lib1[j+1].split(',');
+							for(var k2=0;k2<liba.length;k2++){
+								b.push(bcopy.concat([liba[k2],'']));
+							}
+						}
+					}
+					for(var j=0;j<lib2.length;j+=2){
+						if(lib2[j]==a1[k]){
+							var liba=lib2[j+1].split(',')
+							for(var k2=0;k2<liba.length;k2++){
+							//console.log(liba[k2])
+									var ll=InfoSplit(liba[k2],0)
+								//	console.log('new: ',liba[k2],bcopy.concat(ll))
+									b.push(bcopy.concat(ll));
+							}
+						}
+					}
+				}
+			}
+			for(var j=0;j<b_len[k-1];j++){
+				b.shift();
+			}
+			bl2=bl;
+			bl=b.length;
+			b_len.push(bl-bl2)
+		}
+		//for(var ii=0;ii<b.length;ii++){
+		//	console.log(ii + ' - ',b[ii].join(','))
+		//}
+		for(var j=0;j<b.length;j++){
+			if(b[j].length<a1.length+1){
+				b.shift();
+				j--;
+			}else{
+				j=b.length;
+			}
+		}
+		for(var j=0;j<b.length;j++){
+			if(b[j][a1.length]!=''){
+				b[j]=[];
+			}
+		}
+		console.log('all comb: ' + b.length)
+		//for(var ii=0;ii<b.length;ii++){
+		//	console.log(ii + ' - ',b[ii].join(','))
+		//}
+		
+		var str=check(b,a1);
 		if(str!=''){
 		info+='<span class="sec">'+a[i]+'</span>:<br>'+str+'<br><br>';
 		}else{
 		info+='cannot understand <span class="sec">'+a[i]+'</span><br><br>';
 		}
 	}
-	document.getElementById('out').innerHTML=info;
+	var end = new Date().getTime();
+	var time = 'Execution time: ' + (end - start) + 'ms';
+	document.getElementById('out').innerHTML=info+time;
+
 }
-function check(b,c,w,bc){
+function check(t,w){
 	var tmp=[],tmp_=[],tmpc=[];//all possible structure
 	var info='';
-	//console.log(b.length)
-	var t=allPossibleCases(b);//all combinations
-	var tc=allPossibleCases(bc);//all combinations
-	//console.log(t.length)
+	var checked='';
+	var c=w.length;
 	for(var i=0;i<t.length;i++){
-		var p=(t[i].split(',')).unique();
+		var p=(t[i]).unique();
 		var p_=p.join(',')
+		p_=p_.replace(/,$/,'');
+		//console.log(p_)
 		tmp.push(p_.split(','))
 		tmp_.push(p_)
 		tmpc.push(p_.split(','))
@@ -114,25 +238,27 @@ function check(b,c,w,bc){
 	//for(var j=0;j<tmp.length;j++){
 	//	console.log(tmp_[j])
 	//}
+	//console.log(w.join(','))
 	for(var i=0;i<sec.length;i++){
 		for(var j=0;j<tmp.length;j++){
-			if(tmp_[j]==sec[i]&&ValidWords(tmpc[j],tc[j])){
+			if(tmp_[j]==sec[i]&&checked.indexOf(tmp_[j])<0){
+				checked+=tmp_[j];
 				var at=tmp[j];
 				var w_t=[];
-				var ta=t[j].split(',')
-				var prev=ta[0];
+				var prev=t[j][0];
 				var st=w[0];
-				//console.log(ta, ta.length)
-				for(var k=1;k<ta.length;k++){
-					//console.log('prev='+prev+', next='+ta[k]+', st='+st)
-					if(ta[k]==prev){
+				console.log('found: '+tmp_[j])
+				for(var k=1;k<t[j].length-1;k++){
+					//console.log('prev='+prev+', next='+t[j][k]+', st='+st)
+					if(t[j][k]==prev){
 						st+=w[k];
 					}else{
 						w_t.push(st);
 						st=w[k];
 					}
-					prev=ta[k];
+					prev=t[j][k];
 				}
+				//console.log('prev='+prev+', next='+t[j][k]+', st='+st)
 				w_t.push(st);
 				var str=''
 				for(var k=0;k<at.length;k++){
@@ -142,69 +268,13 @@ function check(b,c,w,bc){
 						str+=w_t[k]+' = '+sec_e[parseInt(at[k])]+'<br>';
 					}
 				}
-				if(info.indexOf('<br>'+str)<0){
+				//if(info.indexOf('<br>'+str)<0){
 				info+='<br>'+str;
-				}
+				//}
 			}
 		}
 	}
 	return info
-}
-function ValidWords(a,b){//order is important (可真!=真可), 110b must follow 110a
-	var c=0;
-	var alphabet="abc";
-	var v=true;
-	var p=0;
-	var ba=b.split(',');
-	console.log(a.join(','))
-	console.log(b)
-	var m=false;
-	for(var i=0;i<a.length&&c<ba.length&&v;i++,c++){
-		var s1=ba[c].replace(/[a-z]/g,'');
-		var last=ba[c].substr(ba[c].length-1,1);
-		console.log(i,c,last,p,ba[c],a[i],m)
-		if(s1!=ba[c]){
-			if(s1==a[i]){
-				m=true;
-				//console.log(last,alphabet.indexOf(last),p)
-				if(alphabet.indexOf(last)!=p){
-					v=false;
-					console.log('not valid', p)
-				}else{
-					i--;
-					p++;
-				}
-			}else{
-				p=0;
-				if(m){
-					c--;
-					m=false;
-				}
-			}
-		}else{
-			p=0;
-			if(m){
-				c--;
-				m=false;
-			}
-		}
-	}
-	return v;
-}
-function allPossibleCases(arr) {
-  if (arr.length == 1) {
-    return arr[0];
-  } else {
-    var result = [];
-    var allCasesOfRest = allPossibleCases(arr.slice(1));  // recur with the rest of array
-    for (var i = 0; i < allCasesOfRest.length; i++) {
-      for (var j = 0; j < arr[0].length; j++) {
-        result.push(arr[0][j] +','+ allCasesOfRest[i]);
-      }
-    }
-    return result;
-  }
-
 }
 Array.prototype.unique = function(mutate) {
     var unique = this.reduce(function(accum, current) {
@@ -224,7 +294,7 @@ Array.prototype.unique = function(mutate) {
 }
 </script>
 
-<textarea id='in'>你好，你好棒，你可真笨，你真可乐，你非常聪明，南京市长江大桥
+<textarea id='in'>你好，你好棒，你可真笨，你真可乐，你爱可乐，你非常聪明，南京市长江大桥欢迎你
 </textarea><br>
 <input type='button' class=btn onclick='parse()' value='Generate'/>
 <div id='out'></div>
