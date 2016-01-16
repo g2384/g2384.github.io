@@ -31,10 +31,13 @@ border: 1px solid rgb(194, 194, 194);}
 // 3:adj
 // 4:surname
 // 5:given name
-// 6:property noun
+// 6:noun
 // 7:title
-// 8:noun
+// 8:place
 // 9:object
+// 10:proper noun
+// 11:name
+// 12:verb phrase
 lib1=[
 "你","0",
 '我','0',
@@ -64,10 +67,16 @@ lib2=["你","1001b",
 '桥','1062b,1072b',
 '欢','1121b',
 '迎','1122b'];
-sec=["0,2,3","100",'101','6','7,4,5,1,9','6,7,4,5,1,9','7,4,5,1,0','6,7,4,5,1,0','6,7,4,5','6,1,9','6,1,0','7,4,5','0,1,0','1,0','0,1,9','1,9','0,1,8'];
-word=['102','2','103','3','104','2','105','3','106','5','107','6','110','6','108','6','109','6','111','7','112','1','113','8']
-sec_e=['pronoun','verb','adverb','adj','surname','given name','noun','title','noun','object']
+sec=["0,2,3","100",'101','6','11,1,9','0','6,12','0,12','12'];
+word=['102','2','103','3','104','2','105','3','106','5','107','6','110','10','108','8','109','8','111','7','112','1','113','6'];
+section=['6,6,6|6,6|8|10','6','6,7|8,7','7','7,4,5','11','11','0', '1,0|1,9', '12']
+sec_e=['pronoun','verb','adverb','adj','surname','given name','noun','title','place','object','proper noun','name']
 alphabet='0abc';
+section_reg=[];
+for(var i=0;i<section.length;i+=2){
+section_reg.push(new RegExp('(^|,)('+section[i]+')(,|$)'));
+console.log(new RegExp(section[i]))
+}
 function InfoSplit(a, t) {
     var ll = a.length;
     var l1 = a.substr(0, ll - 2);
@@ -95,8 +104,8 @@ function parse() {
     var start = new Date().getTime();
     var o = document.getElementById('in');
     var s = o.value;
-    s = s.replace(/[，\n]/g, ' ');
-    s = s.replace(/[ ]+$/g, '');
+    s = s.replace(/[，\n\r ]+/g, ' ');
+    s = s.replace(/[ ]+/g, ' ');
     var info = '';
     var a = s.split(' ');
     //console.log(s,a)
@@ -195,27 +204,47 @@ function parse() {
                 b[j] = [];
                 bc[j] = [];
             }
-		
+			
             for (var k = 1; k < bc[j].length; k++) {
                 if (bc[j][k - 1] == bc[j][k]) {
                     bc[j][k - 1] = '';
                 }
             }
-			 for (var k = 0; k < bc[j].length; k++) {
+			for (var k = 0; k < bc[j].length; k++) {
 				for (var i2 = 0; i2 < word.length; i2 += 2) { // replace words with properties(subject, adj, verb...)
 					if (bc[j][k] == word[i2]) {
 						bc[j][k] = word[i2 + 1];
 					}
 				}
 			}
+			bc[j]=bc[j].clean('')
         }
-        console.log('all comb: ' + b.length)
+		b=b.clean('');
+        bc=bc.clean('');
+		var bc2=deepCopy(bc);
+		var tt=true;
+		while(tt){
+		tt=false;
+		for (var j = 0; j < b.length; j++) {
+			var j2=bc[j].join(',');
+			var prev=j2;
+			for (var i2 = 0; i2 < section_reg.length; i2 ++) { // replace words with properties(subject, adj, verb...)
+				var j3=prev.replace(section_reg[i2],'$1'+section[i2*2+1]+'$3')
+				if(j3!=prev){
+					tt=true
+					prev=j3;
+				}
+			}
+			bc[j]=prev.split(',')
+		}
+		}
+		console.log('all comb: ' + b.length)
         //for (var ii = 0; ii < b.length; ii++) {
         //    console.log(ii + ' - ',b[ii].join(','))
         //    console.log(ii + ' - ',bc[ii].join(','))
         //}
-
-        var str = check(b, a1, bc);
+		
+        var str = check(b, a1, bc,bc2);
         if (str != '') {
             info += '<span class="sec">' + a[i] + '</span>:<br>' + str + '<br><br>';
         } else {
@@ -227,16 +256,16 @@ function parse() {
     document.getElementById('out').innerHTML = info + time;
 }
 
-function check(tc, w, t) {
+function check(tc, w, t,t2) {
     var tmp = [],
         tmp_ = [];
        // tmpc = []; //all possible structure
     var info = '';
     var checked = '';
     for (var i = 0; i < t.length; i++) {
-        var p_ = t[i].clean('')
-        tmp.push(p_)
-        tmp_.push(p_.join(','))
+       // var p_ = t[i].clean('')
+        tmp.push(t2[i])
+        tmp_.push(t[i].join(','))
         //tmpc.push(p_)
     }
 	var c=tmp.length;
