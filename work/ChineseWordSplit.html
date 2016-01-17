@@ -67,10 +67,10 @@ lib2=["你","1001b",
 '桥','1062b,1072b',
 '欢','1121b',
 '迎','1122b'];
-sec=["0,2,3","100",'101','6','11,1,9','0','6,12','0,12','12'];
+sec=["0,2,3","100",'101','6','11,12','0','6,12','0,12','12'];
 word=['102','2','103','3','104','2','105','3','106','5','107','6','110','10','108','8','109','8','111','7','112','1','113','6'];
-section=['6,6,6|6,6|8|10','6','6,7|8,7','7','7,4,5','11','11','0', '1,0|1,9', '12']
-sec_e=['pronoun','verb','adverb','adj','surname','given name','noun','title','place','object','proper noun','name']
+section=['6,6,6|6,6|8|10','6','2,2','2','6,7|8,7','7','7,4,5','11','11','0', '1,0|1,9|1,6', '12']
+sec_e=['pronoun','verb','adverb','adj','surname','given name','noun','title','place','object','proper noun','name', 'verb phrase']
 alphabet='0abc';
 section_reg=[];
 for(var i=0;i<section.length;i+=2){
@@ -105,7 +105,7 @@ function parse() {
     var o = document.getElementById('in');
     var s = o.value;
     s = s.replace(/[，\n\r ]+/g, ' ');
-    s = s.replace(/[ ]+/g, ' ');
+    s = s.replace(/ $/g, '');
     var info = '';
     var a = s.split(' ');
     //console.log(s,a)
@@ -222,21 +222,19 @@ function parse() {
 		b=b.clean('');
         bc=bc.clean('');
 		var bc2=deepCopy(bc);
-		var tt=true;
-		while(tt){
-		tt=false;
+		//var tt=true;
 		for (var j = 0; j < b.length; j++) {
 			var j2=bc[j].join(',');
 			var prev=j2;
 			for (var i2 = 0; i2 < section_reg.length; i2 ++) { // replace words with properties(subject, adj, verb...)
 				var j3=prev.replace(section_reg[i2],'$1'+section[i2*2+1]+'$3')
 				if(j3!=prev){
-					tt=true
+					//tt=true
 					prev=j3;
+					i2=-1;
 				}
 			}
 			bc[j]=prev.split(',')
-		}
 		}
 		console.log('all comb: ' + b.length)
         //for (var ii = 0; ii < b.length; ii++) {
@@ -270,13 +268,13 @@ function check(tc, w, t,t2) {
     }
 	var c=tmp.length;
     
-    //for (var j = 0; j < tmp.length; j++) {
-    //    console.log(tmp_[j])
-    //}
+    for (var j = 0; j < tmp.length; j++) {
+        console.log(tmp_[j])
+    }
     //console.log(w.join(','))
     for (var i = 0; i < sec.length; i++) {
         for (var j = 0; j < c; j++) {
-			tmp_[j]=tmp_[j].replace(/6(,6)*/g,'6');
+			//tmp_[j]=tmp_[j].replace(/6(,6)*/g,'6');
             if (tmp_[j] == sec[i] && checked.indexOf(tmp_[j]) < 0) {
                 checked += tmp_[j];
                 var at = tmp[j];
