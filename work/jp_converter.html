@@ -142,172 +142,161 @@ var rom = {
 		  };
 
 function getHiragana(val) {
-	return getConversion(val,hir);
+    var sss = val.split('');
+    for (var k = 0; k < sss.length; k++) {
+        ss2 = sss[k].charCodeAt(0);
+        if (ss2 >= 12448 && ss2 <= 12543) {
+            sss[k] = String.fromCharCode(ss2 -= 96);
+        };
+    }
+    val = sss.join('')
+    return getConversion(val, hir);
 }
-
 function getKatakana(val) {
-	return getConversion(val,kat);
+    var sss = val.split('');
+    for (var k = 0; k < sss.length; k++) {
+        ss2 = sss[k].charCodeAt(0);
+        if (ss2 >= 12352 && ss2 <= 12447) {
+            sss[k] = String.fromCharCode(ss2 += 96);
+        };
+    }
+    val = sss.join('')
+    return getConversion(val, kat);
 }
-
 function getRomaji(val) {
-	return getRomConversion(val);
+    return getRomConversion(val);
 }
-
-function getc(ind,val,arr) {
-	var obj = arr[ind];
-	return obj[val];
+function getc(ind, val, arr) {
+    var obj = arr[ind];
+    return obj[val];
 }
-
-function getr(val,arr) {
-	return arr[val];
+function getr(val, arr) {
+    return arr[val];
 }
 
 function getRomConversion(val) {
-	var str1 = new Array();
-	var str = new Array();
-	var res = "";
-	str1 = val.split("\n");
-	for(var k=0;k<str1.length;k++) {
-		str = str1[k].split(" ");
-		for(var i=0;i<str.length;i++) {
-			var tmpword = str[i];
-			for(var j=0;j<tmpword.length;j++) {
-				var ch = tmpword.charCodeAt(j);
-				if((ch==12399 || ch==12495) && tmpword.length==1) {
-					ch = 12431;
-				}
-				if((ch==12387 || ch==12483)) {
-					var nextch = getr(tmpword.charCodeAt(j+1),rom);
-					if(nextch) {
-						res+=nextch.substring(0,1);
-						j++;
-						ch = tmpword.charCodeAt(j);
-					}
-				}
-				var tmpch = getr(ch,rom);
-				var nch = tmpword.charCodeAt(j+1);
-				if(tmpch && nch && (nch==12419 || nch==12515 || nch==12421 || nch==12517 || nch==12423 || nch==12519)) {
-					var beg = tmpch.substring(0,tmpch.length-1);
-					var en = getr(Number(nch+1),rom);
-					if(beg=='sh' || beg=='ch' || beg=='j') {
-						tmpch = beg+en.substring(1);
-					} else {
-						tmpch = beg+en;
-					}
-					j++;
-				}
-				if(tmpch) {
-					res+=tmpch;
-				} else {
-					//res+='<span style="color:#CC0000">&#'+ch+';</span>';
-					res+='&#'+ch;
-				}
-			}
-			res+=' ';
-		}
-		res+='<br/>';
-	}
-	return res;
+    var str1 = new Array();
+    var str = new Array();
+    var res = "";
+    str1 = val.split("\n");
+    for (var k = 0; k < str1.length; k++) {
+        str = str1[k].split(" ");
+        for (var i = 0; i < str.length; i++) {
+            var tmpword = str[i];
+            for (var j = 0; j < tmpword.length; j++) {
+                var ch = tmpword.charCodeAt(j);
+                if ((ch == 12399 || ch == 12495) && tmpword.length == 1) {
+                    ch = 12431;
+                }
+                if ((ch == 12387 || ch == 12483)) {
+                    var nextch = getr(tmpword.charCodeAt(j + 1), rom);
+                    if (nextch) {
+                        res += nextch.substring(0, 1);
+                        j++;
+                        ch = tmpword.charCodeAt(j);
+                    }
+                }
+                var tmpch = getr(ch, rom);
+                var nch = tmpword.charCodeAt(j + 1);
+                if (tmpch && nch && (nch == 12419 || nch == 12515 || nch == 12421 || nch == 12517 || nch == 12423 || nch == 12519)) {
+                    var beg = tmpch.substring(0, tmpch.length - 1);
+                    var en = getr(Number(nch + 1), rom);
+                    if (beg == 'sh' || beg == 'ch' || beg == 'j') {
+                        tmpch = beg + en.substring(1);
+                    } else {
+                        tmpch = beg + en;
+                    }
+                    j++;
+                }
+                if (tmpch) {
+                    res += tmpch;
+                } else {
+                    //res+='<span style="color:#CC0000">&#'+ch+';</span>';
+                    res += '&#' + ch;
+                }
+            }
+            res += ' ';
+        }
+        res = res.substring(0, res.length - 1) + "<br/>";
+    }
+    return res;
 }
 
-function getConversion(val,arr) {
-	var str1 = new Array();
-	var str = new Array();
-	var sss = val.split('');
-	
-	var res = "";
-	if(arr==kat){
-		for(var k=0;k<sss.length;k++) {
-			ss2 = sss[k].charCodeAt(0);
-			if(ss2>=12352&&ss2<=12447){
-				sss[k]=String.fromCharCode(ss2+=96);
-			};
-		}
-	}
-	else if(arr==hir){
-		for(var k=0;k<sss.length;k++) {
-			ss2 = sss[k].charCodeAt(0);
-			if(ss2>=12448&&ss2<=12543){
-				sss[k]=String.fromCharCode(ss2-=96);
-			};
-		}
-	}
-	val=sss.join('')
-	str1 = val.split("\n");
-	for(var k=0;k<str1.length;k++) {
-		str = str1[k].split(" ");
-		for(var i=0;i<str.length;i++) {
-			var tmpstr = str[i];
-			for(var j=0;j<tmpstr.length;j++) {
-				var tmpch = "";
-				// Checking 3 chars
-				tmpch = getc(3,tmpstr.substring(j,j+3).toLowerCase(),arr);
-				if(!tmpch) {
-					var ch1 = tmpstr.substring(j,j+1).toLowerCase();
-					var ch2 = tmpstr.substring(j+1,j+3).toLowerCase();
-					if(getc(2,ch2,arr) && ch1!='n' && (ch1==ch2.substring(0,1))) {
-						tmpch=getc(2,ch2,arr);
-						res+=getc(4,"tsu",arr);
-					}
-				}
-				if(tmpch) {
-					j+=2;
-				} else {
-				// Checking 1 chars
-					var ch = tmpstr.substring(j,j+2).toLowerCase();
-					if(ch=='wa' && ch==tmpstr) {
-						ch = "ha";
-					}
-					tmpch = getc(2,ch,arr);
-					if(tmpch) {
-						j++;
-					} else {
-				// Checking 1 char
-						tmpch = getc(1,tmpstr.substring(j,j+1).toLowerCase(),arr);
-					}
-				}
-				if(tmpch) {
-					res+=tmpch;
-				} else {
-					//res +='<span style="color:#CC0000">'+tmpstr.substring(j,j+1)+'</span>';
-					res +=tmpstr.substring(j,j+1);
-				}
-			}
-			res +=" ";
-		}
-		res+="<br/>";
-	}
-	return res;
+function getConversion(val, arr) {
+    var str1 = new Array();
+    var str = new Array();
+    var res = "";
+
+    str1 = val.split("\n");
+    for (var k = 0; k < str1.length; k++) {
+        str = str1[k].split(" ");
+        for (var i = 0; i < str.length; i++) {
+            var tmpstr = str[i];
+            for (var j = 0; j < tmpstr.length; j++) {
+                var tmpch = "";
+                // Checking 3 chars
+                tmpch = getc(3, tmpstr.substring(j, j + 3).toLowerCase(), arr);
+                if (!tmpch) {
+                    var ch1 = tmpstr.substring(j, j + 1).toLowerCase();
+                    var ch2 = tmpstr.substring(j + 1, j + 3).toLowerCase();
+                    if (getc(2, ch2, arr) && ch1 != 'n' && (ch1 == ch2.substring(0, 1))) {
+                        tmpch = getc(2, ch2, arr);
+                        res += getc(4, "tsu", arr);
+                    }
+                }
+                if (tmpch) {
+                    j += 2;
+                } else {
+                    // Checking 1 chars
+                    var ch = tmpstr.substring(j, j + 2).toLowerCase();
+                    if (ch == 'wa' && ch == tmpstr) {
+                        ch = "ha";
+                    }
+                    tmpch = getc(2, ch, arr);
+                    if (tmpch) {
+                        j++;
+                    } else {
+                        // Checking 1 char
+                        tmpch = getc(1, tmpstr.substring(j, j + 1).toLowerCase(), arr);
+                    }
+                }
+                if (tmpch) {
+                    res += tmpch;
+                } else {
+                    //res +='<span style="color:#CC0000">'+tmpstr.substring(j,j+1)+'</span>';
+                    res += tmpstr.substring(j, j + 1);
+                }
+            }
+            res += " ";
+        }
+        res = res.substring(0, res.length - 1) + "<br/>";
+    }
+    return res;
+}
+function convertPhrase() {
+    var val = document.getElementById('romaji').value;
+    var hirElem = document.getElementById("hiragana");
+    var katElem = document.getElementById("katakana");
+    var romElem = document.getElementById("rom");
+    hirElem.innerHTML = getHiragana(val);
+    katElem.innerHTML = getKatakana(val);
+    romElem.innerHTML = getRomaji(val);
+    return false;
 }
 
-
-function convertPhrase(clear) {
-	var val = clear?'':document.getElementById('romaji').value;
-	var hirElem = document.getElementById("hiragana");
-	var katElem = document.getElementById("katakana");
-	var romElem = document.getElementById("rom");
-	hirElem.innerHTML = getHiragana(val);
-	katElem.innerHTML = getKatakana(val);
-	romElem.innerHTML = getRomaji(val);
-	return false;
-}
-
-function showhide(name,show) {
-	var elem = document.getElementById(name);
-	var s = document.getElementById(show);
-	if(elem) {
-		if(s.checked){
-			elem.style.display='';
-			s.checked=true;
-		}
-		else{
-			elem.style.display='none';
-			s.checked=false;
-		}
-	}
-	
+function showhide(name, show) {
+    var elem = document.getElementById(name);
+    var s = document.getElementById(show);
+    if (elem) {
+        if (s.checked) {
+            elem.style.display = '';
+            s.checked = true;
+        } else {
+            elem.style.display = 'none';
+            s.checked = false;
+        }
+    }
 }
       </script>
-     
    </body>
 </html>
