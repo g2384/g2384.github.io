@@ -1,20 +1,20 @@
-
 <html>
 <head>
 <meta charset="UTF-8" />
 <title>
-Text 2 Image
+Text to Image
 </title>
 </head>
 <body>
-<div style="float: left"><textarea id="txt" style="width: 450px; height: 400px;">Test 中文</textarea></div>
+<div style="float: left" id='left'><img id="img" style="border: 1px dotted;position: absolute" onclick = 'hide();'/><textarea id="txt" style="width: 450px; height: 400px;padding:10px">Test 中文</textarea></div>
 <div style="float: left; width:200px;">
 <table>
 	<tr>
 		<td><label>Font:</label>
-		<select id="fontName">
+		<select id="fontName" onmouseup='textToImg();'>
 			<option value="宋体">宋体</option>
 			<option value="黑体">黑体</option>
+			<option value="微软雅黑">微软雅黑</option>
 			<option value="Verdana">Verdana</option>
 			<option value="Arial">Arial</option>
 			<option value="Times New Roman">Times New Roman</option>
@@ -23,34 +23,45 @@ Text 2 Image
 			<option value="Lucida Console">Lucida Console</option>
 		</select></td>
 		
-	</tr><tr>
-		<td><label>Size:</label><input size="4" id='fontSize' value='15' />px</td>
 	</tr>
 	<tr>
-		<td><label>Weight:</label><select id="fontWeight">
+		<td><label>Size:</label><input size="4" id='fontSize' value='15' onkeyup='textToImg();'/>px</td>
+	</tr>
+	<tr>
+		<td><label>Line-height:</label><input size="4" id='lineHeight' value='20' onkeyup='textToImg();'/>px</td>
+	</tr>
+	<tr>
+		<td><label>Weight:</label><select id="fontWeight" onmouseup='textToImg();'>
 			<option value="normal">Normal</option>
 			<option value="bold">Bold</option>
+			<option value="bolder">Bolder</option>
+			<option value="lighter">Lighter</option>
+			<option value="100">100</option>
+			<option value="200">200</option>
+			<option value="300">300</option>
+			<option value="400">400</option>
+			<option value="500">500</option>
 		</select></td>
 	</tr>
 	<tr>
-		<td><label>Each line:</label><input size="4" id='len' value="40" />letters</td>
+		<td><label>Each line:</label><input size="4" id='len' value="40" onkeyup='textToImg();'/>letters</td>
 	</tr>
 	<tr>
 		<td>Text color:<canvas id="text" width="25" height="25"></canvas><br>
 		R: <input type="range" id="red" min="0" max="255" value="0"
-			onchange="changeColor();" /><br>
+			onchange="changeColor();"/><br>
 		G: <input type="range" id="green" min="0" max="255"
-			value="0" onchange="changeColor();" /><br>
+			value="0" onchange="changeColor();"/><br>
 		B: <input type="range" id="blue" min="0" max="255" value="0"
-			onchange="changeColor();" /><br>
-		Color: <input type=text size="7" id="showcolor"></input></td>
+			onchange="changeColor();"/><br>
+		Color: <input type=text size="7" id="showcolor" onkeyup='textToImg();'></input></td>
 	</tr>
 	<tr>
 		<td>
-		Border left: <input type="text" id="border_left" size="4" value="10"/><br>
-		Border right: <input type="text" id="border_right" size="4" value="10"/><br>
-		Border top: <input type="text" id="border_top" size="4" value="10"/><br>
-		Border bottom: <input type="text" id="border_bottom" size="4" value="10"/><br>
+		Border left: <input type="text" id="border_left" size="4" value="10" onkeyup='textToImg();'/><br>
+		Border right: <input type="text" id="border_right" size="4" value="10" onkeyup='textToImg();'/><br>
+		Border top: <input type="text" id="border_top" size="4" value="10" onkeyup='textToImg();'/><br>
+		Border bottom: <input type="text" id="border_bottom" size="4" value="10" onkeyup='textToImg();'/><br>
 		</td>
 	</tr>
 	<tr>
@@ -63,18 +74,21 @@ Text 2 Image
 	</tr>
 	<tr>
 		<td>
-		<button onclick="textToImg();">Generate</button>
+		<button onclick="textToImg();">Generate</button><br>
+		Right Click, "save as..."
 		</td>
 	</tr>
 </table>
 </div>
 <canvas id="canvas" style="display:block"></canvas>
-<img id="img" style="border: 1px dotted" />
-<div id="info"></div>
 <script>
 //adapted from: http://www.oschina.net/code/snippet_84535_10015#16156
 	function $(id) {
 		return document.getElementById(id);
+	}
+	function hide(){
+		$('img').style.visibility='hidden';
+		$('txt').style.visibility='';
 	}
 	function textToImg() {
 		var len = $('len').value || 30;
@@ -82,6 +96,7 @@ Text 2 Image
 		var fontSize = $('fontSize').value || 15;
 		var fontName = $('fontName').value || 'Arial';
 		var fontWeight = $('fontWeight').value || 'normal';
+		var lineHeight = $('lineHeight').value || 20;
 		var txt = $("txt").value;
 		var border_left = parseInt($('border_left').value);
 		var border_right = parseInt($('border_right').value);
@@ -89,44 +104,73 @@ Text 2 Image
 		var border_bottom = parseInt($('border_bottom').value);
 		var canvas = $('canvas');
 		var lang = $("language").elements.namedItem("lang").value;
+		var width = 0;
+		var calc_width = 0;
+		var height = 0;
+		var border_sum = border_left+border_right
 		if (txt == '') {
 			txt='Test 中文';
 		}
+		if(lang=="Chinese"){
+			calc_width = fontSize * len+border_sum;
+		}else{
+			calc_width = fontSize * len/2+border_sum;
+		}
+		
 		if (len > txt.length) {
 			len = txt.length;
 		}
 		if(lang=="Chinese"){
-		canvas.width = fontSize * len+border_left+border_right;
+			width = fontSize * len+border_sum;
 		}else{
-		canvas.width = fontSize * len/2+border_left+border_right;
+			width = fontSize * len/2+border_sum;
 		}
-		canvas.height = border_top+border_bottom+fontSize * (3 / 2)
+		height = border_top+border_bottom+lineHeight * (3 / 2)
 				* (Math.ceil(txt.length / len) + txt.split('\n').length - 1);
+		//height = border_top+border_bottom+fontSize * (3 / 2)* (Math.ceil(txt.length / len) + txt.split('\n').length - 1);
+		canvas.width = width;
+		canvas.height = height;
 		var context = canvas.getContext('2d');
 		context.clearRect(0, 0, canvas.width, canvas.height);
 		context.fillStyle = $("showcolor").value;
 		context.font = fontWeight + ' ' + fontSize + 'px '+fontName;
+		console.log(context.font)
+		console.log(fontWeight + ' ' + fontSize + 'px '+fontName)
 		context.textBaseline = 'top';
 		canvas.style.display = 'none';
-		console.log(txt.length);
-		
-		function fillTxt(text) {
+		var txtArray = txt.split('\n');
+		var cons = 0.7;
+		for ( var j = 0; j < txtArray.length; j++) {
+			var text = txtArray[j];
 			while (text.length > len) {
 				var txtLine = text.substring(0, len);
 				text = text.substring(len);
-				context.fillText(txtLine, border_left, border_top+fontSize * (3 / 2) * i++,	canvas.width);
+				context.fillText(txtLine, border_left, border_top+(lineHeight*cons) * (3 / 2) * i++,	canvas.width);
+				//context.fillText(txtLine, border_left, border_top+fontSize * (3 / 2) * i++,	canvas.width);
 			}
-			context.fillText(text, border_left, border_top+fontSize * (3 / 2) * i, canvas.width);
-		}
-		var txtArray = txt.split('\n');
-		for ( var j = 0; j < txtArray.length; j++) {
-			fillTxt(txtArray[j]);
+			context.fillText(text, border_left, border_top+(lineHeight*cons) * (3 / 2) * i, canvas.width);
+			//context.fillText(txtLine, border_left, border_top+fontSize * (3 / 2) * i++,	canvas.width);
 			context.fillText('\n', border_left, border_top+fontSize * (3 / 2) * i++, canvas.width);
+			//context.fillText(txtLine, border_left, border_top+fontSize * (3 / 2) * i++,	canvas.width);
 		}
 		var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
 		var img = $("img");
 		img.src = canvas.toDataURL("image/png");
-		$('info').innerHTML='Right Click, "save as..."';
+		$('txt').style.fontFamily = fontName;
+		$('txt').style.fontSize = fontSize;
+		$('txt').style.fontWeight = fontWeight;
+		$('txt').style.color = $("showcolor").value;
+		$('txt').style.paddingLeft = border_left;
+		$('txt').style.paddingRight = border_top;
+		$('txt').style.paddingTop = border_right;
+		$('txt').style.paddingBottom = border_bottom;
+		$('txt').style.width = calc_width;
+		$('txt').style.height = height < 400 ? 400 : height;
+		$('txt').style.lineHeight = lineHeight+'px';
+		
+		$('txt').style.visibility = 'hidden';
+		$('img').style.visibility='';
+		
 	}
 	function changeColor() {
 		var c = $("text");
@@ -138,6 +182,7 @@ Text 2 Image
 				+ blue.value + ")";
 		$("showcolor").value = ctx.fillStyle;
 		ctx.fillRect(0, 0, 100, 100);
+		textToImg();
 	}
 	changeColor();
 </script>
