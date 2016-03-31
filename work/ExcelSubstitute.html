@@ -36,9 +36,17 @@ String.prototype.regexIndexOf = function(pattern, startIndex) {
 	var searchResult = this.substr(startIndex).search(pattern);
 	return (-1 === searchResult) ? -1 : searchResult + startIndex;
 }
-function txtadd(){
+function txtadd(a){
+	var str = '';
+	var formula = '';
+	if(a){
+		str = document.getElementById('result').innerHTML;
+		str = str.replace(/<br>/g, '\n');
+		formula = document.getElementById('formula').value;
+	}
+	
 	var divtest= document.createElement("div");        
-	divtest.innerHTML = alpha[c++]+":<br><textarea class='txt'></textarea><span class='note'>Note: <input type='text' value=''/></span>"      
+	divtest.innerHTML = alpha[c++]+":<br><textarea class='txt'>"+str+"</textarea><span class='note'>Note: <input type='text' value='"+formula+"'/></span>"      
 	document.getElementById('area').appendChild(divtest)
 	//document.getElementById('area').innerHTML+=alpha[c++]+": <textarea class='txt'></textarea><br>";
 }
@@ -57,6 +65,13 @@ function selectText(element) {
 		selection.addRange(range);
 	}
 }
+function processTxt(s){
+s = s.replace(/[ ]+/g, '')
+			s = s.replace(/[^A-Z0-9\+\-\*\/\.]+/g, ' ')
+			s = s.replace(/[ ]+/g, ' ')
+			s = s.replace(/ $/g, '')
+			return s;
+}
 function calc(){
 	var arr = document.getElementsByClassName('txt');
 	var formula = document.getElementById('formula').value;
@@ -67,11 +82,7 @@ function calc(){
 	for(var i=0;i<c;i++){
 		var re = new RegExp("([^a-zA-Z]|^)"+alpha[i]+"([^a-zA-Z]|$)");
 		if(formula.regexIndexOf(re)>=0){
-			var s = arr[i].value
-			s = s.replace(/[ ]+/g, '')
-			s = s.replace(/[^A-Z0-9\+\-\*\/\.]+/g, ' ')
-			s = s.replace(/[ ]+/g, ' ')
-			s = s.replace(/ $/g, '')
+			var s = processTxt(arr[i].value);
 			arr2[i] = s.split(' ');
 			if(min_len < 0 ||min_len > arr2[i].length){
 				min_len = arr2[i].length;
@@ -90,7 +101,7 @@ function calc(){
 				eval(alpha[j] + '=' + 'Number(arr2['+j+'][i]);');
 			}
 		}
-		result += newFun(A,B,C,D,E,F,G,H,I,J)+'<br>';
+		result += newFun(A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z)+'<br>';
 	}
 	document.getElementById('result').innerHTML = result;
 	document.getElementById('sel').style.display = 'block';
@@ -123,6 +134,38 @@ function convTable(){
 		arr[i].innerHTML=re[i].join('\n');
 	}
 }
+function evalList(){
+var alp = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+var arr = document.getElementsByClassName('txt');
+var result = '';
+var a = document.getElementById('listop').value;
+var s = processTxt(arr[alp.indexOf(a)].value);
+var r = s.split(' ');
+var e=document.getElementById('func');
+switch(e.options[e.selectedIndex].value){
+	case 'SUM':
+	result = SUM(r);
+	break;
+	case 'CUMSUM':
+	result = CUMSUM(r).join('<br>');
+	break;
+}
+document.getElementById('result').innerHTML = result;
+	document.getElementById('sel').style.display = 'block';
+}
+function CUMSUM(arr){
+	return result = arr.reduce(function(r, a) {
+	  r.push((r.length && r[r.length - 1] || 0) + Number(a));
+	  return r;
+	}, []);
+}
+function SUM(arr){
+	var a = 0;
+	for(var i=0;i<arr.length;i++){
+		a += Number(arr[i]);
+	}
+	return a;
+}
 </script>
 <h2>Excel Substitute</h2>
 <div>
@@ -137,7 +180,9 @@ c) <span ><pre style='border-radius: 3px;border: 1px solid rgb(194, 194, 194);wi
     }else{
         return A + B * C;
     }</pre></span><br>
-
+<strong>List operation functions</strong><br>
+SUM: summation of the list.<br>
+CUMSUM: cumulative sum of the list.<br>
 </div><br>
 <hr>
 <div id='area'><br>
@@ -153,11 +198,19 @@ Table:<br><textarea id='table'>1	2	3
 2
 </textarea><span class='note'>Note: <input type='text' value='Variable C'/></span></div>
 </div>
-<input type='button' class='btn' value='Add more variables' onclick='txtadd();'/><br><br><br>
-Formula: <textarea type='text' id='formula'>A+B</textarea><br>
+<input type='button' class='btn' value='Add more variables' onclick='txtadd(0);'/><br><br><br>
+Formula:<br><textarea type='text' id='formula'>A+B</textarea><br>
 <input type='button' class='btn calc' value='Calc' onclick='calc();'/><br>
+List operation: func = <select id='func'>
+  <option value="SUM">SUM</option>
+  <option value="CUMSUM">CUMSUM</option>
+</select>, args = <input type='text' id='listop' value='A'>
+<input type='button' class='btn calc' value='Calc' onclick='evalList();'/><br>
 <hr>
-<input type="button" class='btn' id='sel' onclick="selectText(result)" value="Select All">
+<div id='sel'>
+<input type="button" class='btn' onclick="selectText(result)" value="Select All">
+<input type="button" class='btn' onclick="txtadd(1)" value="Use the result as a variable">
+</div>
 <div id='result'></div>
 </body>
 </html>
