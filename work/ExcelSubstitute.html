@@ -1,0 +1,163 @@
+<html>
+<title>Excel Substitute</title>
+<body>
+<style>body{font-size:16px;font-family: consolas;}
+textarea {
+	width: 600px;
+	height: 50px;
+	padding: 5px;
+	font-size:16px;
+}
+#sel{
+display:none}
+.note{
+display: block;
+padding-bottom: 20px;padding-top: 10px;}
+.btn{
+margin: 10px 10px;
+padding: 5px 8px;
+font-size: 16px;
+line-height: 1.33;
+border-radius: 3px;
+color: #333;
+background-color: #fff;
+cursor: pointer;
+text-align: center;
+white-space: nowrap;
+border: 1px solid rgb(194, 194, 194);}
+.btn:hover{color:red;}
+.calc{background-color: #FFADAD;border: 0px solid;}
+.sec{color:red;}</style>
+<script>
+var c = 3;
+var alpha = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
+String.prototype.regexIndexOf = function(pattern, startIndex) {
+	startIndex = startIndex || 0;
+	var searchResult = this.substr(startIndex).search(pattern);
+	return (-1 === searchResult) ? -1 : searchResult + startIndex;
+}
+function txtadd(){
+	var divtest= document.createElement("div");        
+	divtest.innerHTML = alpha[c++]+":<br><textarea class='txt'></textarea><span class='note'>Note: <input type='text' value=''/></span>"      
+	document.getElementById('area').appendChild(divtest)
+	//document.getElementById('area').innerHTML+=alpha[c++]+": <textarea class='txt'></textarea><br>";
+}
+
+function selectText(element) {
+	var doc = document, text = element, range, selection;
+	if (doc.body.createTextRange) { //ms
+		range = doc.body.createTextRange();
+		range.moveToElementText(text);
+		range.select();
+	} else if (window.getSelection) { //all others
+		selection = window.getSelection();
+		range = doc.createRange();
+		range.selectNodeContents(text);
+		selection.removeAllRanges();
+		selection.addRange(range);
+	}
+}
+function calc(){
+	var arr = document.getElementsByClassName('txt');
+	var formula = document.getElementById('formula').value;
+	var arr2 =new Array(c);
+	var alp = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+	var min_len = -1;
+	var A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z;
+	for(var i=0;i<c;i++){
+		var re = new RegExp("([^a-zA-Z]|^)"+alpha[i]+"([^a-zA-Z]|$)");
+		if(formula.regexIndexOf(re)>=0){
+			var s = arr[i].value
+			s = s.replace(/[ ]+/g, '')
+			s = s.replace(/[^A-Z0-9\+\-\*\/\.]+/g, ' ')
+			s = s.replace(/[ ]+/g, ' ')
+			s = s.replace(/ $/g, '')
+			arr2[i] = s.split(' ');
+			if(min_len < 0 ||min_len > arr2[i].length){
+				min_len = arr2[i].length;
+			}
+			alp[i] = 1;
+		}
+	}
+	var result = '';
+	if(formula.indexOf('return') < 0){
+		formula = 'return ' + formula;
+	}
+	var newFun = new Function (alpha.join(','), formula);
+	for(var i=0;i<min_len;i++){
+		for(var j=0;j<c;j++){
+			if(alp[j]){
+				eval(alpha[j] + '=' + 'Number(arr2['+j+'][i]);');
+			}
+		}
+		result += newFun(A,B,C,D,E,F,G,H,I,J)+'<br>';
+	}
+	document.getElementById('result').innerHTML = result;
+	document.getElementById('sel').style.display = 'block';
+}
+function convTable(){
+	var s=document.getElementById('table').value;
+	s=s.replace(/[\r\n]+/g,'\n');
+	s=s.replace(/[\t ]+\n/g,'\n');
+	s=s.replace(/[\n]+$/,'');
+	var a=s.split('\n');
+	var len = a.length;
+	var len2 = a[0].split('\t').length;
+	var re = new Array(len2);
+	for (var i = 0; i < len2; i++) {
+		re[i] = new Array();
+	}
+	for(var i=0;i<len;i++){
+		var b=a[i].split('\t')
+		for(var j=0;j<len2;j++){
+			re[j].push(b[j]);
+		}
+	}
+	var arr = document.getElementsByClassName('txt');
+	var len3 = arr.length;
+	for(var i=len3;i<len2;i++){
+		txtadd();
+	}
+	c = len2<len3?len3:len2;
+	for(var i=0;i<len2;i++){
+		arr[i].innerHTML=re[i].join('\n');
+	}
+}
+</script>
+<h2>Excel Substitute</h2>
+<div>
+<strong>Step 1:</strong> Paste data from Excel and press <span style='border-radius: 3px;border: 1px solid rgb(194, 194, 194);'>Extract data from table</span>. <strong>OR</strong> input data in A, B, C areas one by one.<br>
+<strong>Step 2:</strong> If you want to add more variables, press <span style='border-radius: 3px;border: 1px solid rgb(194, 194, 194);'>Add more variables</span>.<br>
+<strong>Step 3:</strong> Type formula. JavaScript scripts are supported.<br><br>
+<strong>Formula examples:</strong><br>
+a) <span style='border-radius: 3px;border: 1px solid rgb(194, 194, 194);'>A + B</span><br>
+b) <span style='border-radius: 3px;border: 1px solid rgb(194, 194, 194);'>A + B * (C - D)</span><br>
+c) <span ><pre style='border-radius: 3px;border: 1px solid rgb(194, 194, 194);width: 250px;margin:0px 0px;'>    if(B > 0){
+        return A;
+    }else{
+        return A + B * C;
+    }</pre></span><br>
+<br>
+<br>
+</div><br>
+<div id='area'>
+Table:<br><textarea id='table'>1	2	3
+4	5	6</textarea><br><input type="button" class='btn' onclick="convTable()" value="Extract data from table"><br><br>
+<div>A:<br><textarea class='txt'>1
+2
+</textarea><span class='note'>Note: <input type='text' value='Variable A'/></span></div>
+<div>B:<br><textarea class='txt'>1
+2
+</textarea><span class='note'>Note: <input type='text' value='Variable B'/></span></div>
+<div>C:<br><textarea class='txt'>1
+2
+</textarea><span class='note'>Note: <input type='text' value='Variable C'/></span></div>
+</div>
+<input type='button' class='btn' value='Add more variables' onclick='txtadd();'/><br><br><br>
+Formula: <textarea type='text' id='formula'>A+B</textarea><br>
+<input type='button' class='btn calc' value='Calc' onclick='calc();'/><br>
+<hr>
+<input type="button" class='btn' id='sel' onclick="selectText(result)" value="Select All">
+<div id='result'></div>
+</body>
+</html>
