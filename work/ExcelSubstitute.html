@@ -30,7 +30,9 @@ border: 1px solid rgb(194, 194, 194);}
 .sec{color:red;}</style>
 <script>
 var c = 3;
+var mode = 1;
 var alpha = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
+var alphalist = ['listA','listB','listC','listD','listE','listF','listG','listH','listI','listJ','listK','listL','listM','listN','listO','listP','listQ','listR','listS','listT','listU','listV','listW','listX','listY','listZ'];
 String.prototype.regexIndexOf = function(pattern, startIndex) {
 	startIndex = startIndex || 0;
 	var searchResult = this.substr(startIndex).search(pattern);
@@ -66,43 +68,80 @@ function selectText(element) {
 	}
 }
 function processTxt(s){
-s = s.replace(/[ ]+/g, '')
-			s = s.replace(/[^A-Z0-9\+\-\*\/\.]+/g, ' ')
-			s = s.replace(/[ ]+/g, ' ')
-			s = s.replace(/ $/g, '')
-			return s;
+	if(mode){
+		s = s.replace(/[^0-9\-\.]+/g, '\n');
+		s = s.replace(/[\n]+/g, '\n');
+	}else{
+		s = s.replace(/[\r\n]+/g, '\n');
+	}
+	s = s.replace(/\n$/g, '');
+	return s;
 }
 function calc(){
 	var arr = document.getElementsByClassName('txt');
 	var formula = document.getElementById('formula').value;
 	var arr2 =new Array(c);
-	var alp = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+	var alp = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+	var alplist = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 	var min_len = -1;
 	var A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z;
+	var listA,listB,listC,listD,listE,listF,listG,listH,listI,listJ,listK,listL,listM,listN,listO,listP,listQ,listR,listS,listT,listU,listV,listW,listX,listY,listZ;
 	for(var i=0;i<c;i++){
+		var s = processTxt(arr[i].value);
+		arr2[i] = s.split('\n');
 		var re = new RegExp("([^a-zA-Z]|^)"+alpha[i]+"([^a-zA-Z]|$)");
 		if(formula.regexIndexOf(re)>=0){
-			var s = processTxt(arr[i].value);
-			arr2[i] = s.split(' ');
 			if(min_len < 0 ||min_len > arr2[i].length){
 				min_len = arr2[i].length;
 			}
 			alp[i] = 1;
 		}
+		re = new RegExp("(^|[^a-zA-Z])"+alphalist[i]+"([^a-zA-Z]|$)");
+		if(formula.regexIndexOf(re)>=0){
+			eval(alphalist[i] + '=' + 'arr2[i];');
+			alplist[i] = 1;
+		}
+	}
+	var listonly = 0;
+	for(var i=0;i<alp.length;i++){
+		listonly += alp[i];
 	}
 	var result = '';
 	if(formula.indexOf('return') < 0){
 		formula = 'return ' + formula;
 	}
-	var newFun = new Function (alpha.join(','), formula);
-	for(var i=0;i<min_len;i++){
-		for(var j=0;j<c;j++){
-			if(alp[j]){
-				eval(alpha[j] + '=' + 'Number(arr2['+j+'][i]);');
+	var newFun = new Function ('A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,listA,listB,listC,listD,listE,listF,listG,listH,listI,listJ,listK,listL,listM,listN,listO,listP,listQ,listR,listS,listT,listU,listV,listW,listX,listY,listZ', formula);
+	if(mode){
+		for(var i=0;i<min_len;i++){
+			for(var j=0;j<c;j++){
+				if(alplist[j]){
+					eval(alphalist[j] + '[i]=' + 'Number('+alphalist[j] + '[i]);');
+				}
 			}
 		}
-		result += newFun(A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z)+'<br>';
-	}
+		console.log(listA)
+		if(listonly>0){
+			for(var i=0;i<min_len;i++){
+				for(var j=0;j<c;j++){
+					if(alp[j]){
+						eval(alpha[j] + '=' + 'Number(arr2['+j+'][i]);');
+					}
+				}
+				result += newFun(A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,listA,listB,listC,listD,listE,listF,listG,listH,listI,listJ,listK,listL,listM,listN,listO,listP,listQ,listR,listS,listT,listU,listV,listW,listX,listY,listZ)+'<br>';
+			}
+		}else{
+			result += newFun(A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,listA,listB,listC,listD,listE,listF,listG,listH,listI,listJ,listK,listL,listM,listN,listO,listP,listQ,listR,listS,listT,listU,listV,listW,listX,listY,listZ)+'<br>';
+		}
+	}else{
+		for(var i=0;i<min_len;i++){
+			for(var j=0;j<c;j++){
+				if(alp[j]){
+					eval(alpha[j] + '=' + 'arr2['+j+'][i];');
+				}
+			}
+			result += newFun(A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,listA,listB,listC,listD,listE,listF,listG,listH,listI,listJ,listK,listL,listM,listN,listO,listP,listQ,listR,listS,listT,listU,listV,listW,listX,listY,listZ)+'<br>';
+		}
+	}console.log(result)
 	document.getElementById('result').innerHTML = result;
 	document.getElementById('sel').style.display = 'block';
 }
@@ -134,13 +173,16 @@ function convTable(){
 		arr[i].innerHTML=re[i].join('\n');
 	}
 }
+function modeC(n){
+mode = n;
+}
 function evalList(){
 var alp = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 var arr = document.getElementsByClassName('txt');
 var result = '';
 var a = document.getElementById('listop').value;
 var s = processTxt(arr[alp.indexOf(a)].value);
-var r = s.split(' ');
+var r = s.split('\n');
 var e=document.getElementById('func');
 switch(e.options[e.selectedIndex].value){
 	case 'SUM':
@@ -171,11 +213,12 @@ function SUM(arr){
 <div>
 <strong>Step 1:</strong> Paste data from Excel and press <span style='border-radius: 3px;border: 1px solid rgb(194, 194, 194);'>Extract data from table</span>. <strong>OR</strong> input data in A, B, C areas one by one.<br>
 <strong>Step 2:</strong> If you want to add more variables, press <span style='border-radius: 3px;border: 1px solid rgb(194, 194, 194);'>Add more variables</span>.<br>
-<strong>Step 3:</strong> Type formula. JavaScript scripts are supported.<br><br>
+<strong>Step 3:</strong> Type formula. JavaScript scripts are supported. Use listA, listB to access the data as an array.<br><br>
 <strong>Formula examples:</strong><br>
 a) <span style='border-radius: 3px;border: 1px solid rgb(194, 194, 194);'>A + B</span><br>
 b) <span style='border-radius: 3px;border: 1px solid rgb(194, 194, 194);'>A + B * (C - D)</span><br>
-c) <span ><pre style='border-radius: 3px;border: 1px solid rgb(194, 194, 194);width: 250px;margin:0px 0px;'>    if(B > 0){
+c) <span style='border-radius: 3px;border: 1px solid rgb(194, 194, 194);'>listA[0] + B</span><br>
+d) <span ><pre style='border-radius: 3px;border: 1px solid rgb(194, 194, 194);width: 250px;margin:0px 0px;'>    if(B > 0){
         return A;
     }else{
         return A + B * C;
@@ -185,6 +228,8 @@ SUM: summation of the list.<br>
 CUMSUM: cumulative sum of the list.<br>
 </div><br>
 <hr>
+Data are: <label onclick='modeC(1)'><input type="radio" name="gender" value="male" checked> Number</label>
+<label onclick='modeC(0)'><input type="radio" name="gender" value="female"> Text</label><br>
 <div id='area'><br>
 Table:<br><textarea id='table'>1	2	3
 4	5	6</textarea><br><input type="button" class='btn' onclick="convTable()" value="Extract data from table"><br><br>
