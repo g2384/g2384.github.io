@@ -79,26 +79,7 @@ function fetchHeader(url, wch) {
 }
 document.write("<p>Last modified: "+fetchHeader(location.href,'Last-Modified')+"</p>");
 </script>
-<textarea id="in" rows="10" wrap="off">architecture behavior of test is
-component piso
-     generic ( width : integer := 7 );
-port  (  clk : in std_logic;
-            load : in std_logic;
-            in1 : in std_logic_vector(width downto 0);
-            out1 : out std_logic
-      );
-end component;
---signal declarations
-signal in1 : std_logic_vector(7 downto 0):="10000110";
-signal in2 : std_logic_vector(3 downto 0):="1001";
-signal load1,load2 : std_logic :='0';
-begin
---Note down the next two lines.
---This is how you pass generic parameters to the instantiated components.
-piso1 : piso generic map (width => 7) port map(clk,load1,in1,o1);
-piso2 : piso generic map (width => 3) port map(clk,load2,in2,o2);
---change the input signals as you want.
-end behavior;</textarea><br>
+<textarea id="in" rows="10" wrap="off"></textarea><br>
 <form id="keyword">Keyword Case: 
 <label><input type="radio" name="keywordcase" value="UpperCase" checked="checked">UPPERCASE</label> 
 | <label><input type="radio" name="keywordcase" value="LowerCase">lowercase</label> 
