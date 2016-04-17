@@ -1,3 +1,4 @@
+
 <html>
 <head>
 <title>VHDL Beautifier, Formatter online</title>
@@ -78,7 +79,26 @@ function fetchHeader(url, wch) {
 }
 document.write("<p>Last modified: "+fetchHeader(location.href,'Last-Modified')+"</p>");
 </script>
-<textarea id="in" rows="10" wrap="off"></textarea><br>
+<textarea id="in" rows="10" wrap="off">architecture behavior of test is
+component piso
+     generic ( width : integer := 7 );
+port  (  clk : in std_logic;
+            load : in std_logic;
+            in1 : in std_logic_vector(width downto 0);
+            out1 : out std_logic
+      );
+end component;
+--signal declarations
+signal in1 : std_logic_vector(7 downto 0):="10000110";
+signal in2 : std_logic_vector(3 downto 0):="1001";
+signal load1,load2 : std_logic :='0';
+begin
+--Note down the next two lines.
+--This is how you pass generic parameters to the instantiated components.
+piso1 : piso generic map (width => 7) port map(clk,load1,in1,o1);
+piso2 : piso generic map (width => 3) port map(clk,load2,in2,o2);
+--change the input signals as you want.
+end behavior;</textarea><br>
 <form id="keyword">Keyword Case: 
 <label><input type="radio" name="keywordcase" value="UpperCase" checked="checked">UPPERCASE</label> 
 | <label><input type="radio" name="keywordcase" value="LowerCase">lowercase</label> 
@@ -291,7 +311,7 @@ function f() {
 		forward_tab = false,
 		need_semi = false,
 		semi_pos = 0,
-		begin_b = false,
+		begin_b = true,
 		port_b = false;
 	for (i = 0; i < l; i++) {
 		n = arr[i].regexIndexOf(/[a-zA-Z0-9\(\&\)%_\+'"|]/);
@@ -462,6 +482,7 @@ function f() {
 		entity_b = false,
 		then_b = false,
 		conditional_b = false,
+		generic_map_b = false,
 		case_indent = [0, 0, 0, 0, 0, 0, 0];
 	for (i = 0; i < l; i++) {
 		str = arr[i];
@@ -518,8 +539,13 @@ function f() {
 				back_tab = true;
 				begin_b = true;
 			}
-			
-			if (str.indexOf("PORT MAP") >= 0) {
+			if (port_b && str.indexOf("@@") < 0 && arr[i+1].indexOf("@@") < 0){
+				if(str.indexOf(';')<0){
+					arr[i] += arr[i+1];
+					arr[i+1]='@@removeline';
+				}
+			}
+			if (str.indexOf("PORT MAP") >= 0 && begin_b) {
 				back_tab = true;
 				port_b = true;
 				if (str.indexOf(");") < 0) {
@@ -536,7 +562,13 @@ function f() {
 				} else {
 					signAlignPos = "";
 				}
-			} else if (str.indexOf("PORT (") >= 0) {
+			} else if (str.indexOf("GENERIC MAP") >= 0){
+				tab_n++;
+				generic_map_b = true;
+				if (!begin_b){
+					back_tab = false;
+				}
+			}else if (str.indexOf("PORT (") >= 0  && begin_b) {
 				back_tab = true;
 				port_b = true;
 				t = str.indexOf(":");
@@ -563,7 +595,7 @@ function f() {
 					procfun_b = true;
 					back_tab = true;
 				}
-				if (str.indexOf("GENERIC") >= 0 || str.indexOf(":= (") >= 0 || str.regexIndexOf(/PROCEDURE[a-zA-Z0-9_ ]+\(/) >= 0) {
+				if ((str.indexOf("GENERIC") >= 0 || str.indexOf(":= (") >= 0 || str.regexIndexOf(/PROCEDURE[a-zA-Z0-9_ ]+\(/) >= 0) && begin_b) {
 					port_b = true;
 					back_tab = true;
 				}
@@ -574,11 +606,18 @@ function f() {
 			if (str.indexOf("@@singleend") >= 0) {
 				back_tab = false;
 				port_b = false;
+				if(!begin_b){
+					forward_tab=true;
+				}
 			} else if (str.indexOf("@@end") >= 0 && port_b) {
 				port_b = false;
 				tab_n--;
 				if (entity_b) {
 					forward_tab = true;
+				}
+				if (generic_map_b) {
+					forward_tab = true;
+					generic_map_b = false;
 				}
 			}
 			if (sign_align) {
@@ -615,7 +654,6 @@ function f() {
 			}
 			
 			if (conditional_b && str.indexOf(";") >= 0) {
-				//tab_n--;
 				conditional_b = false;
 				white_space = "";
 			} else if (str.indexOf(";") >= 0 && semi_b) {
@@ -662,7 +700,7 @@ function f() {
 	}
 	
 	input = arr.join("\r\n");
-	
+	input=input.replace(/[\t]*@@removeline\r\n/g,'');
 	if (sign_align) {
 		for (var k = 0; k < align_i; k++) {
 			input = input.replace("@@align" + k, Array((align_max[k] - align[k] + 2)).join(" "));
