@@ -21,7 +21,7 @@ border: 1px solid rgb(194, 194, 194);}
 .btn:hover{color:red;}
 .calc{background-color: #FFADAD;border: 0px solid;}
 .sec{color:red;}
-#example{color:red;cursor:pointer;display:inline-block}
+#example{color:red;cursor:pointer;display:inline-block;margin-bottom:10px;}
 #example:hover{background-color:red;color:white}
 </style>
 <script>
@@ -128,21 +128,28 @@ function mult(m,n){
 	var new_n = '';
 	var n_0 = 0;
 	var new_nn=0;
+	var n_100 = '';
+	var n_103 = '';
+	var n_104 = '';
+	var n_101 = 1;
 	if(m_len==n_len&&n_len>0){
 		var na = ns.match(/.{1,2}/g);
 		var ma = ms.match(/.{1,2}/g);
 		var rs = '',rs2='';
 		var kk=2;
 		if(n_len%2){
-			kk=1;
+			var pq=na.length-1
+			na[pq]=na[pq]+'0';
+			ma[pq]=ma[pq]+'0';
+			n_100 = ' ÷ 100';
+			n_103 = ns +'0 × '+ ms+'0 ÷ 100<br> = ';
+			n_104 = '00 ÷ 100';
+			n_101=100;
 		}
 		var kk2='00';
-		if(n_len%2){
-			kk2='0';
-		}
 		rs2 = mult_comb(na,ma,kk,kk2);
-		res=eval(rs2[0].replace(/×/g,'*'));
-		return ns +' × '+ ms+'<br> = '+rs2[1] + '<br> = '+ res + '<br><br>Long multiplication:<br>'+rs2[2]+Array(n_len*2+1).join("-")+'<br>'+ res+"<br><br>Calculator's result: "+m*n;
+		res=Math.round(eval(rs2[0].replace(/×/g,'*'))/n_101);
+		return ns +' × '+ ms+'<br> = '+n_103+'('+rs2[1] + ')'+n_100+'<br> = '+ res + '<br><br>Long multiplication:<br>'+rs2[2]+Array(n_len*2+1).join("-")+'<br>'+ res+n_104+"<br><br>Calculator's result: "+m*n;
 	}else{
 		return 'Invalid input. Multiplicands must have the same digits';
 	}
@@ -162,26 +169,18 @@ function mult_comb(na,ma,kk,kk2){
 	}
 	var rs='',rs2='',rs3='';
 	var nn=(na.length-1)*2;
-	var np=1;
-	if(kk2=='00'){
-		np=1;
-	}else{
-		np=0;
-	}
 	for(i=0;i<=nn;i++){
 		rs += ' + ('+pp[i]+') × 1' + Array((nn-i)*2+1).join("0");
 	}for(i=0;i<=nn;i++){
-		rs2 += ' + ('+pp[i]+') × 10<sup>' + ((nn-i)*2+1)+'</sup>';
+		rs2 += ' + ('+pp[i]+') × 10<sup>' + ((nn-i)*2)+'</sup>';
 	}
 	for(i=0;i<=nn;i++){
 		for(j=0;j<pp2[i].length;j++){
 			var kp=eval(pp2[i][j]).toString();
 			if(i>0){
-			kp = kp.length==4?kp:"&nbsp;"+kp;
+				kp = Array(4-kp.length+1).join("&nbsp;")+kp;
 			}
-			console.log(kp)
 			rs3 += Array(i*2).join("&nbsp;")+kp+'<br>';
-			console.log(i,Array(i*2).join("&nbsp;")+eval(pp2[i][j]))
 		}
 	}
 	return [rs.substring(3,rs.length-4), rs2.substring(3,rs2.length-17),rs3]
@@ -202,7 +201,7 @@ function show(){
 </textarea><br>
 <input type='button' class='btn calc' value='Calc' onclick='calc();'/>
 <br>
-<span onclick='show()' id='example'>Example:</span>
+<span onclick='show()' id='example'>Example</span>
 <div id='exmp'>mult(123456, 234567) = 123456 × 234567<br>
 nthroot(12345678,14) = 14√&#773;1&#773;2&#773;3&#773;4&#773;5&#773;6&#773;7&#773;8<br><br>
 </div>
