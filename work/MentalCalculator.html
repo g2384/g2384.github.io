@@ -3,17 +3,9 @@
 <meta charset='utf-8'>
 <body>
 <style>body{font-size:16px;font-family: consolas;}
-textarea {
-	width: 600px;
-	height: 50px;
-	padding: 5px;
-	font-size:16px;
-}
-#sel{
-display:none}
-.note{
-display: block;
-padding-bottom: 20px;padding-top: 10px;}
+textarea {width: 600px;height: 50px;padding: 5px;font-size:16px;}
+#sel{display:none}
+.note{display: block;padding-bottom: 20px;padding-top: 10px;}
 .btn{
 margin: 10px 10px;
 padding: 5px 8px;
@@ -150,7 +142,7 @@ function mult(m,n){
 		}
 		rs2 = mult_comb(na,ma,kk,kk2);
 		res=eval(rs2[0].replace(/×/g,'*'));
-		return rs2[1] + '<br> = '+ res + '<br><br>Long multiplication:<br>'+rs2[2]+Array(n_len*2+1).join("-")+'<br>'+ res+"<br><br>Calculator's result: "+m*n;
+		return ns +' × '+ ms+'<br> = '+rs2[1] + '<br> = '+ res + '<br><br>Long multiplication:<br>'+rs2[2]+Array(n_len*2+1).join("-")+'<br>'+ res+"<br><br>Calculator's result: "+m*n;
 	}else{
 		return 'Invalid input. Multiplicands must have the same digits';
 	}
@@ -207,7 +199,7 @@ function show(){
 }
 </script>
 <textarea id='exp'>mult(123456, 234567)
-</textarea>
+</textarea><br>
 <input type='button' class='btn calc' value='Calc' onclick='calc();'/>
 <br>
 <span onclick='show()' id='example'>Example:</span>
