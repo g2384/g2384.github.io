@@ -49,10 +49,29 @@ function nthroot(n,m){
 	var new_n = '';
 	var n_0 = 0;
 	var new_nn=0;
+	
+	if(m==3 && n_len<7){
+		if(n_len<4){
+			return Math.round(Math.pow(n,1/3)) + ', memorise';
+		}else if(n==1000){
+			return '10, memorise';
+		}else{
+			var r=Math.round(1000*Math.pow(n,1/3))/1000
+			if(r.toString().indexOf('.')<0){
+			var g1=ns.substr(n_len-1,1);
+			var g2=ns.substr(0,n_len-3);
+			console.log(g2)
+			var cube = [0,1,8,7,4,5,6,3,2,9];
+			var g3=Math.floor(Math.pow(parseInt(g2),1/3))
+			
+			return 'last digit = '+g1+', so the last digit of result is '+cube[g1]+'<br>the thousand part = '+g2+', is larger than '+cube[g3]+'<sup>3</sup><br>Result = '+cube[g3]+''+cube[g1]+'<br>Result from calculator = '+r;
+			}
+		}
+	}
+	
 	if(n_len<m){
 		return 'The second number must be greater than the number of digits of the first number'
-	}
-	if(ms.indexOf('.')<0){
+	}else if(ms.indexOf('.')<0){
 		//int
 		if(m<=0){
 			return 'Error'
@@ -65,11 +84,10 @@ function nthroot(n,m){
 			n_0 = h-1
 		}
 		new_nn=Math.round(Number(new_n)*10)/10;
-		console.log(new_n, n_0, new_nn)
-		
 	}
+	
 	var new_n2=new_nn.toString();
-	var r=0,r1='nthroot('+n+', '+m+'): <br>', r2='',r3='',r4='';
+	var r=0, r2='',r3='',r4='';
 	for(i=0;i<lo.length;i++){
 		if(lo[i][0]==new_n2){
 			r=lo[i][1];
@@ -91,6 +109,7 @@ function nthroot(n,m){
 	r4=r.toString();
 	var r5=calcpow(10, r, lo);
 	return 'log('+ns+')/'+ms+' = log(x)<br>'+r2+'/'+m+' + 1 = log(x)<br>look up log table<br>'+r3+'/'+m+' + 1 = '+r4+' = log(x) <br>x = 10<sup>'+r4+'</sup> = '+r5[0]+'<br><br>Result: '+r5[1]+"<br>Result from calculator: " + Math.round(Math.pow(n,1/m)*1000)/1000;
+	
 }
 
 function calcpow(n,m, lo){
@@ -133,7 +152,13 @@ function mult(m,n){
 	var n_103 = '';
 	var n_104 = '';
 	var n_101 = 1;
-	if(m_len==n_len&&n_len>0){
+	if(n==5){
+		return ms + ' × 10 ÷ 2 = '+m*10+' ÷ 2 = '+m*5;
+	}else if(n==25){
+		return ms + ' × 100 ÷ 2 ÷ 2 = '+m*100+' ÷ 2 = '+m*25;
+	}else if(n==125){
+		return ms + ' × 1000 ÷ 2 ÷ 2 ÷ 2 = '+m*1000+' ÷ 2 = '+m*125;
+	}else if(m_len==n_len&&n_len>0){
 		var na = ns.match(/.{1,2}/g);
 		var ma = ms.match(/.{1,2}/g);
 		var rs = '',rs2='';
@@ -186,6 +211,55 @@ function mult_comb(na,ma,kk,kk2){
 	}
 	return [rs.substring(3,rs.length-4), rs2.substring(3,rs2.length-17),rs3]
 }
+function div(m,n){
+	var ns=n.toString();
+	var n_len=ns.length;
+	n=Number(n);
+	var ms=m.toString();
+	var m_len=ms.length;
+	m=Number(m);
+	console.log(n_len,m)
+	if(n==5){
+		return ms + ' × 2 ÷ 10 = '+m*2+' ÷ 10 = '+m/5
+	}else if(n==25){
+		return ms + ' × 2 × 2 ÷ 100 = '+m*4+' ÷ 100 = '+m/25
+	}else if(n==125){
+		return ms + ' × 2 × 2 × 2 ÷ 1000 = '+m*8+' ÷ 1000 = '+m/125
+	}else{
+		return 'No idea...';
+	}
+}
+function square(m){
+	var ms=m.toString();
+	var m_len=ms.length;
+	m=Number(m);
+	console.log(m)
+	if(m<11){
+		return m*m + ' memorize';
+	}else if(m<26){
+		return '(last digit (' + ms[1] + ') + '+ms+') × 10 + last digit (' + ms[1] + ')<sup>2</sup> = '+m*m;
+	}else if(m<51){
+		return '(50 - '+ms+')<sup>2</sup> + 100 = '+m*m +'<br>Memorize '+(50-m)+'<sup>2</sup>';
+	}else if(m<100){
+		return '(100 - '+ms+')<sup>2</sup> + 200 × ('+ms+' - 50) = '+m*m;
+	}else{
+		return 'No idea...';
+	}
+}
+function sumlist(){
+	var len = arguments.length;
+	var sum = 0;
+	for (var i=0; i<len; i++){
+		sum += arguments[i];
+	}
+	var mean = Math.round(sum/10/len)*10;
+	var r = 'choose an average: '+mean+'<br>'+mean+' × '+len;
+	for (var i=0; i<len; i++){
+		r += ' + ' + (parseInt(arguments[i])-mean);
+	}
+	r=r.replace(/\+ \-/g,'- ');
+	return r+' = '+sum;
+}
 function calc(){
 	document.getElementById('result').innerHTML='Result:<br>'+eval(document.getElementById('exp').value);
 }
@@ -198,13 +272,17 @@ function show(){
 	}
 }
 </script>
-<textarea id='exp'>mult(123456, 234567)
+<textarea id='exp'>square(26)
 </textarea><br>
 <input type='button' class='btn calc' value='Calc' onclick='calc();'/>
 <br>
 <span onclick='show()' id='example'>Example</span><br>
 <div id='exmp'>mult(123456, 234567)&nbsp;&nbsp;= 123456 × 234567<br>
 nthroot(1234567890,9) = 9√&#773;1&#773;2&#773;3&#773;4&#773;5&#773;6&#773;7&#773;8&#773;9&#773;0<br>
+nthroot(1728,3) = 3√&#773;1&#773;7&#773;2&#773;8<br>
+square(26) = 26<sup>2</sup><br>
+div(12345,5) = 12345 ÷ 5<br>
+sumlist(1,2,3,4,5) = 1 + 2 + 3 + 4 + 5<br>
 </div>
 <div id='result'></div>
 </body></html>
