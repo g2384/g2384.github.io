@@ -1,7 +1,6 @@
-
 <html>
 <head>
-<title>VHDL Beautifier, Formatter online</title>
+<title>VHDL Beautifier, Formatter Online</title>
 <style>
 body{margin:0 auto;max-width:960px;tab-size: 4;  font-family:Helvetica, arial;}
 textarea{width:100%;font-family:Consolas,Courier;}
@@ -617,7 +616,7 @@ function f() {
 							}
 						}
 						align[align_i] = l1;
-						arr[i] = a1[0] + "@@align" + (align_i++) + signAlignPos + a1[1];
+						arr[i] = a1[0] + "@@align" + (align_i++) + signAlignPos + arr[i].substring(l1+1,arr[i].length);
 					}
 				}
 			}
