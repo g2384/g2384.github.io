@@ -38,7 +38,8 @@ footer{width:270px;float:left;position:fixed;bottom:50px}
 .js{color:#F90}
 .php{color:#4F5B93}
 .py{color:#3776ab}
-.star{text-shadow:0 0 5px #ffe169;color:#ffb803}
+.star{color:#ffb803;line-height: 1em;}
+.drop{color:#F18787}
 .dead,.dead a,.dead .js,.dead .js,.dead .html,.dead .php,.dead .py{color:#aaa;}
 .dead:before{content:"[dead]";}
 @media print,screen and (max-width: 960px) {
@@ -49,17 +50,25 @@ section{border:1px solid #e5e5e5;border-width:1px 0;padding:20px 0;margin:0 0 20
 header a small{display:inline}
 }
 @media print,screen and (max-width: 720px) {
-body{word-wrap:break-word}
+body{word-wrap:break-word;}
 header{padding:0}
 header p.view{position:static}
 pre,code{word-wrap:normal}
 }
-@media print,screen and (max-width: 480px) {
-body{padding:15px}
+@media print,screen and (max-width: 480px) {body{padding:15px}}
+@media print {body{padding:.4in;font-size:12pt;color:#444}}
+.accordion {display: block;}
+.accordion:hover .drop-content {max-height: 300px;}
+.drop-content {display: block;
+  -webkit-transition: max-height 1s;
+  -moz-transition: max-height 1s;
+  -ms-transition: max-height 1s;
+  -o-transition: max-height 1s;
+  transition: max-height 1s;
+  overflow: hidden;
+  max-height: 0;
 }
-@media print {
-body{padding:.4in;font-size:12pt;color:#444}
-}</style>
+</style>
 	</head>
 	<body>
 		<div class="wrapper">
@@ -75,34 +84,40 @@ body{padding:.4in;font-size:12pt;color:#444}
 				<span class=py>[py]</span> <a href="https://github.com/g2384/g2384.github.io/blob/master/work/CodeSearch.py">Search Keywords in Any Code Files</a> (2016.1)<br />
 				<span class=html>[HTML]</span><span class=js>[JS]</span> <a href="http://g2384.github.io/work/ChineseWordSplit.html">Chinese Word Segmenter</a> (2016.1)<br />
 				<span class=html>[HTML]</span><span class=js>[JS]</span> <a href="http://g2384.github.io/work/SudokuSolver.html">Step-by-Step Sudoku Solver</a> (2015.12)<br />
-				<span class=html>[HTML]</span><span class=js>[JS]</span> <a href="http://g2384.github.io/work/FindWords.html">Search Words With Regex Patterns</a> (2015.12)<br />
-				<span class=html>[HTML]</span><span class=js>[JS]</span> <a href="http://g2384.github.io/work/MiscellaneousCalculators.html">Miscellaneous Calculators</a> (2015.11)<br />
-				&nbsp;&nbsp;&nbsp;&nbsp;includes: <br>
-				&nbsp;&nbsp;&nbsp;&nbsp;&gt; ADC/DAC Calculator<br>
-				&nbsp;&nbsp;&nbsp;&nbsp;&gt; Cournot Calculator<br />
-				&nbsp;&nbsp;&nbsp;&nbsp;&gt; Cordic Calculator<br />
+				<span class=html>[HTML]</span><span class=js>[JS]</span> <a href="http://g2384.github.io/work/FindWords.html">Search Words/成语 With Regex Patterns</a> (2015.12)<br />
+				<span class=accordion><span class=html>[HTML]</span><span class=js>[JS]</span> <a href="http://g2384.github.io/work/MiscellaneousCalculators.html">Miscellaneous Calculators<span class='drop'>&#9660;</span></a> (2015.11)<br>
+				<span  class='drop-content'>
+				includes: <br>
+				&gt; ADC/DAC Calculator<br>
+				&gt; Cournot Calculator<br>
+				&gt; Cordic Calculator<br></span></span>
 				<span class=html>[HTML]</span><span class=js>[JS]</span> <a href="https://8756c668a97035b42e377ce1f65147df10dac57d.googledrive.com/host/0B4xVwonJgym0QlBYRHN1VWtXUUU/js_ime/index_jp.html">Japanese Input Method(日本語入力)</a> (2015.11)<br />
 				<span class=html>[HTML]</span><span class=js>[JS]</span> <a href="http://g2384.github.io/CodeEditor/index.html">Online Code Editor</a> (2015.5)<br />
 				<span class=html>[HTML]</span><span class=js>[JS]</span> <a href="http://g2384.github.io/collection/file_diff.html">Compare Files, Diff Checker</a> (2015.5)<br />
 				<span class=html>[HTML]</span><span class=js>[JS]</span> <a href="http://g2384.github.io/work/highlight.html">Programming Language Highlighter</a> (2015.2)<br />
-				<span class=html>[HTML]</span><span class=js>[JS]</span> <a href="http://g2384.github.io/work/VHDLformatter.html">VHDL Beautifier, Formatter</a> (2015.1)<span class="star">★</span><br />
+				<span class=html>[HTML]</span><span class=js>[JS]</span> <a href="http://g2384.github.io/work/VHDLformatter.html">VHDL Beautifier, Formatter</a> (2015.1)<span class="star">&#9733;</span><br />
 				<span class=html>[HTML]</span><span class=js>[JS]</span> <a href="http://g2384.github.io/work/AddOperators.html">24 Game(24点) / Countdown Solver and Even More</a> (2015.2)<br />
 				<span class=html>[HTML]</span><span class=js>[JS]</span> <a href="https://g2384.github.io/collection/ConvolutionCalculator.html">Convolution Calculator(Linear, Circular)</a> (2014.11)<br />
-				<span class=html>[HTML]</span><span class=js>[JS]</span> <a href="https://g2384.github.io/collection/convertulator.html">Multiple convertors</a> (2014.5)<br />
-				<span class=html>[HTML]</span><span class=js>[JS]</span> <a href="https://g2384.github.io/collection/Hex_Calc_IEEE754_conversion.html">Programmer Tools</a> (2014.5-2015.5)<br />
-				&nbsp;&nbsp;&nbsp;&nbsp;includes: <br>
-				&nbsp;&nbsp;&nbsp;&nbsp;&gt; Hex Calculator <br>
-				&nbsp;&nbsp;&nbsp;&nbsp;&gt; Dec/Bin/Hex Convertor<br> 
-				&nbsp;&nbsp;&nbsp;&nbsp;&gt; IEEE754 convertor <br> 
-				&nbsp;&nbsp;&nbsp;&nbsp;&gt; Fixed-Point Bin convertor <br>
-				&nbsp;&nbsp;&nbsp;&nbsp;&gt; Floating-point Math Simulator<br>
-				<span class=html>[HTML]</span><span class=js>[JS]</span> <a href="http://g2384.github.io/Playlist/">Loop YouTube Videos (UK official chart playlist)</a> (2014.4)<span class="star">★</span><br />
+				<span class=accordion><span class=html>[HTML]</span><span class=js>[JS]</span> <a href="https://g2384.github.io/collection/convertulator.html">Multiple convertors <span class='drop'>&#9660;</span></a> (2014.5)<br />
+				<span class='drop-content'>
+				includes: <br>
+				&gt; Hex/Dec/Hex/ASCII/Unicode/Base64 <br>
+				&gt; Unicode table<br></span></span>
+				<span class=accordion><span class=html>[HTML]</span><span class=js>[JS]</span> <a href="https://g2384.github.io/collection/Hex_Calc_IEEE754_conversion.html">Programmer Tools <span class='drop'>&#9660;</span></a> (2014.5-2015.5)<br />
+				<span class='drop-content'>
+				includes: <br>
+				&gt; Hex Calculator <br>
+				&gt; Dec/Bin/Hex Convertor<br> 
+				&gt; IEEE754 convertor <br> 
+				&gt; Fixed-Point Bin convertor <br>
+				&gt; Floating-point Math Simulator<br></span></span>
+				<span class=html>[HTML]</span><span class=js>[JS]</span> <a href="http://g2384.github.io/Playlist/">Loop YouTube Videos (UK official chart playlist)</a> (2014.4)<span class="star">&#9733;</span><br />
 				<span class=html>[HTML]</span><span class=js>[JS]</span> <a href="http://g2384.github.io/work/txt2img.html">Text to image converter</a> (2014.4)<br />
 				<span class=html>[HTML]</span><span class=js>[JS]</span> <a href="http://g2384.github.io/js-RSA/">JavaScript RSA encryption</a> (2014.4)<br />
 				<span class=html>[HTML]</span><span class=js>[JS]</span> <a href="http://g2384.github.io/work/JavascriptTools.html">Javascript Tools(counter, table generator)</a> (2014.4)<br />
 				<span class=html>[HTML]</span><span class=js>[JS]</span> <a href="http://g2384.github.io/work/MessyWords.html">Flip/Zalgo Words</a> (Adapted from <a href='http://lunicode.com/'>Lunicode</a></a>)<br />
 				<span class=html>[HTML]</span><span class=js>[JS]</span> <a href="http://g2384.github.io/work/elapsed_time.html">Elapsed time</a> (2013.5)<br />
-				</p>
+			</p>
 			<h3>Code</h3>
 			<p>	
 				<span class=html>[HTML]</span> <a href="http://g2384.github.io/cheat-sheet/html_cheatsheet.html">HTML Cheat Sheet</a> (2015.4)<br />
@@ -129,9 +144,9 @@ body{padding:.4in;font-size:12pt;color:#444}
 				<span class=text>[TEXT]</span> <a href="https://googledrive.com/host/0B4xVwonJgym0QlBYRHN1VWtXUUU/Commonly-used%20Charater%20(grouped%20by%20pinyin).pdf">汉字拼音分组(Chinese Charater grouped by pinyin)</a> (2013.9)<br />
 			</p>
 			<h3>Article</h3>
-			<p>	<span class=php>[PHP]</span> <a href="https://github.com/g2384/g2384.github.io/blob/master/work/hackernews.php">A better way to read HN</a> | <a href="https://googledrive.com/host/0B4xVwonJgym0QlBYRHN1VWtXUUU/hackernews.html">A simple documentation</a> (2014.5)<span class="star">★</span><br />
+			<p>	<span class=php>[PHP]</span> <a href="https://github.com/g2384/g2384.github.io/blob/master/work/hackernews.php">A better way to read HN</a> | <a href="https://googledrive.com/host/0B4xVwonJgym0QlBYRHN1VWtXUUU/hackernews.html">A simple documentation</a> (2014.5)<br />
 				<span class=text>[TEXT]</span> <a href="https://github.com/g2384/g2384.github.io/blob/master/work/PHPScrawler.md">简单PHP爬虫(PHP Scrawler)</a> (2014.4)<br />
-				<span class=html>[HTML]</span><span class=text>[TEXT]</span> <a href="https://googledrive.com/host/0B4xVwonJgym0QlBYRHN1VWtXUUU/LearnLanguage.html">学习中文/Aprender Español/日本語を勉強/English</a> (2014.5)<span class="star">★</span><br />
+				<span class=html>[HTML]</span><span class=text>[TEXT]</span> <a href="https://googledrive.com/host/0B4xVwonJgym0QlBYRHN1VWtXUUU/LearnLanguage.html">学习中文/Aprender Español/日本語を勉強/English</a> (2014.5)<span class="star">&#9733;</span><br />
 			</p>
 			<script src="javascripts/scale.fix.js"></script>
 		</div>
