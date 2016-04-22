@@ -288,7 +288,13 @@ function hex2dec(num) {
 }
 unicode_s+='<input type=button id="undo" onclick="document.getElementById(\'unicode_r\').value=hist[++hist_c];testHist();" value="Undo" disabled/>';
 unicode_s+='<input type=button id="redo" onclick="document.getElementById(\'unicode_r\').value=hist[--hist_c];testHist();" value="Redo" disabled/><br>';
-for(var i=768;i<865;i++){
+for(var i=768;i<=879;i++){
+unicode_s+='<input type=button onclick="add_('+i+')" value="'+add(i,'test')+'"/>';
+}for(var i=65056;i<=65071;i++){
+unicode_s+='<input type=button onclick="add_('+i+')" value="'+add(i,'test')+'"/>';
+}for(var i=8400;i<=8432;i++){
+unicode_s+='<input type=button onclick="add_('+i+')" value="'+add(i,'test')+'"/>';
+}for(var i=6832;i<=6846;i++){
 unicode_s+='<input type=button onclick="add_('+i+')" value="'+add(i,'test')+'"/>';
 }
 var hist_c=0;
