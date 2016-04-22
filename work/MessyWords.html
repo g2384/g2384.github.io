@@ -41,6 +41,18 @@ aside ul li.active:hover{background-color:#0272e2}
 .content .symbols{width:400px}
 .content .symbol{width:120px;height:80px;float:left;margin-right:12px;margin-bottom:20px}
 .content .symbol textarea{width:120px;height:50px;font-size:22px;font-family:Helvetica,Arial,sans-serif;line-height:50px;text-align:center;vertical-align:middle}
+input[type=button] {margin: 1px;
+padding: 5px 8px;
+font-size: 16px;
+line-height: 1.33;
+color: #333;
+background-color: #fff;
+cursor: pointer;
+text-align: center;
+white-space: nowrap;
+border: 0px solid #B3B3B3;}
+input[type=button]:hover:enabled{color:red;}
+input:disabled {color: #dddddd;}
 </style>
     <script type="text/javascript">
         function setNavigation() {
@@ -100,6 +112,12 @@ aside ul li.active:hover{background-color:#0272e2}
                     <span class="example">ʟɪᴋᴇ ꜱʜᴏᴜᴛɪɴɢ ᴍɪᴅɢᴇᴛꜱ</span>
                 </a>
             </li>
+            <li class="link_unicode">
+                <a onclick='setPanel("unicode", false);'>
+                    <span class="title">Unicode Combining</span>
+                    <span class="example">&#83;&#813;&#65;&#824;&#77;&#860;&#80;&#839;&#76;&#789;&#69;&#773;</span>
+                </a>
+            </li>
         </ul>
     </aside>
     <div class="content col scroll-y">
@@ -107,7 +125,7 @@ aside ul li.active:hover{background-color:#0272e2}
             <form>
                 <textarea name="plain" placeholder="Enter some text..." class="editable"></textarea>
                 <textarea name="encoded" class="editable" placeholder="˙˙˙ʇxǝʇ ǝɯos ɹǝʇuƎ"></textarea>
-                <a href="http://lunicode.com/flip#" class="htmlToggle">Show HTML</a>
+                <a class="htmlToggle">Show HTML</a>
                 <textarea name="html" placeholder="HTML" class="editable"></textarea>
             </form>
         </section>
@@ -115,7 +133,7 @@ aside ul li.active:hover{background-color:#0272e2}
             <form>
                 <textarea name="plain" placeholder="Enter some text..." class="editable"></textarea>
                 <textarea name="encoded" class="editable" placeholder="...ƚxɘƚ ɘmoꙅ ɿɘƚᴎƎ"></textarea>
-                <a href="http://lunicode.com/flip#" class="htmlToggle">Show HTML</a>
+                <a class="htmlToggle">Show HTML</a>
                 <textarea name="html" placeholder="HTML" class="editable"></textarea>
             </form>
         </section>
@@ -146,7 +164,7 @@ aside ul li.active:hover{background-color:#0272e2}
                         </p>
                     </div>
                 </div>
-                <a href="http://lunicode.com/flip#" class="htmlToggle">Show HTML</a>
+                <a class="htmlToggle">Show HTML</a>
                 <textarea name="html" placeholder="HTML" class="editable"></textarea>
             </form>
         </section>
@@ -154,8 +172,8 @@ aside ul li.active:hover{background-color:#0272e2}
             <form>
                 <textarea name="plain" placeholder="Enter some text..." class="editable"></textarea>
                 <div class="direction"><div class="arrow"></div></div>
-                <textarea name="encoded" class="editable" placeholder="Ⓔⓝⓣⓔⓡ ⓢⓞⓜⓔ ⓣⓔⓧⓣ    .⃝    .⃝    .⃝"></textarea>
-                <a href="http://lunicode.com/flip#" class="htmlToggle">Show HTML</a>
+                <textarea name="encoded" class="editable" placeholder="Ⓔⓝⓣⓔⓡ ⓢⓞⓜⓔ ⓣⓔⓧⓣ    .⃝    .⃝    .⃝"></textarea>
+                <a class="htmlToggle">Show HTML</a>
                 <textarea name="html" placeholder="HTML" class="editable"></textarea>
             </form>
         </section>
@@ -163,7 +181,7 @@ aside ul li.active:hover{background-color:#0272e2}
             <form>
                 <textarea name="plain" placeholder="Enter some text..." class="editable"></textarea>
                 <textarea name="encoded" class="editable" placeholder="Ɛղէҽɾ ʂօʍҽ էҽ×է..."></textarea>
-                <a href="http://lunicode.com/flip#" class="htmlToggle">Show HTML</a>
+                <a class="htmlToggle">Show HTML</a>
                 <textarea name="html" placeholder="HTML" class="editable"></textarea>
             </form>
         </section>
@@ -171,8 +189,8 @@ aside ul li.active:hover{background-color:#0272e2}
             <form>
                 <textarea name="plain" placeholder="Enter some text..." class="editable"></textarea>
                 <div class="direction"><div class="arrow"></div></div>
-                <textarea name="encoded" class="editable" placeholder="E⃞    n⃞    t⃞    e⃞    r⃞     s⃞    o⃞    m⃞    e⃞     t⃞    e⃞    x⃞    t⃞    .⃞    .⃞    .⃞"></textarea>
-                <a href="http://lunicode.com/flip#" class="htmlToggle">Show HTML</a>
+                <textarea name="encoded" class="editable" placeholder="E⃞    n⃞    t⃞    e⃞    r⃞     s⃞    o⃞    m⃞    e⃞     t⃞    e⃞    x⃞    t⃞    .⃞    .⃞    .⃞"></textarea>
+                <a class="htmlToggle">Show HTML</a>
                 <textarea name="html" placeholder="HTML" class="editable"></textarea>
             </form>
         </section>
@@ -180,8 +198,8 @@ aside ul li.active:hover{background-color:#0272e2}
             <form>
                 <textarea name="plain" placeholder="Enter some text..." class="editable"></textarea>
                 <div class="direction"><div class="arrow"></div></div>
-                <textarea name="encoded" class="editable" placeholder="E⃣   n⃣   t⃣   e⃣   r⃣    s⃣   o⃣   m⃣   e⃣    t⃣   e⃣   x⃣   t⃣   .⃣   .⃣   .⃣"></textarea>
-                <a href="http://lunicode.com/flip#" class="htmlToggle">Show HTML</a>
+                <textarea name="encoded" class="editable" placeholder="E⃣   n⃣   t⃣   e⃣   r⃣    s⃣   o⃣   m⃣   e⃣    t⃣   e⃣   x⃣   t⃣   .⃣   .⃣   .⃣"></textarea>
+                <a class="htmlToggle">Show HTML</a>
                 <textarea name="html" placeholder="HTML" class="editable"></textarea>
             </form>
         </section>
@@ -189,7 +207,15 @@ aside ul li.active:hover{background-color:#0272e2}
             <form>
                 <textarea name="plain" placeholder="Enter some text..." class="editable"></textarea>
                 <textarea name="encoded" class="editable" placeholder="ᴇɴᴛᴇʀ ꜱᴏᴍᴇ ᴛᴇxᴛ..."></textarea>
-                <a href="http://lunicode.com/flip#" class="htmlToggle">Show HTML</a>
+                <a class="htmlToggle">Show HTML</a>
+                <textarea name="html" placeholder="HTML" class="editable"></textarea>
+            </form>
+        </section>
+		<section id="text_panel_unicode" style="display: none;">
+            <form>
+                <textarea name="plain2" id='unicode_r' placeholder="Enter some text..."  class="editable" onbeforedeactivate="storeSelectionIeCase();" onchange='pushHist()' onblur="storeSelectionOthersCase();"></textarea>
+				<div id='unicode_buttons'></div>
+                <a class="htmlToggle">Show HTML</a>
                 <textarea name="html" placeholder="HTML" class="editable"></textarea>
             </form>
         </section>
@@ -216,69 +242,114 @@ return c}},roundsquares:{init:function(){},encode:function(b){var c="",a,d=!0;fo
 "undefined"==typeof a&&(a=b.charAt(d)),c+=a;return c},decode:function(b){for(var c="",a,d=0,e=b.length;d<e;d++)a=this.map[b.charAt(d)],"undefined"==typeof a&&(a=b.charAt(d)),c+=a;return c},map:{a:"\u0105",b:"\u048d",c:"\u00e7",d:"\u056a",e:"\u04bd",f:"\u0192",g:"\u0581",h:"\u0570",i:"\u00ec",j:"\u029d",k:"\u049f",l:"\u04c0",m:"\u028d",n:"\u0572",o:"\u0585",p:"\u0584",q:"\u0566",r:"\u027e",s:"\u0282",t:"\u0567",u:"\u0574",v:"\u0475",w:"\u0561",x:"\u00d7",y:"\u057e",z:"\u0540",A:"\u023a",B:"\u03b2",
 C:"\u21bb",D:"\u13a0",E:"\u0190",F:"\u0191",G:"\u0193",H:"\u01f6",I:"\u012f",J:"\u0644",K:"\u04a0",L:"\ua748",M:"\u2c6e",N:"\u17a0",O:"\u0da7",P:"\u03c6",Q:"\u04a8",R:"\u0f60",S:"\u03da",T:"\u0372",U:"\u0531",V:"\u1efc",W:"\u0c1a",X:"\u10ef",Y:"\u04cb",Z:"\u0240",0:"\u2298",1:"\ud835\udfd9",2:"\u03e9",3:"\u04e0",4:"\u096b",5:"\u01bc",6:"\u03ec",7:"7",8:"\ud835\udfe0",9:"\u096f","&":"\u214b","(":"{",")":"}","{":"(","}":")","\u00e4":"\u0105\u0308","\u00f6":"\u0585\u0308","\u00fc":"\u0574\u0308","\u00c4":"\u023a\u0308",
 "\u00d6":"\u0da7\u0308","\u00dc":"\u0531\u0308","\u00e9":"\u04bd\u0301","\u00e1":"\u0105\u0301","\u00f3":"\u0585\u0301","\u00fa":"\u0574\u0301","\u00c9":"\u0190\u0301","\u00c1":"\u023a\u0301","\u00d3":"\u0da7\u0301","\u00da":"\u0531\u0301","\u00e8":"\u04bd\u0300","\u00e0":"\u0105\u0300","\u00f2":"\u0585\u0300","\u00f9":"\u0574\u0300","\u00c8":"\u0190\u0300","\u00c0":"\u023a\u0300","\u00d2":"\u0da7\u0300","\u00d9":"\u0531\u0300","\u00ea":"\u04bd\u0302","\u00e2":"\u0105\u0302","\u00f4":"\u0585\u0302",
-"\u00fb":"\u0574\u0302","\u00ca":"\u0190\u0302","\u00c2":"\u023a\u0302","\u00d4":"\u0da7\u0302","\u00db":"\u0531\u0302"}},tiny:{init:function(){for(i in this.map)this.map[this.map[i]]=i},encode:function(b){var c="",a;b=b.toUpperCase();for(var d=0,e=b.length;d<e;d++)a=this.map[b.charAt(d)],"undefined"==typeof a&&(a=b.charAt(d)),c+=a;return c},decode:function(b){for(var c="",a,d=0,e=b.length;d<e;d++)a=this.map[b.charAt(d)],"undefined"==typeof a&&(a=b.charAt(d)),c+=a;return c},map:{A:"\u1d00",B:"\u0299",
-C:"\u1d04",D:"\u1d05",E:"\u1d07",F:"\ua730",G:"\u0262",H:"\u029c",I:"\u026a",J:"\u1d0a",K:"\u1d0b",L:"\u029f",M:"\u1d0d",N:"\u0274",O:"\u1d0f",P:"\u1d18",Q:"Q",R:"\u0280",S:"\ua731",T:"\u1d1b",U:"\u1d1c",V:"\u1d20",W:"\u1d21",X:"x",Y:"\u028f",Z:"\u1d22"}}};for(i in this.tools)this.tools[i].init();this.getHTML=function(b){for(var c="",a,d=!0,e=0,f=0,g=0,h=b.length;g<h;g++)a=b.charCodeAt(g),10==a||13==a?(c+="<br>\n",d=!0):32==a?d?(c+=" ",d=!1):(c+="&nbsp;",d=!0):(55296<=a&&56319>=a?(e=a,f=0):0<e?(56320<=
-a&&57343>=a&&(f=1024*(e-55296)+(a-56320)+65536),e=0):f=a,0!=f&&(c+="&#x"+f.toString(16)+";",d=!0));return c}};
+"\u00fb":"\u0574\u0302","\u00ca":"\u0190\u0302","\u00c2":"\u023a\u0302","\u00d4":"\u0da7\u0302","\u00db":"\u0531\u0302"}},tiny:{init:function(){for(i in this.map)this.map[this.map[i]]=i},encode:function(b){var c="",a;b=b.toUpperCase();for(var d=0,e=b.length;d<e;d++)a=this.map[b.charAt(d)],"undefined"==typeof a&&(a=b.charAt(d)),c+=a;return c},decode:function(b){for(var c="",a,d=0,e=b.length;d<e;d++)a=this.map[b.charAt(d)],"undefined"==typeof a&&(a=b.charAt(d)),c+=a;return c},map:{A:"\u1d00",B:"\u0299",C:"\u1d04",D:"\u1d05",E:"\u1d07",F:"\ua730",G:"\u0262",H:"\u029c",I:"\u026a",J:"\u1d0a",K:"\u1d0b",L:"\u029f",M:"\u1d0d",N:"\u0274",O:"\u1d0f",P:"\u1d18",Q:"Q",R:"\u0280",S:"\ua731",T:"\u1d1b",U:"\u1d1c",V:"\u1d20",W:"\u1d21",X:"x",Y:"\u028f",Z:"\u1d22"}}};for(i in this.tools)this.tools[i].init();this.getHTML=function(b){for(var c="",a,d=!0,e=0,f=0,g=0,h=b.length;g<h;g++)a=b.charCodeAt(g),10==a||13==a?(c+="<br>\n",d=!0):32==a?d?(c+=" ",d=!1):(c+="&nbsp;",d=!0):(55296<=a&&56319>=a?(e=a,f=0):0<e?(56320<=a&&57343>=a&&(f=1024*(e-55296)+(a-56320)+65536),e=0):f=a,0!=f&&(c+="&#x"+f.toString(16)+";",d=!0));return c}};
 </script>
 <script>var isMobile = false;
 var luni = new Lunicode();
-
-/////// GUI
-
-// Remember the current plain text between panels
 var currentPlainText = '';
-
 var currentPanelID, currentTabID;
-
-
 function setTab(tabID, setHistory) {
-
     $('header ul li,.tab').removeClass('active');
     $('header #tablink_' + tabID + ', #tab_' + tabID).addClass('active');
     $('#body .tab').hide();
     $('#tab_' + tabID).show();
-
     currentTabID = tabID;
 }
 
 function setPanel(panelID, setHistory) {
-
-
-    var tabID = 'text';
-
+    var tabID = '';
     if (typeof(panelID) == 'undefined' || panelID == '') {
         panelID = 'flip';
     }
-
-    var $tab = $('#tab_' + tabID);
-
-
-    if (!$('#' + tabID + '_panel_' + panelID).hasClass('active')) {
+    var $tab = $('#tab_text');
+    if (!$('#text_panel_' + panelID).hasClass('active')) {
         $('aside ul li', $tab).removeClass('active');
         $('.content section', $tab).removeClass('active').hide();
 
-        $('#' + tabID + '_panel_' + panelID).show();
-        $('.link_' + panelID + ',.content #' + tabID + '_panel_' + panelID, $tab).addClass('active');
-
-        if (tabID == 'text') {
-            var $plaintext = $('#' + tabID + '_panel_' + panelID + ' textarea[name=plain]');
-            if (!isMobile) {
-                $plaintext.focus();
-            }
-            $plaintext.val(currentPlainText);
-            $('#' + tabID + '_panel_' + panelID + ' textarea[name=encoded]').val(luni.tools[panelID].encode(currentPlainText));
-        }
+        $('#text_panel_' + panelID).show();
+        $('.link_' + panelID + ',.content #text_panel_' + panelID, $tab).addClass('active');
+		if(panelID != 'unicode'){
+			var $plaintext = $('#text_panel_' + panelID + ' textarea[name=plain]');
+			$('#text_panel_' + panelID + ' textarea[name=encoded]').val(luni.tools[panelID].encode(currentPlainText));
+		}else{
+			var $plaintext = $('#text_panel_' + panelID + ' textarea[name=plain2]');
+		}
+		if (!isMobile) {
+			$plaintext.focus();
+		}
+		$plaintext.val(currentPlainText);
     }
 }
 
+var doc=document.getElementById('unicode_buttons');
+var unicode_s='';var sele='';var hist=[];
+function hex2dec(num) {
+	return parseInt(num, 16).toString(10);
+}
+unicode_s+='<input type=button id="undo" onclick="document.getElementById(\'unicode_r\').value=hist[++hist_c];testHist();" value="Undo" disabled/>';
+unicode_s+='<input type=button id="redo" onclick="document.getElementById(\'unicode_r\').value=hist[--hist_c];testHist();" value="Redo" disabled/><br>';
+for(var i=768;i<865;i++){
+unicode_s+='<input type=button onclick="add_('+i+')" value="'+add(i,'test')+'"/>';
+}
+var hist_c=0;
+doc.innerHTML=unicode_s;
+function add(n,w){
+	var s1='&#'+n+';';
+	var wa=w.split('');
+	var s0='';
+	var j=0;
+	for(;j<wa.length;j++){
+		var nn=wa[j].charCodeAt();
+		s0+=wa[j];
+		if(nn<768 || nn > 865){
+			s0+=s1;
+		}
+	}
+	return s0;
+}
+function add_(n){
+	var vv=document.getElementById('unicode_r').value;
+	if(hist.length==0){
+		hist=[vv];
+	}
+	if(sele==''){
+		storedSelectionStart  = 0;
+		storedSelectionEnd = vv.length;
+		pasteIntoInput(decodeEntities(add(n,vv)));
+	}else{
+		pasteIntoInput(decodeEntities(add(n,sele)));
+	}
+	var $parent = $('#text_panel_unicode');
+	$textareaHTML = $('textarea[name=html]', $parent);
+	$textareaHTML.val(escapeHtmlEntities($('#unicode_r').val()));
+	testHist();
+}
+function testHist(){
+	var rd=document.getElementById('redo');
+	var ud=document.getElementById('undo');
+	if (hist_c>0){
+	rd.disabled=false;
+	}else{
+	rd.disabled=true;
+	}
+	if (hist_c<hist.length-1){
+	ud.disabled=false;
+	}else{
+	ud.disabled=true;
+	}
+}
+function pushHist(){
+hist.unshift(document.getElementById('unicode_r').value);
+}
+var decodeEntities=function(){var e=document.createElement("div");return decodeHTMLEntities=function(t){return t&&"string"==typeof t&&(t=t.replace(/<script[^>]*>([\S\s]*?)<\/script>/gim,""),t=t.replace(/<\/?\w(?:[^"'>]|"[^"]*"|'[^']*')*>/gim,""),e.innerHTML=t,t=e.textContent,e.textContent=""),t},decodeHTMLEntities}();
 
+var storedSelectionStart = null;
+var storedSelectionEnd = null;
+function pasteIntoInput(e){if(el=document.getElementById("unicode_r"),el.focus(),null!=storedSelectionStart&&null!=storedSelectionEnd?(start=storedSelectionStart,end=storedSelectionEnd):(start=el.selectionStart,end=el.selectionEnd),"number"==typeof start&&"number"==typeof end){var t=el.value,n=start;el.value=t.slice(0,n)+e+t.slice(end),hist.unshift(el.value),end=start=n+e.length}else if("undefined"!=typeof document.selection){var o=document.selection.createRange();o.text=e,o.collapse(!1),o.select()}}function storeSelectionOthersCase(){storeSelection()}function storeSelectionIeCase(){storeSelection()}function storeSelection(){e=document.getElementById("unicode_r");var e=document.getElementById("unicode_r"),t=getInputSelection(e);sele=e.value.substring(t.start,t.end),storedSelectionStart=t.start,storedSelectionEnd=t.end}function getInputSelection(e){var t,n,o,l,r,c=0,s=0;return"number"==typeof e.selectionStart&&"number"==typeof e.selectionEnd?(c=e.selectionStart,s=e.selectionEnd):(n=document.selection.createRange(),n&&n.parentElement()==e&&(l=e.value.length,t=e.value.replace(/\r\n/g,"\n"),o=e.createTextRange(),o.moveToBookmark(n.getBookmark()),r=e.createTextRange(),r.collapse(!1),o.compareEndPoints("StartToEnd",r)>-1?c=s=l:(c=-o.moveStart("character",-l),c+=t.slice(0,c).split("\n").length-1,o.compareEndPoints("EndToEnd",r)>-1?s=l:(s=-o.moveEnd("character",-l),s+=t.slice(0,s).split("\n").length-1)))),{start:c,end:s}}
+var escapeHtmlEntities = function(text) {return text.replace(/[\u0000-\uFFFF]/g, function(c){return '&#' + c.charCodeAt(0) + ';'}); };
 $(function () {
-
-
     function initGUI() {
-
         setNavigation();
-
         // Encode placeholder Text
         $('#tab_text textarea[name=plain]').each(function () {
             var $parent = $(this).parents('section');
@@ -287,77 +358,65 @@ $(function () {
             $('textarea[name=encoded]', $parent).attr('placeholder', luni.tools[effect].encode($(this).attr('placeholder')));
         });
     }
-
-
     initGUI();
-
     // Switch Text-Panels
     $('aside ul li').click(function (e) {
         var panelID = $(this).attr('class').replace("active", "").split("_")[1];
-
         setPanel(panelID, true);
         return false;
     });
-
     // Focus textarea: rotate arrow
     $('.tab .content section textarea').focus(function () {
         var $parent = $(this).parents('section');
         var effect = $parent.attr('id').split("_")[2];
         var name = $(this).attr('name');
     });
-
-
     // Toggle HTML Output
     $('.tab .content section a.htmlToggle').click(function () {
         var $this = $(this);
         var $parent = $this.parents('section');
         var effect = $parent.attr('id').split("_")[2];
-
-
         // Hide
         if ($this.hasClass('active')) {
             $this.text('Show HTML').removeClass('active');
             $('textarea[name=html]', $parent).removeClass('active').hide();
-
             // Show
         } else {
             $this.text('Hide HTML').addClass('active');
-
-            var htmlText = luni.getHTML($('textarea[name=encoded]', $parent).val());
-            $('textarea[name=html]', $parent).addClass('active').val(htmlText).show();
+			if(effect!='unicode'){
+				var htmlText = luni.getHTML($('textarea[name=encoded]', $parent).val());
+            }else{
+				var htmlText = escapeHtmlEntities($('#unicode_r').val());
+				console.log(htmlText)
+			}
+			$('textarea[name=html]', $parent).addClass('active').val(htmlText).show();
         }
-
         return false;
-
     });
-
-
     ///// Convert Text
-
     $('#tab_text .content section textarea').keyup(function () {
         var $parent = $(this).parents('section');
         var effect = $parent.attr('id').split("_")[2];
         var name = $(this).attr('name');
         var encodedText;
-
         if (name == "plain") {
             currentPlainText = $(this).val();
             encodedText = luni.tools[effect].encode(currentPlainText);
             $('textarea[name=encoded]', $parent).val(encodedText);
-
         } else if (name == "encoded") {
             encodedText = $(this).val();
             currentPlainText = luni.tools[effect].decode(encodedText);
             $('textarea[name=plain]', $parent).val(currentPlainText);
         }
-
         $textareaHTML = $('textarea[name=html]', $parent);
         if ($textareaHTML.hasClass('active')) {
+		if(effect!='unicode'){
             $textareaHTML.val(luni.getHTML(encodedText));
-        }
+        }else{
+			$textareaHTML.val(escapeHtmlEntities($('#unicode_r').val()));
+		}
+		}
     });
-
-
     // Creepify Tool
 
     // Set the padding of the second textarea, so that all diacritics are visible but
@@ -366,14 +425,11 @@ $(function () {
         if ($.browser.mozilla || $.browser.opera) {
             return;
         }
-
         var setTop = $('#creepify_check_top').prop('checked'),
             setBottom = $('#creepify_check_bottom').prop('checked'),
             diacriticsNumber = $('#creepify_maxHeight').val(),
             $textarea = $('#text_panel_creepify textarea[name=encoded]');
-
         var padding = (5 + 5 * diacriticsNumber); // 5px initial padding + 5px for every diacritic
-
         if ((setTop && !setBottom) || (!setTop && setBottom)) {
             padding = Math.min(creepifyTextareaHeight - 5, padding);
 
@@ -383,67 +439,51 @@ $(function () {
             if (!setTop && setBottom) {
                 $textarea.css({'padding-top': "5px", 'padding-bottom': padding + 'px'});
             }
-
         } else if (setTop && setBottom) {
             padding = Math.min(creepifyTextareaHeight / 2, padding);
             $textarea.css({'padding-top': padding + "px", 'padding-bottom': padding + 'px'});
-
         } else if (!(setTop || setBottom)) {
             $textarea.css({'padding-top': "5px", 'padding-bottom': '5px'});
         }
-
     }
-
     // Init from object
     $('#creepify_check_top').prop('checked', luni.tools.creepify.options.top);
     $('#creepify_check_middle').prop('checked', luni.tools.creepify.options.middle);
     $('#creepify_check_bottom').prop('checked', luni.tools.creepify.options.bottom);
     $('#creepify_maxHeight').val(luni.tools.creepify.options.maxHeight);
     $('#creepify_randomization').val(luni.tools.creepify.options.randomization);
-
     var creepifyTextareaHeight = 180;//$('#text_panel_creepify textarea[name=encoded]').outerHeight();
-
     // set textarea padding if top/bottom is set, so the top/bottom diacritics are visible
     setCreepifyPadding();
-
     // Set options and refresh
     // Checkboxes
     $('#text_panel_creepify input[type=checkbox]').click(function () {
         var $parent = $(this).parents('section');
         var name = $(this).attr('id').split("_")[2];
-
         luni.tools.creepify.options[name] = $(this).prop('checked');
-
         $textarea = $('textarea[name=encoded]', $parent);
-
         // Change value or placeholder
         if (currentPlainText == '') {
             $textarea.attr('placeholder', luni.tools.creepify.encode($('textarea[name=plain]', $parent).attr('placeholder')));
         } else {
             var encodedText = luni.tools.creepify.encode(currentPlainText);
             $textarea.val(encodedText);
-
             $textareaHTML = $('textarea[name=html]', $parent);
             if ($textareaHTML.hasClass('active')) {
                 $textareaHTML.val(luni.getHTML(encodedText));
             }
         }
-
         // more textarea padding-top/bottom to show the top/bottom diacritics
         if (name == "top" || name == "bottom") {
             setCreepifyPadding();
         }
     });
-
-
     // Range
     $('#text_panel_creepify input[type=range]').on('input change', function () {
         var $parent = $(this).parents('section');
         var name = $(this).attr('id').split("_")[1];
-
         luni.tools.creepify.options[name] = $(this).val();
         $textarea = $('textarea[name=encoded]', $parent);
-
         // Change value or placeholder
         if (currentPlainText == '') {
             $textarea.attr('placeholder', luni.tools.creepify.encode($('textarea[name=plain]', $parent).attr('placeholder')));
@@ -451,23 +491,20 @@ $(function () {
 
             var encodedText = luni.tools.creepify.encode(currentPlainText);
             $textarea.val(encodedText);
-
             $textareaHTML = $('textarea[name=html]', $parent);
             if ($textareaHTML.hasClass('active')) {
                 $textareaHTML.val(luni.getHTML(encodedText));
             }
         }
-
-
         // more textarea padding if diacritics on top
         if (name == 'maxHeight') {
             setCreepifyPadding();
         }
     });
-
     // Non Webkit-browsers (sans IE) get a special message
     if (!$.browser.webkit && !$.browser.msie) {
         $('.notWebKit').css('display', 'block');
     }
-});</script>
+});
+</script>
 </body></html>
