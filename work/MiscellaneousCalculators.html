@@ -41,6 +41,7 @@ Fixed point binary fraction part length:<input type="text" class="c" id="Cordic_
 <strong>Note: </strong><br />
 to calculate arctan():select vectoring mode, set x=1, y=input, z=0; z[n]=arctan();<br />
 to calculate sine(),cos():select rotation mode, set x=0.607252935, y=0, z=input; x[n]=cos(), y[n]=sin();<br />
+<div id="result_cordic"></div>
 </div>
 
 
@@ -58,6 +59,7 @@ Given Input digital number:  <input type='text' id='adcdac_inp' value='8'/>
 <input type='button' class="btn" value='Calculate Analogue Output' onclick='adcdac_gen();'/><br>
 Known Output Analogue voltage:  <input type='text' id='adcdac_inp_a' value='1.3077'/> 
 <input type='button' class="btn" value='Calculate Digital Input' onclick='adcdac_gen_a2d();'/><br>
+<div id="result_adcdac"></div>
 </div>
 
 <h2 onclick='toggle("cournot")'>Cournot Calculator</h2>
@@ -70,9 +72,10 @@ Unit price of B: <input type="text" class='i' id='cournot_b_p' value='31'/><br>
 -> Resolution of B: <input type="text" class='i' id='cournot_b_u' value='2'/><br>
 Equation of demand curve: <input type="text" class='i' id='cournot_c_x' value='-1'/> x + <input type="text" class='i' id='cournot_c_c' value='120'/><br>
 <input type="button" class="btn" onclick="cournot_gen();" value="Generate"/>
+<div id="result_cournot"></div>
 </div>
 
-<div id="result"></div>
+
 <script>
 function bin2hex(a,l) {
     var b = parseInt(a.replace(/ /g, ""), 2).toString(16);
@@ -176,7 +179,7 @@ function Cordic_calc() {
         }
         str += "---------------------<br />";
     }
-    document.getElementById("result").innerHTML = str;
+    document.getElementById("result_cordic").innerHTML = str;
 }
 document.getElementById("Cordic_a").innerHTML = two.length;
 function toggle(s){
@@ -190,7 +193,6 @@ function toggle(s){
 	}else{
 	kk.style.display='';
 	}
-	document.getElementById("result").innerHTML = '';
 }
 </script>
 <script>
@@ -207,7 +209,7 @@ max=Math.pow(2,n)-1;
 
 re=roundto((inp/max)*(hv-lv)+lv,2);
 console.log(max,inp, n, lv, hv, re)
-document.getElementById('result').innerHTML=re;
+document.getElementById('result_adcdac').innerHTML=re;
 }
 
 function adcdac_gen_a2d(){
@@ -227,7 +229,7 @@ re_rounded_2=re_rounded+1;
 s+='Note: <br>'+re_rounded_2+'(Dec) = '+dec2bin(re_rounded_2)+'(Bin)<br>';
 re_rounded_2=re_rounded-1;
 s+=re_rounded_2+'(Dec) = '+dec2bin(re_rounded_2)+'(Bin)';
-document.getElementById('result').innerHTML=s;
+document.getElementById('result_adcdac').innerHTML=s;
 }
 function roundto(x, n){
 var k=Math.pow(10,n)
@@ -284,7 +286,301 @@ s1+='</tr>';
 s+=s1;
 }
 Nash_q='Nash equilibrium: A = ' + roundto((c_c+b_p-2*a_p)/(3*c_x*-1),2).toString()+', B = '+roundto((c_c+a_p-2*b_p)/(3*c_x*-1),2).toString();
-document.getElementById('result').innerHTML="<table><tbody>"+s+"</tbody></table><br>"+Nash_q;
+document.getElementById('result_cournot').innerHTML="<table><tbody>"+s+"</tbody></table><br>"+Nash_q;
+}
+</script>
+
+<!--Adapted from:
+http://www.rapidtables.com/calc/math/convolution-calculator.htm<br>http://www.uniquelycommon.com/projects/circular_convolution<br>
+https://www.easycalculation.com/engineering/mechanical/discrete-fourier-transform.php
+http://scistatcalc.blogspot.co.uk/2013/12/fft-calculator.html
+-->
+		<h2 onclick='toggle("linear")'>Linear Convolution/Circular Convolution calculator</h2>
+		<div id='linear' class='nodisplay'>
+		(real numbers only)<br>
+				Enter 1st data sequence: <br />
+				<textarea id="function_x">1 1 1 0 0 0</textarea>
+				<br />
+				Enter 2nd data sequence:<br />
+				<textarea id="function_h">0.5 0.2 0.3</textarea>
+				<br />
+				<input onclick="form_calc()" type="button" value="Calculate Convolution" class="btn"><br />
+		<label for="length">(optional) circular conv length = </label><input id="length" style="width: 50px;" value="4" /><br />
+		<br />
+				<div id="function_result"></div>
+		</div>
+	
+	<script>
+	function form_calc(){
+			var x      = document.getElementById( "function_x" );
+			var h      = document.getElementById( "function_h" );
+			var length = document.getElementById( "length" );
+			var y      = document.getElementById( "function_result" );
+			x = x.value;
+			h = h.value;
+			x = x.replace(/[ ]*,[ ]*|[ ]+/g,' ');
+			h = h.replace(/[ ]*,[ ]*|[ ]+/g,' ');
+			length = length.value;
+			
+			x = x.split ? x.split( ' ' ) : [];
+			h = h.split ? h.split( ' ' ) : [];
+			for(var i = 0; i < x.length; i++ ){
+				x[i] = parseFloat( x[i] );
+			}
+			for(var i = 0; i < h.length; i++ ){
+				h[i] = parseFloat( h[i] );
+			}
+			length = parseInt( length ) || undefined;
+			
+			result = convoluteCirc( x, h, length );
+			y.innerHTML = '';
+			res_len=result.length;
+			var str="<strong>Linear Conv:</strong><br>";
+			for(i=0; i<res_len; i++) {
+				str+=String(result[i])+' ';
+			}
+			
+			result = ConvolutionLinear(x,h);
+			res_len=result.length;
+			str+="<br><br><strong>Circular Conv:</strong><br>";
+			for(i=0; i<res_len; i++) {
+				str+=String(result[i])+' ';
+			}
+			var ss='<strong>1st sequence FFT:</strong><br>'+calculate("x");
+			ss+='<br><strong>2nd sequence FFT:</strong><br>'+calculate("h")+'<br>';
+			y.innerHTML=formatMath(ss+str);
+		}
+		function ConvolutionLinear(x1,x2)
+		{
+			var x = new Array();
+			var h = new Array();
+			var y = new Array();
+			Nx = x1.length;
+			Nh = x2.length;
+			Ny = Nx+Nh-1;
+			for(i=0; i<Nh-1; i++)
+				x[i] = 0;
+			for(i=0; i<Nx; i++)
+				x[i+Nh-1] = parseFloat(x1[i]);
+			for(i=Nx+Nh-1; i<Nx+2*(Nh-1); i++)
+				x[i] = 0;
+			for(i=0; i<Nh; i++)
+				h[i] = parseFloat(x2[i]);
+
+			for(i=0; i<Ny; i++)
+			{
+				y[i] = 0;
+				for(j=0; j<Nh; j++)
+					y[i] += x[i+j]*h[Nh-1-j];
+			}
+			return y;
+		}
+		function convoluteCirc( x, h, length ){
+			x = x || [];
+			h = h || [];
+			length = length || Math.max( h.length, x.length );
+			if( length < 1 ){
+				console.error( "length should be at least +1", length );
+				return false;
+			}
+			h.length = Math.max( h.length, length );
+			x.length = Math.max( x.length, length );
+			y = [];
+			for(var i = 0; i<h.length; i++){
+				if( (h[i] == undefined) || isNaN( h[i] ) )
+					h[i] = 0;
+			}
+			for(var i = 0; i<x.length; i++){
+				if( (x[i] == undefined) || isNaN( x[i] ) )
+					x[i] = 0;
+			}
+			h = h.reverse();
+			
+			for( var i = 0; i<x.length; i++ ){
+				// rotate h (last to front)
+				h.unshift( h.pop() );
+				y[i] = 0;
+				for( var ii = 0; ii < h.length; ii++){
+					y[i] += (x[ii] || 0) * h[ii];
+					//console.log( "added",  (x[ii] || 0), "*", h[ii], "=", (x[ii] || 0) * h[ii] );
+				}
+			}
+			
+			return y;
+		}
+	</script>
+
+<script type="text/javascript">
+function formatMath(s){
+	s=s.replace(/\+\-/g,"-");// +- => -
+	s=s.replace(/\.([1-9]+)[0]+([\+\-])/g,".$1$2");// 1.10 => 1.1
+	s=s.replace(/\.([1-9]+)[0]+\j/g,".$1j");// 0.10j => 0.1j
+	s=s.replace(/\.[0]+([\+\-\j])/g,"$1");// 0.10j => 0.1j
+	s=s.replace(/\.0j/g,"j");
+	s=s.replace(/\.0[\+\-]/g,"+");
+	s=s.replace(/[\+\-]0j/g,"");
+	s=s.replace(/[\+\-]0</g,"0<");// -0 => 0
+	return s;
+}
+function calculate(s)
+{
+var data=document.getElementById("function_"+s).value;
+var arr = new Array();
+arr=data.split(" ");
+var N=arr.length;
+
+var t_real = new Array(N);
+var t_img = new Array(N);
+
+var real=0;
+var img=0;
+var tmp=0;
+var str='';
+
+for(var k=0;k<N;k++)
+ {
+    img=0;
+    real=0;
+    
+    for(var n=0;n<N;n++)
+    {
+         tmp=(-1)*((2*Math.PI*n*k)/N);
+         real+=Math.cos(tmp)*arr[n];
+         img+=Math.sin(tmp)*arr[n];
+           // alert(Math.cos(tmp)*arr[n]+"===="+Math.sin(tmp)*arr[n]+"cos"+tmp);
+    }
+    
+    t_real[k]=real;
+    t_img[k]=img;
+    
+    str+=t_real[k].toFixed(6)+"+"+t_img[k].toFixed(6)+"j<br />";
+      // alert(t_real[k]+"+"+t_img[k]+"j");
+	  
+ } 
+ str=formatMath(str);
+ return str;
+}
+
+</script>
+
+<h2  onclick='toggle("fft")'>FFT calculator</h2>
+<div id='fft'  class='nodisplay'>
+Input: (accept imaginary numbers, e.g. 1+j 0 2+j 0 3 0 4 0)
+<br>
+<textarea id="Num_inp">1+j 0 2+j 0 3 0 4 0</textarea>
+<br><label><input id="fft_dir" type="checkbox">Check for IFFT, uncheck for FFT.</label>
+<br>
+<input name="b1" class=btn onclick="calc_fft()" type="Button" value="Perform FFT/IFFT">
+<br><br>
+<div id="Real_Imag_out"></div>
+</div>
+<script language="JavaScript">
+
+function calc_fft() {
+var x = new Array();
+var y = new Array();
+  var input = document.getElementById("Num_inp").value;
+  input=input.replace("-","+-");
+  input=input.replace("++-","+-");
+  input=input.replace("i","j");
+  input=input.replace(/([\+\-])j /g,"$11 ");
+  input=input.replace("j","");
+  var inp_arr=input.split(" ");
+  var tmp_str = '';
+  var data_size=inp_arr.length;
+for(var i=0;i<data_size;i++){
+	var temp= inp_arr[i].split("+");
+  x[i] = Number(temp[0]?temp[0]:"0");//real
+  y[i] = Number(temp[1]?temp[1]:"0");//imaginary
+}
+
+  var m = Math.ceil(Math.log(x.length)/Math.log(2));
+  if (document.getElementById("fft_dir").checked)
+    FFT(-1,m,x,y);
+  else
+    FFT(1,m,x,y);
+  var re_im_out_str = "-------<br>";
+var Nfft = (1 << m);
+  for (k = 0; k < Nfft; k++)
+    {
+        tmp_str = x[k].toFixed(6) + "+" + y[k].toFixed(6) + "j<br />";
+      re_im_out_str = re_im_out_str.concat(tmp_str);
+    }
+	re_im_out_str=formatMath(re_im_out_str);
+  document.getElementById("Real_Imag_out").innerHTML = re_im_out_str+"-------";
+ // Reset the values of x and y
+ x = [];
+ y = [];
+}
+/*
+   This computes an in-place complex-to-complex FFT 
+   x and y are the real and imaginary arrays of 2^m points.
+   dir =  1 gives forward transform
+   dir = -1 gives reverse transform 
+*/
+function FFT(dir,m,x,y)
+{
+   /* Calculate the number of points */
+   n = 1;
+   for (i=0;i<m;i++) 
+      n *= 2;
+   /* Do the bit reversal */
+   i2 = n >> 1;
+   j = 0;
+   for (i=0;i<n-1;i++) {
+      if (i < j) {
+         tx = x[i];
+         ty = y[i];
+         x[i] = x[j];
+         y[i] = y[j];
+         x[j] = tx;
+         y[j] = ty;
+      }
+      k = i2;
+      while (k <= j) {
+         j -= k;
+         k >>= 1;
+      }
+      j += k;
+   }
+
+   /* Compute the FFT */
+   c1 = -1.0; 
+   c2 = 0.0;
+   l2 = 1;
+   for (l=0;l<m;l++) {
+      l1 = l2;
+      l2 <<= 1;
+      u1 = 1.0; 
+      u2 = 0.0;
+      for (j=0;j<l1;j++) {
+         for (i=j;i<n;i+=l2) {
+            i1 = i + l1;
+            t1 = u1 * x[i1] - u2 * y[i1];
+            t2 = u1 * y[i1] + u2 * x[i1];
+            x[i1] = x[i] - t1; 
+            y[i1] = y[i] - t2;
+            x[i] += t1;
+            y[i] += t2;
+         }
+         z =  u1 * c1 - u2 * c2;
+         u2 = u1 * c2 + u2 * c1;
+         u1 = z;
+      }
+      c2 = Math.sqrt((1.0 - c1) / 2.0);
+      if (dir == 1) 
+         c2 = -c2;
+      c1 = Math.sqrt((1.0 + c1) / 2.0);
+   }
+
+   /* Scaling for reverse transform */
+   if (dir == -1) {
+      for (i=0;i<n;i++) {
+         x[i] /= n;
+         y[i] /= n;
+      }
+   }
+   return(1);
 }
 </script>
 </body></html>
