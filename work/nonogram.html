@@ -1,0 +1,658 @@
+<!-- saved from http://a.teall.info/nonogram/ -->
+<html xml:lang="en" lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>teal nonogram solver</title>
+<style type="text/css">
+.nonogram-text {
+    font-family: Arial;
+    dominant-baseline: central;
+    text-anchor: middle;
+}
+.nonogram-selector {
+    fill: rgba(0, 0, 0, 0.01);
+    stroke: none;
+}
+.nonogram-selector:hover {
+    fill: rgba(0, 0, 0, 0.1);
+    stroke: none;
+}
+.nonogram-dialog {
+    position: absolute;
+    padding: 15px;
+    border: 1px #bbb solid;
+    font-style: normal;
+    background-color: #eee;
+    border-radius: 3px;
+    display: none;
+}
+textarea {width: 600px;height: 50px;padding: 5px;font-size:16px;}
+input[type='button']{
+margin: 5px;
+padding: 5px 8px;
+font-size: 16px;
+line-height: 1.33;
+border-radius: 3px;
+color: #333;
+background-color: #fff;
+cursor: pointer;
+text-align: center;
+white-space: nowrap;
+border: 1px solid rgb(194, 194, 194);}
+input[type='button']:hover{color:red;}
+</style>
+
+<script type="text/javascript">
+window.teal = {};
+window.$t = window.teal;
+(function(svg) {
+    this.svg = function(name, props, place) {
+        var dom = document.createElementNS('http://www.w3.org/2000/svg', name);
+        for (var i in props) {
+            if (i != 'href') dom.setAttributeNS(null, i, props[i]);
+            else dom.setAttributeNS('http://www.w3.org/1999/xlink', i, props[i]);
+        }
+        if (place) place.appendChild(dom);
+        return dom;
+    }
+}).apply(teal.svg = teal.svg || {});
+teal.id = function(id) {
+    return document.getElementById(id);
+}
+teal.remove = function(sel) {
+    if (sel) {
+        if (sel.parentNode) sel.parentNode.removeChild(sel);
+        else
+            for (var i = sel.length - 1; i >= 0; --i) sel[i].parentNode.removeChild(sel[i]);
+    }
+}
+teal.bind = function(sel, eventname, func, bubble) {
+    if (eventname.constructor === Array) {
+        for (var i in eventname) sel.addEventListener(eventname[i], func, bubble ? bubble : false);
+    } else sel.addEventListener(eventname, func, bubble ? bubble : false);
+}
+teal.raise_event = function(sel, eventname, bubble, cancelable) {
+    var evt = document.createEvent('UIEvents');
+    evt.initEvent(eventname, bubble == undefined ? true : bubble, cancelable == undefined ? true : cancelable);
+    sel.dispatchEvent(evt);
+}
+if (!document.getElementsByClassName) {
+    teal.get_elements_by_class = function(classes, node) {
+        var node = node || document,
+            list = node.getElementsByTagName('*'),
+            cl = classes.split(/\s+/),
+            result = [];
+        for (var i = list.length - 1; i >= 0; --i) {
+            for (var j = cl.length - 1; j >= 0; --j) {
+                var clas = list[i].getAttribute('class');
+                if (clas && clas.search('\\b' + cl[j] + '\\b') != -1) {
+                    result.push(list[i]);
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+} else {
+    teal.get_elements_by_class = function(classes, node) {
+        return (node || document).getElementsByClassName(classes);
+    }
+}
+
+function nonogram_calc_dimentions(nonogram) {
+    var max_width = 0,
+        max_height = 0;
+    for (var i in nonogram.ver)
+        if (max_width < nonogram.ver[i].length) max_width = nonogram.ver[i].length;
+    for (var j in nonogram.hor)
+        if (max_height < nonogram.hor[j].length) max_height = nonogram.hor[j].length;
+    nonogram.dim = {
+        width: nonogram.hor.length,
+        height: nonogram.ver.length,
+        w: max_width,
+        h: max_height
+    }
+    nonogram.sol = new Array(nonogram.dim.width);
+    for (var i = 0; i < nonogram.dim.width; ++i) {
+        nonogram.sol[i] = new Array(nonogram.dim.height);
+        for (var j = 0; j < nonogram.dim.height; ++j) nonogram.sol[i][j] = [2];
+    }
+    nonogram.ids = new Array(nonogram.dim.width * nonogram.dim.height);
+}
+
+function nonogram_auto_cellsize(nonogram, width, height, border) {
+    nonogram.dim.cellsize = Math.min(
+        (width - border) / (nonogram.dim.width + nonogram.dim.w), (height - border) / (nonogram.dim.height + nonogram.dim.h));
+}
+
+function nonogram_draw_grid(svg, nonogram) {
+    for (var i = -nonogram.dim.w; i < nonogram.dim.width + 1; ++i) $t.svg.svg('line', {
+        x1: (nonogram.dim.w + i) * nonogram.dim.cellsize,
+        y1: 0,
+        x2: (nonogram.dim.w + i) * nonogram.dim.cellsize,
+        y2: (nonogram.dim.height + nonogram.dim.h) * nonogram.dim.cellsize,
+        style: 'stroke: black; stroke-width: ' + (i != -nonogram.dim.w && (i < 0 || i % 5) ? 0.4 : 1.3) + 'px'
+    }, svg);
+    for (var j = -nonogram.dim.h; j < nonogram.dim.height + 1; ++j) $t.svg.svg('line', {
+        x1: 0,
+        y1: (nonogram.dim.h + j) * nonogram.dim.cellsize,
+        x2: (nonogram.dim.width + nonogram.dim.w) * nonogram.dim.cellsize,
+        y2: (nonogram.dim.h + j) * nonogram.dim.cellsize,
+        style: 'stroke: black; stroke-width: ' + (j != -nonogram.dim.h && (j < 0 || j % 5) ? 0.4 : 1.3) + 'px'
+    }, svg);
+    svg.nonogram = nonogram;
+    svg.grid = $t.svg.svg('g', {}, svg);
+    svg.field = $t.svg.svg('g', {}, svg);
+    for (var i = 0; i < nonogram.dim.width; ++i)
+        for (var j = 0; j < nonogram.dim.height; ++j) {
+            var rect = $t.svg.svg('rect', {
+                x: (nonogram.dim.w + i) * nonogram.dim.cellsize,
+                y: (nonogram.dim.h + j) * nonogram.dim.cellsize,
+                width: nonogram.dim.cellsize,
+                height: nonogram.dim.cellsize,
+                style: 'opacity: 0.01'
+            }, svg.field);
+            rect.grid_x = i;
+            rect.grid_y = j;
+            $t.bind(rect, 'mousedown', nonogram_on_grid_click);
+            $t.bind(rect, 'mousemove', nonogram_on_grid_move);
+            $t.bind(rect, 'mouseup', nonogram_on_grid_stopmove);
+        }
+}
+
+function nonogram_draw_legend(svg, nonogram) {
+    for (var i = 0; i < nonogram.dim.width; ++i) {
+        for (var j = 0; j < nonogram.hor[i].length; ++j) {
+            $t.svg.svg('text', {
+                x: (i + nonogram.dim.w + 0.5) * nonogram.dim.cellsize,
+                y: (nonogram.dim.h - j - 0.5) * nonogram.dim.cellsize,
+                class: 'nonogram-text',
+                style: 'font-size: ' + (nonogram.dim.cellsize / 1.5)
+            }, svg).appendChild(document.createTextNode(nonogram.hor[i][nonogram.hor[i].length - 1 - j]));
+        }
+        var selector = $t.svg.svg('rect', {
+            x: (nonogram.dim.w + i) * nonogram.dim.cellsize,
+            y: 0,
+            width: nonogram.dim.cellsize,
+            height: nonogram.dim.h * nonogram.dim.cellsize,
+            class: 'nonogram-selector'
+        }, svg);
+        selector.nonogram_place = nonogram.hor[i];
+        selector.nonogram = nonogram;
+        $t.bind(selector, 'click', nonogram_on_selector_click);
+    }
+    for (var j = 0; j < nonogram.dim.height; ++j) {
+        for (var i = 0; i < nonogram.ver[j].length; ++i) {
+            $t.svg.svg('text', {
+                x: (nonogram.dim.w - i - 0.5) * nonogram.dim.cellsize,
+                y: (j + nonogram.dim.h + 0.5) * nonogram.dim.cellsize,
+                class: 'nonogram-text',
+                style: 'font-size: ' + (nonogram.dim.cellsize / 1.5)
+            }, svg).appendChild(document.createTextNode(nonogram.ver[j][nonogram.ver[j].length - 1 - i]));
+        }
+        var selector = $t.svg.svg('rect', {
+            x: 0,
+            y: (nonogram.dim.h + j) * nonogram.dim.cellsize,
+            width: nonogram.dim.w * nonogram.dim.cellsize,
+            height: nonogram.dim.cellsize,
+            class: 'nonogram-selector'
+        }, svg);
+        selector.nonogram_place = nonogram.ver[j];
+        selector.nonogram = nonogram;
+        $t.bind(selector, 'click', nonogram_on_selector_click);
+    }
+}
+
+function nonogram_draw_clear(svg, nonogram, x, y) {
+    if (nonogram.ids[x + nonogram.dim.width * y]) {
+        $t.remove(nonogram.ids[x + nonogram.dim.width * y]);
+        nonogram.ids[x + nonogram.dim.width * y] = undefined;
+    }
+}
+
+function nonogram_draw_black(svg, nonogram, x, y) {
+    nonogram_draw_clear(svg, nonogram, x, y);
+    nonogram.ids[x + nonogram.dim.width * y] = $t.svg.svg('rect', {
+        'class': 'nonogram_element',
+        x: (nonogram.dim.w + x) * nonogram.dim.cellsize,
+        y: (nonogram.dim.h + y) * nonogram.dim.cellsize,
+        width: nonogram.dim.cellsize,
+        height: nonogram.dim.cellsize,
+        style: 'fill: rgba(0, 0, 0, 0.6)'
+    }, svg.grid);
+}
+
+function nonogram_draw_cross(svg, nonogram, x, y) {
+    var xx = (nonogram.dim.w + x) * nonogram.dim.cellsize + nonogram.dim.cellsize * 0.3;
+    var yy = (nonogram.dim.h + y) * nonogram.dim.cellsize + nonogram.dim.cellsize * 0.3;
+    nonogram_draw_clear(svg, nonogram, x, y);
+    nonogram.ids[x + nonogram.dim.width * y] = $t.svg.svg('path', {
+        'class': 'nonogram_element',
+        d: 'M ' + xx + ' ' + yy + ' l' + nonogram.dim.cellsize * 0.4 + ' ' + nonogram.dim.cellsize * 0.4 + ' m 0 -' + nonogram.dim.cellsize * 0.4 + ' l-' + nonogram.dim.cellsize * 0.4 + ' ' + nonogram.dim.cellsize * 0.4,
+        style: 'stroke: silver; stroke-width: 2px'
+    }, svg.grid);
+}
+
+function nonogram_on_grid_click(e) {
+    var svg = e.target.parentNode.parentNode,
+        i = e.target.grid_x,
+        j = e.target.grid_y;
+    if (svg.nonogram.sol[i][j][0] == 2) {
+        svg.nonogram.sol[i][j][0] = svg.grid_move = 1;
+        nonogram_draw_black(svg, svg.nonogram, i, j);
+    } else if (svg.nonogram.sol[i][j][0] == 1) {
+        svg.nonogram.sol[i][j][0] = svg.grid_move = 0;
+        nonogram_draw_cross(svg, svg.nonogram, i, j);
+    } else if (svg.nonogram.sol[i][j][0] == 0) {
+        svg.nonogram.sol[i][j][0] = svg.grid_move = 2;
+        nonogram_draw_clear(svg, svg.nonogram, i, j);
+    }
+}
+
+function nonogram_on_grid_move(e) {
+    var svg = e.target.parentNode.parentNode,
+        i = e.target.grid_x,
+        j = e.target.grid_y;
+    if (svg.grid_move != undefined) {
+        svg.nonogram.sol[i][j][0] = svg.grid_move;
+        if (svg.grid_move == 2) nonogram_draw_clear(svg, svg.nonogram, i, j);
+        else if (svg.grid_move == 1) nonogram_draw_black(svg, svg.nonogram, i, j);
+        else if (svg.grid_move == 0) nonogram_draw_cross(svg, svg.nonogram, i, j);
+    }
+}
+
+function nonogram_on_grid_stopmove(e) {
+    var svg = e.target.parentNode.parentNode;
+    svg.grid_move = undefined;
+}
+
+function nonogram_on_selector_click(e) {
+    var dialog = $t.id('nonogram_dialog');
+    dialog.style.display = 'block';
+    dialog.style.left = e.pageX + 'px';
+    dialog.style.top = e.pageY + 'px';
+    var text = $t.id('selector_text');
+    text.value = this.nonogram_place.join(' ');
+    text.focus();
+    var ok = $t.id('selector_ok');
+    ok.nonogram_place = this.nonogram_place;
+    ok.nonogram = this.nonogram;
+    e.stopPropagation();
+}
+
+function nonogram_resolve(svg, nonogram, call_back) {
+    function get_scheme(im) {
+        var res = [2];
+        for (var i = 0; i < im.length; ++i) {
+            for (var j = 0; j < im[i]; ++j) res.push(1);
+            if (i != im.length - 1) res.push(0);
+            if (res.length > 1) res.push(2);
+        }
+        return res;
+    }
+    var machine = [
+        [
+            [
+                [1, 1, 0]
+            ],
+            [],
+            [
+                [1, 1, 0]
+            ]
+        ],
+        [
+            [],
+            [
+                [1, 1, 1]
+            ],
+            [
+                [1, 1, 1]
+            ]
+        ],
+        [
+            [
+                [0, 1, 0]
+            ],
+            [
+                [1, 0, 2]
+            ],
+            [
+                [0, 1, 0],
+                [1, 0, 2]
+            ]
+        ]
+    ];
+
+    function machine_apply(product, scheme, input, s, i, callback) {
+        if (s == scheme.length && i == input.length - 1) {
+            callback(true);
+            return;
+        }
+        if (s == scheme.length - 1 && i == input.length) {
+            callback(true);
+            return;
+        }
+        if (s == scheme.length || i == input.length) {
+            callback(false);
+            return;
+        }
+        if (product[s][i] != undefined) {
+            callback(true);
+            return;
+        }
+        var actions = machine[scheme[s]][input[i]];
+        var path_found = false;
+        for (var p = 0; p < actions.length; ++p) {
+            var ac = actions[p];
+            machine_apply(product, scheme, input, s + ac[0], i + ac[1], function(cr) {
+                if (cr) {
+                    if (ac[2] != 2) product[s][i] = ac[2];
+                    path_found = true;
+                }
+            });
+        }
+        callback(path_found);
+    }
+
+    function machine_get_product(scheme, input, callback) {
+        var product = new Array(scheme.length);
+        for (var s = 0; s < scheme.length; ++s) product[s] = new Array(input.length);
+        machine_apply(product, scheme, input, 0, 0, function() {
+            callback(product);
+        });
+    }
+
+    function apply_product(product, input) {
+        var success = 0;
+        for (var i = 0; i < input.length; ++i) {
+            var result = 2;
+            for (var s = 0; s < product.length && result < 3; ++s) {
+                var prod = product[s][i];
+                if (prod == undefined) continue;
+                if (result == 2) result = prod;
+                if (result != prod) result = 3;
+            }
+            if (result == 2) return 2;
+            if (result < 2 && input[i][0] == 2) {
+                input[i][0] = result;
+                success = 1;
+            }
+        }
+        return success;
+    }
+
+    function clear_sol() {
+        for (var i = 0; i < nonogram.dim.width; ++i)
+            for (var j = 0; j < nonogram.dim.height; ++j) nonogram.sol[i][j][0] = 2;
+    }
+    var vsol = new Array(nonogram.dim.height);
+    for (var j = 0; j < nonogram.dim.height; ++j) {
+        vsol[j] = new Array(nonogram.dim.width);
+        for (var i = 0; i < nonogram.dim.width; ++i) vsol[j][i] = nonogram.sol[i][j];
+    }
+    var hh = new Array(nonogram.dim.width);
+    for (var i = 0; i < nonogram.dim.width; ++i) hh[i] = get_scheme(nonogram.hor[i]);
+    var vv = new Array(nonogram.dim.height);
+    for (var j = 0; j < nonogram.dim.height; ++j) vv[j] = get_scheme(nonogram.ver[j]);
+    var solver_loop = function() {
+        var success = 0,
+            timeout = 10;
+        var i = 0,
+            j = 0;
+
+        function width_loop() {
+            machine_get_product(hh[i], nonogram.sol[i], function(product) {
+                success |= apply_product(product, nonogram.sol[i]);
+                nonogram_draw_solution(svg, nonogram);
+                if (++i < nonogram.dim.width) setTimeout(width_loop, timeout);
+                else setTimeout(height_loop, timeout);
+            });
+        }
+
+        function height_loop() {
+            machine_get_product(vv[j], vsol[j], function(product) {
+                success |= apply_product(product, vsol[j]);
+                if (++j < nonogram.dim.height) setTimeout(height_loop, timeout);
+                else {
+                    if (success == 2) {
+                        call_back(false);
+                        return;
+                    }
+                    if (success == 0) {
+                        for (var m = 0; m < nonogram.sol.length; ++m)
+                            for (var n = 0; n < nonogram.sol[m].length; ++n) {
+                                if (nonogram.sol[m][n][0] == 2) {
+                                    call_back(false);
+                                    return;
+                                }
+                            }
+                        call_back(true);
+                        return;
+                    }
+                    nonogram_draw_solution(svg, nonogram);
+                    setTimeout(solver_loop, timeout);
+                }
+            });
+        }
+        setTimeout(width_loop, timeout);
+    }
+    setTimeout(solver_loop, 1);
+}
+
+function nonogram_draw_solution(svg, nonogram) {
+    $t.remove($t.get_elements_by_class('nonogram_element'));
+    for (var i = 0; i < nonogram.sol.length; ++i)
+        for (var j = 0; j < nonogram.sol[i].length; ++j) {
+            if (nonogram.sol[i][j][0] == 1) nonogram_draw_black(svg, nonogram, i, j);
+            else if (nonogram.sol[i][j][0] == 0) nonogram_draw_cross(svg, nonogram, i, j);
+        }
+}
+var nonogram_rose = {
+    ver: [
+        [4],
+        [2, 1],
+        [1, 4, 2],
+        [3, 2, 3, 1, 3],
+        [2, 1, 2, 3, 2],
+        [1, 1, 1, 6, 1, 1],
+        [2, 2, 2, 2, 2, 1],
+        [1, 3, 3, 2, 1],
+        [2, 6, 5, 2],
+        [1, 2, 5, 2],
+        [3, 3, 5],
+        [1, 2, 2, 2],
+        [8, 1, 1],
+        [1, 2, 2],
+        [1, 4],
+        [4, 3],
+        [5, 4],
+        [4, 9],
+        [1, 2, 6, 1, 1],
+        [7, 1],
+        [5, 5, 3],
+        [8, 4, 7],
+        [1, 11, 5, 2],
+        [1, 7, 3, 3, 2],
+        [7, 12],
+        [2, 4, 4],
+        [2, 3],
+        [2, 4],
+        [5],
+        [2, 5],
+        [3, 4, 2, 1],
+        [10, 2],
+        [4, 4],
+        [4],
+        [2]
+    ],
+    hor: [
+        [4],
+        [2, 4],
+        [2, 2, 2, 1],
+        [3, 2, 5],
+        [2, 1, 1, 5],
+        [1, 2, 2, 1, 5],
+        [1, 2, 1, 2, 1, 5, 1],
+        [1, 3, 1, 3, 3, 1, 1],
+        [1, 4, 1, 3, 3, 1, 5],
+        [2, 2, 1, 5, 1, 9],
+        [1, 1, 1, 1, 1, 15],
+        [1, 1, 1, 2, 2, 2, 10, 2],
+        [1, 2, 2, 1, 1, 1, 7, 1, 2],
+        [1, 1, 1, 1, 2, 6, 2, 2],
+        [1, 2, 1, 1, 2, 5, 1, 3],
+        [1, 2, 1, 4, 4, 2, 3],
+        [1, 2, 2, 1, 3, 3, 3, 1, 2],
+        [1, 3, 1, 6, 5, 1, 2],
+        [4, 1, 1, 2, 2, 2, 2, 2, 1],
+        [1, 2, 2, 1, 2, 1, 2, 2, 3],
+        [1, 2, 1, 2, 1, 2, 2, 1],
+        [1, 2, 5, 1, 2, 1],
+        [2, 4, 4],
+        [5, 1, 3],
+        [2]
+    ]
+};
+
+function redraw(nonogram) {
+    nonogram_calc_dimentions(nonogram);
+    nonogram.dim.cellsize = 16;
+    var width = nonogram.dim.cellsize * (nonogram.dim.width + nonogram.dim.w);
+    var height = nonogram.dim.cellsize * (nonogram.dim.height + nonogram.dim.h);
+    var border = 15.5;
+    teal.remove($t.id('svg_canvas'));
+    var svg = $t.svg.svg('svg', {
+        version: '1.1',
+        id: 'svg_canvas',
+        viewBox: '-' + border + '-' + border + ' ' + (width + border * 2) + ' ' + (height + border * 2),
+        width: width + border * 2,
+        height: height + border * 2
+    }, $t.id('svg'));
+    nonogram_draw_grid(svg, nonogram);
+    nonogram_draw_legend(svg, nonogram);
+    $t.id('solve_status').innerHTML = "";
+}
+
+function initialize() {
+    var nonogram = nonogram_rose;
+    nonogram_calc_dimentions(nonogram);
+    var panel = $t.id('status');
+    $t.id('width').value = nonogram.dim.width;
+    $t.id('height').value = nonogram.dim.height;
+    $t.bind($t.id('reset'), 'click', function() {
+        var width = parseInt($t.id('width').value);
+        var height = parseInt($t.id('height').value);
+        nonogram.hor = new Array(width);
+        for (var i = 0; i < width; ++i) nonogram.hor[i] = [0];
+        nonogram.ver = new Array(height);
+        for (var j = 0; j < height; ++j) nonogram.ver[j] = [0];
+        nonogram_calc_dimentions(nonogram);
+        redraw(nonogram);
+    });
+    $t.bind($t.id('solve'), 'click', function() {
+        $t.id('solve_status').innerHTML = "Solving...";
+        setTimeout(function() {
+            nonogram_resolve($t.id('svg_canvas'), nonogram, function(res) {
+                $t.id('solve_status').innerHTML = res ? "Solution found." : "Bad luck. To help, change current solution manualy and then try again.";
+            });
+        }, 1);
+    });
+    $t.bind($t.id('nonogram_dialog'), 'click', function(e) {
+        e.stopPropagation();
+    });
+    $t.bind($t.id('save'), 'click', function(e) {
+        $t.id('puzzle_text').value = JSON.stringify({
+            ver: nonogram.ver,
+            hor: nonogram.hor
+        });
+        $t.id('puzzle_text').focus();
+    });
+    $t.bind($t.id('save_text'), 'click', function(e) {
+        var s = '';
+        s += nonogram.ver.join('\n');
+        s += '\n\n';
+        s += nonogram.hor.join('\n');
+        $t.id('puzzle_text').value = s;
+        $t.id('puzzle_text').focus();
+    });
+    $t.bind($t.id('load'), 'click', function(e) {
+        try {
+            nonogram = JSON.parse($t.id('puzzle_text').value);
+            nonogram_calc_dimentions(nonogram);
+            redraw(nonogram);
+        } catch (e) {
+            alert(e);
+        }
+    });
+    $t.bind($t.id('load_text'), 'click', function(e) {
+        try {
+            var s = $t.id('puzzle_text').value;
+            var s1 = s.split('\n\n');
+            nonogram.ver = s1[0].split('\n')
+            for (var i = 0; i < nonogram.ver.length; i++) {
+                nonogram.ver[i] = nonogram.ver[i].split(',');
+            }
+            nonogram.hor = s1[1].split('\n')
+            for (var i = 0; i < nonogram.hor.length; i++) {
+                nonogram.hor[i] = nonogram.hor[i].split(',');
+            }
+            nonogram_calc_dimentions(nonogram);
+            redraw(nonogram);
+        } catch (e) {
+            alert(e);
+        }
+    });
+
+    function hide_selector_dialog() {
+        $t.id('nonogram_dialog').style.display = 'none';
+    }
+    $t.bind(document.body, 'click', hide_selector_dialog);
+    $t.bind($t.id('selector_cancel'), 'click', hide_selector_dialog);
+    $t.bind($t.id('selector_ok'), 'click', function() {
+        var line = $t.id('selector_text').value.split(' ');
+        this.nonogram_place.length = line.length;
+        for (var i = 0; i < line.length; ++i) this.nonogram_place[i] = parseInt(line[i]);
+        redraw(this.nonogram);
+        hide_selector_dialog();
+    });
+    redraw(nonogram);
+}
+
+function reset_() {
+    var nonogram = nonogram_rose;
+    var width = parseInt($t.id('width').value);
+    var height = parseInt($t.id('height').value);
+    nonogram.hor = new Array(width);
+    for (var i = 0; i < width; ++i) nonogram.hor[i] = [0];
+    nonogram.ver = new Array(height);
+    for (var j = 0; j < height; ++j) nonogram.ver[j] = [0];
+    nonogram_calc_dimentions(nonogram);
+    redraw(nonogram);
+}
+</script>
+
+</head>
+
+<body onload="initialize()">
+<h2>Teal Nonogram Solver</h2>
+<a href='http://a.teall.info/nonogram/'>I didn't write the code</a>
+        <p>Specify size: <input type="text" style="width: 24px" id="width" onkeyup='reset_()'> × <input type="text" style="width: 24px" id="height" onkeyup='reset_()'><br>
+        <p>
+        Click on a row or a column header to open corresponded line edit dialog.       
+		<br>
+        Click on grid to draw your own solution or to help solver.</p>
+        <textarea id="puzzle_text" type="text"></textarea><br>
+		Save the puzzle: <input type=button id="save_text" value='text'>
+		<input type=button id="save" value='JSON'><br>
+		Load a puzzle: <input type=button id="load_text" value='text'>
+		<input type=button id="load" value='JSON'><br>
+		<input type=button id="solve" value='Solve'><input type=button id="reset" value='Reset'><br>
+        <p id="solve_status"></p>
+    <div id="svg" style="display: block;"></div>
+<div id="nonogram_dialog" class="nonogram-dialog">
+        Digits of the line (use space to separate):<br/>
+        <input id="selector_text" type="text" style="width: 100%"/><br/>
+        <button id="selector_ok">OK</button>
+        <button id="selector_cancel">Cancel</button>
+    </div>
+</body></html>
