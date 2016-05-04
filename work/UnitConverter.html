@@ -275,8 +275,7 @@ function convert() {
         v.value = u1+' to '+u2+'? Hello? ʕ•ᴥ•ʔ';
         return;
     }
-	var temp = evalCon(v1,u1,'default',u1_t)
-	v2 = evalCon(temp,'default',u2,u1_t)
+	v2 = evalCon(v1,u1,u2,u1_t)
     if (!t) {
         v.value = v2;
     } else {
@@ -285,47 +284,59 @@ function convert() {
 }
 function evalCon(val,fr,to,type){
 	var r=0;
+	r = math.multiply(math.bignumber(val),math.bignumber(unitVal(fr,type)));
+	console.log(r)
+	r = math.divide(math.bignumber(r),math.bignumber(unitVal(to,type)));
+	console.log(r)
+	return math.round(r,9);
+}
+function unitVal(t,type){
 	switch(type){
 		case 'distance':
-			to=to=='default'?'m':to;
-			fr=fr=='default'?'m':fr;
-			switch(fr+' '+to){
-				case 'm km':
-					r=math.divide(math.bignumber(val),math.bignumber(1000));
-				break;
-				case 'cm m':
-					r=math.divide(math.bignumber(val),math.bignumber(100));
-				break;
-				case 'dm m':
-					r=math.divide(math.bignumber(val),math.bignumber(10));
-				break;
-				case 'm mm':
-				case 'km m':
-					r=math.multiply(math.bignumber(val),math.bignumber(1000));
-				break;
-				case 'm cm':
-					r=math.multiply(math.bignumber(val),math.bignumber(100));
-				break;
-				case 'm dm':
-					r=math.multiply(math.bignumber(val),math.bignumber(10));
-				break;
-				case 'm um':
-					r=math.multiply(math.bignumber(val),math.bignumber(1000000));
-				break;
-				case 'um m':
-					r=math.divide(math.bignumber(val),math.bignumber(1000000));
-				break;case 'm nm':
-					r=math.multiply(math.bignumber(val),math.bignumber(1000000000));
-				break;
-				case 'nm m':
-					r=math.divide(math.bignumber(val),math.bignumber(1000000000));
-				break;
-				default:
-					r=val;
-				break;
+		switch(t){ // m is default
+			case 'km':
+				r=1000;
+			break;
+			case 'cm':
+				r=100;
+			break;
+			case 'dm':
+				r=10;
+			break;
+			case 'mm':
+				r=math.bignumber(0.001);
+			break;
+			case 'um':
+				r=math.bignumber(0.000001);
+			break;
+			case 'nm':
+				r=math.bignumber(0.000000001);
+			break;
+			case 'fm':
+				r=math.bignumber(0.000000000001);
+			break;
+			case 'pm':
+				r=math.bignumber(0.000000000000001);
+			break;
+			default:
+				r=1;
+			break;
+			}
+		break;
+		case 'time':
+		switch(t){ // min is default
+			case 'h':
+				r=60;
+			break;
+			case 's':
+				r=math.bignumber(0.016666666666667);
+			break;
+			default:
+				r=1;
+			break;
 			}
 		break;
 	}
 	return r;
 }
-</script><h2>
+</script>
