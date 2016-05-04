@@ -1,0 +1,192 @@
+<meta charset='utf-8'>
+<title>Unit converter</title>
+<style>
+#contents {
+    margin: 10px;
+    display: inline-block;
+}
+input {font-size:100%;padding:5px;}
+input[type='button'] {margin: 10px 10px;
+padding: 5px 8px;
+font-size: 16px;
+line-height: 1.33;
+border-radius: 3px;
+color: #333;
+background-color: #fff;
+cursor: pointer;
+text-align: center;
+white-space: nowrap;
+border: 1px solid #B3B3B3;}
+input[type='button']:hover{color:#59aaf4;}
+ul{max-width:209px; margin-left: 214px;padding:0px;border:1px solid #B3B3B3;border-radius: 3px;display:none;}
+li { display: block;position: relative;
+    margin: 0 -1px;
+    padding: 6px 40px 6px 10px;
+    color: #888;
+    font-weight: 500;
+    text-shadow: 0 1px #fff;
+    border: 1px solid transparent;
+    border-radius: 3px; cursor:pointer;}
+li:hover {
+    text-decoration: none;
+    color: #fff;
+    text-shadow: 0 -1px rgba(0, 0, 0, 0.3);
+    border-color: #2380dd #2179d5 #1a60aa;
+    background-color: #338cdf;
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #59aaf4), color-stop(100%, #338cdf));
+    background-image: -webkit-linear-gradient(top, #59aaf4, #338cdf);
+    background-image: -moz-linear-gradient(top, #59aaf4, #338cdf);
+    background-image: -ms-linear-gradient(top, #59aaf4, #338cdf);
+    background-image: -o-linear-gradient(top, #59aaf4, #338cdf);
+    background-image: linear-gradient(top, #59aaf4, #338cdf);
+    -webkit-box-shadow: inset 0 1px rgba(255, 255, 255, 0.2), 0 1px rgba(0, 0, 0, 0.08);
+    -moz-box-shadow: inset 0 1px rgba(255, 255, 255, 0.2), 0 1px rgba(0, 0, 0, 0.08);
+    -ms-box-shadow: inset 0 1px rgba(255, 255, 255, 0.2), 0 1px rgba(0, 0, 0, 0.08);
+    -o-box-shadow: inset 0 1px rgba(255, 255, 255, 0.2), 0 1px rgba(0, 0, 0, 0.08);
+    box-shadow: inset 0 1px rgba(255, 255, 255, 0.2), 0 1px rgba(0, 0, 0, 0.08);
+}
+.noresult{padding: 7px;display: inline-block;}
+</style>
+<body><h2>Unit converter</h2>
+<input type='text' id='val_from' onclick='hide_drop()' placeholder='value'>
+<input type='text' id='unit_from' onkeyup='search("from")' placeholder='unit'><br>
+<ul id='drop_from'></ul><br>
+<input type='text' id='val_to' onclick='hide_drop()' placeholder='value'>
+<input type='text' id='unit_to' onkeyup='search("to")' placeholder='unit'><br><ul id='drop_to'></ul><br>
+<input type='button' onclick='convert()' value=Convert>
+<script>
+units=['m (meter)',' length meter meter m ',
+'min (minute)', ' time minute minutes min m ',
+'h (hour)', ' time hour hours hr h ',
+'s (second)', ' time second seconds sec s ',
+'rad/s', ' frequency radian per second rad ',
+'km (kilometer)', ' length kilometer kilo meter km m '
+];
+var l = units.length;
+var timeo;
+var se = ''
+
+function search(sel) {
+    clearTimeout(timeo);
+    timeo = setTimeout(search_, 500);
+    se = sel;
+    if (se == 'to') {
+        document.getElementById('drop_from').style.display = 'none';
+    } else {
+        document.getElementById('drop_to').style.display = 'none';
+    }
+}
+
+function search_() {
+    var s = document.getElementById('unit_' + se).value;
+    s = s.replace(/[^a-zA-Z \-\*]+/g, '');
+    s = s.replace(/[ ]+$/g, '');
+    if (s.length > 0) {
+        var sa = s.split(' ');
+        var ra = ';';
+        var rac = [];
+        var racc = 0;
+        for (var i = 1; i < l; i += 2) {
+            for (var j = 0; j < sa.length; j++) {
+                if (units[i].indexOf(' ' + sa[j] + ' ') >= 0) {
+                    if (ra.indexOf(';' + units[i - 1] + ';') < 0) {
+                        ra += units[i - 1] + ';';
+                    }
+                    if (racc < ra.length) {
+                        rac.push(0);
+                        racc++;
+                    } else {
+                        rac[racc]++;
+                    }
+                }
+            }
+        }
+        var result = '';
+        ra = ra.substring(1, ra.length - 1)
+        var kk = getSorted(ra.split(';'), rac)
+        for (var i = 0; i < kk.length; i++) {
+            if (kk[i].length > 0) {
+                result += '<li onclick="selectUnit(\'' + kk[i] + '\',\'' + se + '\')">' + kk[i] + '</li>';
+            }
+        }
+        var dr = document.getElementById('drop_' + se);
+        dr.style.display = 'block';
+        if (result.length > 0) {
+            dr.innerHTML = result;
+        } else {
+            dr.innerHTML = '<span class=noresult>What is <font color=red>' + s + '</font> ʕ •̀ ω •́ ʔ</span>'
+        }
+    }
+}
+
+function getSorted(arr, sortArr) {
+    var result = [];
+    for (var i = 0; i < arr.length; i++) {
+        for (var j = 0; j < arr.length; j++) {
+            if (sortArr[i] < sortArr[j] && i != j) {
+                var a = arr[i];
+                var b = sortArr[i];
+                arr[i] = arr[j];
+                arr[j] = a;
+                sortArr[i] = sortArr[j];
+                sortArr[j] = b;
+            }
+        }
+    }
+    return arr;
+}
+
+function selectUnit(a, sel) {
+    document.getElementById('unit_' + sel).value = a;
+    hide_drop();
+}
+
+function hide_drop() {
+    document.getElementById('drop_from').style.display = 'none';
+    document.getElementById('drop_to').style.display = 'none';
+}
+
+function convert() {
+    hide_drop();
+    var v1 = document.getElementById('val_from').value;
+    var v2 = 0;
+    var v = document.getElementById('val_to');
+    var u1 = document.getElementById('unit_from').value.split(' ')[0];
+    var u2 = document.getElementById('unit_to').value.split(' ')[0];
+    var t = false;
+    if (u1 == u2) {
+        v.value = 'From ' + u1 + ' to ' + u2 + ' (￣(ｴ)￣) ?';
+        return;
+    }
+    switch (u1 + ' ' + u2) {
+        case 'min h':
+        case 's min':
+            v2 = v1 / 60;
+            break;
+        case 'min s':
+        case 'h min':
+            v2 = v1 * 60;
+            break;
+        case 's h':
+            v2 = v1 / 60 / 60;
+            break;
+        case 'h s':
+            v2 = v1 * 60 * 60;
+            break;
+        case 'm km':
+            v2 = v1 / 1000;
+            break;
+        case 'km m':
+            v2 = v1 * 1000;
+            break;
+        default:
+            t = true;
+    }
+
+    if (!t) {
+        v.value = Math.round(1000 * v2) / 1000;
+    } else {
+        v.value = 'Cannot convert ʕ•ᴥ•ʔ'
+    }
+}
+</script><h2>
