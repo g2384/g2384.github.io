@@ -6,6 +6,7 @@
     display: inline-block;
 }
 input {font-size:100%;padding:5px;}
+#unit_to,#unit_from{width:110px}
 input[type='button'] {margin: 10px 10px;
 padding: 5px 8px;
 font-size: 16px;
@@ -48,24 +49,47 @@ li:hover {
 .noresult{padding: 7px;display: inline-block;}
 </style>
 <body><h2>Unit converter</h2>
-<input type='text' id='val_from' onclick='hide_drop()' placeholder='value'>
-<input type='text' id='unit_from' onkeyup='search("from")' placeholder='unit'><br>
+<input type='text' id='val_from' onclick='hide_drop()' placeholder='value' value='1'>
+<input type='text' id='unit_from' onclick='search("from")' data-type='' onkeyup='search("from")' placeholder='unit (FROM)'><br>
 <ul id='drop_from'></ul><br>
 <input type='text' id='val_to' onclick='hide_drop()' placeholder='value'>
-<input type='text' id='unit_to' onkeyup='search("to")' placeholder='unit'><br><ul id='drop_to'></ul><br>
+<input type='text' id='unit_to' onclick='search("to")' data-type='' onkeyup='search("to")' placeholder='unit (TO)'><br><ul id='drop_to'></ul><br>
 <input type='button' onclick='convert()' value=Convert>
 <script>
-units=['m (meter)',' length meter meter m ',
-'min (minute)', ' time minute minutes min m ',
-'h (hour)', ' time hour hours hr h ',
-'s (second)', ' time second seconds sec s ',
-'rad/s', ' frequency radian per second rad ',
-'km (kilometer)', ' length kilometer kilo meter km m '
+units=[
+'m (meter)',' distance length meter meter m ',
+'dm (decimeter)',' distance length decimeter dm ',
+'cm (centimeter)',' distance length centimeter cm ',
+'um (micrometer)',' distance length micrometer um ',
+'inch',' distance length imperial us inch ',
+'thou/mil',' distance length imperial us thou mil ',
+'line',' distance length imperial us line ',
+'foot',' distance length imperial us foot ',
+'yard',' distance length imperial us yard ',
+'mile',' distance length imperial us mile ',
+'league',' distance length imperial us league ',
+'fathom',' distance length marine fathom ',
+'nautical mile',' distance length marine nautical mile ',
+'ly (light year)',' distance length light year ly ',
+'AU (astronomical unit)',' distance length astronomical unit au ',
+'pc (parsec)',' distance length parsec pc ',
+'min (minute)', ' time minute min m ',
+'h (hour)', ' time hour hr h ',
+'s (second)', ' time second sec s ',
+'rad/s', ' frequency radian per second rad r ',
+'°C (Celsius)', ' temperature celsius degree centigrade c ',
+'°F (Fahrenheit)', ' temperature fahrenheit degree f ',
+'K (Kelvin)', ' temperature kelvin degree k ',
+'km (kilometer)', ' distance length kilometer km '
 ];
 var l = units.length;
 var timeo;
 var se = ''
-
+String.prototype.regexIndexOf = function(pattern, startIndex) {
+	startIndex = startIndex || 0;
+	var searchResult = this.substr(startIndex).search(pattern);
+	return (-1 === searchResult) ? -1 : searchResult + startIndex;
+}
 function search(sel) {
     clearTimeout(timeo);
     timeo = setTimeout(search_, 500);
@@ -78,19 +102,44 @@ function search(sel) {
 }
 
 function search_() {
-    var s = document.getElementById('unit_' + se).value;
-    s = s.replace(/[^a-zA-Z \-\*]+/g, '');
+    var s = document.getElementById('unit_' + se).value.toLowerCase();
+	document.getElementById('unit_' + se).setAttribute('data-type', '');
+    s = s.replace(/[^a-z \-\*\/]+/g, '');
     s = s.replace(/[ ]+$/g, '');
     if (s.length > 0) {
         var sa = s.split(' ');
         var ra = ';';
         var rac = [];
+        var rat = [];
         var racc = 0;
         for (var i = 1; i < l; i += 2) {
             for (var j = 0; j < sa.length; j++) {
                 if (units[i].indexOf(' ' + sa[j] + ' ') >= 0) {
                     if (ra.indexOf(';' + units[i - 1] + ';') < 0) {
                         ra += units[i - 1] + ';';
+						rat.push(units[i].split(' ')[1])
+                    }
+                    if (racc < ra.length) {
+                        rac.push(10);
+                        racc++;
+                    } else {
+                        rac[racc]+=10;
+                    }
+                }/*else if (units[i].regexIndexOf(new RegExp('( '+sa[j]+'|'+sa[j] + ' )')) >= 0) {
+                    if (ra.indexOf(';' + units[i - 1] + ';') < 0) {
+                        ra += units[i - 1] + ';';
+						rat.push(units[i].split(' ')[1])
+                    }
+                    if (racc < ra.length) {
+                        rac.push(2);
+                        racc++;
+                    } else {
+                        rac[racc]+=2;
+                    }
+                }*/else if (units[i-1].indexOf(sa[j]) >= 0) {
+                    if (ra.indexOf(';' + units[i - 1] + ';') < 0) {
+                        ra += units[i - 1] + ';';
+						rat.push(units[i].split(' ')[1])
                     }
                     if (racc < ra.length) {
                         rac.push(0);
@@ -103,10 +152,10 @@ function search_() {
         }
         var result = '';
         ra = ra.substring(1, ra.length - 1)
-        var kk = getSorted(ra.split(';'), rac)
-        for (var i = 0; i < kk.length; i++) {
-            if (kk[i].length > 0) {
-                result += '<li onclick="selectUnit(\'' + kk[i] + '\',\'' + se + '\')">' + kk[i] + '</li>';
+        var kk = getSorted(ra.split(';'), rat,rac)
+        for (var i = 0; i < kk[0].length; i++) {
+            if (kk[0][i].length > 0) {
+                result += '<li onclick="selectUnit(\'' + kk[0][i].split(' (')[0] + '\',\'' + se + '\',\'' + kk[1][i] + '\')">' + kk[0][i] + '</li>';
             }
         }
         var dr = document.getElementById('drop_' + se);
@@ -119,25 +168,36 @@ function search_() {
     }
 }
 
-function getSorted(arr, sortArr) {
+function getSorted(arr, arr2,sortArr) {
     var result = [];
-    for (var i = 0; i < arr.length; i++) {
-        for (var j = 0; j < arr.length; j++) {
-            if (sortArr[i] < sortArr[j] && i != j) {
-                var a = arr[i];
-                var b = sortArr[i];
-                arr[i] = arr[j];
-                arr[j] = a;
-                sortArr[i] = sortArr[j];
-                sortArr[j] = b;
-            }
-        }
-    }
-    return arr;
+	var sorted=false;
+	var kp=0;
+	var l=arr.length-1;
+	while(!sorted&&kp<16){
+		sorted=true;kp++;
+		for (var i = 0; i < l; i++) {
+			if (sortArr[i+1] > sortArr[i]) {
+				var j=i+1;
+				var a = arr[i];
+				var b = sortArr[i];
+				arr[i] = arr[j];
+				arr[j] = a;
+				var c = arr2[i];
+				arr2[i] = arr2[j];
+				arr2[j] = c;
+				sortArr[i] = sortArr[j];
+				sortArr[j] = b;
+				sorted=false;
+			}
+		}
+	}
+    return [arr,arr2];
 }
 
-function selectUnit(a, sel) {
-    document.getElementById('unit_' + sel).value = a;
+function selectUnit(a, sel,t) {
+    var d=document.getElementById('unit_' + sel);
+	d.value = a;
+    d.setAttribute('data-type', t);
     hide_drop();
 }
 
@@ -148,45 +208,85 @@ function hide_drop() {
 
 function convert() {
     hide_drop();
-    var v1 = document.getElementById('val_from').value;
+    var v1 = Number(document.getElementById('val_from').value);
     var v2 = 0;
     var v = document.getElementById('val_to');
-    var u1 = document.getElementById('unit_from').value.split(' ')[0];
-    var u2 = document.getElementById('unit_to').value.split(' ')[0];
+    var u1f = document.getElementById('unit_from');
+    var u1 = u1f.value.split(' ')[0];
+    var u2f = document.getElementById('unit_to');
+    var u2 = u2f.value.split(' ')[0];
     var t = false;
-    if (u1 == u2) {
-        v.value = 'From ' + u1 + ' to ' + u2 + ' (￣(ｴ)￣) ?';
+    
+	var u1_t=u1f.getAttribute('data-type'),u2_t=u2f.getAttribute('data-type');
+	if(v1.length>0){
+		v.value = 'Write a valid number (￣(ｴ)￣)';
+        return;
+	}
+	if(u1_t==''){
+		document.getElementById('drop_from').style.display='block';
+		v.value='Select a unit from the menu'
+		return;
+	}if(u2_t==''){
+		document.getElementById('drop_to').style.display='block'
+		v.value='Select a unit from the menu';
+		return;
+	}
+	if (u1_t != u2_t) {
+        v.value = u1_t + ' to ' + u2_t + '? ʕ•ᴥ•ʔ';
         return;
     }
-    switch (u1 + ' ' + u2) {
-        case 'min h':
-        case 's min':
-            v2 = v1 / 60;
-            break;
-        case 'min s':
-        case 'h min':
-            v2 = v1 * 60;
-            break;
-        case 's h':
-            v2 = v1 / 60 / 60;
-            break;
-        case 'h s':
-            v2 = v1 * 60 * 60;
-            break;
-        case 'm km':
-            v2 = v1 / 1000;
-            break;
-        case 'km m':
-            v2 = v1 * 1000;
-            break;
-        default:
-            t = true;
+	if (u1 == u2) {
+        v.value = u1+' to '+u2+'? Hello? ʕ•ᴥ•ʔ';
+        return;
     }
-
+	var temp=0;
+    temp = evalCon(v1,u1,'default',u1_t)
+	console.log(temp)
+	v2 = evalCon(temp,'default',u2,u1_t)
     if (!t) {
-        v.value = Math.round(1000 * v2) / 1000;
+        v.value = v2;
     } else {
         v.value = 'Cannot convert ʕ•ᴥ•ʔ'
     }
+}
+function evalCon(val,fr,to,type){
+	var r=0;
+	switch(type){
+		case 'distance':
+			to=to=='default'?'m':to;
+			fr=fr=='default'?'m':fr;
+			switch(fr+' '+to){
+				case 'm km':
+					r=val/1000;
+				break;
+				case 'cm m':
+					r=val/100;
+				break;
+				case 'dm m':
+					r=val/10;
+				break;
+				case 'm mm':
+				case 'km m':
+					r=val*1000;
+				break;
+				case 'm cm':
+					r=val*100;
+				break;
+				case 'm dm':
+					r=val*10;
+				break;
+				case 'm um':
+					r=val*1000000;
+				break;
+				case 'um m':
+					r=val/1000000;
+				break;
+				default:
+					r=val;
+				break;
+			}
+		break;
+	}
+	return r;
 }
 </script><h2>
