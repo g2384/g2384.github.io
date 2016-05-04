@@ -88,6 +88,7 @@ units=[
 'm (meter)',' distance length meter meter m ',
 'dm (decimeter)',' distance length decimeter dm ',
 'cm (centimeter)',' distance length centimeter cm ',
+'mm (milimeter)',' distance length milimeter mm ',
 'um (micrometer)',' distance length micrometer um ',
 'nm (nanometer)',' distance length nanometer nm ',
 'pm (picometer)',' distance length picometer pm ',
@@ -240,7 +241,7 @@ function hide_drop() {
 
 function convert() {
     hide_drop();
-    var v1 = Number(document.getElementById('val_from').value);
+    var v1 = math.bignumber(document.getElementById('val_from').value);
     var v2 = 0;
     var v = document.getElementById('val_to');
     var u1f = document.getElementById('unit_from');
@@ -250,7 +251,7 @@ function convert() {
     var t = false;
     
 	var u1_t=u1f.getAttribute('data-type'),u2_t=u2f.getAttribute('data-type');
-	if(v1.length>0){
+	if(v1.length>0&&v1!=0){
 		v.value = 'Write a valid number (￣(ｴ)￣)';
         return;
 	}
@@ -275,33 +276,30 @@ function convert() {
         v.value = u1+' to '+u2+'? Hello? ʕ•ᴥ•ʔ';
         return;
     }
-	v2 = evalCon(v1,u1,u2,u1_t)
+	v2 = math.multiply(v1,math.bignumber(unitVal(u1,u1_t)));
+	v2 = math.divide(math.bignumber(v2),math.bignumber(unitVal(u2,u1_t)));
     if (!t) {
-        v.value = v2;
+		if(v2.d.length>5&&math.round(v2,9)!=0){
+			v.value = math.round(v2,9);
+		}else{
+			v.value = v2;
+		}
     } else {
         v.value = 'Cannot convert ʕ•ᴥ•ʔ'
     }
-}
-function evalCon(val,fr,to,type){
-	var r=0;
-	r = math.multiply(math.bignumber(val),math.bignumber(unitVal(fr,type)));
-	console.log(r)
-	r = math.divide(math.bignumber(r),math.bignumber(unitVal(to,type)));
-	console.log(r)
-	return math.round(r,9);
 }
 function unitVal(t,type){
 	switch(type){
 		case 'distance':
 		switch(t){ // m is default
 			case 'km':
-				r=1000;
+				r=math.bignumber(1000);
 			break;
 			case 'cm':
-				r=100;
+				r=math.bignumber(0.01);
 			break;
 			case 'dm':
-				r=10;
+				r=math.bignumber(0.1);
 			break;
 			case 'mm':
 				r=math.bignumber(0.001);
