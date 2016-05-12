@@ -41,7 +41,7 @@ li:hover {
 <input type='text' id='unit_from' onclick='search("from_")' data-type='' onkeyup='search("from")' placeholder='unit (FROM)' onblur='hide_drop()'><br>
 <ul id='drop_from'></ul><br>
 <input type='text' id='val_to' onclick='hide_drop()' placeholder='Output value' readonly='true'>
-<input type='text' id='unit_to' onclick='search("to_")' data-type='' onkeyup='search("to")' placeholder='unit (TO)' onblur='hide_drop()'><br><ul id='drop_to'></ul><br>
+<input type='text' id='unit_to' onclick='search("to_")' data-type='' onkeyup='search("to")' placeholder='unit (TO)' onblur='hide_drop()'><br><ul id='drop_to'></ul><br><div id='supp'></div>
 <input type='button' onclick='convert()' value=Convert>
 <script>
 /* bignumber.js v2.3.0 https://github.com/MikeMcl/bignumber.js/LICENCE */
@@ -239,12 +239,13 @@ function convert() {
     var v1 = new BigNumber(document.getElementById('val_from').value);
     var v2 = 0;
     var v = document.getElementById('val_to');
+    var supp = document.getElementById('supp');
     var u1f = document.getElementById('unit_from');
     var u1 = u1f.value.split(' ')[0];
     var u2f = document.getElementById('unit_to');
     var u2 = u2f.value.split(' ')[0];
     var t = false;
-    
+    supp.innerHTML = '';
 	var u1_t=u1f.getAttribute('data-type'),u2_t=u2f.getAttribute('data-type');
 	if(v1.length>0&&v1!=0){
 		v.value = 'Write a valid number (￣(ｴ)￣)';
@@ -292,11 +293,15 @@ function convert() {
     }
 	v2 = v1.times(new BigNumber(unitVal(u1,u1_t)));
 	v2 = v2.div(new BigNumber(unitVal(u2,u1_t)));
+	console.log(v2.toExponential(3),v2.decimalPlaces())
     if (!t) {
-		if(v2.round(9)!=0){
-			v.value = v2.round(9);
+		if(v2.round(6)!=0){
+			v.value = v2.round(6);
 		}else{
 			v.value = v2;
+		}
+		if(v2.greaterThan(new BigNumber(1e6))){
+			supp.innerHTML = v2.toExponential(3)
 		}
     } else {
         v.value = 'Cannot convert ʕ•ᴥ•ʔ'
