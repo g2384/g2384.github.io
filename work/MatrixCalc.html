@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<!-- modified from https://www.math10.com/scripts/matrices/determinant-matrix-calculators.html -->
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width">
+<title>Matrix Calculators</title>
+<script>eval(function(p,a,c,k,e,r){e=function(c){return(c<a?'':e(parseInt(c/a)))+((c=c%a)>35?String.fromCharCode(c+29):c.toString(36))};if(!''.replace(/^/,String)){while(c--)r[e(c)]=k[c]||e(c);k=[function(e){return r[e]}];e=function(){return'\\w+'};c=1};while(c--)if(k[c])p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c]);return p}('9 17={3i:\'0.1.3\',16:1e-6};l v(){}v.23={e:l(i){8(i<1||i>7.4.q)?w:7.4[i-1]},2R:l(){8 7.4.q},1u:l(){8 F.1x(7.2u(7))},24:l(a){9 n=7.4.q;9 V=a.4||a;o(n!=V.q){8 1L}J{o(F.13(7.4[n-1]-V[n-1])>17.16){8 1L}}H(--n);8 2x},1q:l(){8 v.u(7.4)},1b:l(a){9 b=[];7.28(l(x,i){b.19(a(x,i))});8 v.u(b)},28:l(a){9 n=7.4.q,k=n,i;J{i=k-n;a(7.4[i],i+1)}H(--n)},2q:l(){9 r=7.1u();o(r===0){8 7.1q()}8 7.1b(l(x){8 x/r})},1C:l(a){9 V=a.4||a;9 n=7.4.q,k=n,i;o(n!=V.q){8 w}9 b=0,1D=0,1F=0;7.28(l(x,i){b+=x*V[i-1];1D+=x*x;1F+=V[i-1]*V[i-1]});1D=F.1x(1D);1F=F.1x(1F);o(1D*1F===0){8 w}9 c=b/(1D*1F);o(c<-1){c=-1}o(c>1){c=1}8 F.37(c)},1m:l(a){9 b=7.1C(a);8(b===w)?w:(b<=17.16)},34:l(a){9 b=7.1C(a);8(b===w)?w:(F.13(b-F.1A)<=17.16)},2k:l(a){9 b=7.2u(a);8(b===w)?w:(F.13(b)<=17.16)},2j:l(a){9 V=a.4||a;o(7.4.q!=V.q){8 w}8 7.1b(l(x,i){8 x+V[i-1]})},2C:l(a){9 V=a.4||a;o(7.4.q!=V.q){8 w}8 7.1b(l(x,i){8 x-V[i-1]})},22:l(k){8 7.1b(l(x){8 x*k})},x:l(k){8 7.22(k)},2u:l(a){9 V=a.4||a;9 i,2g=0,n=7.4.q;o(n!=V.q){8 w}J{2g+=7.4[n-1]*V[n-1]}H(--n);8 2g},2f:l(a){9 B=a.4||a;o(7.4.q!=3||B.q!=3){8 w}9 A=7.4;8 v.u([(A[1]*B[2])-(A[2]*B[1]),(A[2]*B[0])-(A[0]*B[2]),(A[0]*B[1])-(A[1]*B[0])])},2A:l(){9 m=0,n=7.4.q,k=n,i;J{i=k-n;o(F.13(7.4[i])>F.13(m)){m=7.4[i]}}H(--n);8 m},2Z:l(x){9 a=w,n=7.4.q,k=n,i;J{i=k-n;o(a===w&&7.4[i]==x){a=i+1}}H(--n);8 a},3g:l(){8 S.2X(7.4)},2d:l(){8 7.1b(l(x){8 F.2d(x)})},2V:l(x){8 7.1b(l(y){8(F.13(y-x)<=17.16)?x:y})},1o:l(a){o(a.K){8 a.1o(7)}9 V=a.4||a;o(V.q!=7.4.q){8 w}9 b=0,2b;7.28(l(x,i){2b=x-V[i-1];b+=2b*2b});8 F.1x(b)},3a:l(a){8 a.1h(7)},2T:l(a){8 a.1h(7)},1V:l(t,a){9 V,R,x,y,z;2S(7.4.q){27 2:V=a.4||a;o(V.q!=2){8 w}R=S.1R(t).4;x=7.4[0]-V[0];y=7.4[1]-V[1];8 v.u([V[0]+R[0][0]*x+R[0][1]*y,V[1]+R[1][0]*x+R[1][1]*y]);1I;27 3:o(!a.U){8 w}9 C=a.1r(7).4;R=S.1R(t,a.U).4;x=7.4[0]-C[0];y=7.4[1]-C[1];z=7.4[2]-C[2];8 v.u([C[0]+R[0][0]*x+R[0][1]*y+R[0][2]*z,C[1]+R[1][0]*x+R[1][1]*y+R[1][2]*z,C[2]+R[2][0]*x+R[2][1]*y+R[2][2]*z]);1I;2P:8 w}},1t:l(a){o(a.K){9 P=7.4.2O();9 C=a.1r(P).4;8 v.u([C[0]+(C[0]-P[0]),C[1]+(C[1]-P[1]),C[2]+(C[2]-(P[2]||0))])}1d{9 Q=a.4||a;o(7.4.q!=Q.q){8 w}8 7.1b(l(x,i){8 Q[i-1]+(Q[i-1]-x)})}},1N:l(){9 V=7.1q();2S(V.4.q){27 3:1I;27 2:V.4.19(0);1I;2P:8 w}8 V},2n:l(){8\'[\'+7.4.2K(\', \')+\']\'},26:l(a){7.4=(a.4||a).2O();8 7}};v.u=l(a){9 V=25 v();8 V.26(a)};v.i=v.u([1,0,0]);v.j=v.u([0,1,0]);v.k=v.u([0,0,1]);v.2J=l(n){9 a=[];J{a.19(F.2F())}H(--n);8 v.u(a)};v.1j=l(n){9 a=[];J{a.19(0)}H(--n);8 v.u(a)};l S(){}S.23={e:l(i,j){o(i<1||i>7.4.q||j<1||j>7.4[0].q){8 w}8 7.4[i-1][j-1]},33:l(i){o(i>7.4.q){8 w}8 v.u(7.4[i-1])},2E:l(j){o(j>7.4[0].q){8 w}9 a=[],n=7.4.q,k=n,i;J{i=k-n;a.19(7.4[i][j-1])}H(--n);8 v.u(a)},2R:l(){8{2D:7.4.q,1p:7.4[0].q}},2D:l(){8 7.4.q},1p:l(){8 7.4[0].q},24:l(a){9 M=a.4||a;o(1g(M[0][0])==\'1f\'){M=S.u(M).4}o(7.4.q!=M.q||7.4[0].q!=M[0].q){8 1L}9 b=7.4.q,15=b,i,G,10=7.4[0].q,j;J{i=15-b;G=10;J{j=10-G;o(F.13(7.4[i][j]-M[i][j])>17.16){8 1L}}H(--G)}H(--b);8 2x},1q:l(){8 S.u(7.4)},1b:l(a){9 b=[],12=7.4.q,15=12,i,G,10=7.4[0].q,j;J{i=15-12;G=10;b[i]=[];J{j=10-G;b[i][j]=a(7.4[i][j],i+1,j+1)}H(--G)}H(--12);8 S.u(b)},2i:l(a){9 M=a.4||a;o(1g(M[0][0])==\'1f\'){M=S.u(M).4}8(7.4.q==M.q&&7.4[0].q==M[0].q)},2j:l(a){9 M=a.4||a;o(1g(M[0][0])==\'1f\'){M=S.u(M).4}o(!7.2i(M)){8 w}8 7.1b(l(x,i,j){8 x+M[i-1][j-1]})},2C:l(a){9 M=a.4||a;o(1g(M[0][0])==\'1f\'){M=S.u(M).4}o(!7.2i(M)){8 w}8 7.1b(l(x,i,j){8 x-M[i-1][j-1]})},2B:l(a){9 M=a.4||a;o(1g(M[0][0])==\'1f\'){M=S.u(M).4}8(7.4[0].q==M.q)},22:l(a){o(!a.4){8 7.1b(l(x){8 x*a})}9 b=a.1u?2x:1L;9 M=a.4||a;o(1g(M[0][0])==\'1f\'){M=S.u(M).4}o(!7.2B(M)){8 w}9 d=7.4.q,15=d,i,G,10=M[0].q,j;9 e=7.4[0].q,4=[],21,20,c;J{i=15-d;4[i]=[];G=10;J{j=10-G;21=0;20=e;J{c=e-20;21+=7.4[i][c]*M[c][j]}H(--20);4[i][j]=21}H(--G)}H(--d);9 M=S.u(4);8 b?M.2E(1):M},x:l(a){8 7.22(a)},32:l(a,b,c,d){9 e=[],12=c,i,G,j;9 f=7.4.q,1p=7.4[0].q;J{i=c-12;e[i]=[];G=d;J{j=d-G;e[i][j]=7.4[(a+i-1)%f][(b+j-1)%1p]}H(--G)}H(--12);8 S.u(e)},31:l(){9 a=7.4.q,1p=7.4[0].q;9 b=[],12=1p,i,G,j;J{i=1p-12;b[i]=[];G=a;J{j=a-G;b[i][j]=7.4[j][i]}H(--G)}H(--12);8 S.u(b)},1y:l(){8(7.4.q==7.4[0].q)},2A:l(){9 m=0,12=7.4.q,15=12,i,G,10=7.4[0].q,j;J{i=15-12;G=10;J{j=10-G;o(F.13(7.4[i][j])>F.13(m)){m=7.4[i][j]}}H(--G)}H(--12);8 m},2Z:l(x){9 a=w,12=7.4.q,15=12,i,G,10=7.4[0].q,j;J{i=15-12;G=10;J{j=10-G;o(7.4[i][j]==x){8{i:i+1,j:j+1}}}H(--G)}H(--12);8 w},30:l(){o(!7.1y){8 w}9 a=[],n=7.4.q,k=n,i;J{i=k-n;a.19(7.4[i][i])}H(--n);8 v.u(a)},1K:l(){9 M=7.1q(),1c;9 n=7.4.q,k=n,i,1s,1n=7.4[0].q,p;J{i=k-n;o(M.4[i][i]==0){2e(j=i+1;j<k;j++){o(M.4[j][i]!=0){1c=[];1s=1n;J{p=1n-1s;1c.19(M.4[i][p]+M.4[j][p])}H(--1s);M.4[i]=1c;1I}}}o(M.4[i][i]!=0){2e(j=i+1;j<k;j++){9 a=M.4[j][i]/M.4[i][i];1c=[];1s=1n;J{p=1n-1s;1c.19(p<=i?0:M.4[j][p]-M.4[i][p]*a)}H(--1s);M.4[j]=1c}}}H(--n);8 M},3h:l(){8 7.1K()},2z:l(){o(!7.1y()){8 w}9 M=7.1K();9 a=M.4[0][0],n=M.4.q-1,k=n,i;J{i=k-n+1;a=a*M.4[i][i]}H(--n);8 a},3f:l(){8 7.2z()},2y:l(){8(7.1y()&&7.2z()===0)},2Y:l(){o(!7.1y()){8 w}9 a=7.4[0][0],n=7.4.q-1,k=n,i;J{i=k-n+1;a+=7.4[i][i]}H(--n);8 a},3e:l(){8 7.2Y()},1Y:l(){9 M=7.1K(),1Y=0;9 a=7.4.q,15=a,i,G,10=7.4[0].q,j;J{i=15-a;G=10;J{j=10-G;o(F.13(M.4[i][j])>17.16){1Y++;1I}}H(--G)}H(--a);8 1Y},3d:l(){8 7.1Y()},2W:l(a){9 M=a.4||a;o(1g(M[0][0])==\'1f\'){M=S.u(M).4}9 T=7.1q(),1p=T.4[0].q;9 b=T.4.q,15=b,i,G,10=M[0].q,j;o(b!=M.q){8 w}J{i=15-b;G=10;J{j=10-G;T.4[i][1p+j]=M[i][j]}H(--G)}H(--b);8 T},2w:l(){o(!7.1y()||7.2y()){8 w}9 a=7.4.q,15=a,i,j;9 M=7.2W(S.I(a)).1K();9 b,1n=M.4[0].q,p,1c,2v;9 c=[],2c;J{i=a-1;1c=[];b=1n;c[i]=[];2v=M.4[i][i];J{p=1n-b;2c=M.4[i][p]/2v;1c.19(2c);o(p>=15){c[i].19(2c)}}H(--b);M.4[i]=1c;2e(j=0;j<i;j++){1c=[];b=1n;J{p=1n-b;1c.19(M.4[j][p]-M.4[i][p]*M.4[j][i])}H(--b);M.4[j]=1c}}H(--a);8 S.u(c)},3c:l(){8 7.2w()},2d:l(){8 7.1b(l(x){8 F.2d(x)})},2V:l(x){8 7.1b(l(p){8(F.13(p-x)<=17.16)?x:p})},2n:l(){9 a=[];9 n=7.4.q,k=n,i;J{i=k-n;a.19(v.u(7.4[i]).2n())}H(--n);8 a.2K(\'\\n\')},26:l(a){9 i,4=a.4||a;o(1g(4[0][0])!=\'1f\'){9 b=4.q,15=b,G,10,j;7.4=[];J{i=15-b;G=4[i].q;10=G;7.4[i]=[];J{j=10-G;7.4[i][j]=4[i][j]}H(--G)}H(--b);8 7}9 n=4.q,k=n;7.4=[];J{i=k-n;7.4.19([4[i]])}H(--n);8 7}};S.u=l(a){9 M=25 S();8 M.26(a)};S.I=l(n){9 a=[],k=n,i,G,j;J{i=k-n;a[i]=[];G=k;J{j=k-G;a[i][j]=(i==j)?1:0}H(--G)}H(--n);8 S.u(a)};S.2X=l(a){9 n=a.q,k=n,i;9 M=S.I(n);J{i=k-n;M.4[i][i]=a[i]}H(--n);8 M};S.1R=l(b,a){o(!a){8 S.u([[F.1H(b),-F.1G(b)],[F.1G(b),F.1H(b)]])}9 d=a.1q();o(d.4.q!=3){8 w}9 e=d.1u();9 x=d.4[0]/e,y=d.4[1]/e,z=d.4[2]/e;9 s=F.1G(b),c=F.1H(b),t=1-c;8 S.u([[t*x*x+c,t*x*y-s*z,t*x*z+s*y],[t*x*y+s*z,t*y*y+c,t*y*z-s*x],[t*x*z-s*y,t*y*z+s*x,t*z*z+c]])};S.3b=l(t){9 c=F.1H(t),s=F.1G(t);8 S.u([[1,0,0],[0,c,-s],[0,s,c]])};S.39=l(t){9 c=F.1H(t),s=F.1G(t);8 S.u([[c,0,s],[0,1,0],[-s,0,c]])};S.38=l(t){9 c=F.1H(t),s=F.1G(t);8 S.u([[c,-s,0],[s,c,0],[0,0,1]])};S.2J=l(n,m){8 S.1j(n,m).1b(l(){8 F.2F()})};S.1j=l(n,m){9 a=[],12=n,i,G,j;J{i=n-12;a[i]=[];G=m;J{j=m-G;a[i][j]=0}H(--G)}H(--12);8 S.u(a)};l 14(){}14.23={24:l(a){8(7.1m(a)&&7.1h(a.K))},1q:l(){8 14.u(7.K,7.U)},2U:l(a){9 V=a.4||a;8 14.u([7.K.4[0]+V[0],7.K.4[1]+V[1],7.K.4[2]+(V[2]||0)],7.U)},1m:l(a){o(a.W){8 a.1m(7)}9 b=7.U.1C(a.U);8(F.13(b)<=17.16||F.13(b-F.1A)<=17.16)},1o:l(a){o(a.W){8 a.1o(7)}o(a.U){o(7.1m(a)){8 7.1o(a.K)}9 N=7.U.2f(a.U).2q().4;9 A=7.K.4,B=a.K.4;8 F.13((A[0]-B[0])*N[0]+(A[1]-B[1])*N[1]+(A[2]-B[2])*N[2])}1d{9 P=a.4||a;9 A=7.K.4,D=7.U.4;9 b=P[0]-A[0],2a=P[1]-A[1],29=(P[2]||0)-A[2];9 c=F.1x(b*b+2a*2a+29*29);o(c===0)8 0;9 d=(b*D[0]+2a*D[1]+29*D[2])/c;9 e=1-d*d;8 F.13(c*F.1x(e<0?0:e))}},1h:l(a){9 b=7.1o(a);8(b!==w&&b<=17.16)},2T:l(a){8 a.1h(7)},1v:l(a){o(a.W){8 a.1v(7)}8(!7.1m(a)&&7.1o(a)<=17.16)},1U:l(a){o(a.W){8 a.1U(7)}o(!7.1v(a)){8 w}9 P=7.K.4,X=7.U.4,Q=a.K.4,Y=a.U.4;9 b=X[0],1z=X[1],1B=X[2],1T=Y[0],1S=Y[1],1M=Y[2];9 c=P[0]-Q[0],2s=P[1]-Q[1],2r=P[2]-Q[2];9 d=-b*c-1z*2s-1B*2r;9 e=1T*c+1S*2s+1M*2r;9 f=b*b+1z*1z+1B*1B;9 g=1T*1T+1S*1S+1M*1M;9 h=b*1T+1z*1S+1B*1M;9 k=(d*g/f+h*e)/(g-h*h);8 v.u([P[0]+k*b,P[1]+k*1z,P[2]+k*1B])},1r:l(a){o(a.U){o(7.1v(a)){8 7.1U(a)}o(7.1m(a)){8 w}9 D=7.U.4,E=a.U.4;9 b=D[0],1l=D[1],1k=D[2],1P=E[0],1O=E[1],1Q=E[2];9 x=(1k*1P-b*1Q),y=(b*1O-1l*1P),z=(1l*1Q-1k*1O);9 N=v.u([x*1Q-y*1O,y*1P-z*1Q,z*1O-x*1P]);9 P=11.u(a.K,N);8 P.1U(7)}1d{9 P=a.4||a;o(7.1h(P)){8 v.u(P)}9 A=7.K.4,D=7.U.4;9 b=D[0],1l=D[1],1k=D[2],1w=A[0],18=A[1],1a=A[2];9 x=b*(P[1]-18)-1l*(P[0]-1w),y=1l*((P[2]||0)-1a)-1k*(P[1]-18),z=1k*(P[0]-1w)-b*((P[2]||0)-1a);9 V=v.u([1l*x-1k*z,1k*y-b*x,b*z-1l*y]);9 k=7.1o(P)/V.1u();8 v.u([P[0]+V.4[0]*k,P[1]+V.4[1]*k,(P[2]||0)+V.4[2]*k])}},1V:l(t,a){o(1g(a.U)==\'1f\'){a=14.u(a.1N(),v.k)}9 R=S.1R(t,a.U).4;9 C=a.1r(7.K).4;9 A=7.K.4,D=7.U.4;9 b=C[0],1E=C[1],1J=C[2],1w=A[0],18=A[1],1a=A[2];9 x=1w-b,y=18-1E,z=1a-1J;8 14.u([b+R[0][0]*x+R[0][1]*y+R[0][2]*z,1E+R[1][0]*x+R[1][1]*y+R[1][2]*z,1J+R[2][0]*x+R[2][1]*y+R[2][2]*z],[R[0][0]*D[0]+R[0][1]*D[1]+R[0][2]*D[2],R[1][0]*D[0]+R[1][1]*D[1]+R[1][2]*D[2],R[2][0]*D[0]+R[2][1]*D[1]+R[2][2]*D[2]])},1t:l(a){o(a.W){9 A=7.K.4,D=7.U.4;9 b=A[0],18=A[1],1a=A[2],2N=D[0],1l=D[1],1k=D[2];9 c=7.K.1t(a).4;9 d=b+2N,2h=18+1l,2o=1a+1k;9 Q=a.1r([d,2h,2o]).4;9 e=[Q[0]+(Q[0]-d)-c[0],Q[1]+(Q[1]-2h)-c[1],Q[2]+(Q[2]-2o)-c[2]];8 14.u(c,e)}1d o(a.U){8 7.1V(F.1A,a)}1d{9 P=a.4||a;8 14.u(7.K.1t([P[0],P[1],(P[2]||0)]),7.U)}},1Z:l(a,b){a=v.u(a);b=v.u(b);o(a.4.q==2){a.4.19(0)}o(b.4.q==2){b.4.19(0)}o(a.4.q>3||b.4.q>3){8 w}9 c=b.1u();o(c===0){8 w}7.K=a;7.U=v.u([b.4[0]/c,b.4[1]/c,b.4[2]/c]);8 7}};14.u=l(a,b){9 L=25 14();8 L.1Z(a,b)};14.X=14.u(v.1j(3),v.i);14.Y=14.u(v.1j(3),v.j);14.Z=14.u(v.1j(3),v.k);l 11(){}11.23={24:l(a){8(7.1h(a.K)&&7.1m(a))},1q:l(){8 11.u(7.K,7.W)},2U:l(a){9 V=a.4||a;8 11.u([7.K.4[0]+V[0],7.K.4[1]+V[1],7.K.4[2]+(V[2]||0)],7.W)},1m:l(a){9 b;o(a.W){b=7.W.1C(a.W);8(F.13(b)<=17.16||F.13(F.1A-b)<=17.16)}1d o(a.U){8 7.W.2k(a.U)}8 w},2k:l(a){9 b=7.W.1C(a.W);8(F.13(F.1A/2-b)<=17.16)},1o:l(a){o(7.1v(a)||7.1h(a)){8 0}o(a.K){9 A=7.K.4,B=a.K.4,N=7.W.4;8 F.13((A[0]-B[0])*N[0]+(A[1]-B[1])*N[1]+(A[2]-B[2])*N[2])}1d{9 P=a.4||a;9 A=7.K.4,N=7.W.4;8 F.13((A[0]-P[0])*N[0]+(A[1]-P[1])*N[1]+(A[2]-(P[2]||0))*N[2])}},1h:l(a){o(a.W){8 w}o(a.U){8(7.1h(a.K)&&7.1h(a.K.2j(a.U)))}1d{9 P=a.4||a;9 A=7.K.4,N=7.W.4;9 b=F.13(N[0]*(A[0]-P[0])+N[1]*(A[1]-P[1])+N[2]*(A[2]-(P[2]||0)));8(b<=17.16)}},1v:l(a){o(1g(a.U)==\'1f\'&&1g(a.W)==\'1f\'){8 w}8!7.1m(a)},1U:l(a){o(!7.1v(a)){8 w}o(a.U){9 A=a.K.4,D=a.U.4,P=7.K.4,N=7.W.4;9 b=(N[0]*(P[0]-A[0])+N[1]*(P[1]-A[1])+N[2]*(P[2]-A[2]))/(N[0]*D[0]+N[1]*D[1]+N[2]*D[2]);8 v.u([A[0]+D[0]*b,A[1]+D[1]*b,A[2]+D[2]*b])}1d o(a.W){9 c=7.W.2f(a.W).2q();9 N=7.W.4,A=7.K.4,O=a.W.4,B=a.K.4;9 d=S.1j(2,2),i=0;H(d.2y()){i++;d=S.u([[N[i%3],N[(i+1)%3]],[O[i%3],O[(i+1)%3]]])}9 e=d.2w().4;9 x=N[0]*A[0]+N[1]*A[1]+N[2]*A[2];9 y=O[0]*B[0]+O[1]*B[1]+O[2]*B[2];9 f=[e[0][0]*x+e[0][1]*y,e[1][0]*x+e[1][1]*y];9 g=[];2e(9 j=1;j<=3;j++){g.19((i==j)?0:f[(j+(5-i)%3)%3])}8 14.u(g,c)}},1r:l(a){9 P=a.4||a;9 A=7.K.4,N=7.W.4;9 b=(A[0]-P[0])*N[0]+(A[1]-P[1])*N[1]+(A[2]-(P[2]||0))*N[2];8 v.u([P[0]+N[0]*b,P[1]+N[1]*b,(P[2]||0)+N[2]*b])},1V:l(t,a){9 R=S.1R(t,a.U).4;9 C=a.1r(7.K).4;9 A=7.K.4,N=7.W.4;9 b=C[0],1E=C[1],1J=C[2],1w=A[0],18=A[1],1a=A[2];9 x=1w-b,y=18-1E,z=1a-1J;8 11.u([b+R[0][0]*x+R[0][1]*y+R[0][2]*z,1E+R[1][0]*x+R[1][1]*y+R[1][2]*z,1J+R[2][0]*x+R[2][1]*y+R[2][2]*z],[R[0][0]*N[0]+R[0][1]*N[1]+R[0][2]*N[2],R[1][0]*N[0]+R[1][1]*N[1]+R[1][2]*N[2],R[2][0]*N[0]+R[2][1]*N[1]+R[2][2]*N[2]])},1t:l(a){o(a.W){9 A=7.K.4,N=7.W.4;9 b=A[0],18=A[1],1a=A[2],2M=N[0],2L=N[1],2Q=N[2];9 c=7.K.1t(a).4;9 d=b+2M,2p=18+2L,2m=1a+2Q;9 Q=a.1r([d,2p,2m]).4;9 e=[Q[0]+(Q[0]-d)-c[0],Q[1]+(Q[1]-2p)-c[1],Q[2]+(Q[2]-2m)-c[2]];8 11.u(c,e)}1d o(a.U){8 7.1V(F.1A,a)}1d{9 P=a.4||a;8 11.u(7.K.1t([P[0],P[1],(P[2]||0)]),7.W)}},1Z:l(a,b,c){a=v.u(a);a=a.1N();o(a===w){8 w}b=v.u(b);b=b.1N();o(b===w){8 w}o(1g(c)==\'1f\'){c=w}1d{c=v.u(c);c=c.1N();o(c===w){8 w}}9 d=a.4[0],18=a.4[1],1a=a.4[2];9 e=b.4[0],1W=b.4[1],1X=b.4[2];9 f,1i;o(c!==w){9 g=c.4[0],2l=c.4[1],2t=c.4[2];f=v.u([(1W-18)*(2t-1a)-(1X-1a)*(2l-18),(1X-1a)*(g-d)-(e-d)*(2t-1a),(e-d)*(2l-18)-(1W-18)*(g-d)]);1i=f.1u();o(1i===0){8 w}f=v.u([f.4[0]/1i,f.4[1]/1i,f.4[2]/1i])}1d{1i=F.1x(e*e+1W*1W+1X*1X);o(1i===0){8 w}f=v.u([b.4[0]/1i,b.4[1]/1i,b.4[2]/1i])}7.K=a;7.W=f;8 7}};11.u=l(a,b,c){9 P=25 11();8 P.1Z(a,b,c)};11.2I=11.u(v.1j(3),v.k);11.2H=11.u(v.1j(3),v.i);11.2G=11.u(v.1j(3),v.j);11.36=11.2I;11.35=11.2H;11.3j=11.2G;9 $V=v.u;9 $M=S.u;9 $L=14.u;9 $P=11.u;',62,206,'||||elements|||this|return|var||||||||||||function|||if||length||||create|Vector|null|||||||||Math|nj|while||do|anchor||||||||Matrix||direction||normal||||kj|Plane|ni|abs|Line|ki|precision|Sylvester|A2|push|A3|map|els|else||undefined|typeof|contains|mod|Zero|D3|D2|isParallelTo|kp|distanceFrom|cols|dup|pointClosestTo|np|reflectionIn|modulus|intersects|A1|sqrt|isSquare|X2|PI|X3|angleFrom|mod1|C2|mod2|sin|cos|break|C3|toRightTriangular|false|Y3|to3D|E2|E1|E3|Rotation|Y2|Y1|intersectionWith|rotate|v12|v13|rank|setVectors|nc|sum|multiply|prototype|eql|new|setElements|case|each|PA3|PA2|part|new_element|round|for|cross|product|AD2|isSameSizeAs|add|isPerpendicularTo|v22|AN3|inspect|AD3|AN2|toUnitVector|PsubQ3|PsubQ2|v23|dot|divisor|inverse|true|isSingular|determinant|max|canMultiplyFromLeft|subtract|rows|col|random|ZX|YZ|XY|Random|join|N2|N1|D1|slice|default|N3|dimensions|switch|liesIn|translate|snapTo|augment|Diagonal|trace|indexOf|diagonal|transpose|minor|row|isAntiparallelTo|ZY|YX|acos|RotationZ|RotationY|liesOn|RotationX|inv|rk|tr|det|toDiagonalMatrix|toUpperTriangular|version|XZ'.split('|'),0,{}))</script>
+            <script>function generateMatrix(e, t, n) {
+    var r, i;
+    r = "input" == document.getElementById(e).tagName.toLowerCase() ? parseInt(document.getElementById(e).value) : parseInt(document.getElementById(e).innerHTML), i = "input" == document.getElementById(t).tagName.toLowerCase() ? parseInt(document.getElementById(t).value) : parseInt(document.getElementById(t).innerHTML);
+    var o = document.getElementById(n);
+    clearChilds(o);
+    for (var a = 0; r > a; a++) {
+        var l = document.createElement("div");
+        o.appendChild(l);
+        for (var d = 0; i > d; d++) {
+            var s = document.createElement("input");
+            s.value = "0", s.setAttribute("type", "text"), s.setAttribute("onClick", "this.select();"), s.style.width = "30px", l.appendChild(s)
+        }
+    }
+}
+
+function getMatrix(e, t) {
+    "undefined" == typeof t && (t = 0);
+    for (var n = new Array, r = document.getElementById(e), i = 0; i < r.childNodes.length; i++) {
+        n[i] = new Array;
+        for (var o = 1, a = 0; a < r.childNodes[i].childNodes.length; a++)
+            if ("select" != r.childNodes[i].childNodes[a].tagName.toLowerCase()) {
+                if ("text" == r.childNodes[i].childNodes[a].type)
+                    if ("" == r.childNodes[i].childNodes[a].value) n[i][n[i].length] = o;
+                    else if (-1 != r.childNodes[i].childNodes[a].value.indexOf("/")) {
+                    var l = r.childNodes[i].childNodes[a].value.split("/");
+                    n[i][n[i].length] = new Frac(o * parseInt(l[0]), parseInt(l[1]))
+                } else {
+                    var d = parseFloat(r.childNodes[i].childNodes[a].value.replace(",", "."));
+                    isNaN(d) && (d = 0), isInt(d) ? n[i][n[i].length] = o * d : n[i][n[i].length] = new Frac(o * d, 1)
+                }
+            } else o = parseInt(r.childNodes[i].childNodes[a].options[r.childNodes[i].childNodes[a].selectedIndex].value)
+    }
+    return $M(n)
+}
+
+function printMatrix(e, t, n, r, i) {
+    n && (isinve = !1), "undefined" == typeof i && (i = !1);
+    var o = document.getElementById(t);
+    ("undefined" == typeof r || 0 == r) && clearChilds(o);
+    var a = document.createElement("table");
+    o.appendChild(a);
+	console.log(e)
+    for (var l = 1; l <= e.rows(); l++) {
+        var d = document.createElement("tr");
+        a.appendChild(d);
+        for (var s = 1; s <= e.cols(); s++) {
+            var u = document.createElement("td");
+            d.appendChild(u), u.setAttribute("style", "min-width:30px;text-align:center;"), "object" == typeof e.e(l, s) ? u.innerHTML = e.e(l, s).display() : u.innerHTML = Math.round(1e3 * e.e(l, s)) / 1e3, (n && s == e.cols() - 1 || i && s == e.cols() / 2) && (u = document.createElement("td"), d.appendChild(u), u.setAttribute("style", "width:10px;text-align:center;"), u.innerHTML = "|")
+        }
+    }
+}
+
+function clearChilds(e) {
+    if (null != e)
+        for (; e.childNodes.length > 0;) e.removeChild(e.childNodes[0])
+}
+
+function showElements(e, t, n, r, i, o) {
+    __allElementsShowHide(!0, e, t, n, r, i, o)
+}
+
+function hideElements(e, t, n, r, i, o) {
+    __allElementsShowHide(!1, e, t, n, r, i, o)
+}
+
+function __allElementsShowHide(e, t, n, r, i, o, a) {
+    "undefined" != typeof t && (__showHide(t, e), "undefined" != typeof n && (__showHide(n, e), "undefined" != typeof r && (__showHide(r, e), "undefined" != typeof i && (__showHide(i, e), "undefined" != typeof o && (__showHide(o, e), "undefined" != typeof a && __showHide(a, e))))))
+}
+
+function __showHide(e, t) {
+    var n = document.getElementById(e);
+    t ? n.style.display = "" : n.style.display = "none"
+}
+
+function matricesMultiplicationGenerate(e, t, n, r, i, o, a) {
+    var l = (document.getElementById(e), document.getElementById(t)),
+        d = document.getElementById(n),
+        s = document.getElementById(r);
+    if (l.value != d.value) {
+        var u = "You cannot multiply these matrices.";
+        return "bg" == a && (u = "Не може да умножите матриците."), "ru" == a && (u = "Вы не можете умножить эти матрицы."), void alert(u)
+    }
+    if (isNaN(l.value) || isNaN(s.value)) {
+        var u = "";
+        switch (a) {
+            case "en":
+                u = "Enter numbers only, please!";
+                break;
+            case "bg":
+                u = "Моля въведете само цифри!";
+                break;
+            case "ru":
+                u = "Пожалуйста введите цифры!"
+        }
+        return void alert(u)
+    }
+    document.getElementById("x").style.display = "", document.getElementById("multiplyButton").style.display = "", generateMatrix(e, t, i), generateMatrix(n, r, o)
+}
+
+function displayMultiplication(e, t, n) {
+    var r = getMatrix(e),
+        i = getMatrix(t),
+        o = r.multiply(i);
+    printMatrix(o, n), document.getElementById("multiplicationResultText").style.display = "block"
+}
+
+function calculateDeterminant() {
+    resetMatrix();
+    var e = parseInt(document.getElementById("rowRank").value),
+        t = parseInt(document.getElementById("columnRank").value);
+    if (e !== t) return void alert(strings.MatrixIsNotSquare[langId]);
+    var n = getMatrix("matrixDivRank");
+    document.getElementById("txtM").style.display = "";
+    var r = n.det();
+    if (r = Math.round(1e3 * r) / 1e3, e > 3) {
+        document.getElementById("r1").style.display = "";
+        var i = toTriangularUp(n);
+        printMatrix(i, "resultRank");
+        for (var o = "", a = 1; a <= n.rows(); a++) o += a > 1 ? " * " + n.e(a, a) : n.e(a, a);
+        r = o + " = " + r
+    } else 3 == e ? r = n.e(1, 1) + "*" + n.e(2, 2) + "*" + n.e(3, 3) + " + " + n.e(1, 2) + "*" + n.e(2, 3) + "*" + n.e(3, 1) + " + " + n.e(1, 3) + "*" + n.e(2, 1) + "*" + n.e(3, 2) + " - " + n.e(1, 3) + "*" + n.e(2, 2) + "*" + n.e(3, 1) + " - " + n.e(1, 2) + "*" + n.e(2, 1) + "*" + n.e(3, 3) + " - " + n.e(1, 1) + "*" + n.e(2, 3) + "*" + n.e(3, 2) + " = " + r : 2 == e && (r = n.e(1, 1) + "*" + n.e(2, 2) + " - " + n.e(1, 2) + "*" + n.e(2, 1) + " = " + n.e(1, 1) * n.e(2, 2) + " - " + n.e(1, 2) * n.e(2, 1) + " =  " + r);
+    document.getElementById("detRes").style.display = "", document.getElementById("det").innerHTML = r
+}
+
+function resetMatrix() {
+    document.getElementById("m3x3v2x2").innerHTML = "", document.getElementById("detRes").style.display = "none", document.getElementById("rank").innerHTML = "", document.getElementById("resultRank").innerHTML = "", document.getElementById("r1").style.display = "none", document.getElementById("r2").style.display = "none", document.getElementById("invSpan").innerHTML = "", document.getElementById("rInv").style.display = "none"
+}
+
+function rank() {
+    resetMatrix();
+    var e = getMatrix("matrixDivRank");
+    toTriangularUp(e, "resultRank", !1), document.getElementById("rank").innerHTML = _rankOtTriangular(e)
+}
+
+function _rankOtTriangular(e) {
+    for (var t = 0, n = 1; n <= e.rows(); n++) {
+        for (var r = !0, i = 1; i <= e.cols(); i++)
+            if (0 != new Frac(1, 1).multiply(e.e(n, i)).nominator) {
+                r = !1;
+                break
+            }
+        r || t++
+    }
+    return t
+}
+
+function theOpposite() {
+    resetMatrix();
+    var e = getMatrix("matrixDivRank");
+    return e.isSquare() ? e.isSingular() ? void alert(strings.NoInverse[langId]) : (document.getElementById("rInv").style.display = "", document.getElementById("invSpan").innerHTML = "", e = _inverseStepByStep(e, "invSpan"), void printMatrix(e, "invSpan", !1, !0)) : void alert(strings.MatrixIsNotSquare[langId])
+}
+
+function triangular() {
+    resetMatrix(), document.getElementById("resultRank").innerHTML = "";
+    var e = getMatrix("matrixDivRank");
+    toTriangularUp(e, "resultRank", !1)
+}
+
+function generateEquations(e, t) {
+    var n = parseInt(document.getElementById(e).value),
+        r = document.getElementById(t);
+    clearChilds(r);
+    for (var i = 0; n > i; i++) {
+        var o = document.createElement("div");
+        r.appendChild(o);
+        for (var a = 0; n > a; a++) {
+            var d = document.createElement("input");
+            d.setAttribute("type", "text"), d.setAttribute("onClick", "this.select();"), d.style.width = "30px", d.value = "0", o.appendChild(d);
+            var s = document.createElement("span");
+            s.innerHTML = "x<sub>" + (a + 1)+'</sub>'+(a>n-2?'':' + ');
+			o.appendChild(s);
+        }
+        var s = document.createElement("span");
+        s.innerHTML = " = ", o.appendChild(s);
+        var d = document.createElement("input");
+        d.setAttribute("type", "text"), d.setAttribute("onClick", "this.select();"), d.style.width = "30px", d.value = "0", o.appendChild(d)
+    }
+}
+
+function toTriangularUp(e, t, n, r) {
+    "undefined" == typeof r && (r = !1);
+    var i = null;
+    "undefined" != typeof t && (i = document.getElementById(t));
+    for (var o = 1, a = 1; a <= e.rows() && o <= e.cols(); a++) {
+        if (0 == e.e(a, o) || "object" == typeof e.e(a, o) && e.e(a, o).isZero())
+            for (var l = a + 1; l <= e.rows(); l++)
+                if (0 != new Frac(1, 1).multiply(e.e(l, o)).nominator) {
+                    null != i && (i.innerHTML += strings.AddToRow[langId].replace("{0}", l).replace("{1}", a) + "<br/>");
+                    for (var d = 1; d <= e.cols(); d++) e.setElement(a, d, new Frac(1, 1).multiply(e.e(a, d)).plus(e.e(l, d)));
+                    null != i && printMatrix(e, t, n, !0, r);
+                    break
+                }
+        if (0 != e.e(a, o) || "object" == typeof e.e(a, o) && !e.e(a, o).isZero()) {
+            for (var s = !1, u = a; u < e.rows(); u++) {
+                var m = new Frac(-1, 1).multiply(e.e(u + 1, o)),
+                    c = new Frac(m, e.e(a, o));
+                if (!c.isZero()) {
+                    s = !0, null != i && (i.innerHTML += strings.MultiplyRowAndAdd[langId].replace("{0}", a).replace("{1}", c.display()).replace("{2}", u + 1) + "<br />");
+                    for (var p = o; p <= e.cols(); p++) {
+                        var y = c.multiply(e.e(a, p)).plus(e.e(u + 1, p));
+                        e.setElement(u + 1, p, y)
+                    }
+                }
+            }
+            s && null != i && printMatrix(e, t, n, !0, r)
+        } else a--;
+        o++
+    }
+    return e
+}
+
+function toTriangularDown(e, t, n, r) {
+    "undefined" == typeof r && (r = !1);
+    for (var i = document.getElementById(t), o = Math.min(e.rows(), e.cols()), a = o, l = o; l >= 1 && a >= 1; l -= 1) {
+        if (0 == e.e(l, a) || "object" == typeof e.e(l, a) && e.e(l, a).isZero())
+            for (var d = l - 1; d > 1; d -= 1)
+                if (0 != new Frac(1, 1).multiply(e.e(d, a)).nominator) {
+                    i.innerHTML += strings.AddToRow[langId].replace("{0}", d).replace("{1}", l) + "<br/>";
+                    var s = e.elements[d - 1];
+                    e.elements[d - 1] = e.elements[l - 1], e.elements[l - 1] = s, printMatrix(e, t, n, !0, r);
+                    break
+                }
+        if (0 != e.e(l, a) || "object" == typeof e.e(l, a) && !e.e(l, a).isZero()) {
+            for (var u = !1, m = l; m > 1; m -= 1) {
+                var c = new Frac(-1, 1).multiply(e.e(m - 1, a)),
+                    p = new Frac(c, e.e(l, a));
+                if (!p.isZero()) {
+                    u = !0, i.innerHTML += strings.MultiplyRowAndAdd[langId].replace("{0}", l).replace("{1}", p.display()).replace("{2}", m - 1) + "<br />", i.innerHTML += "<br/>";
+                    for (var y = 1; y <= e.cols(); y++) {
+                        var v = p.multiply(e.e(l, y)).plus(e.e(m - 1, y));
+                        e.setElement(m - 1, y, v)
+                    }
+                }
+            }
+            u && printMatrix(e, t, n, !0, r)
+        } else l++;
+        a--
+    }
+    return e
+}
+
+function stepByStepTriangular(e, t, n, r) {
+    document.getElementById(n).innerHTML = "";
+    var i = getMatrix(e, 1);
+    printMatrix(i, t, !0), toTriangularUp(i, n, !0);
+    var o = document.getElementById(r);
+    o.innerHTML = "";
+    for (var a = new Array, l = i.rows(); l > 0; l -= 1) {
+        for (var d = new Frac(1, 1).multiply(i.e(l, i.rows() + 1)), s = 0, u = "" + d.display() + " ", m = "M(" + l + "," + (i.rows() + 1) + ")", c = i.rows(); c > l; c -= 1) d = d.minus(new Frac(1, 1).multiply(i.e(l, c)).multiply(a[s])), m += " - M(" + l + "," + c + ") * x<sub>" + (i.rows() - s) + "</sub>", u += new Frac(1, 1).multiply(i.e(l, c)).multiply(a[s]).isPositiveOrZero() ? " - " + new Frac(1, 1).multiply(i.e(l, c)).multiply(a[s]).display() : " - (" + new Frac(1, 1).multiply(i.e(l, c)).multiply(a[s]).display() + ")", s++;
+        if (0 == new Frac(1, 1).multiply(i.e(l, l)).nominator) return void(o.innerHTML += "The system has many solutions!");
+        d = new Frac(d, i.e(l, l)), u = "(" + u + ")/" + new Frac(1, 1).multiply(i.e(l, l)).display() + " = ", m = "(" + m + ")/M(" + l + "," + l + ") = ", a[a.length] = d, l == i.rows() ? o.innerHTML += "x<sub>" + l + "</sub> = " + d.display() + "<br />" : o.innerHTML += "x<sub>" + l + "</sub> = " + m + u + d.display() + "<br />"
+    }
+}
+
+function _inverseStepByStep(e, t) {
+    for (var n = new Matrix.Zero(e.rows(), 2 * e.cols()), r = Matrix.I(e.rows()), i = 1; i <= e.rows(); i++) {
+        for (var o = 1; o <= e.cols(); o++) n.setElement(i, o, e.e(i, o));
+        for (var o = 1; o <= e.cols(); o++) n.setElement(i, e.cols() + o, r.e(i, o))
+    }
+    document.getElementById(t).innerHTML = "<br/>[A I] =<br/>", printMatrix(n, t, !1, !0, !0), n = toTriangularUp(n, t, !1, !0);
+    var a = n.minor(1, 1, e.rows(), e.cols()),
+        l = _rankOtTriangular(a);
+    return l != e.rows() ? (document.getElementById(t).innerHTML += "<br />" + strings.NoInverse[langId] + "<br />", printMatrix(a, t, !1, !0), null) : (toMainDiagonal_1(n, t), n = toTriangularDown(n, t, !1, !0), document.getElementById(t).innerHTML += strings["Result:"][langId], n.minor(1, e.cols() + 1, e.rows(), e.cols()))
+}
+
+function toMainDiagonal_1(e, t) {
+    document.getElementById(t).innerHTML += "<br/>";
+    for (var n = 1; n <= e.rows(); n++)
+        if (0 != e.e(n, n)) {
+            document.getElementById(t).innerHTML += strings.DivideRow[langId].replace("{0}", n).replace("{1}", e.e(n, n).toString()) + "<br/>";
+            for (var r = e.e(n, n), i = 1; i <= e.cols(); i++)
+                if ("object" == typeof e.e(n, i)) e.setElement(n, i, e.e(n, i).divide(r));
+                else {
+                    var o = new Frac(e.e(n, i), 1);
+                    e.setElement(n, i, o.divide(r))
+                }
+        }
+    printMatrix(e, t, !1, !0, !0)
+}
+
+function generateMatrixEquations() {
+    document.getElementById("A_cols").innerHTML = document.getElementById("A_rows").value, document.getElementById("B_rows").innerHTML = document.getElementById("A_rows").value, generateMatrix("A_rows", "A_cols", "divMatrixEquation"), generateMatrix("B_rows", "B_cols", "divResultMatrixInput");
+    var e = document.getElementById("selMatrixEquationType"),
+        t = document.getElementById("divXRight"),
+        n = document.getElementById("divXLeft");
+    "Ax=B" == e.options[e.selectedIndex].value ? (t.innerHTML = "", t.innerHTML = "X = ") : (t.innerHTML = "X", t.innerHTML = " = ");
+    var r = document.getElementById("divMatrixEquation").clientHeight;
+    t.style.height = r, t.style.lineHeight = r + "px", n.style.height = r, n.style.lineHeight = r + "px"
+}
+
+function change_v(a,b){
+document.getElementById(a).value=document.getElementById(b).value;
+}
+
+function calculateMatrixEquation() {
+    var e = document.getElementById("matrixSol");
+    e.innerHTML = "";
+    var t = getMatrix("divMatrixEquation"),
+        n = _inverseStepByStep(t, "matrixSol");
+    if (null != n) {
+        e.innerHTML += "A<sup>-1</sup>:<br/>", printMatrix(n, "matrixSol", !1, !0);
+        var r = getMatrix("divResultMatrixInput"),
+            i = n.multiply(r);
+        e.innerHTML = "X = A<sup>-1</sup>B<br />" + strings.FirstFindInvMatrix[langId] + " A<sup>-1</sup>:" + e.innerHTML + "<hr />" + strings.SolOfEq[langId] + "<br />A<sup>-1</sup>B = <br />", printMatrix(i, "matrixSol", !1, !0)
+    }
+}
+
+function Frac(e, t) {
+    function n(e, t) {
+        var n = function r(e, t) {
+            return t ? r(t, e % t) : e
+        };
+        return n = n(e, t), [e / n, t / n]
+    }
+
+    function r(e, t) {
+        for (var n; 0 != t;) n = t, t = e % t, e = n;
+        return e
+    }
+
+    function i(e, t) {
+        return e * t / r(e, t)
+    }
+    if ("undefined" == typeof t && (t = 1), this.nominator = null, this.denominator = null, "object" == typeof e) this.nominator = e.nominator, this.denominator = e.denominator;
+    else if (isInt(e)) this.nominator = e;
+    else {
+        var o = getFrac(e);
+        this.nominator = o.nominator, this.denominator = o.denominator
+    }
+    "object" == typeof t ? null != this.denominator ? (this.nominator = this.nominator * t.denominator, this.denominator = this.denominator * t.nominator) : (this.nominator = this.nominator * t.denominator, this.denominator = t.nominator) : null != this.denominator ? this.denominator = this.denominator * t : this.denominator = t;
+    var a = this;
+    this.isZero = function() {
+        return 0 == a.nominator
+    }, this.plus = function(e) {
+        var t = new Frac(a.nominator, a.denominator);
+        if ("object" == typeof e) {
+            var r = i(t.denominator, e.denominator);
+            t.nominator = e.nominator * r / e.denominator + t.nominator * r / t.denominator, t.denominator = r
+        } else t.nominator = t.nominator + t.denominator * e;
+        if (0 != t.denominator && 1 != t.denominator && -1 != t.denominator) {
+            var o = n(t.nominator, t.denominator);
+            t.nominator = o[0], t.denominator = o[1]
+        }
+        return t
+    }, this.minus = function(e) {
+        return e = "object" == typeof e ? e.multiply(-1) : -1 * e, this.plus(e)
+    }, this.multiply = function(e) {
+        var t = new Frac(a.nominator, a.denominator);
+        if ("object" == typeof e) t.nominator = e.nominator * t.nominator, t.denominator = e.denominator * t.denominator;
+        else if (isInt(e)) t.nominator = t.nominator * e;
+        else {
+            var r = getFrac(e);
+            t.nominator = r.nominator * t.nominator, t.denominator = r.denominator * t.denominator
+        }
+        if (0 != t.denominator && 1 != t.denominator && -1 != t.denominator) {
+            var i = n(t.nominator, t.denominator);
+            t.nominator = i[0], t.denominator = i[1]
+        }
+        return t
+    }, this.divide = function(e) {
+        return this.multiply(new Frac(1, e))
+    }, this.isPositiveOrZero = function() {
+        return a.nominator / a.denominator >= 0 ? !0 : !1
+    }, this.toString = function() {
+        return this.display()
+    }, this.display = function() {
+        if (0 == a.nominator) return 0;
+        var e = n(a.nominator, a.denominator);
+        return a.nominator = e[0], a.denominator = e[1], 1 == a.denominator ? a.nominator : a.denominator < 0 ? -1 * a.nominator + "/" + -1 * a.denominator : a.nominator + "/" + a.denominator
+    }
+}
+
+function isInt(e) {
+    return "number" == typeof e && isFinite(e) && e % 1 === 0
+}
+
+function getFrac(e) {
+    for (var t = 10; !isInt(e * t);) t = 10 * t;
+    return new Frac(e * t, t)
+}
+Matrix.prototype.setElement = function(e, t, n) {
+    this.elements[e - 1][t - 1] = n
+}, Matrix.prototype.multiply = function(e) {
+    if (!e.elements) return this.map(function(t) {
+        return t * e
+    });
+    var t = e.modulus ? !0 : !1,
+        n = e.elements || e;
+    if ("undefined" == typeof n[0][0] && (n = Matrix.create(n).elements), !this.canMultiplyFromLeft(n)) return null;
+    var r, i, o, a, l, d, s = this.elements.length,
+        u = s,
+        m = n[0].length,
+        c = this.elements[0].length,
+        p = [];
+    do {
+        r = u - s, p[r] = [], i = m;
+        do {
+            o = m - i, a = new Frac(0, 1), l = c;
+            do d = c - l, a = a.plus(new Frac(this.elements[r][d]).multiply(n[d][o])); while (--l);
+            p[r][o] = a
+        } while (--i)
+    } while (--s);
+    var n = Matrix.create(p);
+    return t ? n.col(1) : n
+}, Matrix.prototype.determinant = function() {
+    if (!this.isSquare()) return null;
+    var e, t = this.dup(),
+        t = toTriangularUp(t),
+        n = new Frac(1, 1).multiply(t.elements[0][0]),
+        r = t.elements.length - 1,
+        i = r;
+    do e = i - r + 1, n = n.multiply(t.elements[e][e]); while (--r);
+    return n
+}, Matrix.prototype.isSingular = function() {
+    return this.isSquare() && 0 === this.determinant().isZero()
+};
+var strings = {
+    "Result:": {
+        1: "Result:"
+    },
+    SwapRows: {
+        1: "Swap rows {0} and {1}."
+    },
+    AddToRow: {
+        1: "Adding row {0} to {1}."
+    },
+    MatrixIsNotSquare: {
+        1: "The matrix must be square!"
+    },
+    MultiplyRowAndAdd: {
+        1: "Multiply row {0} by {1} and add to row {2}."
+    },
+    DivideRow: {
+        1: "Divide row {0} by {1}."
+    },
+    SolOfEq: {
+        1: "The solution of the equation is:"
+    },
+    FirstFindInvMatrix: {
+        1: "First find the inverse matrix "
+    },
+    InverseIs: {
+        1: "The inverse matrix is:"
+    },
+    NoInverse: {
+        1: "Unable to find the the inverse because the matrix <b>A</b> is singular(det=0)."
+    }
+};</script>
+<style>body{font-family:Verdana,'Times New Roman',Arial Black,Serif;font-size:12px;margin:0;padding:10px;line-height:2em;}
+input{width:30px;
+margin: 0px;
+padding: 5px;}
+input[type='number']{margin:10px;
+}
+input[type='button']{
+width:auto;
+margin: 10px;
+padding: 5px 8px;
+font-size: 16px;
+line-height: 1.33;
+border-radius: 3px;
+color: #333;
+background-color: #fff;
+cursor: pointer;
+text-align: center;
+white-space: nowrap;
+border: 1px solid rgb(194, 194, 194);}
+.left {float: left;}.clear {clear: both;}
+input[type='button']:hover{color:red;}
+</style>
+</head>
+		<body>
+	    <div id="container">
+		<div id="content">
+				<div id="middlecont"><h1>Matrix Calculators</h1>
+<p>
+	The calculators work with fractions. For example: 1/3
+</p>
+<div class="ads">
+			</div><h2>Determinant, rank and inverse of matrix</h2>
+Matrix size:<br>
+Rows: <input type="number" id="rowRank" value="4" class="enterField" onchange="generateMatrix(&#39;rowRank&#39;, &#39;columnRank&#39;, &#39;matrixDivRank&#39;); showElements(&#39;rankMV&#39;, &#39;rankbut&#39;, &#39;invbut&#39;, &#39;triangbut&#39;)"> x columns: <input type="number" id="columnRank" value="4" class="enterField" onchange="generateMatrix(&#39;rowRank&#39;, &#39;columnRank&#39;, &#39;matrixDivRank&#39;); showElements(&#39;rankMV&#39;, &#39;rankbut&#39;, &#39;invbut&#39;, &#39;triangbut&#39;)">
+<div id="rankMV" style="display: none;">Enter matrix:</div>
+<div id="matrixDivRank"><div><input type="text" onclick="this.select();" style="width: 30px;"><input type="text" onclick="this.select();" style="width: 30px;"><input type="text" onclick="this.select();" style="width: 30px;"><input type="text" onclick="this.select();" style="width: 30px;"></div><div><input type="text" onclick="this.select();" style="width: 30px;"><input type="text" onclick="this.select();" style="width: 30px;"><input type="text" onclick="this.select();" style="width: 30px;"><input type="text" onclick="this.select();" style="width: 30px;"></div><div><input type="text" onclick="this.select();" style="width: 30px;"><input type="text" onclick="this.select();" style="width: 30px;"><input type="text" onclick="this.select();" style="width: 30px;"><input type="text" onclick="this.select();" style="width: 30px;"></div><div><input type="text" onclick="this.select();" style="width: 30px;"><input type="text" onclick="this.select();" style="width: 30px;"><input type="text" onclick="this.select();" style="width: 30px;"><input type="text" onclick="this.select();" style="width: 30px;"></div></div>
+<script>
+    generateMatrix('rowRank', 'columnRank', 'matrixDivRank');
+</script>
+<input type="button" value="Determinant" onclick="calculateDeterminant(); showElements(&#39;detRes&#39;)" id="calDetBut">
+<input type="button" value="Rank" onclick="rank(); showElements(&#39;r1&#39;, &#39;r2&#39;, &#39;txtM&#39;)" id="rankbut"> &nbsp; 
+<input type="button" value="Inverse Matrix" onclick="theOpposite(); showElements(&#39;rInv&#39;, &#39;txtM&#39;);" id="invbut"> &nbsp; 
+<input type="button" value="Triangular Matrix" onclick="triangular(); showElements(&#39;r1&#39;, &#39;txtM&#39;);" id="triangbut">
+<div id="txtM" style="display: none;"></div>
+<div id="r1" style="display: none;">
+	Right triangular matrix:<br> <div id="resultRank"></div>
+</div>
+<div id="r2" style="display: none;">
+	The rank of the matrix is: <span id="rank"></span>
+</div>
+<div id="rInv" style="display: none;">
+	Calculations: <span id="invSpan"></span>
+</div>
+<div id="m3x3v2x2"></div>
+<div id="detRes" style="display:none;">The determinant is: <span id="det" style="font-weight: bold;"></span>
+</div>
+<hr>
+<h2>Solution of a system of linear equations (n × n)</h2>
+Number of the linear equations <input type="number" id="equationVariables" value="3" class="enterField" onchange="generateEquations(&#39;equationVariables&#39;, &#39;equationsDiv&#39;); document.getElementById(&#39;systemSolverButton&#39;).style.display = &#39;&#39;;">
+<div id="equationsDiv"><div><select><option value="1">+</option><option value="-1">-</option></select><input type="text" onclick="this.select();" style="width: 30px;"><span>x1</span><select><option value="1">+</option><option value="-1">-</option></select><input type="text" onclick="this.select();" style="width: 30px;"><span>x2</span><select><option value="1">+</option><option value="-1">-</option></select><input type="text" onclick="this.select();" style="width: 30px;"><span>x3</span><span> = </span><select><option value="1">+</option><option value="-1">-</option></select><input type="text" onclick="this.select();" style="width: 30px;"></div><div><select><option value="1">+</option><option value="-1">-</option></select><input type="text" onclick="this.select();" style="width: 30px;"><span>x1</span><select><option value="1">+</option><option value="-1">-</option></select><input type="text" onclick="this.select();" style="width: 30px;"><span>x2</span><select><option value="1">+</option><option value="-1">-</option></select><input type="text" onclick="this.select();" style="width: 30px;"><span>x3</span><span> = </span><select><option value="1">+</option><option value="-1">-</option></select><input type="text" onclick="this.select();" style="width: 30px;"></div><div><select><option value="1">+</option><option value="-1">-</option></select><input type="text" onclick="this.select();" style="width: 30px;"><span>x1</span><select><option value="1">+</option><option value="-1">-</option></select><input type="text" onclick="this.select();" style="width: 30px;"><span>x2</span><select><option value="1">+</option><option value="-1">-</option></select><input type="text" onclick="this.select();" style="width: 30px;"><span>x3</span><span> = </span><select><option value="1">+</option><option value="-1">-</option></select><input type="text" onclick="this.select();" style="width: 30px;"></div></div>
+<input type="button" value="Solve the system" onclick="stepByStepTriangular(&#39;equationsDiv&#39;, &#39;systemMatrix&#39;, &#39;systemTriangular&#39;, &#39;systemAnswers&#39;); document.getElementById(&#39;equationsResultDiv&#39;).style.display = &#39;&#39;;" id="systemSolverButton">
+<div id="equationsResultDiv" style="display:none">
+	<div>
+		The matrix of the system is:<br> <div id="systemMatrix"></div>
+	</div>
+	<div>
+		The right triangular matrix of the system is:<br> <div id="systemTriangular"></div>
+	</div>
+	<div>
+		Answers:<br> <span id="systemAnswers"></span>
+	</div>
+</div>
+<script type="text/javascript">
+    generateEquations('equationVariables', 'equationsDiv');
+</script>
+<h2>Matrix equations</h2>
+Select type: <select onchange="generateMatrixEquations()" id="selMatrixEquationType">
+                <option value="Ax=B">Ax = B</option>
+                <option value="xA=B">xA = B</option>
+             </select><br>
+Dimensions of A: <input type="number" id="A_rows" onchange="generateMatrixEquations()" class="enterField" value="3"> x <input id="A_cols" onchange="change_v('B_rows','A_cols');generateMatrixEquations();" style="font-weight: bold;" value='3'><br>
+Dimensions of B: <input id="B_rows" onchange="change_v('A_cols','B_rows');generateMatrixEquations();" style="font-weight: bold;" value='3'> x <input type="number" id="B_cols" onchange="generateMatrixEquations()" class="enterField" value="2"><br>
+
+<div class="left">
+    <div id="divXLeft" class="left" style="vertical-align: middle; line-height: 72px;"></div>
+    <div id="divMatrixEquation" class="left"></div>
+    <div id="divXRight" class="left" style="vertical-align: middle; line-height: 72px;">X = </div>
+    <div id="divResultMatrixInput" class="left"></div>
+</div>
+<div class="clear">
+	<input type='button' onclick="calculateMatrixEquation()" value='Calculate'>
+</div>
+<div id="matrixSol" class="clear"></div>
+<script>
+var langId = 1;
+    generateMatrixEquations();
+</script>
+<h2>Multiplication of two matrices</h2>
+First matrix size: Rows <input type="number" id="mRows1" class="enterField" value="2"> x columns <input type="number" id="mColumns1" onchange='change_v("mRows2","mColumns1")' class="enterField" value="2"><br>
+Second matrix: Rows <input type="number" id="mRows2" onchange='change_v("mColumns1","mRows2")' class="enterField" value="2"> x columns <input type="number" id="mColumns2" class="enterField" value="2"><br>
+<input id="enterMatricesButton" type="button" value="Enter the matrices" onclick="matricesMultiplicationGenerate(&#39;mRows1&#39;, &#39;mColumns1&#39;, &#39;mRows2&#39;, &#39;mColumns2&#39;, &#39;multM1&#39;, &#39;multM2&#39;, &#39;en&#39;);">
+<br style="clear:both">
+<hr>
+<div id="multM1" style="float:left;"></div>
+<div style="float:left; padding: 20px 10px 0px 10px;display:none" id="x">X</div>
+<div id="multM2" style="float:left"></div>
+<div id="printMatricesMult" style="clear:both">
+
+</div>
+<div>
+	<input id="multiplyButton" type="button" value="Multiply" style="display:none;" onclick="displayMultiplication(&#39;multM1&#39;, &#39;multM2&#39;, &#39;multiplicationResultDiv&#39;)">
+</div>
+<div id="multiplicationResultText" style="display:none;">Multiplication Result:</div>
+<div id="multiplicationResultDiv" style="margin-top:20px;">
+</div></div></div>  
+		    </div></body></html>
