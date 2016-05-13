@@ -1,34 +1,91 @@
-<html>
-<head>
-<title>Elapsed Time
-</title>
-</head>
-<body>
-<script>window.onload = function() {
-    var s = 0, m, b=0, el = document.getElementById('t');
-    (function n() {
-	h=~~((m = ~~(++s / 60)) / 60);
-        el.innerHTML =  (m % 60) + ' : ' + (s % 60);
-		if(h){s=0;document.getElementById('a').innerHTML=(++b);}
-		setTimeout(n, 1000);
-    })();
-}</script>
-<div id="a" style="display:inline;">0</div> : <div id="t" style="display:inline;width:80px;" ></div>ヾ(=^▽^=)ノ
-</body>
-</html>
+<html><head><title></title>
+<style>body{max-width:500px;margin:0 auto;font-family:arial;text-align: center;}#r{font-size:50px;margin:100 0 50 0;}
+#p{margin-bottom:50px;}input{width:60px;padding: 5px 8px;margin:2px;}input[type='button']{
+width:auto;
+margin: 10px;
+font-size: 16px;
+line-height: 1.33;
+border-radius: 3px;
+color: #333;
+background-color: #fff;
+cursor: pointer;
+text-align: center;
+white-space: nowrap;
+border: 1px solid rgb(194, 194, 194);}
+.left {float: left;}.clear {clear: both;}
+input[type='button']:hover{color:red;}input:disabled{color:#eee}input:disabled:hover{color:#eee;}</style></head><body>
+<div id='r'>0:00</div>
+<input type=button id='p' value='Pause' onclick='pause()' disabled=diabled><br>
+<input type=button id='t' value='Timing' onclick='timing()'><br>
+<input type=button value='Count Down' onclick='cd()'>
+<input type=number placeholder='min' value='1' id='min'>m
+<input type=number placeholder='sec' value='0' id='sec'>s
 
-<!-- 
-Alternatively, you can choose to update <title>
+<script>
+var v, start, ti, stop,
+    ldiff;
+var tt = false;
+var r = document.getElementById('r');
+var t = document.getElementById('t');
 
-<html><head><title></title></head><body>
-<script>window.onload = function() {
-    var s = 0, m, b=0;
-    (function n() {
-	h=~~((m = ~~(++s / 60)) / 60);
-        document.title =  b + ' : ' + (m % 60) + ' : ' + (s % 60)+' ヾ(=^▽^=)ノ';
-		if(h){s=0;++b;}
-		setTimeout(n, 1000);
-    })();
+function f() {
+    var diff = Date.now() - start;
+    if (tt) {
+        var ns = (((diff - ldiff) / 1000) >> 0), m = (ns / 60) >> 0, s = ns - m * 60;
+        var e = m + ':' + (('' + s).length > 1 ? '' : '0') + s;
+    }else{
+		var ns = (((v - diff + ldiff) / 1000) >> 0),
+        m = (ns / 60) >> 0, s = ns - m * 60;
+		var e = m + ':' + (('' + s).length > 1 ? '' : '0') + s;
+	}
+	r.textContent = e;
+	document.title = e;
+    ti = setTimeout(f, 250);
+    if (diff > (v)) {
+        r.textContent = '0:00';
+        clearTimeout(ti);
+        setP('Pause', 'Disabled');
+    }
+}
+
+function cd() {
+    t.value = 'Timing';
+    setP('Pause', '');
+    ldiff = 0;
+    start = Date.now();
+    var ms = document.getElementById('min').value;
+    var ss = document.getElementById('sec').value;
+    v = (parseInt(ms) * 60 + parseInt(ss)) * 1000;
+    clearTimeout(ti);
+    tt = false;
+    f();
+}
+
+function setP(a, b) {
+    var p = document.getElementById('p');
+    p.disabled = b;
+    p.value = a;
+}
+
+function timing() {
+    t.value = 'Restart';
+    setP('Pause', '');
+    ldiff = 0;
+    start = Date.now();
+    tt = true;
+    clearTimeout(ti);
+    f();
+}
+
+function pause() {
+    if (p.value == 'Pause') {
+        setP('Resume', '');
+        clearTimeout(ti);
+        stop = Date.now();
+    } else {
+        ldiff += (Date.now() - stop);
+        f();
+        setP('Pause', '');
+    }
 }</script>
 </body></html>
--->
