@@ -34,14 +34,14 @@ input[type='button'] {
 }
 input[type='button']:hover {
     color: #333;
-	border-color: #888;
+    border-color: #888;
 }
 input:disabled {
     color: #eee;
 }
 input:disabled:hover {
     color: #eee;
-	border-color:#C2C2C2;
+    border-color:#C2C2C2;
 }</style></head><body>
 <div id='r'>0:00</div>
 <input type=button id='p' value='Pause' onclick='pause()' disabled=diabled><br>
@@ -87,8 +87,8 @@ function cd() {
     start = Date.now();
     var ms = parseInt(document.getElementById('min').value);
     var ss = parseInt(document.getElementById('sec').value);
-	ms = ms < 0 ? 0 : ms;
-	ss = ss < 0 ? 0 : ss;
+    ms = ms < 0 ? 0 : ms;
+    ss = ss < 0 ? 0 : ss;
     v = (ms * 60 + ss) * 1000;
     clearTimeout(ti);
     tt = false;
@@ -105,7 +105,7 @@ function timing() {
     t.value = 'Restart';
     setP('Pause', '');
     pt = 0;
-    h = 1;
+    h = 0;
     start = Date.now();
     tt = true;
     clearTimeout(ti);
