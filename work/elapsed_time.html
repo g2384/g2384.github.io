@@ -30,16 +30,18 @@ input[type='button'] {
     cursor: pointer;
     text-align: center;
     white-space: nowrap;
-    border: 1px solid rgb(194, 194, 194);
+    border: 1px solid #C2C2C2;
 }
 input[type='button']:hover {
     color: #333;
+	border-color: #888;
 }
 input:disabled {
-    color: #eee
+    color: #eee;
 }
 input:disabled:hover {
     color: #eee;
+	border-color:#C2C2C2;
 }</style></head><body>
 <div id='r'>0:00</div>
 <input type=button id='p' value='Pause' onclick='pause()' disabled=diabled><br>
@@ -49,7 +51,7 @@ input:disabled:hover {
 <input type=number placeholder='sec' value='0' id='sec'>s
 
 <script>
-var v, start, ti, stop, pt, h = 0,
+var v, start, ti, stop, pt, h,
     tt = false;
 var r = document.getElementById('r');
 var t = document.getElementById('t');
@@ -66,7 +68,7 @@ function f() {
         m = 0;
         h++;
     }
-    var e = (h > 0 ? h + ':' : '') + m + ':' + (s > 9 ? '' : '0') + s;
+    var e = (h > 0 ? h + ':' + (m > 9 ? '' : '0') : '') + m + ':' + (s > 9 ? '' : '0') + s;
     r.textContent = e;
     document.title = e;
     ti = setTimeout(f, 250);
@@ -83,9 +85,11 @@ function cd() {
     pt = 0;
     h = 0;
     start = Date.now();
-    var ms = document.getElementById('min').value;
-    var ss = document.getElementById('sec').value;
-    v = (parseInt(ms) * 60 + parseInt(ss)) * 1000;
+    var ms = parseInt(document.getElementById('min').value);
+    var ss = parseInt(document.getElementById('sec').value);
+	ms = ms < 0 ? 0 : ms;
+	ss = ss < 0 ? 0 : ss;
+    v = (ms * 60 + ss) * 1000;
     clearTimeout(ti);
     tt = false;
     f();
@@ -101,7 +105,7 @@ function timing() {
     t.value = 'Restart';
     setP('Pause', '');
     pt = 0;
-    h = 0;
+    h = 1;
     start = Date.now();
     tt = true;
     clearTimeout(ti);
