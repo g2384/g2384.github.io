@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -112,6 +113,18 @@ input:disabled {color: #dddddd;}
                     <span class="example">ʟɪᴋᴇ ꜱʜᴏᴜᴛɪɴɢ ᴍɪᴅɢᴇᴛꜱ</span>
                 </a>
             </li>
+            <li class="link_curly">
+                <a onclick='setPanel("curly", false);'>
+                    <span class="title">Curly</span>
+                    <span class="example">&#x1d4b6;&#x1d4b7;&#x1d4b8;&#x1d4b9;&#x212f;&#x1d4bb;</span>
+                </a>
+            </li>
+            <li class="link_curly2">
+                <a onclick='setPanel("curly2", false);'>
+                    <span class="title">Curly2</span>
+                    <span class="example">&#x1d4ea;&#x1d4eb;&#x1d4ec;&#x1d4ed;&#x1d4ee;&#x1d4ef;</span>
+                </a>
+            </li>
             <li class="link_unicode">
                 <a onclick='setPanel("unicode", false);'>
                     <span class="title">Unicode Combining</span>
@@ -211,6 +224,22 @@ input:disabled {color: #dddddd;}
                 <textarea name="html" placeholder="HTML" class="editable"></textarea>
             </form>
         </section>
+        <section id="text_panel_curly" style="display: none;">
+            <form>
+                <textarea name="plain" placeholder="Enter some text..." class="editable"></textarea>
+                <textarea name="encoded" class="editable" placeholder="&#x212f;&#x1d4c3;&#x1d4c9;&#x212f;&#x1d4c7; &#x1d4c8;&#x2134;&#x1d4c2;&#x212f; &#x1d4c9;&#x212f;&#x1d4cd;&#x1d4c9;&#x2e;&#x2e;&#x2e;"></textarea>
+                <a class="htmlToggle">Show HTML</a>
+                <textarea name="html" placeholder="HTML" class="editable"></textarea>
+            </form>
+        </section>
+        <section id="text_panel_curly2" style="display: none;">
+            <form>
+                <textarea name="plain" placeholder="Enter some text..." class="editable"></textarea>
+                <textarea name="encoded" class="editable" placeholder="&#x212f;&#x1d4c3;&#x1d4c9;&#x212f;&#x1d4c7; &#x1d4c8;&#x2134;&#x1d4c2;&#x212f; &#x1d4c9;&#x212f;&#x1d4cd;&#x1d4c9;&#x2e;&#x2e;&#x2e;"></textarea>
+                <a class="htmlToggle">Show HTML</a>
+                <textarea name="html" placeholder="HTML" class="editable"></textarea>
+            </form>
+        </section>
 		<section id="text_panel_unicode" style="display: none;">
             <form>
                 <textarea name="plain2" id='unicode_r' placeholder="Enter some text..."  class="editable" onbeforedeactivate="storeSelectionIeCase();" onchange='pushHist()' onblur="storeSelectionOthersCase();"></textarea>
@@ -242,8 +271,8 @@ return c}},roundsquares:{init:function(){},encode:function(b){var c="",a,d=!0;fo
 "undefined"==typeof a&&(a=b.charAt(d)),c+=a;return c},decode:function(b){for(var c="",a,d=0,e=b.length;d<e;d++)a=this.map[b.charAt(d)],"undefined"==typeof a&&(a=b.charAt(d)),c+=a;return c},map:{a:"\u0105",b:"\u048d",c:"\u00e7",d:"\u056a",e:"\u04bd",f:"\u0192",g:"\u0581",h:"\u0570",i:"\u00ec",j:"\u029d",k:"\u049f",l:"\u04c0",m:"\u028d",n:"\u0572",o:"\u0585",p:"\u0584",q:"\u0566",r:"\u027e",s:"\u0282",t:"\u0567",u:"\u0574",v:"\u0475",w:"\u0561",x:"\u00d7",y:"\u057e",z:"\u0540",A:"\u023a",B:"\u03b2",
 C:"\u21bb",D:"\u13a0",E:"\u0190",F:"\u0191",G:"\u0193",H:"\u01f6",I:"\u012f",J:"\u0644",K:"\u04a0",L:"\ua748",M:"\u2c6e",N:"\u17a0",O:"\u0da7",P:"\u03c6",Q:"\u04a8",R:"\u0f60",S:"\u03da",T:"\u0372",U:"\u0531",V:"\u1efc",W:"\u0c1a",X:"\u10ef",Y:"\u04cb",Z:"\u0240",0:"\u2298",1:"\ud835\udfd9",2:"\u03e9",3:"\u04e0",4:"\u096b",5:"\u01bc",6:"\u03ec",7:"7",8:"\ud835\udfe0",9:"\u096f","&":"\u214b","(":"{",")":"}","{":"(","}":")","\u00e4":"\u0105\u0308","\u00f6":"\u0585\u0308","\u00fc":"\u0574\u0308","\u00c4":"\u023a\u0308",
 "\u00d6":"\u0da7\u0308","\u00dc":"\u0531\u0308","\u00e9":"\u04bd\u0301","\u00e1":"\u0105\u0301","\u00f3":"\u0585\u0301","\u00fa":"\u0574\u0301","\u00c9":"\u0190\u0301","\u00c1":"\u023a\u0301","\u00d3":"\u0da7\u0301","\u00da":"\u0531\u0301","\u00e8":"\u04bd\u0300","\u00e0":"\u0105\u0300","\u00f2":"\u0585\u0300","\u00f9":"\u0574\u0300","\u00c8":"\u0190\u0300","\u00c0":"\u023a\u0300","\u00d2":"\u0da7\u0300","\u00d9":"\u0531\u0300","\u00ea":"\u04bd\u0302","\u00e2":"\u0105\u0302","\u00f4":"\u0585\u0302",
-"\u00fb":"\u0574\u0302","\u00ca":"\u0190\u0302","\u00c2":"\u023a\u0302","\u00d4":"\u0da7\u0302","\u00db":"\u0531\u0302"}},tiny:{init:function(){for(i in this.map)this.map[this.map[i]]=i},encode:function(b){var c="",a;b=b.toUpperCase();for(var d=0,e=b.length;d<e;d++)a=this.map[b.charAt(d)],"undefined"==typeof a&&(a=b.charAt(d)),c+=a;return c},decode:function(b){for(var c="",a,d=0,e=b.length;d<e;d++)a=this.map[b.charAt(d)],"undefined"==typeof a&&(a=b.charAt(d)),c+=a;return c},map:{A:"\u1d00",B:"\u0299",C:"\u1d04",D:"\u1d05",E:"\u1d07",F:"\ua730",G:"\u0262",H:"\u029c",I:"\u026a",J:"\u1d0a",K:"\u1d0b",L:"\u029f",M:"\u1d0d",N:"\u0274",O:"\u1d0f",P:"\u1d18",Q:"Q",R:"\u0280",S:"\ua731",T:"\u1d1b",U:"\u1d1c",V:"\u1d20",W:"\u1d21",X:"x",Y:"\u028f",Z:"\u1d22"}}};for(i in this.tools)this.tools[i].init();this.getHTML=function(b){for(var c="",a,d=!0,e=0,f=0,g=0,h=b.length;g<h;g++)a=b.charCodeAt(g),10==a||13==a?(c+="<br>\n",d=!0):32==a?d?(c+=" ",d=!1):(c+="&nbsp;",d=!0):(55296<=a&&56319>=a?(e=a,f=0):0<e?(56320<=a&&57343>=a&&(f=1024*(e-55296)+(a-56320)+65536),e=0):f=a,0!=f&&(c+="&#x"+f.toString(16)+";",d=!0));return c}};
-</script>
+"\u00fb":"\u0574\u0302","\u00ca":"\u0190\u0302","\u00c2":"\u023a\u0302","\u00d4":"\u0da7\u0302","\u00db":"\u0531\u0302"}},tiny:{init:function(){for(i in this.map)this.map[this.map[i]]=i},encode:function(b){var c="",a;b=b.toUpperCase();for(var d=0,e=b.length;d<e;d++)a=this.map[b.charAt(d)],"undefined"==typeof a&&(a=b.charAt(d)),c+=a;return c},decode:function(b){for(var c="",a,d=0,e=b.length;d<e;d++)a=this.map[b.charAt(d)],"undefined"==typeof a&&(a=b.charAt(d)),c+=a;return c},map:{A:"\u1d00",B:"\u212f\u2134",C:"\u1d04",D:"\u1d05",E:"\u1d07",F:"\ua730",G:"\u0262",H:"\u029c",I:"\u026a",J:"\u1d0a",K:"\u1d0b",L:"\u029f",M:"\u1d0d",N:"\u0274",O:"\u1d0f",P:"\u1d18",Q:"Q",R:"\u0280",S:"\ua731",T:"\u1d1b",U:"\u1d1c",V:"\u1d20",W:"\u1d21",X:"x",Y:"\u028f",Z:"\u1d22"}},curly:{init:function(){for(i in this.map)this.map[this.map[i]]=i},encode:function(b){var c="",a;b=b.toUpperCase();for(var d=0,e=b.length;d<e;d++)a=this.map[b.charAt(d)],"undefined"==typeof a&&(a=b.charAt(d)),c+=a;return c},decode:function(b){for(var c="",a,d=0,e=b.length;d<e;d++)a=this.map[b.charAt(d)],"undefined"==typeof a&&(a=b.charAt(d)),c+=a;return c},map:{A:"\ud835\udcb6",B:"\ud835\udcb7",C:"\ud835\udcb8",D:"\ud835\udcb9",E:"\u212f",F:"\ud835\udcbb",G:"\u210a",H:"\ud835\udcbd",I:"\ud835\udcbe",J:"\ud835\udcbf",K:"\ud835\udcc0",L:"\ud835\udcc1",M:"\ud835\udcc2",N:"\ud835\udcc3",O:"\u2134",P:"\ud835\udcc5",Q:"\ud835\udcc6",R:"\ud835\udcc7",S:"\ud835\udcc8",T:"\ud835\udcc9",U:"\ud835\udcca",V:"\ud835\udccb",W:"\ud835\udccc",X:"\ud835\udccd",Y:"\ud835\udcce",Z:"\ud835\udccf"}},curly2:{init:function(){for(i in this.map)this.map[this.map[i]]=i},encode:function(b){var c="",a;b=b.toUpperCase();for(var d=0,e=b.length;d<e;d++)a=this.map[b.charAt(d)],"undefined"==typeof a&&(a=b.charAt(d)),c+=a;return c},decode:function(b){for(var c="",a,d=0,e=b.length;d<e;d++)a=this.map[b.charAt(d)],"undefined"==typeof a&&(a=b.charAt(d)),c+=a;return c},map:{A:"\ud835\udcea",B:"\ud835\udceb",C:"\ud835\udcec",D:"\ud835\udced",E:"\ud835\udcee",F:"\ud835\udcef",G:"\ud835\udcf0",H:"\ud835\udcf1",I:"\ud835\udcf2",J:"\ud835\udcf3",K:"\ud835\udcf4",L:"\ud835\udcf5",M:"\ud835\udcf6",N:"\ud835\udcf7",O:"\ud835\udcf8",P:"\ud835\udcf9",Q:"\ud835\udcfa",R:"\ud835\udcfb",S:"\ud835\udcfc",T:"\ud835\udcfd",U:"\ud835\udcfe",V:"\ud835\udcff",W:"\ud835\udd00",X:"\ud835\udd01",Y:"\ud835\udd02",Z:"\ud835\udd03"}}};for(i in this.tools)this.tools[i].init();this.getHTML=function(b){for(var c="",a,d=!0,e=0,f=0,g=0,h=b.length;g<h;g++)a=b.charCodeAt(g),10==a||13==a?(c+="<br>\n",d=!0):32==a?d?(c+=" ",d=!1):(c+="&nbsp;",d=!0):(55296<=a&&56319>=a?(e=a,f=0):0<e?(56320<=a&&57343>=a&&(f=1024*(e-55296)+(a-56320)+65536),e=0):f=a,0!=f&&(c+="&#x"+f.toString(16)+";",d=!0));return c}};
+//"\ud835\udcb6\ud835\udcb7\ud835\udcb8\ud835\udcb9\u212f\ud835\udcbb\u210a\ud835\udcbd\ud835\udcbe\ud835\udcbf\ud835\udcc0\ud835\udcc1\ud835\udcc2\ud835\udcc3\u2134\ud835\udcc5\ud835\udcc6\ud835\udcc7\ud835\udcc8\ud835\udcc9\ud835\udcca\ud835\udccb\ud835\udccc\ud835\udccd\ud835\udcce\ud835\udccf\ud835\udcea\ud835\udceb\ud835\udcec\ud835\udced\ud835\udcee\ud835\udcef\ud835\udcf0\ud835\udcf1\ud835\udcf2\ud835\udcf3\ud835\udcf4\ud835\udcf5\ud835\udcf6\ud835\udcf7\ud835\udcf8\ud835\udcf9\ud835\udcfa\ud835\udcfb\ud835\udcfc\ud835\udcfd\ud835\udcfe\ud835\udcff\ud835\udd00\ud835\udd01\ud835\udd02\ud835\udd03"</script>
 <script>var isMobile = false;
 var luni = new Lunicode();
 var currentPlainText = '';
