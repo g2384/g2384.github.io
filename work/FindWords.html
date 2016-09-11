@@ -78,41 +78,68 @@ function search() {
 		var s_a = s.split('');
 		var f = []
 		if(s.indexOf('-')<0){
-			var s_ = a[len[s_len]];
-			var array = s_.split(',');
-			var arr_len = array.length;
-			for (var i = 0; i < arr_len; i++) {
-				if (array[i].replace(re, '') == '') {
-					result.push(array[i])
-				}
-			}
-			if (s.replace(/[0-9]/g, '').length != s_len) {
-				for (var i = 0; i < result.length; i++) {
-					var r_i = result[i].split('')
-					var keep = true;
-					for (var j = 1; j < r_i.length; j++) {
-						for (var k = j; k < r_i.length; k++) {
-							if (keep) {
-								if (s_a[k] != s_a[k - j]) {
-									keep = r_i[k] != r_i[k - j]
-								} else {
-									keep = r_i[k] == r_i[k - j]
-								}
-							}
-						}
-					}
-					if (keep) {
-						f.push(result[i])
-					}
-				}
-			} else {
-				f = result;
-			}
+            if(s.match(/^\([a-z]+\)$/) != null){
+                // scrabble
+                var comb = combinations(s.substring(1,s.length-1));
+                var allperm=new Array(s.length-4).fill([]);
+                for(i=0;i<comb.length;i++){
+                    if(comb[i].length>2){
+                        //console.log(JSON.stringify(allperm))
+                        permArr = [];
+                        usedChars = [];
+                        allperm[comb[i].length-3] = allperm[comb[i].length-3].concat(permute(comb[i].split("")));
+                    }
+                }
+                var perm_arr = [];
+                for(i=0;i<allperm.length;i++){
+                    perm_arr.push(allperm[i][0].length);
+                    allperm[i] = (Array.from(new Set(allperm[i])).join(","));
+                }
+                for(i=0;i<perm_arr.length;i++){
+                    array = a[len[perm_arr[i]]].split(',');
+                    arr_len = array.length;
+                    for (var j = 0; j < arr_len; j++) {
+                        if (allperm[i].indexOf(array[j]) >= 0) {
+                            f.push(array[j])
+                        }
+                    }
+                }
+            }else{
+                var s_ = a[len[s_len]];
+                var array = s_.split(',');
+                var arr_len = array.length;
+                for (var i = 0; i < arr_len; i++) {
+                    if (array[i].replace(re, '') == '') {
+                        result.push(array[i])
+                    }
+                }
+                if (s.replace(/[0-9]/g, '').length != s_len) {
+                    for (var i = 0; i < result.length; i++) {
+                        var r_i = result[i].split('')
+                        var keep = true;
+                        for (var j = 1; j < r_i.length; j++) {
+                            for (var k = j; k < r_i.length; k++) {
+                                if (keep) {
+                                    if (s_a[k] != s_a[k - j]) {
+                                        keep = r_i[k] != r_i[k - j]
+                                    } else {
+                                        keep = r_i[k] == r_i[k - j]
+                                    }
+                                }
+                            }
+                        }
+                        if (keep) {
+                            f.push(result[i])
+                        }
+                    }
+                } else {
+                    f = result;
+                }
+            }
 		}else{
             s=s.replace(/\+\-/g,"+");
             s=s.replace(/\]\-/g,"\]");
 			s4 = s4.replace(/\[[^\[\]]+\][\+]*/g,'');
-            console.log('s4 = ' + s4);
 			s2 = s2.replace(/\-/g, '[a-z]*');
 			s_len = s4.length>1? s4.length-1:1;
 			re = new RegExp(s2);
@@ -197,6 +224,37 @@ function show(){
 		pp.style.display='';
 	}
 }
+var permArr = [], usedChars = [];
+
+function permute(input) {
+  var i, ch;
+  for (i = 0; i < input.length; i++) {
+    ch = input.splice(i, 1)[0];
+    usedChars.push(ch);
+    if (input.length == 0) {
+      permArr.push(usedChars.join(""));
+    }
+    permute(input);
+    input.splice(i, 0, ch);
+    usedChars.pop();
+  }
+  return permArr
+}
+
+function combinations(str) {
+    var fn = function(active, rest, a) {
+        if (!active && !rest)
+            return;
+        if (!rest) {
+            a.push(active);
+        } else {
+            fn(active + rest[0], rest.slice(1), a);
+            fn(active, rest.slice(1), a);
+        }
+        return a;
+    }
+    return fn("", str, []);
+}
 </script>
 <body>
 <h2>Find Words</h2>
@@ -213,32 +271,35 @@ numbers 0-9 for unknown & unique letters<br>
 <div id='exp' style='display:none'>
 <div class='g'>"I need a three-letter word, <br>
 I only know the 1st letter is 'a'"<br></div>
--- use <strong>'a..'</strong> to get axe, add ...<br><br>
+-- use <strong>a..</strong> to get axe, add ...<br><br>
 <div class='g'>"I need a three-letter word, <br>
 I know the 1st letter is 'a', <br>
 the 2nd and 3rd place are the same."<br></div>
--- use <strong>'a11'</strong> to get add, ann ...<br><br>
+-- use <strong>a11</strong> to get add, ann ...<br><br>
 <div class='g'>"I need a three-letter word, <br>
 I know the 1st letter is 'a', <br>
 the 2nd and 3rd place are definitely different."<br></div>
--- use <strong>'a12'</strong> to get axe, amp ...<br><br>
+-- use <strong>a12</strong> to get axe, amp ...<br><br>
 <div class='g'>"I need a word, <br>
 I want it is ended with 'ing'."<br></div>
--- use <strong>'-ing'</strong> to get king, sing ...<br><br>
+-- use <strong>-ing</strong> to get king, sing ...<br><br>
 <div class='g'>"I need a word, <br>
 It is started with 'k', <br>
 and ended with 'ing'."<br></div>
--- use <strong>'k-ing'</strong> to get king, kiting ...<br><br>
+-- use <strong>k-ing</strong> to get king, kiting ...<br><br>
+<div class='g'>"I am playing scrabble, <br>
+I have these letters 'k', 'c', 'o', 'l', 'e', 't'."<br></div>
+-- use <strong>(kcolet)</strong> to get locket, lock ...<br><br>
 <div class='g'>"I need a word, <br>
 It can be started with 'a', 'b', 'c' and ended with 'e'."<br></div>
--- use <strong>'[abc]-e'</strong> to get acing, boring ...<br><br>
+-- use <strong>[abc]-e</strong> to get acing, boring ...<br><br>
 <div class='g'>"I need a word, <br>
 It can be formed by 'a', 'b', 'c'."<br></div>
--- use <strong>'[abc]+'</strong> to get cab, baba ...<br><br>
+-- use <strong>[abc]+</strong> to get cab, baba ...<br><br>
 <div class='g'>"I need a word, <br>
 It can be formed by 'a', 'b', 'c', 'd', 'e', 'f', <br>
-and I know the first letter is c."<br></div>
--- use <strong>'c[abc]+'</strong> to get cab, cafe ...<br><br>
+and I know the 1st letter is c."<br></div>
+-- use <strong>c[abc]+</strong> to get cab, cafe ...<br><br>
 Try 'AABB', '一.一.', '1123' to search 成语.
 </div><br><br>
 (Word list size: 108575)<br>
