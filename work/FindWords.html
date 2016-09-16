@@ -4,7 +4,7 @@
 <meta charset='utf-8'>
 <style>body{font-family:consolas}
 .g{display:block;color:#888;}
-.red{color:#ff0000;}
+.red{background-color:#eee;}
 .btn{margin: 10px 10px;
 padding: 5px 8px;
 font-size: 16px;
@@ -83,7 +83,7 @@ function search() {
             if(s.match(/^\([a-z]*[^a-z]?[a-z]*\)$/) != null){
                 // scrabble
                 var scrabbleArr = s.substring(1,s.length-1).split(/[^a-z]/);
-                var scrabbleMust = new RegExp('[a-z]*'+scrabbleArr[0].split("").join('[a-z]*')+'[a-z]*');
+                var scrabbleMust = new RegExp('[a-z]*'+scrabbleArr[0].split("").sort().join('[a-z]*')+'[a-z]*');
                 var comb = combinations(scrabbleArr.join(''));
                 var inputset = new Set(s.substring(1,s.length-1).split(""));
                 var sortedComb = new Array(s.length-4).fill("");
