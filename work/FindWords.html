@@ -4,6 +4,7 @@
 <meta charset='utf-8'>
 <style>body{font-family:consolas}
 .g{display:block;color:#888;}
+.red{color:#ff0000;}
 .btn{margin: 10px 10px;
 padding: 5px 8px;
 font-size: 16px;
@@ -79,9 +80,11 @@ function search() {
 		var s_a = s.split('');
 		var f = []
 		if(s.indexOf('-')<0){
-            if(s.match(/^\([a-z]+\)$/) != null){
+            if(s.match(/^\([a-z]*[^a-z]?[a-z]*\)$/) != null){
                 // scrabble
-                var comb = combinations(s.substring(1,s.length-1));
+                var scrabbleArr = s.substring(1,s.length-1).split(/[^a-z]/);
+                var scrabbleMust = new RegExp('[a-z]*'+scrabbleArr[0].split("").join('[a-z]*')+'[a-z]*');
+                var comb = combinations(scrabbleArr.join(''));
                 var inputset = new Set(s.substring(1,s.length-1).split(""));
                 var sortedComb = new Array(s.length-4).fill("");
                 comb = Array.from(new Set(comb));
@@ -95,7 +98,7 @@ function search() {
                 for(i=0;i<sortedComb.length;i++){
                     sortedComb[i]=sortedComb[i].split(',');
                 }
-                
+                var f1 = new Array();
                 for(i=0;i<sortedComb.length;i++){
                     if(sortedComb[i][0].length ==0){
                         continue;
@@ -106,11 +109,21 @@ function search() {
                         for (var j = 0; j < arr_len; j++) {
                             var sortedArr=array[j].split("").sort().join("");
                             if(sortedComb[sortedArr.length-3].indexOf(sortedArr) >= 0){
-                                f.push(array[j])
+                                if(sortedArr.length<scrabbleMust.length){
+                                    f.push(array[j])
+                                }else{
+                                    if(sortedArr.replace(scrabbleMust, '').length > 0){
+                                        f.push(array[j])
+                                    }else{
+                                        f1.push('<span class=red>'+array[j]+'</span>')
+                                    }
+                                }
+                                
                             }
                         }
                     }
                 }
+                f = f1.concat(f)
             }else{
                 var s_ = a[len[s_len]];
                 var array = s_.split(',');
@@ -251,10 +264,10 @@ function combinations(str) {
 </script>
 <body>
 <h2>Find Words</h2>
-<input type='text' id='w' value='a..'><br>
+<input type='text' id='w' value='a..' onkeydown = "if (event.keyCode == 13) document.getElementById('s').click()"><br>
 <label><input type='radio' name='k' id='eng' checked>English</label>
 <label><input type='radio' name='k' id='ido'>成语</label>
-<input type='button' value='Search' onclick='search()' class='btn'><br>
+<input type='button' id='s' value='Search' onclick='search()' class='btn'><br>
 Usage:<br>
 letters a-z for known letters<br>
 . for any letters<br>
@@ -283,6 +296,10 @@ and ended with 'ing'."<br></div>
 <div class='g'>"I am playing scrabble, <br>
 I have these letters 'k', 'c', 'o', 'l', 'e', 't'."<br></div>
 -- use <strong>(kcolet)</strong> to get locket, lock ...<br><br>
+<div class='g'>"I am playing scrabble, <br>
+I have these letters 'k', 'c', 'o', 'l', 'e', 't'<br>
+and it must contain 'k', 'c', 'o'"<br></div>
+-- use <strong>(kco:let)</strong> to get locket, lock ...<br><br>
 <div class='g'>"I need a word, <br>
 It can be started with 'a', 'b', 'c' and ended with 'e'."<br></div>
 -- use <strong>[abc]-e</strong> to get acing, boring ...<br><br>
