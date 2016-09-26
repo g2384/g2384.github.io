@@ -6,7 +6,7 @@ import re
 global includedFileType, currentPath
 global codeLine, emptyLine, commentLine, nonCodeLine, totalLine
 global excludedFolder
-global doPrintFileName
+global doPrintFileName,doCountNonCount
 
 def findAllFiles(path,all_file): # get all files in this dir, including subfolders
     global excludedFolder
@@ -36,7 +36,7 @@ def findAllFiles(path,all_file): # get all files in this dir, including subfolde
             all_file.append(fn)
     return all_file
 
-def start(includedFileType, exclude_file):
+def start(includedFileType, exclude_file, excludeFileName):
     global totalLine, currentPath
     file_name =  os.path.basename(sys.argv[0])
     currentPath = os.path.dirname(os.path.realpath(__file__))
@@ -50,16 +50,15 @@ def start(includedFileType, exclude_file):
         all_file[i] = all_file[i][1:]
 
     n=0
-    print("=======\nFILE:")    
+    if doPrintFileName:
+        print("=======\nFILE:")    
     if len(includedFileType)>0:
         for f in all_file:
             excluded = False
             f_name, f_ext = os.path.splitext(f)
-            for s in exclude_file:
-                if s in f:
-                    excluded = True
-                    break
-            if excluded:
+            if SubstringIsInList(exclude_file, f):
+                break
+            if SubstringIsInList(excludeFileName, f_name):
                 break
             if(f!=file_name and f_ext in includedFileType):
                 if doPrintFileName:
@@ -81,6 +80,16 @@ def start(includedFileType, exclude_file):
     print("=======\n")   
     print("read "+str(n)+" files")
 
+def SubstringIsInList(arr, string):
+    if len(arr) == 0:
+        return False
+    for s in arr:
+        if len(s) == 0:
+            continue
+        if s in string:
+            return True
+    return False
+
 def count(arr):
     global codeLine, emptyLine, commentLine, nonCodeLine, totalLine
     totalLine+=len(arr)
@@ -101,10 +110,15 @@ def count(arr):
         codeLine += 1
 
 def printResult():
+    global doCountNonCount, codeLine, emptyLine, commentLine, nonCodeLine, totalLine
+    if not doCountNonCount:
+        codeLine += nonCodeLine
     print("code: " + str(codeLine))
     print("empty: " + str(emptyLine))
     print("comment: " + str(commentLine))
-    print("non-code: " + str(nonCodeLine))
+
+    if doCountNonCount:
+        print("non-code: " + str(nonCodeLine))
     print("total: " + str(totalLine))
 
 if __name__ == "__main__":
@@ -116,30 +130,38 @@ if __name__ == "__main__":
      -x: exclude types of target files.
      
      -i: ignore file names
+         e.g. -i[ing] will ignore all files which have 'ing'
      
      -if: ignore folders
      
-     -p: print info. Parameters:
-         file: file path
-         
+     -p: print info.
+         Parameters:
+             file: file path
+             nonCode: separate code and non-code
          e.g.: -p[file]
 
     example of non-code lines:
         '{'
         '});'
         '[{'
+
+    TODO: support /* */, multi line comments, but exclude string "/* */"
           
     in Linux, place this file in your code folder,
     type the following line in terminal
-      python merge.py -m -f[void] -t[cpp,h]
+      python CLOC.py -t[cs] -p[nonCode]
     """
 
     # in windows, place this file in your code folder.
     # use Python IDLE to open this file.
     # the following line to give commands.
     # sys.argv = ["anything.py", '-m', "-f[detectcolor]", '-i', "-t[cpp,h]"]
-    sys.argv = ["anything.py", "-t[cs]", "-x[g.cs g.i.cs]", "-if[Debug, Resources, Properties, Interface, Interfaces, Triangle]","-p[file]"]
-    global includedFileType, excludedFolder, doPrintFileName
+    sys.argv = ["anything.py",
+                "-t[cs]",
+                "-x[g.cs g.i.cs]",
+                "-if[Debug, Resources, Properties, Interface, Interfaces, Triangle]",
+                "-p[nonCode]"]
+    global includedFileType, excludedFolder, doPrintFileName, doCountNonCount
     global codeLine, emptyLine, commentLine, nonCodeLine, totalLine
     codeLine = 0
     emptyLine = 0
@@ -147,6 +169,7 @@ if __name__ == "__main__":
     nonCodeLine = 0
     totalLine = 0
     doPrintFileName = False
+    doCountNonCount = False
     f = ''
     includedFileType = []
     if len(sys.argv) > 1:
@@ -170,6 +193,15 @@ if __name__ == "__main__":
                 if(excludedFileType[i].find('.') != 0):
                     excludedFileType[i] = '.'+excludedFileType[i]
             print("excluded files types: " + ", ".join(excludedFileType))
+        a = s.find('-i[')
+        excludeFileName = []
+        if a >= 0:
+            b = s.find(']', a)
+            i = s[a+3: b]
+            excludeFileName = re.split('[^a-z0-9A-Z]+', i)
+            for i in range(len(excludeFileName)):
+                    excludeFileName[i] = excludeFileName[i]
+            print("excluded files if name contains: " + ", ".join(excludeFileName))
         a = s.find('-if[')
         excludedFolder = []
         if a >= 0:
@@ -190,6 +222,7 @@ if __name__ == "__main__":
                 print_setting[i] = print_setting[i].lower()
             if "file" in print_setting:
                 doPrintFileName = True
-            print("excluded folders: " + ", ".join(print_setting))
-        start(includedFileType, excludedFileType)
+            if "noncode" in print_setting:
+                doCountNonCount = True
+        start(includedFileType, excludedFileType, excludeFileName)
     printResult()
