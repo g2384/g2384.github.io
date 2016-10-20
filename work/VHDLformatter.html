@@ -150,7 +150,7 @@ document.write("<p>Last modified: "+fetchHeader(location.href,'Last-Modified')+"
 <span class="hljs-keyword">END</span> EXA;</code></pre>
 <script>
 isTesting = false;
-showUnitTests = false;
+showUnitTests = true;
 String.prototype.regexIndexOf = function(pattern, startIndex) {
     startIndex = startIndex || 0;
     var searchResult = this.substr(startIndex).search(pattern);
@@ -491,6 +491,9 @@ function beautify(input, no_format, remove_comments, remove_report, check_alias,
     input = input.replace(/[\r\n ]+RETURN/g, ' RETURN');
     input = input.replace(/BEGIN[\r\n ]+/g, 'BEGIN\r\n');
     input = input.replace(/ (PORT|GENERIC) /g, '\r\n$1 ');
+	if(new_line){
+	input = input.replace(/ELSE[ ]+([\w]+)/, "ELSE\r\n$1");
+	}
     if (check_alias) {
         var alias = [],
             subarr = [],
@@ -553,7 +556,7 @@ function beautify(input, no_format, remove_comments, remove_report, check_alias,
             }
             arr[i] = white_space + arr[i];
             if (first_word == "ELSIF") {
-                tab_n = indent_start[indent_start.length - 1];
+                tab_n = indent_start[indent_start.length - 1] - 1;
                 indent_start.pop();
                 back_tab = true;
             } else if (str.indexOf("END CASE") == 0) {
@@ -567,7 +570,7 @@ function beautify(input, no_format, remove_comments, remove_report, check_alias,
                     if_b--;
                 }
             } else if (first_word == "ELSE" && if_b) {
-                tab_n = indent_start[indent_start.length - 1];
+                tab_n = indent_start[indent_start.length - 1] - 1;
                 indent_start.pop();
                 back_tab = true;
             } else if (case_n) {
@@ -737,7 +740,7 @@ function beautify(input, no_format, remove_comments, remove_report, check_alias,
                 indent_start.pop();
             } else if (!semi_b && str.indexOf(";") < 0 && !port_b) {
                 if (!conditional_b) {
-                    if (str.indexOf("WHEN") > 3 && str.indexOf("<=") > 1) {
+					if (str.indexOf("WHEN") > 3 && str.indexOf("<=") > 1) {
                         conditional_b = true;
                         white_space = (Array(str.indexOf("= ") + 3).join(" "));
                     } else if (str.indexOf("=>") < 0 && ((str.indexOf("@@quotes") >= 0 && str.indexOf("= @@quotes") < 0) || (str.indexOf("<=") > 0 && str.indexOf("IF") < 0 && str.indexOf("THEN") < 0))) {
@@ -773,7 +776,7 @@ function beautify(input, no_format, remove_comments, remove_report, check_alias,
                 if (str.indexOf(" THEN") < 0) {
                     then_b = true;
                     tab_n = indent_start[indent_start.length - 1];
-                    indent_start.pop();
+                    //indent_start.pop();
                 }
             }
             if (procfun_b) {
@@ -809,7 +812,7 @@ function beautify(input, no_format, remove_comments, remove_report, check_alias,
 }
 
 function UnitTest() {
-    if (!isTesting || !showUnitTests) {
+    if (!isTesting && !showUnitTests) {
         return;
     }
     no_format = false;
@@ -832,12 +835,22 @@ function UnitTest() {
     input = "entity TB_DISPLAY is\r\n-- port declarations\r\nend TB_DISPLAY;\r\n\r\narchitecture TEST of TB_DISPLAY is\r\n-- signal declarations\r\nbegin\r\n-- component instance(s)\r\nend TEST;";
     expected = "ENTITY TB_DISPLAY IS\r\n    -- port declarations\r\nEND TB_DISPLAY;\r\n\r\nARCHITECTURE TEST OF TB_DISPLAY IS\r\n    -- signal declarations\r\nBEGIN\r\n    -- component instance(s)\r\nEND TEST;";
     actual = beautify(input, no_format, remove_comments, remove_report, check_alias, sign_align, new_line, keywordcase, indentation);
-    console.log("Remove comments", actual == expected);
+    console.log("ENTITY ARCHITECTURE", actual == expected);
 	
     input = "port map(\r\ninput_1 => input_1_sig,\r\ninput_2 => input_2_sig,\r\noutput => output_sig\r\n);";
     expected = "PORT MAP(\r\n    input_1  => input_1_sig, \r\n    input_2  => input_2_sig, \r\n    output   => output_sig\r\n    );";
     actual = beautify(input, no_format, remove_comments, remove_report, check_alias, true, new_line, keywordcase, indentation);
-    console.log("Remove comments", actual == expected);
+    console.log("Sign align in PORT", actual == expected);
+	
+    input = "if s = '1' then\r\no <= \"010\";\r\nelse\r\no <= \"101\";\r\nend if;";
+    expected = "IF s = '1' THEN\r\n    o <= \"010\";\r\nELSE\r\n    o <= \"101\";\r\nEND IF;";
+    actual = beautify(input, no_format, remove_comments, remove_report, check_alias, sign_align, new_line, keywordcase, indentation);
+    console.log("IF ELSE END IF case 1", actual == expected);
+	
+    input = "IF (s = r) THEN rr := '0'; ELSE rr := '1'; END IF;";
+    expected = "IF (s = r) THEN\r\n    rr := '0';\r\nELSE\r\n    rr := '1';\r\nEND IF;";
+    actual = beautify(input, no_format, remove_comments, remove_report, check_alias, sign_align, new_line, keywordcase, indentation);
+    console.log("IF ELSE END IF case 2", actual == expected);
 }
 UnitTest();
 </script>
