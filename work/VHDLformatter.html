@@ -150,7 +150,7 @@ document.write("<p>Last modified: "+fetchHeader(location.href,'Last-Modified')+"
 <span class="hljs-keyword">END</span> EXA;</code></pre>
 <script>
 isTesting = false;
-showUnitTests = true;
+showUnitTests = false;
 String.prototype.regexIndexOf = function(pattern, startIndex) {
     startIndex = startIndex || 0;
     var searchResult = this.substr(startIndex).search(pattern);
@@ -560,10 +560,12 @@ function beautify(input, no_format, remove_comments, remove_report, check_alias,
                 indent_start.pop();
                 back_tab = true;
             } else if (str.indexOf("END CASE") == 0) {
+                indent_start.pop();
                 case_n--;
                 tab_n = indent_start[indent_start.length - 1];
-                indent_start.pop();
+                
             } else if (first_word == "END") {
+                
                 tab_n = indent_start[indent_start.length - 1] - 1;
                 indent_start.pop();
                 if (str.indexOf("END IF") == 0) {
@@ -576,7 +578,7 @@ function beautify(input, no_format, remove_comments, remove_report, check_alias,
             } else if (case_n) {
                 if (first_word == "WHEN") {
                     tab_n = case_indent[case_n - 1];
-                    back_tab = true;
+                    //back_tab = true;
                 }
             } else if (first_word == "BEGIN") {
                 if (begin_b) {
@@ -593,7 +595,9 @@ function beautify(input, no_format, remove_comments, remove_report, check_alias,
                     back_tab = true;
                 }
             } else if (str.indexOf(": PROCESS") >= 0) {
-                back_tab = true;
+                //back_tab = true;
+                tab_n = 1;
+                indent_start.push(tab_n);
                 begin_b = true;
             } else if (str.indexOf(": ENTITY") >= 0) {
                 back_tab = true;
@@ -760,7 +764,7 @@ function beautify(input, no_format, remove_comments, remove_report, check_alias,
             } else if (str.indexOf(": FOR ") >= 0) {
                 tab_n++;
                 indent_start.push(tab_n);
-            } else if (first_word == "CASE") {
+            } else if (first_word == "CASE" || str.indexOf(": CASE") >= 0) {
                 tab_n++;
                 indent_start.push(tab_n);
                 case_indent[case_n] = tab_n;
@@ -851,6 +855,11 @@ function UnitTest() {
     expected = "IF (s = r) THEN\r\n    rr := '0';\r\nELSE\r\n    rr := '1';\r\nEND IF;";
     actual = beautify(input, no_format, remove_comments, remove_report, check_alias, sign_align, new_line, keywordcase, indentation);
     console.log("IF ELSE END IF case 2", actual == expected);
+	
+    input = 'P1:process\r\nvariable x: Integer range 1 to 3;\r\nvariable y: BIT_VECTOR (0 to 1);\r\nbegin\r\n  C1: case x is\r\n      when 1 => Out_1 <= 0;\r\n      when 2 => Out_1 <= 1;\r\n  end case C1;\r\n  C2: case y is\r\n      when "00" => Out_2 <= 0;\r\n      when "01" => Out_2 <= 1;\r\n  end case C2;\r\nend process;';
+    expected = 'P1 : PROCESS\r\nVARIABLE x : INTEGER RANGE 1 TO 3;\r\nVARIABLE y : BIT_VECTOR (0 TO 1);\r\nBEGIN\r\n    C1 : CASE x IS\r\n        WHEN 1 => Out_1 <= 0;\r\n        WHEN 2 => Out_1 <= 1;\r\n    END CASE C1;\r\n    C2 : CASE y IS\r\n        WHEN "00" => Out_2 <= 0;\r\n        WHEN "01" => Out_2 <= 1;\r\n    END CASE C2;\r\nEND PROCESS;';
+    actual = beautify(input, no_format, remove_comments, remove_report, check_alias, sign_align, new_line, keywordcase, indentation);
+    console.log("WHEN CASE", actual == expected);
 }
 UnitTest();
 </script>
