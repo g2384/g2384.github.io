@@ -25,16 +25,17 @@ input[type="checkbox"] + label {
     margin:-1px 4px 0 0;
 }
 .wordwrap{
-    white-space: pre-wrap;       /* CSS 3 */
-    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
-    white-space: -pre-wrap;      /* Opera 4-6 */
-    white-space: -o-pre-wrap;    /* Opera 7 */
-    word-wrap: break-word;       /* Internet Explorer 5.5+ */
+    white-space: pre-wrap;
+    white-space: -moz-pre-wrap;
+    white-space: -pre-wrap;
+    white-space: -o-pre-wrap;
+    word-wrap: break-word;
 }
 label{cursor:pointer;line-height:1.5em;}
 label:hover{color:#555;text-decoration:underline;}
 form{margin-bottom: 0px;}
-
+a{color:#4b9aff;text-decoration:none;}
+a:hover{text-decoration:underline;}
 .hljs{display:block;overflow-x:auto;padding:.5em;-webkit-text-size-adjust:none}.hljs,.hljs-subst,.hljs-tag .hljs-title,.nginx .hljs-title{color:#000}.hljs-string,.hljs-title,.hljs-constant,.hljs-parent,.hljs-tag .hljs-value,.hljs-rules .hljs-value,.hljs-preprocessor,.hljs-pragma,.haml .hljs-symbol,.ruby .hljs-symbol,.ruby .hljs-symbol .hljs-string,.hljs-template_tag,.django .hljs-variable,.smalltalk .hljs-class,.hljs-addition,.hljs-flow,.hljs-stream,.bash .hljs-variable,.apache .hljs-tag,.apache .hljs-cbracket,.tex .hljs-command,.tex .hljs-special,.erlang_repl .hljs-function_or_atom,.asciidoc .hljs-header,.markdown .hljs-header,.coffeescript .hljs-attribute{color:#800}.smartquote,.hljs-comment,.hljs-annotation,.diff .hljs-header,.hljs-chunk,.asciidoc .hljs-blockquote,.markdown .hljs-blockquote{color:#888}.hljs-number,.hljs-date,.hljs-regexp,.hljs-literal,.hljs-hexcolor,.smalltalk .hljs-symbol,.smalltalk .hljs-char,.go .hljs-constant,.hljs-change,.lasso .hljs-variable,.makefile .hljs-variable,.asciidoc .hljs-bullet,.markdown .hljs-bullet,.asciidoc .hljs-link_url,.markdown .hljs-link_url{color:#080}.hljs-label,.hljs-javadoc,.ruby .hljs-string,.hljs-decorator,.hljs-filter .hljs-argument,.hljs-localvars,.hljs-array,.hljs-attr_selector,.hljs-important,.hljs-pseudo,.hljs-pi,.haml .hljs-bullet,.hljs-doctype,.hljs-deletion,.hljs-envvar,.hljs-shebang,.apache .hljs-sqbracket,.nginx .hljs-built_in,.tex .hljs-formula,.erlang_repl .hljs-reserved,.hljs-prompt,.asciidoc .hljs-link_label,.markdown .hljs-link_label,.vhdl .hljs-attribute,.clojure .hljs-attribute,.asciidoc .hljs-attribute,.lasso .hljs-attribute,.coffeescript .hljs-property,.hljs-phony{color:#88f}.hljs-keyword,.hljs-id,.hljs-title,.hljs-built_in,.css .hljs-tag,.hljs-javadoctag,.hljs-phpdoc,.hljs-dartdoc,.hljs-yardoctag,.smalltalk .hljs-class,.hljs-winutils,.bash .hljs-variable,.apache .hljs-tag,.hljs-type,.hljs-typename,.tex .hljs-command,.asciidoc .hljs-strong,.markdown .hljs-strong,.hljs-request,.hljs-status{font-weight:700}.asciidoc .hljs-emphasis,.markdown .hljs-emphasis{font-style:italic}.nginx .hljs-built_in{font-weight:400}.coffeescript .javascript,.javascript .xml,.lasso .markup,.tex .hljs-formula,.xml .javascript,.xml .vbscript,.xml .css,.xml .hljs-cdata{opacity:.5}
 </style>
 <script>
@@ -61,7 +62,9 @@ function selectText(element) {
 <h4>Beautify and format your VHDL code online</h4>
 <p>
 Proper formatting makes code easier to read and understand.<br>
-Please make a backup before you replace your code!</p>
+Please make a backup before you replace your code!<br>
+<a href="https://github.com/g2384/g2384.github.io/issues" target="_blank">Report bugs if your code is not properly formatted</a>
+</p>
 <script>
 function fetchHeader(url, wch) {
     try {
@@ -99,7 +102,7 @@ document.write("<p>Last modified: "+fetchHeader(location.href,'Last-Modified')+"
 <span class="show"><input type="button" class="btn " id="selectAll" value="Select All" onclick="selectText(document.getElementById('vhdl'))"/> 
 <label><input type="checkbox" onclick="wordWrap()" id="">Word wrap</label></span><br>
 <pre id="result"><code class="vhdl" id="vhdl">
-<font style="background-color:#9D9D9D; color:#fff"> output DEMO </font>
+<font style="background-color:#9D9D9D; color:#fff"> output sample </font>
 
 <span class="hljs-keyword">LIBRARY</span> IEEE; <span class="hljs-comment">-- declare the library</span>
 <span class="hljs-keyword">USE</span> IEEE.std_logic_1164.<span class="hljs-keyword">ALL</span>;
@@ -842,7 +845,7 @@ function UnitTest() {
     console.log("ENTITY ARCHITECTURE", actual == expected);
 
     input = "port map(\r\ninput_1 => input_1_sig,\r\ninput_2 => input_2_sig,\r\noutput => output_sig\r\n);";
-    expected = "PORT MAP(\r\n    input_1  => input_1_sig, \r\n    input_2  => input_2_sig, \r\n    output   => output_sig\r\n    );";
+    expected = "PORT MAP(\r\n    input_1  => input_1_sig, \r\n    input_2  => input_2_sig, \r\n    output   => output_sig\r\n);";
     actual = beautify(input, no_format, remove_comments, remove_report, check_alias, true, new_line, keywordcase, indentation);
     console.log("Sign align in PORT", actual == expected);
 
