@@ -372,7 +372,7 @@ function beautify(input, no_format, remove_comments, remove_report, check_alias,
         p = 0;
     var n = 0,
         j = 0;
-    var tab_n = 1,
+    var tab_n = 0,
         str_len = 0,
         port_s = "";
     var back_tab = false,
@@ -618,7 +618,7 @@ function beautify(input, no_format, remove_comments, remove_report, check_alias,
                     }
                 }
             }
-            if (str.indexOf("PORT MAP") >= 0 && begin_b) {
+            if (str.indexOf("PORT MAP") >= 0) {
                 back_tab = true;
                 port_b = true;
                 if (str.indexOf(");") < 0) {
@@ -685,8 +685,8 @@ function beautify(input, no_format, remove_comments, remove_report, check_alias,
                 }
             } else if (str.indexOf("@@end") >= 0 && port_b) {
                 port_b = false;
-                tab_n = indent_start[indent_start.length - 1];
                 indent_start.pop();
+                tab_n = indent_start[indent_start.length - 1];
                 if (entity_b) {
                     forward_tab = true;
                 }
@@ -860,6 +860,21 @@ function UnitTest() {
     expected = 'P1 : PROCESS\r\nVARIABLE x : INTEGER RANGE 1 TO 3;\r\nVARIABLE y : BIT_VECTOR (0 TO 1);\r\nBEGIN\r\n    C1 : CASE x IS\r\n        WHEN 1 => Out_1 <= 0;\r\n        WHEN 2 => Out_1 <= 1;\r\n    END CASE C1;\r\n    C2 : CASE y IS\r\n        WHEN "00" => Out_2 <= 0;\r\n        WHEN "01" => Out_2 <= 1;\r\n    END CASE C2;\r\nEND PROCESS;';
     actual = beautify(input, no_format, remove_comments, remove_report, check_alias, sign_align, new_line, keywordcase, indentation);
     console.log("WHEN CASE", actual == expected);
+
+    input = "case READ_CPU_STATE is\r\n  when WAITING =>\r\n    if CPU_DATA_VALID = '1' then\r\n      CPU_DATA_READ  <= '1';\r\n      READ_CPU_STATE <= DATA1;\r\n    end if;\r\n  when DATA1 =>\r\n    -- etc.\r\nend case;";
+    expected = "CASE READ_CPU_STATE IS\r\n    WHEN WAITING => \r\n        IF CPU_DATA_VALID = '1' THEN\r\n            CPU_DATA_READ <= '1';\r\n            READ_CPU_STATE <= DATA1;\r\n        END IF;\r\n    WHEN DATA1 => \r\n        -- etc.\r\nEND CASE;";
+    actual = beautify(input, no_format, remove_comments, remove_report, check_alias, sign_align, new_line, keywordcase, indentation);
+    console.log("WHEN CASE & IF", actual == expected);
+
+    input = "entity aa is\r\n    port (a : in std_logic;\r\n          b : in std_logic;\r\n         );\r\nend aa;\r\narchitecture bb of aa is\r\n   component cc\r\n    port(\r\n         a : in std_logic;\r\n         b : in std_logic;\r\n        );\r\n    end cc;\r\n\r\nbegin\r\n  C : cc port map (\r\n          long => a,\r\n          b => b\r\n        );\r\nend;";
+    expected = "ENTITY aa IS\r\n    PORT (\r\n        a : IN std_logic;\r\n        b : IN std_logic;\r\n    );\r\nEND aa;\r\nARCHITECTURE bb OF aa IS\r\n    COMPONENT cc\r\n        PORT (\r\n            a : IN std_logic;\r\n            b : IN std_logic;\r\n        );\r\n    END cc;\r\n\r\nBEGIN\r\n    C : cc\r\n    PORT MAP(\r\n        long => a, \r\n        b => b\r\n    );\r\nEND;";
+    actual = beautify(input, no_format, remove_comments, remove_report, check_alias, sign_align, new_line, keywordcase, indentation);
+    console.log("PORT MAP", actual == expected);
+
+    input = "entity aa is\r\n    port (a : in std_logic;\r\n          b : in std_logic;\r\n         );\r\n    port (a : in std_logic;\r\n          b : in std_logic;\r\n         );\r\nend aa;\r\narchitecture bb of aa is\r\n   component cc\r\n    port(\r\n         a : in std_logic;\r\n         b : in std_logic;\r\n        );\r\n    port(\r\n         a : in std_logic;\r\n         b : in std_logic;\r\n        );\r\n    end cc;\r\n\r\nbegin\r\n  C : cc port map (\r\n          long => a,\r\n          b => b\r\n        );\r\n  D : cc port map (\r\n          long => a,\r\n          b => b\r\n        );\r\nend;";
+    expected = "ENTITY aa IS\r\n    PORT (\r\n        a : IN std_logic;\r\n        b : IN std_logic;\r\n    );\r\n    PORT (\r\n        a : IN std_logic;\r\n        b : IN std_logic;\r\n    );\r\nEND aa;\r\nARCHITECTURE bb OF aa IS\r\n    COMPONENT cc\r\n        PORT (\r\n            a : IN std_logic;\r\n            b : IN std_logic;\r\n        );\r\n        PORT (\r\n            a : IN std_logic;\r\n            b : IN std_logic;\r\n        );\r\n    END cc;\r\n\r\nBEGIN\r\n    C : cc\r\n    PORT MAP(\r\n        long => a, \r\n        b => b\r\n    );\r\n    D : cc\r\n    PORT MAP(\r\n        long => a, \r\n        b => b\r\n    );\r\nEND;";
+    actual = beautify(input, no_format, remove_comments, remove_report, check_alias, sign_align, new_line, keywordcase, indentation);
+    console.log("Multiple PORT MAPs", actual == expected);
 }
 UnitTest();
 </script>
