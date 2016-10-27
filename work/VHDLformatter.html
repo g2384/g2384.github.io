@@ -368,7 +368,6 @@ function beautify(input, no_format, remove_comments, remove_report, check_alias,
         align_max = [],
         align_i1 = 0,
         align_i = 0;
-    var l = arr.length;
     var str = "",
         str1 = "";
     var k = [],
@@ -396,7 +395,9 @@ function beautify(input, no_format, remove_comments, remove_report, check_alias,
     if (remove_comments) {
         input = input.replace(/@@comments[0-9]+/g, '');
     }
+    input = input.replace(/(PORT|PROCESS|GENERIC)[\s]*\(/g, '$1 (');
     arr = input.split("\r\n");
+    var l = arr.length;
     for (i = 0; i < l; i++) {
         k = arr[i].match(/"([^"]+)"/g);
         if (k != null) {
@@ -444,7 +445,6 @@ function beautify(input, no_format, remove_comments, remove_report, check_alias,
             }
         }
         if ((!port_b && arr[i].regexIndexOf(/(\s|\(|^)(PORT|GENERIC|PROCESS|PROCEDURE)(\s|\(|$)/) >= 0) || arr[i].regexIndexOf(/:[ ]?=[ ]?\(/) >= 0) {
-            arr[i] = arr[i].replace(/(PORT|PROCESS|GENERIC)(\s|\()?\(/, '$1 (');
             port_b = true;
             port_s = arr[i];
             var k_port = port_s.split("(").length;
@@ -877,7 +877,18 @@ function UnitTest() {
     input = "entity aa is\r\n    port (a : in std_logic;\r\n          b : in std_logic;\r\n         );\r\n    port (a : in std_logic;\r\n          b : in std_logic;\r\n         );\r\nend aa;\r\narchitecture bb of aa is\r\n   component cc\r\n    port(\r\n         a : in std_logic;\r\n         b : in std_logic;\r\n        );\r\n    port(\r\n         a : in std_logic;\r\n         b : in std_logic;\r\n        );\r\n    end cc;\r\n\r\nbegin\r\n  C : cc port map (\r\n          long => a,\r\n          b => b\r\n        );\r\n  D : cc port map (\r\n          long => a,\r\n          b => b\r\n        );\r\nend;";
     expected = "ENTITY aa IS\r\n    PORT (\r\n        a : IN std_logic;\r\n        b : IN std_logic;\r\n    );\r\n    PORT (\r\n        a : IN std_logic;\r\n        b : IN std_logic;\r\n    );\r\nEND aa;\r\nARCHITECTURE bb OF aa IS\r\n    COMPONENT cc\r\n        PORT (\r\n            a : IN std_logic;\r\n            b : IN std_logic;\r\n        );\r\n        PORT (\r\n            a : IN std_logic;\r\n            b : IN std_logic;\r\n        );\r\n    END cc;\r\n\r\nBEGIN\r\n    C : cc\r\n    PORT MAP(\r\n        long => a, \r\n        b => b\r\n    );\r\n    D : cc\r\n    PORT MAP(\r\n        long => a, \r\n        b => b\r\n    );\r\nEND;";
     actual = beautify(input, no_format, remove_comments, remove_report, check_alias, sign_align, new_line, keywordcase, indentation);
-    console.log("Multiple PORT MAPs", actual == expected);
+    console.log("Multiple PORT MAPs", CompareString(actual, expected));
+}
+
+function CompareString(s1, s2) {
+    var l = Math.min(s1.length, s2.length);
+    for (var i = 0; i < l; i++) {
+        if (s1[i] != s2[i]) {
+            var toEnd = Math.min(i + 50, l);
+            return '\ndifferent at ' + i.toString() + '\nactual: "' + s1.substring(i, toEnd) + '\nexpected: "' + s2.substring(i, toEnd) + '"';
+        }
+    }
+    return true;
 }
 UnitTest();
 </script>
