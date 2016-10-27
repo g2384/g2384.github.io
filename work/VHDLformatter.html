@@ -92,7 +92,8 @@ document.write("<p>Last modified: "+fetchHeader(location.href,'Last-Modified')+"
  | <label><input type="checkbox" id="remove_lines">Remove blank lines</label>
  | <label><input type="checkbox" id="remove_report">Remove REPORT</label><br>
 <label><input type="checkbox" id="check_alias">Check ALIAS (every long name is replaced with ALIAS)</label><br>
-<label><input type="checkbox" id="sign_align">Align signs in PORT()</label><br>
+<label><input type="checkbox" id="sign_align">Align signs in PORT()</label>
+ | <label><input type="checkbox" id="new_line_after_port">New line after PORT(</label><br>
 
 
 <label><input type="checkbox" id="use_space">Customise Indentation (tab is \t): </label> <input type="text" id="cust_indent" size="8" onKeyUp="indent_decode()" value="    "/> (<span id="indent_s">four blankspace</span>)<br>
@@ -184,6 +185,7 @@ function noFormat() {
     document.getElementById("remove_report").disabled = t;
     document.getElementById("check_alias").disabled = t;
     document.getElementById("sign_align").disabled = t;
+    document.getElementById("new_line_after_port").disabled = t;
     document.getElementById("new_line").disabled = t;
     document.getElementById("use_space").disabled = t;
     document.getElementById("compress").disabled = t;
@@ -312,6 +314,7 @@ function f() {
     var remove_report = document.getElementById("remove_report").checked;
     var check_alias = document.getElementById("check_alias").checked;
     var sign_align = document.getElementById("sign_align").checked;
+    var new_line_after_port = document.getElementById("new_line_after_port").checked;
     var new_line = document.getElementById("new_line").checked;
     var use_space = document.getElementById("use_space").checked;
     var compress = document.getElementById("compress").checked;
@@ -328,7 +331,7 @@ function f() {
         indentation = cust_indent;
     }
 
-    input = beautify(input, no_format, remove_comments, remove_report, check_alias, sign_align, new_line, keywordcase, indentation);
+    input = beautify(input, no_format, remove_comments, remove_report, check_alias, sign_align, new_line, keywordcase, indentation, new_line_after_port);
 
     if (remove_lines) {
         input = input.replace(/(\r\n)*[ \t]*\r\n/g, '\r\n');
@@ -337,15 +340,17 @@ function f() {
     if (compress) {
         input = Compress(input);
     }
+	
     if (mix_letter) {
         input = MixLetters(input);
     }
+	
     document.getElementById("vhdl").innerHTML = input;
     document.querySelector(".show").style.display = "inline-block";
     hljs.highlightBlock(document.getElementById("vhdl"));
 }
 
-function beautify(input, no_format, remove_comments, remove_report, check_alias, sign_align, new_line, keywordcase, indentation) {
+function beautify(input, no_format, remove_comments, remove_report, check_alias, sign_align, new_line, keywordcase, indentation, new_line_after_port) {
 
     keyword = ["ABS", "ACCESS", "AFTER", "ALIAS", "ALL", "AND", "ARCHITECTURE", "ARRAY", "ASSERT", "ATTRIBUTE", "BEGIN", "BLOCK", "BODY", "BUFFER", "BUS", "CASE", "COMPONENT", "CONFIGURATION", "CONSTANT", "CONTEXT", "COVER", "DISCONNECT", "DOWNTO", "DEFAULT", "ELSE", "ELSIF", "END", "ENTITY", "EXIT", "FAIRNESS", "FILE", "FOR", "FORCE", "FUNCTION", "GENERATE", "GENERIC", "GROUP", "GUARDED", "IF", "IMPURE", "IN", "INERTIAL", "INOUT", "IS", "LABEL", "LIBRARY", "LINKAGE", "LITERAL", "LOOP", "MAP", "MOD", "NAND", "NEW", "NEXT", "NOR", "NOT", "NULL", "OF", "ON", "OPEN", "OR", "OTHERS", "OUT", "PACKAGE", "PORT", "POSTPONED", "PROCEDURE", "PROCESS", "PROPERTY", "PROTECTED", "PURE", "RANGE", "RECORD", "REGISTER", "REJECT", "RELEASE", "REM", "REPORT", "RESTRICT", "RESTRICT_GUARANTEE", "RETURN", "ROL", "ROR", "SELECT", "SEQUENCE", "SEVERITY", "SHARED", "SIGNAL", "SLA", "SLL", "SRA", "SRL", "STRONG", "SUBTYPE", "THEN", "TO", "TRANSPORT", "TYPE", "UNAFFECTED", "UNITS", "UNTIL", "USE", "VARIABLE", "VMODE", "VPROP", "VUNIT", "WAIT", "WHEN", "WHILE", "WITH", "XNOR", "XOR"];
     var typename = ["BOOLEAN", "BIT", "CHARACTER", "INTEGER", "TIME", "NATURAL", "POSITIVE", "STRING"];
@@ -724,6 +729,9 @@ function beautify(input, no_format, remove_comments, remove_report, check_alias,
                     console.log(tab_n, arr[i], indent_start);
                 }
                 arr[i] = (Array(tab_n).join(indentation)) + arr[i]; //indent
+				if(new_line_after_port) {
+					arr[i] = arr[i].replace(/(PORT|PROCESS|GENERIC)([ \w]*)\(/, "$1$2\r\n"+(Array(tab_n).join(indentation))+"(");
+				}
             }
             if (back_tab) {
                 tab_n++;
@@ -798,20 +806,25 @@ function beautify(input, no_format, remove_comments, remove_report, check_alias,
 
     input = arr.join("\r\n");
     input = input.replace(/[\t]*@@removeline\r\n/g, '');
+	
     if (sign_align) {
         for (var k = 0; k < align_i; k++) {
             input = input.replace("@@align" + k, Array((align_max[k] - align[k] + 2)).join(" "));
         }
     }
+	
     for (var k = 0; k < quotes_i; k++) {
         input = input.replace("@@quotes" + k, quotes[k]);
     }
+	
     for (var k = 0; k < singleline_i; k++) {
         input = input.replace("@@singleline" + k, singleline[k]);
     }
+	
     for (var k = 0; k < comments_i; k++) {
         input = input.replace("@@comments" + k, comments[k]);
     }
+	
     input = input.replace(/@@semicolon/g, ";");
     input = input.replace(/@@[a-z]+/g, "");
     SetKeywordCase(input, keywordcase, keyword, typename);
@@ -828,56 +841,62 @@ function UnitTest() {
     check_alias = false;
     sign_align = false;
     new_line = true;
+	new_line_after_port = false;
     keywordcase = "uppercase";
     indentation = "    ";
     input = "architecture TB of TB_CPU is\r\n    component CPU_IF\r\n    port   -- port list\r\n    end component;\r\n    signal CPU_DATA_VALID: std_ulogic;\r\n    signal CLK, RESET: std_ulogic := '0';\r\n    constant PERIOD : time := 10 ns;\r\n    constant MAX_SIM: time := 50 * PERIOD;\r\n    begin\r\n    -- concurrent statements\r\n    end TB;"
     expected = "ARCHITECTURE TB OF TB_CPU IS\r\n    COMPONENT CPU_IF\r\n        PORT -- port list\r\n    END COMPONENT;\r\n    SIGNAL CPU_DATA_VALID : std_ulogic;\r\n    SIGNAL CLK, RESET : std_ulogic := '0';\r\n    CONSTANT PERIOD : TIME := 10 ns;\r\n    CONSTANT MAX_SIM : TIME := 50 * PERIOD;\r\nBEGIN\r\n    -- concurrent statements\r\nEND TB;";
-    actual = beautify(input, no_format, remove_comments, remove_report, check_alias, sign_align, new_line, keywordcase, indentation);
+    actual = beautify(input, no_format, remove_comments, remove_report, check_alias, sign_align, new_line, keywordcase, indentation, new_line_after_port);
     console.log("General", actual == expected);
 
     expected = "ARCHITECTURE TB OF TB_CPU IS\r\n    COMPONENT CPU_IF\r\n        PORT \r\n    END COMPONENT;\r\n    SIGNAL CPU_DATA_VALID : std_ulogic;\r\n    SIGNAL CLK, RESET : std_ulogic := '0';\r\n    CONSTANT PERIOD : TIME := 10 ns;\r\n    CONSTANT MAX_SIM : TIME := 50 * PERIOD;\r\nBEGIN\r\nEND TB;";
-    actual = beautify(input, no_format, true, remove_report, check_alias, sign_align, new_line, keywordcase, indentation);
+    actual = beautify(input, no_format, true, remove_report, check_alias, sign_align, new_line, keywordcase, indentation, new_line_after_port);
     console.log("Remove comments", actual == expected);
 
     input = "entity TB_DISPLAY is\r\n-- port declarations\r\nend TB_DISPLAY;\r\n\r\narchitecture TEST of TB_DISPLAY is\r\n-- signal declarations\r\nbegin\r\n-- component instance(s)\r\nend TEST;";
     expected = "ENTITY TB_DISPLAY IS\r\n    -- port declarations\r\nEND TB_DISPLAY;\r\n\r\nARCHITECTURE TEST OF TB_DISPLAY IS\r\n    -- signal declarations\r\nBEGIN\r\n    -- component instance(s)\r\nEND TEST;";
-    actual = beautify(input, no_format, remove_comments, remove_report, check_alias, sign_align, new_line, keywordcase, indentation);
+    actual = beautify(input, no_format, remove_comments, remove_report, check_alias, sign_align, new_line, keywordcase, indentation, new_line_after_port);
     console.log("ENTITY ARCHITECTURE", actual == expected);
 
     input = "port map(\r\ninput_1 => input_1_sig,\r\ninput_2 => input_2_sig,\r\noutput => output_sig\r\n);";
     expected = "PORT MAP(\r\n    input_1  => input_1_sig, \r\n    input_2  => input_2_sig, \r\n    output   => output_sig\r\n);";
-    actual = beautify(input, no_format, remove_comments, remove_report, check_alias, true, new_line, keywordcase, indentation);
+    actual = beautify(input, no_format, remove_comments, remove_report, check_alias, true, new_line, keywordcase, indentation, new_line_after_port);
     console.log("Sign align in PORT", actual == expected);
 
     input = "if s = '1' then\r\no <= \"010\";\r\nelse\r\no <= \"101\";\r\nend if;";
     expected = "IF s = '1' THEN\r\n    o <= \"010\";\r\nELSE\r\n    o <= \"101\";\r\nEND IF;";
-    actual = beautify(input, no_format, remove_comments, remove_report, check_alias, sign_align, new_line, keywordcase, indentation);
+    actual = beautify(input, no_format, remove_comments, remove_report, check_alias, sign_align, new_line, keywordcase, indentation, new_line_after_port);
     console.log("IF ELSE END IF case 1", actual == expected);
 
     input = "IF (s = r) THEN rr := '0'; ELSE rr := '1'; END IF;";
     expected = "IF (s = r) THEN\r\n    rr := '0';\r\nELSE\r\n    rr := '1';\r\nEND IF;";
-    actual = beautify(input, no_format, remove_comments, remove_report, check_alias, sign_align, new_line, keywordcase, indentation);
+    actual = beautify(input, no_format, remove_comments, remove_report, check_alias, sign_align, new_line, keywordcase, indentation, new_line_after_port);
     console.log("IF ELSE END IF case 2", actual == expected);
 
     input = 'P1:process\r\nvariable x: Integer range 1 to 3;\r\nvariable y: BIT_VECTOR (0 to 1);\r\nbegin\r\n  C1: case x is\r\n      when 1 => Out_1 <= 0;\r\n      when 2 => Out_1 <= 1;\r\n  end case C1;\r\n  C2: case y is\r\n      when "00" => Out_2 <= 0;\r\n      when "01" => Out_2 <= 1;\r\n  end case C2;\r\nend process;';
     expected = 'P1 : PROCESS\r\nVARIABLE x : INTEGER RANGE 1 TO 3;\r\nVARIABLE y : BIT_VECTOR (0 TO 1);\r\nBEGIN\r\n    C1 : CASE x IS\r\n        WHEN 1 => Out_1 <= 0;\r\n        WHEN 2 => Out_1 <= 1;\r\n    END CASE C1;\r\n    C2 : CASE y IS\r\n        WHEN "00" => Out_2 <= 0;\r\n        WHEN "01" => Out_2 <= 1;\r\n    END CASE C2;\r\nEND PROCESS;';
-    actual = beautify(input, no_format, remove_comments, remove_report, check_alias, sign_align, new_line, keywordcase, indentation);
+    actual = beautify(input, no_format, remove_comments, remove_report, check_alias, sign_align, new_line, keywordcase, indentation, new_line_after_port);
     console.log("WHEN CASE", actual == expected);
 
     input = "case READ_CPU_STATE is\r\n  when WAITING =>\r\n    if CPU_DATA_VALID = '1' then\r\n      CPU_DATA_READ  <= '1';\r\n      READ_CPU_STATE <= DATA1;\r\n    end if;\r\n  when DATA1 =>\r\n    -- etc.\r\nend case;";
     expected = "CASE READ_CPU_STATE IS\r\n    WHEN WAITING => \r\n        IF CPU_DATA_VALID = '1' THEN\r\n            CPU_DATA_READ <= '1';\r\n            READ_CPU_STATE <= DATA1;\r\n        END IF;\r\n    WHEN DATA1 => \r\n        -- etc.\r\nEND CASE;";
-    actual = beautify(input, no_format, remove_comments, remove_report, check_alias, sign_align, new_line, keywordcase, indentation);
+    actual = beautify(input, no_format, remove_comments, remove_report, check_alias, sign_align, new_line, keywordcase, indentation, new_line_after_port);
     console.log("WHEN CASE & IF", actual == expected);
 
     input = "entity aa is\r\n    port (a : in std_logic;\r\n          b : in std_logic;\r\n         );\r\nend aa;\r\narchitecture bb of aa is\r\n   component cc\r\n    port(\r\n         a : in std_logic;\r\n         b : in std_logic;\r\n        );\r\n    end cc;\r\n\r\nbegin\r\n  C : cc port map (\r\n          long => a,\r\n          b => b\r\n        );\r\nend;";
     expected = "ENTITY aa IS\r\n    PORT (\r\n        a : IN std_logic;\r\n        b : IN std_logic;\r\n    );\r\nEND aa;\r\nARCHITECTURE bb OF aa IS\r\n    COMPONENT cc\r\n        PORT (\r\n            a : IN std_logic;\r\n            b : IN std_logic;\r\n        );\r\n    END cc;\r\n\r\nBEGIN\r\n    C : cc\r\n    PORT MAP(\r\n        long => a, \r\n        b => b\r\n    );\r\nEND;";
-    actual = beautify(input, no_format, remove_comments, remove_report, check_alias, sign_align, new_line, keywordcase, indentation);
+    actual = beautify(input, no_format, remove_comments, remove_report, check_alias, sign_align, new_line, keywordcase, indentation, new_line_after_port);
     console.log("PORT MAP", actual == expected);
 
     input = "entity aa is\r\n    port (a : in std_logic;\r\n          b : in std_logic;\r\n         );\r\n    port (a : in std_logic;\r\n          b : in std_logic;\r\n         );\r\nend aa;\r\narchitecture bb of aa is\r\n   component cc\r\n    port(\r\n         a : in std_logic;\r\n         b : in std_logic;\r\n        );\r\n    port(\r\n         a : in std_logic;\r\n         b : in std_logic;\r\n        );\r\n    end cc;\r\n\r\nbegin\r\n  C : cc port map (\r\n          long => a,\r\n          b => b\r\n        );\r\n  D : cc port map (\r\n          long => a,\r\n          b => b\r\n        );\r\nend;";
     expected = "ENTITY aa IS\r\n    PORT (\r\n        a : IN std_logic;\r\n        b : IN std_logic;\r\n    );\r\n    PORT (\r\n        a : IN std_logic;\r\n        b : IN std_logic;\r\n    );\r\nEND aa;\r\nARCHITECTURE bb OF aa IS\r\n    COMPONENT cc\r\n        PORT (\r\n            a : IN std_logic;\r\n            b : IN std_logic;\r\n        );\r\n        PORT (\r\n            a : IN std_logic;\r\n            b : IN std_logic;\r\n        );\r\n    END cc;\r\n\r\nBEGIN\r\n    C : cc\r\n    PORT MAP(\r\n        long => a, \r\n        b => b\r\n    );\r\n    D : cc\r\n    PORT MAP(\r\n        long => a, \r\n        b => b\r\n    );\r\nEND;";
-    actual = beautify(input, no_format, remove_comments, remove_report, check_alias, sign_align, new_line, keywordcase, indentation);
+    actual = beautify(input, no_format, remove_comments, remove_report, check_alias, sign_align, new_line, keywordcase, indentation, new_line_after_port);
     console.log("Multiple PORT MAPs", CompareString(actual, expected));
+	
+    input = "PORT();\r\nPORT MAP();";
+    expected = "PORT \r\n();\r\nPORT MAP\r\n();";
+    actual = beautify(input, no_format, remove_comments, remove_report, check_alias, sign_align, new_line, keywordcase, indentation, true);
+    console.log("New line aster PORT", CompareString(actual, expected));
 }
 
 function CompareString(s1, s2) {
