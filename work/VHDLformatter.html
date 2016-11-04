@@ -1,3 +1,4 @@
+
 <html>
 <head>
 <title>VHDL Beautifier, Formatter Online</title>
@@ -93,7 +94,7 @@ document.write("<p>Last modified: "+fetchHeader(location.href,'Last-Modified')+"
  | <label><input type="checkbox" id="remove_report">Remove REPORT</label><br>
 <label><input type="checkbox" id="check_alias">Check ALIAS (every long name is replaced with ALIAS)</label><br>
 <label><input type="checkbox" id="sign_align">Align signs in PORT()</label>
- | <label><input type="checkbox" id="new_line_after_port">New line after PORT(</label><br>
+ | <label><input type="checkbox" id="new_line_after_port">New line after PORT & GENERIC</label><br>
 
 
 <label><input type="checkbox" id="use_space">Customise Indentation (tab is \t): </label> <input type="text" id="cust_indent" size="8" onKeyUp="indent_decode()" value="    "/> (<span id="indent_s">four blankspace</span>)<br>
@@ -461,7 +462,7 @@ function beautify(input, no_format, remove_comments, remove_report, check_alias,
                 port_b = false;
                 arr[i] = arr[i] + "@@singleend";
             } else {
-                arr[i] = arr[i].replace(/(PORT|PROCESS|GENERIC|PROCEDURE)([a-z0-9A-Z_ ]+)\(([a-zA-Z0-9_\(\) ]+)/, '$1$2(\r\n$3');
+                arr[i] = arr[i].replace(/(PORT|GENERIC|PROCEDURE)([a-z0-9A-Z_ ]+)\(([a-zA-Z0-9_\(\) ]+)/, '$1$2(\r\n$3');
             }
         }
         if (!new_line) {
@@ -730,7 +731,9 @@ function beautify(input, no_format, remove_comments, remove_report, check_alias,
                 }
                 arr[i] = (Array(tab_n).join(indentation)) + arr[i]; //indent
 				if(new_line_after_port) {
-					arr[i] = arr[i].replace(/(PORT|PROCESS|GENERIC)([ \w]*)\(/, "$1$2\r\n"+(Array(tab_n).join(indentation))+"(");
+                    if(str.indexOf('@@singleend')<0){
+					arr[i] = arr[i].replace(/(PORT|GENERIC)([ \w]*)\(/, "$1$2\r\n"+(Array(tab_n).join(indentation))+"(");
+                    }
 				}
             }
             if (back_tab) {
@@ -806,6 +809,29 @@ function beautify(input, no_format, remove_comments, remove_report, check_alias,
 
     input = arr.join("\r\n");
     input = input.replace(/[\t]*@@removeline\r\n/g, '');
+    
+    p = input.indexOf('PROCESS');
+    while (p >= 0) {
+        nextBracket = input.indexOf('(', p);
+        nextNewLine = input.indexOf('\r\n', p);
+        nextCloseBracket = input.indexOf(')', nextBracket);
+        if (nextBracket < nextNewLine && nextCloseBracket > nextNewLine) {
+            processArray = input.substring(p, nextCloseBracket).split('\r\n');
+            if (indentation.replace(/[ ]+/g, '').length == 0) {
+                for (var i = 1; i < processArray.length; i++) {
+                    processArray[i] = (Array(nextBracket - p + 2).join(' ')) + processArray[i];
+                }
+            } else {
+                for (var i = 1; i < processArray.length; i++) {
+                    processArray[i] = indentation + processArray[i];
+                }
+            }
+            p = input.indexOf('PROCESS', nextCloseBracket);
+            input = input.substring(0, p) + processArray.join('\r\n') + input.substring(nextCloseBracket, input.length);
+        } else {
+            p = input.indexOf('PROCESS', p + 7);
+        }
+    }
 	
     if (sign_align) {
         for (var k = 0; k < align_i; k++) {
@@ -893,10 +919,20 @@ function UnitTest() {
     actual = beautify(input, no_format, remove_comments, remove_report, check_alias, sign_align, new_line, keywordcase, indentation, new_line_after_port);
     console.log("Multiple PORT MAPs", CompareString(actual, expected));
 	
-    input = "PORT();\r\nPORT MAP();";
-    expected = "PORT \r\n();\r\nPORT MAP\r\n();";
+    input = "port (a : in std_logic;\r\n b : in std_logic;\r\n);";
+    expected = "PORT \r\n(\r\n    a : IN std_logic;\r\n    b : IN std_logic;\r\n);";
     actual = beautify(input, no_format, remove_comments, remove_report, check_alias, sign_align, new_line, keywordcase, indentation, true);
     console.log("New line aster PORT", CompareString(actual, expected));
+    
+    input = "component a is\r\nport( Data : inout Std_Logic_Vector(7 downto 0););\r\nend component a;";
+    expected = "COMPONENT a IS\r\n    PORT (Data : INOUT Std_Logic_Vector(7 DOWNTO 0););\r\nEND COMPONENT a;";
+    actual = beautify(input, no_format, remove_comments, remove_report, check_alias, sign_align, new_line, keywordcase, indentation, true);
+    console.log("New line aster PORT (single line)", CompareString(actual, expected));
+    
+    input = "process xyx (vf,fr,\r\nde -- comment\r\n)";
+    expected = "PROCESS xyx (vf, fr, \r\n             de -- comment\r\n             )";
+    actual = beautify(input, no_format, remove_comments, remove_report, check_alias, sign_align, new_line, keywordcase, indentation, true);
+    console.log("Align parameters in PROCESS", CompareString(actual, expected));
 }
 
 function CompareString(s1, s2) {
@@ -904,7 +940,7 @@ function CompareString(s1, s2) {
     for (var i = 0; i < l; i++) {
         if (s1[i] != s2[i]) {
             var toEnd = Math.min(i + 50, l);
-            return '\ndifferent at ' + i.toString() + '\nactual: "' + s1.substring(i, toEnd) + '\nexpected: "' + s2.substring(i, toEnd) + '"';
+            return '\ndifferent at ' + i.toString() + '\nactual: "' + s1.substring(i, toEnd) + '\nexpected: "' + s2.substring(i, toEnd) + '"' + "\nactual: " + s1;
         }
     }
     return true;
