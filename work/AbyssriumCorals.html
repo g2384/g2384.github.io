@@ -1,0 +1,858 @@
+<html>
+<style>
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        max-width: 600px;
+        margin: 10 auto 0 auto;
+    }
+    
+    h3 {
+        font-size: 16px;
+    }
+    
+    input {
+        font-size: 16px;
+        padding: 3px;
+    }
+    
+    #content {
+        width: 100%
+    }
+    
+    .readOnly {
+        color: #B3B3B3;
+    }
+    
+    label {
+        float: left;
+        margin-right: 5px;
+    }
+    
+    span {
+        display: block;
+        overflow: hidden;
+        margin-bottom: 5px;
+    }
+    
+    input[type='text'] {
+        width: 100%;
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box
+    }
+    
+    input[type='text']:read-only {
+        border: 1px solid #fff;
+        color: #880000
+    }
+    
+    input[type='button'] {
+        margin: 5px;
+        padding: 5px 8px;
+        font-size: 16px;
+        line-height: 1.33;
+        border-radius: 3px;
+        color: #333;
+        background-color: #fff;
+        cursor: pointer;
+        text-align: center;
+        white-space: nowrap;
+        border: 1px solid #B3B3B3;
+    }
+    
+    input[type='button']:hover {
+        color: #59aaf4;
+    }
+</style>
+
+<body onload="LoadCache()">
+    <div id="content">
+        <h3>Lonely corallite(Tap)</h3> <br>
+        <label>Current Vitality Per Tap: </label><span><input type="text" id="LonelyCoralliteVitality" value="" onkeyup="FormatInputAndStore(this)" /></span>
+        <label>Next Level Cost: </label><span><input type="text" id="LonelyCoralliteCost" value="" onkeyup="FormatInputAndStore(this)" /></span>
+        <label>Next Level Bonus: </label><span><input type="text" id="LonelyCoralliteBonus" value="" onkeyup="FormatInputAndStore(this)" /></span>
+        <label>Tap Per Minute: </label><span><input type="text" id="TapPerMinute" value="" onkeyup="FormatInputNumberOnly(this)" /></span>
+        <label class="readOnly">Next Vitality: </label><span><input type="text" tabIndex="-1" readonly="true" id="LonelyCoralliteNext" value="" /></span>
+        <label class="readOnly">Bonus Vitality Per Minute/Cost: </label><span><input type="text" tabIndex="-1" readonly="true" id="LonelyCoralliteVitalityPerMinute" value="" /></span>
+        <h3>Fragil staghorn coral</h3>
+        <label>Current Vitality Per Sec: </label><span><input type="text" id="FragilStaghornCoralVitality" value="" onkeyup="FormatInputAndStore(this)" /></span>
+        <label>Next Level Cost: </label><span><input type="text" id="FragilStaghornCoralCost" value="" onkeyup="FormatInputAndStore(this)" /></span>
+        <label>Next Level Bonus: </label><span><input type="text" id="FragilStaghornCoralBonus" value="" onkeyup="FormatInputAndStore(this)" /></span>
+        <label class="readOnly">Next Vitality: </label><span><input type="text" tabIndex="-1" readonly="true" id="FragilStaghornCoralNext" value="" /></span>
+        <label class="readOnly">Bonus Vitality Per Minute/Cost: </label><span><input type="text" tabIndex="-1" readonly="true" id="FragilStaghornCoralVitalityPerMinute" value="" /></span>
+        <h3>Fresh seaweed</h3>
+        <label>Current Vitality Per Sec: </label><span><input type="text" id="FreshSeaweedVitality" value="" onkeyup="FormatInputAndStore(this)" /></span>
+        <label>Next Level Cost: </label><span><input type="text" id="FreshSeaweedCost" value="" onkeyup="FormatInputAndStore(this)" /></span>
+        <label>Next Level Bonus: </label><span><input type="text" id="FreshSeaweedBonus" value="" onkeyup="FormatInputAndStore(this)" /></span>
+        <label class="readOnly">Next Vitality: </label><span><input type="text"tabIndex="-1"  readonly="true" id="FreshSeaweedNext" value="" /></span>
+        <label class="readOnly">Bonus Vitality Per Minute/Cost: </label><span><input type="text"tabIndex="-1"  readonly="true" id="FreshSeaweedVitalityPerMinute" value="" /></span>
+        <h3>Red sea fan</h3>
+        <label>Current Vitality Per Sec: </label><span><input type="text" id="RedSeaFanVitality" value="" onkeyup="FormatInputAndStore(this)" /></span>
+        <label>Next Level Cost: </label><span><input type="text" id="RedSeaFanCost" value="" onkeyup="FormatInputAndStore(this)" /></span>
+        <label>Next Level Bonus: </label><span><input type="text" id="RedSeaFanBonus" value="" onkeyup="FormatInputAndStore(this)" /></span>
+        <label class="readOnly">Next Vitality: </label><span><input type="text" tabIndex="-1" readonly="true" id="RedSeaFanNext" value="" /></span>
+        <label class="readOnly">Bonus Vitality Per Minute/Cost: </label><span><input type="text" tabIndex="-1" readonly="true" id="RedSeaFanVitalityPerMinute" value="" /></span>
+        <h3>Mysterious starfish</h3>
+        <label>Current Vitality Per Sec: </label><span><input type="text" id="MysteriousStarfishVitality" value="" onkeyup="FormatInputAndStore(this)" /></span>
+        <label>Next Level Cost: </label><span><input type="text" id="MysteriousStarfishCost" value="" onkeyup="FormatInputAndStore(this)" /></span>
+        <label>Next Level Bonus: </label><span><input type="text" id="MysteriousStarfishBonus" value="" onkeyup="FormatInputAndStore(this)" /></span>
+        <label class="readOnly">Next Vitality: </label><span><input type="text" tabIndex="-1" readonly="true" id="MysteriousStarfishNext" value="" /></span>
+        <label class="readOnly">Bonus Vitality Per Minute/Cost: </label><span><input type="text"tabIndex="-1"  readonly="true" id="MysteriousStarfishVitalityPerMinute" value="" /></span>
+        <h3>White anemone</h3>
+        <label>Current Vitality Per Sec: </label><span><input type="text" id="WhiteAnemoneVitality" value="" onkeyup="FormatInputAndStore(this)" /></span>
+        <label>Next Level Cost: </label><span><input type="text" id="WhiteAnemoneCost" value="" onkeyup="FormatInputAndStore(this)" /></span>
+        <label>Next Level Bonus: </label><span><input type="text" id="WhiteAnemoneBonus" value="" onkeyup="FormatInputAndStore(this)" /></span>
+        <label class="readOnly">Next Vitality: </label><span><input type="text" tabIndex="-1" readonly="true" id="WhiteAnemoneNext" value="" /></span>
+        <label class="readOnly">Bonus Vitality Per Minute/Cost: </label><span><input type="text"tabIndex="-1"  readonly="true" id="WhiteAnemoneVitalityPerMinute" value="" /></span>
+        <h3>Pearly anemone</h3>
+        <label>Current Vitality Per Sec: </label><span><input type="text" id="PearlyAnemoneVitality" value="" onkeyup="FormatInputAndStore(this)" /></span>
+        <label>Next Level Cost: </label><span><input type="text" id="PearlyAnemoneCost" value="" onkeyup="FormatInputAndStore(this)" /></span>
+        <label>Next Level Bonus: </label><span><input type="text" id="PearlyAnemoneBonus" value="" onkeyup="FormatInputAndStore(this)" /></span>
+        <label class="readOnly">Next Vitality: </label><span><input type="text" tabIndex="-1" readonly="true" id="PearlyAnemoneNext" value="" /></span>
+        <label class="readOnly">Bonus Vitality Per Minute/Cost: </label><span><input type="text" tabIndex="-1" readonly="true" id="PearlyAnemoneVitalityPerMinute" value="" /></span>
+        <h3>Cactus coral</h3>
+        <label>Current Vitality Per Sec: </label><span><input type="text" id="CactusCoralVitality" value="" onkeyup="FormatInputAndStore(this)" /></span>
+        <label>Next Level Cost: </label><span><input type="text" id="CactusCoralCost" value="" onkeyup="FormatInputAndStore(this)" /></span>
+        <label>Next Level Bonus: </label><span><input type="text" id="CactusCoralBonus" value="" onkeyup="FormatInputAndStore(this)" /></span>
+        <label class="readOnly">Next Vitality: </label><span><input type="text" tabIndex="-1" readonly="true" id="CactusCoralNext" value="" /></span>
+        <label class="readOnly">Bonus Vitality Per Minute/Cost: </label><span><input type="text"tabIndex="-1"  readonly="true" id="CactusCoralVitalityPerMinute" value="" /></span>
+        <h3>Orange cup coral</h3>
+        <label>Current Vitality Per Sec: </label><span><input type="text" id="OrangeCupCoralVitality" value="" onkeyup="FormatInputAndStore(this)" /></span>
+        <label>Next Level Cost: </label><span><input type="text" id="OrangeCupCoralCost" value="" onkeyup="FormatInputAndStore(this)" /></span>
+        <label>Next Level Bonus: </label><span><input type="text" id="OrangeCupCoralBonus" value="" onkeyup="FormatInputAndStore(this)" /></span>
+        <label class="readOnly">Next Vitality: </label><span><input type="text" tabIndex="-1" readonly="true" id="OrangeCupCoralNext" value="" /></span>
+        <label class="readOnly">Bonus Vitality Per Minute/Cost: </label><span><input type="text"tabIndex="-1" readonly="true" id="OrangeCupCoralVitalityPerMinute" value="" /></span>
+        <h3>Blue cabbage coral</h3>
+        <label>Current Vitality Per Sec: </label><span><input type="text" id="BlueCabbageCoralVitality" value="" onkeyup="FormatInputAndStore(this)" /></span>
+        <label>Next Level Cost: </label><span><input type="text" id="BlueCabbageCoralCost" value="" onkeyup="FormatInputAndStore(this)" /></span>
+        <label>Next Level Bonus: </label><span><input type="text" id="BlueCabbageCoralBonus" value="" onkeyup="FormatInputAndStore(this)" /></span>
+        <label class="readOnly">Next Vitality: </label><span><input type="text"tabIndex="-1"  readonly="true" id="BlueCabbageCoralNext" value="" /></span>
+        <label class="readOnly">Bonus Vitality Per Minute/Cost: </label><span><input type="text"tabIndex="-1"  readonly="true" id="BlueCabbageCoralVitalityPerMinute" value="" /></span>
+        <h3>Green spongodes</h3>
+        <label>Current Vitality Per Sec: </label><span><input type="text" id="GreenSpongodesVitality" value="" onkeyup="FormatInputAndStore(this)" /></span>
+        <label>Next Level Cost: </label><span><input type="text" id="GreenSpongodesCost" value="" onkeyup="FormatInputAndStore(this)" /></span>
+        <label>Next Level Bonus: </label><span><input type="text" id="GreenSpongodesBonus" value="" onkeyup="FormatInputAndStore(this)" /></span>
+        <label class="readOnly">Next Vitality: </label><span><input type="text" tabIndex="-1" readonly="true" id="GreenSpongodesNext" value="" /></span>
+        <label class="readOnly">Bonus Vitality Per Minute/Cost: </label><span><input type="text"tabIndex="-1"  readonly="true" id="GreenSpongodesVitalityPerMinute" value="" /></span>
+        <h3>Glowing sea flower</h3>
+        <label>Current Vitality Per Sec: </label><span><input type="text" id="GlowingSeaFlowerVitality" value="" onkeyup="FormatInputAndStore(this)" /></span>
+        <label>Next Level Cost: </label><span><input type="text" id="GlowingSeaFlowerCost" value="" onkeyup="FormatInputAndStore(this)" /></span>
+        <label>Next Level Bonus: </label><span><input type="text" id="GlowingSeaFlowerBonus" value="" onkeyup="FormatInputAndStore(this)" /></span>
+        <label class="readOnly">Next Vitality: </label><span><input type="text" tabIndex="-1" readonly="true" id="GlowingSeaFlowerNext" value="" /></span>
+        <label class="readOnly">Bonus Vitality Per Minute/Cost: </label><span><input type="text"tabIndex="-1"  readonly="true" id="GlowingSeaFlowerVitalityPerMinute" value="" /></span>
+        <h3>Sapphire sea fan</h3>
+        <label>Current Vitality Per Sec: </label><span><input type="text" id="SapphireSeaFanVitality" value="" onkeyup="FormatInputAndStore(this)" /></span>
+        <label>Next Level Cost: </label><span><input type="text" id="SapphireSeaFanCost" value="" onkeyup="FormatInputAndStore(this)" /></span>
+        <label>Next Level Bonus: </label><span><input type="text" id="SapphireSeaFanBonus" value="" onkeyup="FormatInputAndStore(this)" /></span>
+        <label class="readOnly">Next Vitality: </label><span><input type="text" tabIndex="-1" readonly="true" id="SapphireSeaFanNext" value="" /></span>
+        <label class="readOnly">Bonus Vitality Per Minute/Cost: </label><span><input type="text"tabIndex="-1"  readonly="true" id="SapphireSeaFanVitalityPerMinute" value="" /></span>
+        <h3>Ruby cabbage coral</h3>
+        <label>Current Vitality Per Sec: </label><span><input type="text" id="RubyCabbageCoralVitality" value="" onkeyup="FormatInputAndStore(this)" /></span>
+        <label>Next Level Cost: </label><span><input type="text" id="RubyCabbageCoralCost" value="" onkeyup="FormatInputAndStore(this)" /></span>
+        <label>Next Level Bonus: </label><span><input type="text" id="RubyCabbageCoralBonus" value="" onkeyup="FormatInputAndStore(this)" /></span>
+        <label class="readOnly">Next Vitality: </label><span><input type="text"tabIndex="-1"  readonly="true" id="RubyCabbageCoralNext" value="" /></span>
+        <label class="readOnly">Bonus Vitality Per Minute/Cost: </label><span><input type="text"tabIndex="-1"  readonly="true" id="RubyCabbageCoralVitalityPerMinute" value="" /></span>
+        <h3>Star horn coral</h3>
+        <label>Current Vitality Per Sec: </label><span><input type="text" id="StarHornCoralVitality" value="" onkeyup="FormatInputAndStore(this)" /></span>
+        <label>Next Level Cost: </label><span><input type="text" id="StarHornCoralCost" value="" onkeyup="FormatInputAndStore(this)" /></span>
+        <label>Next Level Bonus: </label><span><input type="text" id="StarHornCoralBonus" value="" onkeyup="FormatInputAndStore(this)" /></span>
+        <label class="readOnly">Next Vitality: </label><span><input type="text"tabIndex="-1"  readonly="true" id="StarHornCoralNext" value="" /></span>
+        <label class="readOnly">Bonus Vitality Per Minute/Cost: </label><span><input type="text"tabIndex="-1"  readonly="true" id="StarHornCoralVitalityPerMinute" value="" /></span>
+    </div>
+    <div id="result"></div>
+    <input type="button" value="Which one to upgrade" onclick="CalculateNextVitality()" />
+</body>
+<script>
+var LonelyCoralliteVitality,
+    LonelyCoralliteCost,
+    LonelyCoralliteBonus,
+    TapPerMinute,
+    FragilStaghornCoralVitality,
+    FragilStaghornCoralCost,
+    FragilStaghornCoralBonus,
+    FreshSeaweedVitality,
+    FreshSeaweedCost,
+    FreshSeaweedBonus,
+    RedSeaFanVitality,
+    RedSeaFanCost,
+    RedSeaFanBonus,
+    MysteriousStarfishVitality,
+    MysteriousStarfishCost,
+    MysteriousStarfishBonus,
+    WhiteAnemoneVitality,
+    WhiteAnemoneCost,
+    WhiteAnemoneBonus,
+    PearlyAnemoneVitality,
+    PearlyAnemoneCost,
+    PearlyAnemoneBonus,
+    CactusCoralVitality,
+    CactusCoralCost,
+    CactusCoralBonus,
+    OrangeCupCoralVitality,
+    OrangeCupCoralCost,
+    OrangeCupCoralBonus,
+    BlueCabbageCoralVitality,
+    BlueCabbageCoralCost,
+    BlueCabbageCoralBonus,
+    GreenSpongodesVitality,
+    GreenSpongodesCost,
+    GreenSpongodesBonus,
+    GlowingSeaFlowerVitality,
+    GlowingSeaFlowerCost,
+    GlowingSeaFlowerBonus,
+    SapphireSeaFanVitality,
+    SapphireSeaFanCost,
+    SapphireSeaFanBonus,
+    RubyCabbageCoralVitality,
+    RubyCabbageCoralCost,
+    RubyCabbageCoralBonus,
+    StarHornCoralVitality,
+    StarHornCoralCost,
+    StarHornCoralBonus,
+    LonelyCoralliteNext = 0,
+    LonelyCoralliteVitalityPerMinute = 0,
+    FragilStaghornCoralNext = 0,
+    FragilStaghornCoralVitalityPerMinute = 0,
+    FreshSeaweedNext = 0,
+    FreshSeaweedVitalityPerMinute = 0,
+    RedSeaFanNext = 0,
+    RedSeaFanVitalityPerMinute = 0,
+    MysteriousStarfishNext = 0,
+    MysteriousStarfishVitalityPerMinute = 0,
+    WhiteAnemoneNext = 0,
+    WhiteAnemoneVitalityPerMinute = 0,
+    PearlyAnemoneNext = 0,
+    PearlyAnemoneVitalityPerMinute = 0,
+    CactusCoralNext = 0,
+    CactusCoralVitalityPerMinute = 0,
+    OrangeCupCoralNext = 0,
+    OrangeCupCoralVitalityPerMinute = 0,
+    BlueCabbageCoralNext = 0,
+    BlueCabbageCoralVitalityPerMinute = 0,
+    GreenSpongodesNext = 0,
+    GreenSpongodesVitalityPerMinute = 0,
+    GlowingSeaFlowerNext = 0,
+    GlowingSeaFlowerVitalityPerMinute = 0,
+    SapphireSeaFanNext = 0,
+    SapphireSeaFanVitalityPerMinute = 0,
+    RubyCabbageCoralNext = 0,
+    RubyCabbageCoralVitalityPerMinute = 0,
+    StarHornCoralNext = 0,
+    StarHornCoralVitalityPerMinute = 0;
+
+function WriteCache() {
+    var array = [LonelyCoralliteVitality,
+        LonelyCoralliteCost,
+        LonelyCoralliteBonus,
+        TapPerMinute,
+        FragilStaghornCoralVitality,
+        FragilStaghornCoralCost,
+        FragilStaghornCoralBonus,
+        FreshSeaweedVitality,
+        FreshSeaweedCost,
+        FreshSeaweedBonus,
+        RedSeaFanVitality,
+        RedSeaFanCost,
+        RedSeaFanBonus,
+        MysteriousStarfishVitality,
+        MysteriousStarfishCost,
+        MysteriousStarfishBonus,
+        WhiteAnemoneVitality,
+        WhiteAnemoneCost,
+        WhiteAnemoneBonus,
+        PearlyAnemoneVitality,
+        PearlyAnemoneCost,
+        PearlyAnemoneBonus,
+        CactusCoralVitality,
+        CactusCoralCost,
+        CactusCoralBonus,
+        OrangeCupCoralVitality,
+        OrangeCupCoralCost,
+        OrangeCupCoralBonus,
+        BlueCabbageCoralVitality,
+        BlueCabbageCoralCost,
+        BlueCabbageCoralBonus,
+        GreenSpongodesVitality,
+        GreenSpongodesCost,
+        GreenSpongodesBonus,
+        GlowingSeaFlowerVitality,
+        GlowingSeaFlowerCost,
+        GlowingSeaFlowerBonus,
+        SapphireSeaFanVitality,
+        SapphireSeaFanCost,
+        SapphireSeaFanBonus,
+        RubyCabbageCoralVitality,
+        RubyCabbageCoralCost,
+        RubyCabbageCoralBonus,
+        StarHornCoralVitality,
+        StarHornCoralCost,
+        StarHornCoralBonus
+    ];
+    localStorage["data"] = JSON.stringify(array);
+}
+
+function LoadCache() {
+    var array = JSON.parse(localStorage['data']);
+    document.getElementById("LonelyCoralliteVitality").value = array[0];
+    document.getElementById("LonelyCoralliteCost").value = array[1];
+    document.getElementById("LonelyCoralliteBonus").value = array[2];
+    document.getElementById("TapPerMinute").value = array[3];
+    document.getElementById("FragilStaghornCoralVitality").value = array[4];
+    document.getElementById("FragilStaghornCoralCost").value = array[5];
+    document.getElementById("FragilStaghornCoralBonus").value = array[6];
+    document.getElementById("FreshSeaweedVitality").value = array[7];
+    document.getElementById("FreshSeaweedCost").value = array[8];
+    document.getElementById("FreshSeaweedBonus").value = array[9];
+    document.getElementById("RedSeaFanVitality").value = array[10];
+    document.getElementById("RedSeaFanCost").value = array[11];
+    document.getElementById("RedSeaFanBonus").value = array[12];
+    document.getElementById("MysteriousStarfishVitality").value = array[13];
+    document.getElementById("MysteriousStarfishCost").value = array[14];
+    document.getElementById("MysteriousStarfishBonus").value = array[15];
+    document.getElementById("WhiteAnemoneVitality").value = array[16];
+    document.getElementById("WhiteAnemoneCost").value = array[17];
+    document.getElementById("WhiteAnemoneBonus").value = array[18];
+    document.getElementById("PearlyAnemoneVitality").value = array[19];
+    document.getElementById("PearlyAnemoneCost").value = array[20];
+    document.getElementById("PearlyAnemoneBonus").value = array[21];
+    document.getElementById("CactusCoralVitality").value = array[22];
+    document.getElementById("CactusCoralCost").value = array[23];
+    document.getElementById("CactusCoralBonus").value = array[24];
+    document.getElementById("OrangeCupCoralVitality").value = array[25];
+    document.getElementById("OrangeCupCoralCost").value = array[26];
+    document.getElementById("OrangeCupCoralBonus").value = array[27];
+    document.getElementById("BlueCabbageCoralVitality").value = array[28];
+    document.getElementById("BlueCabbageCoralCost").value = array[29];
+    document.getElementById("BlueCabbageCoralBonus").value = array[30];
+    document.getElementById("GreenSpongodesVitality").value = array[31];
+    document.getElementById("GreenSpongodesCost").value = array[32];
+    document.getElementById("GreenSpongodesBonus").value = array[33];
+    document.getElementById("GlowingSeaFlowerVitality").value = array[34];
+    document.getElementById("GlowingSeaFlowerCost").value = array[35];
+    document.getElementById("GlowingSeaFlowerBonus").value = array[36];
+    document.getElementById("SapphireSeaFanVitality").value = array[37];
+    document.getElementById("SapphireSeaFanCost").value = array[38];
+    document.getElementById("SapphireSeaFanBonus").value = array[39];
+    document.getElementById("RubyCabbageCoralVitality").value = array[40];
+    document.getElementById("RubyCabbageCoralCost").value = array[41];
+    document.getElementById("RubyCabbageCoralBonus").value = array[42];
+    document.getElementById("StarHornCoralVitality").value = array[43];
+    document.getElementById("StarHornCoralCost").value = array[44];
+    document.getElementById("StarHornCoralBonus").value = array[45];
+}
+
+function GetCurrentVitality() {
+    LonelyCoralliteVitality = document.getElementById("LonelyCoralliteVitality").value;
+    LonelyCoralliteCost = document.getElementById("LonelyCoralliteCost").value;
+    LonelyCoralliteBonus = document.getElementById("LonelyCoralliteBonus").value;
+    TapPerMinute = document.getElementById("TapPerMinute").value;
+
+    FragilStaghornCoralVitality = document.getElementById("FragilStaghornCoralVitality").value;
+    FragilStaghornCoralCost = document.getElementById("FragilStaghornCoralCost").value;
+    FragilStaghornCoralBonus = document.getElementById("FragilStaghornCoralBonus").value;
+
+    FreshSeaweedVitality = document.getElementById("FreshSeaweedVitality").value;
+    FreshSeaweedCost = document.getElementById("FreshSeaweedCost").value;
+    FreshSeaweedBonus = document.getElementById("FreshSeaweedBonus").value;
+
+    RedSeaFanVitality = document.getElementById("RedSeaFanVitality").value;
+    RedSeaFanCost = document.getElementById("RedSeaFanCost").value;
+    RedSeaFanBonus = document.getElementById("RedSeaFanBonus").value;
+
+    MysteriousStarfishVitality = document.getElementById("MysteriousStarfishVitality").value;
+    MysteriousStarfishCost = document.getElementById("MysteriousStarfishCost").value;
+    MysteriousStarfishBonus = document.getElementById("MysteriousStarfishBonus").value;
+
+    WhiteAnemoneVitality = document.getElementById("WhiteAnemoneVitality").value;
+    WhiteAnemoneCost = document.getElementById("WhiteAnemoneCost").value;
+    WhiteAnemoneBonus = document.getElementById("WhiteAnemoneBonus").value;
+
+    PearlyAnemoneVitality = document.getElementById("PearlyAnemoneVitality").value;
+    PearlyAnemoneCost = document.getElementById("PearlyAnemoneCost").value;
+    PearlyAnemoneBonus = document.getElementById("PearlyAnemoneBonus").value;
+
+    CactusCoralVitality = document.getElementById("CactusCoralVitality").value;
+    CactusCoralCost = document.getElementById("CactusCoralCost").value;
+    CactusCoralBonus = document.getElementById("CactusCoralBonus").value;
+
+    OrangeCupCoralVitality = document.getElementById("OrangeCupCoralVitality").value;
+    OrangeCupCoralCost = document.getElementById("OrangeCupCoralCost").value;
+    OrangeCupCoralBonus = document.getElementById("OrangeCupCoralBonus").value;
+
+    BlueCabbageCoralVitality = document.getElementById("BlueCabbageCoralVitality").value;
+    BlueCabbageCoralCost = document.getElementById("BlueCabbageCoralCost").value;
+    BlueCabbageCoralBonus = document.getElementById("BlueCabbageCoralBonus").value;
+
+    GreenSpongodesVitality = document.getElementById("GreenSpongodesVitality").value;
+    GreenSpongodesCost = document.getElementById("GreenSpongodesCost").value;
+    GreenSpongodesBonus = document.getElementById("GreenSpongodesBonus").value;
+
+    GlowingSeaFlowerVitality = document.getElementById("GlowingSeaFlowerVitality").value;
+    GlowingSeaFlowerCost = document.getElementById("GlowingSeaFlowerCost").value;
+    GlowingSeaFlowerBonus = document.getElementById("GlowingSeaFlowerBonus").value;
+
+    SapphireSeaFanVitality = document.getElementById("SapphireSeaFanVitality").value;
+    SapphireSeaFanCost = document.getElementById("SapphireSeaFanCost").value;
+    SapphireSeaFanBonus = document.getElementById("SapphireSeaFanBonus").value;
+
+    RubyCabbageCoralVitality = document.getElementById("RubyCabbageCoralVitality").value;
+    RubyCabbageCoralCost = document.getElementById("RubyCabbageCoralCost").value;
+    RubyCabbageCoralBonus = document.getElementById("RubyCabbageCoralBonus").value;
+
+    StarHornCoralVitality = document.getElementById("StarHornCoralVitality").value;
+    StarHornCoralCost = document.getElementById("StarHornCoralCost").value;
+    StarHornCoralBonus = document.getElementById("StarHornCoralBonus").value;
+}
+
+function FormatInputNumberOnly(e) {
+    var value = e.value;
+    if (value.length == 0) {
+        return;
+    }
+    var array = value.split("");
+    value = value.substring(0, value.length - 1)
+    var charCode = array[array.length - 1].charCodeAt();
+    if (charCode >= 48 && charCode <= 57) {
+        return; // numbers
+    }
+
+    e.value = value;
+}
+
+function FormatInputAndStore(e) {
+    FormatInput(e);
+    GetCurrentVitality();
+    WriteCache();
+}
+
+function FormatInput(e) {
+    var value = e.value;
+
+    value = value.replace(/[^a-zA-Z0-9\.]/, "");
+    if(value.length != e.value.length){
+    e.value = value;
+    }
+    if (value.length == 0) {
+        return;
+    }
+    var array = value.split("");
+    var charCode = array[array.length - 1].charCodeAt();
+    value = value.substring(0, value.length - 1);
+    if (charCode >= 48 && charCode <= 57) {
+        if (array.length > 2) {
+            var secondToLast = array[array.length - 2].charCodeAt();
+            if (secondToLast >= 65 && secondToLast <= 90) {
+                e.value = value;
+            }
+        }
+        return; // numbers
+    }
+    if (array.length == 1) {
+        e.value = "";
+        return;
+    }
+    if (charCode == 46) {
+        if (array.length > 2) {
+            var secondToLast = array[array.length - 2].charCodeAt();
+            if (secondToLast >= 65 && secondToLast <= 90) {
+                e.value = value;
+            }
+        }
+        return;
+    }
+    if (charCode >= 65 && charCode <= 90) {
+
+        return; // capitals
+    }
+
+    if (charCode >= 97 && charCode <= 122) {
+        value = value + String.fromCharCode(charCode - 32);
+    }
+    e.value = value;
+}
+
+function UnitTest() {
+    if (window.location.href.indexOf("g2384") >= 0) {
+        return;
+    }
+    console.log("Get letters difference, A, A", GetLettersDifference("A", "A") == 0);
+    console.log("Get letters difference, A, C", GetLettersDifference("A", "C") == -2);
+    console.log("Get letters difference, A, ", GetLettersDifference("A", "") == 1);
+    console.log("Get letters difference, A, AA", GetLettersDifference("A", "AA") == -26);
+    console.log("Get letters difference, AJ, AI", GetLettersDifference("AJ", "AI") == 1);
+    console.log("Get max letters, A, AA", GetMax("A", "AA") == "AA");
+    console.log("Get max letters, A, B", GetMax("A", "B") == "B");
+    console.log("Get max letters, A, A", GetMax("A", "A") == "A");
+    console.log("Get max letters, A, ", GetMax("A", "") == "A");
+    console.log("Convert letter to number, A", ConvertLetterToNumber("A") == 1);
+    console.log("Convert letter to number, AA", ConvertLetterToNumber("AA") == 27);
+    console.log("Convert letter to number, AB", ConvertLetterToNumber("AB") == 28);
+    console.log("Convert number to letter, 1", ConvertNumberToLetter(1) == "A");
+    console.log("Convert number to letter, 28", ConvertNumberToLetter(28) == "AB");
+    console.log("Add letters, A, A", AddLetters("A", "A") == "B");
+    console.log("Add letters, A, AA", AddLetters("A", "AA") == "AB");
+    console.log("Add letters, A, Z", AddLetters("A", "Z") == "AA");
+    console.log("Add LetterNumbers, 1A, 2A", AddLetterNumbers("1A", "2A") == "3A");
+    console.log("Add LetterNumbers, 1A, 999A", AddLetterNumbers("1A", "999A") == "1B");
+    console.log("Add LetterNumbers, 1A, 1B", AddLetterNumbers("1A", "1B") == "1.001B");
+    console.log("Add LetterNumbers, 1A, 1", AddLetterNumbers("1A", "1") == "1.001A");
+    console.log("Add LetterNumbers, 1.828AJ, 493.005AH", AddLetterNumbers("1.828AJ", "493.005AH") == "1.8284930050000001AJ");
+    console.log("Multiply LetterNumbers, 1A, 60", MultiplyLetterNumbers("1A", "60") == "60A");
+    console.log("Multiply LetterNumbers, 1000AA, 60", MultiplyLetterNumbers("1000AA", "60") == "60AB");
+    console.log("Multiply LetterNumbers, 0, 60", MultiplyLetterNumbers("0", "60") == "0");
+    console.log("Get max LetterNumber, 0, 60", GetMaxLetterNumber("0", "60") == "60");
+    console.log("Get max LetterNumber, 1A, 60", GetMaxLetterNumber("1A", "60") == "1A");
+    console.log("Get max LetterNumber, 0.51A, 500", GetMaxLetterNumber("0.51A", "500") == "0.51A");
+    console.log("Get max LetterNumber, 0.51A, 530", GetMaxLetterNumber("0.51A", "530") == "530");
+    console.log("Get max LetterNumber, 0, 60, 1A", GetMaxFromArray(["0", "60", "1A"]) == "1A");
+    console.log("Divide LetterNumber, 1A, 2", DivideLetterNumbers("1A", "2") == 500);
+    console.log("Divide LetterNumber, 1AI, 2AK", DivideLetterNumbers("1AI", "2AK") == 5e-7);
+}
+UnitTest();
+
+function ConvertLetterToNumber(letter) {
+    if (letter == "") {
+        return 0;
+    }
+    var array = letter.split("");
+    var multiples = 1;
+    var result = 0;
+    for (var i = array.length - 1; i >= 0; i--) {
+        result += (array[i].charCodeAt() - 64) * multiples;
+        multiples *= 26;
+    }
+    return result;
+}
+
+function ConvertNumberToLetter(number) {
+    var result = "";
+    while (number > 0) {
+        var remain = number % 26;
+        var number = Math.floor(number / 26);
+        result = String.fromCharCode(remain + 64) + result;
+    }
+    return result;
+}
+
+function AddLetters(letter1, letter2) {
+    var num1 = ConvertLetterToNumber(letter1);
+    var num2 = ConvertLetterToNumber(letter2);
+    return ConvertNumberToLetter(num1 + num2);
+}
+
+function GetLettersDifference(letter1, letter2) {
+    var num1 = ConvertLetterToNumber(letter1);
+    var num2 = ConvertLetterToNumber(letter2);
+    return num1 - num2;
+}
+
+function GetMaxFromArray(array) {
+    if (array.length == 0) {
+        return;
+    }
+    if (array.length == 1) {
+        return array[0];
+    }
+    var maxNumber = GetMaxLetterNumber(array[0], array[1])
+
+    for (var i = 2; i < array.length; i++) {
+        maxNumber = GetMaxLetterNumber(maxNumber, array[i]);
+    }
+    return maxNumber;
+}
+
+function GetMaxLetterNumber(num1, num2) {
+    var num1Number = 0,
+        num1Letter = "",
+        num2Number = 0,
+        num2Letter = "";
+    if (num1 == null || num1 == "" || num1.toString().replace(/[0-9]/, "").length == num1.toString().length) {
+        num1 = ""
+    } else {
+        var num1Array = num1.match(/([0-9\.]+)([a-zA-Z]*)/);
+        num1Number = parseFloat(num1Array[1]),
+            num1Letter = num1Array[2];
+    }
+    if (num2 == null || num2 == "" || num2.toString().replace(/[0-9]/, "").length == num2.toString().length) {
+        num2 = ""
+    } else {
+        var num2Array = num2.match(/([0-9\.]+)([a-zA-Z]*)/);
+        num2Number = parseFloat(num2Array[1]),
+            num2Letter = num2Array[2];
+    }
+
+    var letterDifference = GetLettersDifference(num1Letter, num2Letter);
+    if (letterDifference > 0) {
+        while (letterDifference > 0) {
+            num1Number = num1Number * 1000;
+            if (num1Number >= num2Number) {
+                return num1;
+            }
+            letterDifference--;
+        }
+    }
+    if (letterDifference < 0) {
+        return num2;
+    }
+    if (num1Number > num2Number) {
+        return num1;
+    }
+    return num2;
+}
+
+function GetMax(letter1, letter2) {
+    var array1 = letter1.split("");
+    var array2 = letter2.split("");
+
+    if (letter1 == "") {
+        array1 = new Array();
+    }
+    if (letter2 == "") {
+        array2 = new Array();
+    }
+
+    if (array1.length < array2.length) {
+        return letter2;
+    } else if (array1.length > array2.length) {
+        return letter1;
+    }
+
+    for (var i = 0; i < array1.length; i++) {
+        if (array1[i].charCodeAt() > array2[i].charCodeAt()) {
+            return letter1;
+        } else if (array1[i].charCodeAt() < array2[i].charCodeAt()) {
+            return letter2;
+        }
+    }
+    return letter1;
+}
+
+function GetNextLetter(letter) {
+    if (letter == "") {
+        return "A";
+    }
+
+    return AddLetters(letter, "A");
+}
+
+function DivideLetterNumbers(num1, num2) {
+    var num1Number = 0,
+        num1Letter = "",
+        num2Number = 0,
+        num2Letter = "";
+    if (num1 == null || num1 == "") {
+        num1 = ""
+    } else {
+        var num1Array = num1.match(/([0-9\.]+)([a-zA-Z]*)/);
+        num1Number = parseFloat(num1Array[1]),
+            num1Letter = num1Array[2];
+    }
+    if (num2 == null || num2 == "") {
+        num2 = ""
+    } else {
+        var num2Array = num2.match(/([0-9\.]+)([a-zA-Z]*)/);
+        num2Number = parseFloat(num2Array[1]),
+            num2Letter = num2Array[2];
+    }
+    if (num2Number == 0 || num1Number == 0) {
+        return 0;
+    }
+
+    var letterDifference = GetLettersDifference(num1Letter, num2Letter);
+    var numberDivision = (num1Number / num2Number);
+    if (letterDifference == 0) {
+        return numberDivision;
+    }
+    while (letterDifference > 0) {
+        numberDivision *= 1000;
+        letterDifference--;
+    }
+    while (letterDifference < 0) {
+        numberDivision /= 1000;
+        letterDifference++;
+    }
+    return numberDivision;
+
+}
+
+function MultiplyLetterNumbers(num1, num2) {
+    var num1Number = 0,
+        num1Letter = "";
+    if (num1 == null || num1 == "") {
+        num1 = ""
+    } else {
+        var num1Array = num1.match(/([0-9\.]+)([a-zA-Z]*)/);
+        num1Number = parseFloat(num1Array[1]),
+            num1Letter = num1Array[2];
+    }
+    var num2Array = num2.match(/([0-9\.]+)([a-zA-Z]*)/);
+    var num2Number = parseFloat(num2Array[1]),
+        num2Letter = num2Array[2];
+
+    // assume num2 is number only
+
+    num1Number = num1Number * num2Number;
+
+    while (num1Number >= 1000) {
+        num1Letter = GetNextLetter(num1Letter);
+        num1Number /= 1000;
+    }
+    if (num1Number == 0 && num1Letter != "") {
+        num1Number = 1;
+    }
+    return num1Number.toString() + num1Letter;
+}
+
+function AddLetterNumbers(num1, num2) {
+    var num1Number = 0,
+        num1Letter = "",
+        num2Number = 0,
+        num2Letter = "";
+    if (num1 == null || num1 == "") {
+        num1 = ""
+    } else {
+        var num1Array = num1.match(/([0-9\.]+)([a-zA-Z]*)/);
+        num1Number = parseFloat(num1Array[1]),
+            num1Letter = num1Array[2];
+
+    }
+    if (num2 == null || num2 == "") {
+        num2 = ""
+    } else {
+        var num2Array = num2.match(/([0-9\.]+)([a-zA-Z]*)/);
+        num2Number = parseFloat(num2Array[1]),
+            num2Letter = num2Array[2];
+    }
+
+    var letterDifference = GetLettersDifference(num1Letter, num2Letter);
+    var maxLetter = GetMax(num1Letter, num2Letter);
+    letterDifference = Math.abs(letterDifference);
+
+    if (maxLetter != num1Letter) {
+        while (letterDifference > 0) {
+            num1Number = num1Number / 1000;
+            letterDifference--;
+        }
+    } else if (maxLetter != num2Letter) {
+        while (letterDifference > 0) {
+            num2Number = num2Number / 1000;
+            letterDifference--;
+        }
+    }
+
+    var numberSum = num1Number + num2Number;
+    while (numberSum >= 1000) {
+        maxLetter = GetNextLetter(maxLetter);
+        numberSum -= 1000;
+    }
+    if (numberSum == 0 && maxLetter != "") {
+        numberSum = 1;
+    }
+    var result = numberSum.toString() + maxLetter;
+
+    return result;
+};
+
+function SetNextVitality() {
+    document.getElementById("LonelyCoralliteNext").value = LonelyCoralliteNext;
+    document.getElementById("LonelyCoralliteVitalityPerMinute").value = LonelyCoralliteVitalityPerMinute;
+    document.getElementById("FragilStaghornCoralNext").value = FragilStaghornCoralNext;
+    document.getElementById("FragilStaghornCoralVitalityPerMinute").value = FragilStaghornCoralVitalityPerMinute;
+    document.getElementById("FreshSeaweedNext").value = FreshSeaweedNext;
+    document.getElementById("FreshSeaweedVitalityPerMinute").value = FreshSeaweedVitalityPerMinute;
+    document.getElementById("RedSeaFanNext").value = RedSeaFanNext;
+    document.getElementById("RedSeaFanVitalityPerMinute").value = RedSeaFanVitalityPerMinute;
+    document.getElementById("MysteriousStarfishNext").value = MysteriousStarfishNext;
+    document.getElementById("MysteriousStarfishVitalityPerMinute").value = MysteriousStarfishVitalityPerMinute;
+    document.getElementById("WhiteAnemoneNext").value = WhiteAnemoneNext;
+    document.getElementById("WhiteAnemoneVitalityPerMinute").value = WhiteAnemoneVitalityPerMinute;
+    document.getElementById("PearlyAnemoneNext").value = PearlyAnemoneNext;
+    document.getElementById("PearlyAnemoneVitalityPerMinute").value = PearlyAnemoneVitalityPerMinute;
+    document.getElementById("CactusCoralNext").value = CactusCoralNext;
+    document.getElementById("CactusCoralVitalityPerMinute").value = CactusCoralVitalityPerMinute;
+    document.getElementById("OrangeCupCoralNext").value = OrangeCupCoralNext;
+    document.getElementById("OrangeCupCoralVitalityPerMinute").value = OrangeCupCoralVitalityPerMinute;
+    document.getElementById("BlueCabbageCoralNext").value = BlueCabbageCoralNext;
+    document.getElementById("BlueCabbageCoralVitalityPerMinute").value = BlueCabbageCoralVitalityPerMinute;
+    document.getElementById("GreenSpongodesNext").value = GreenSpongodesNext;
+    document.getElementById("GreenSpongodesVitalityPerMinute").value = GreenSpongodesVitalityPerMinute;
+    document.getElementById("GlowingSeaFlowerNext").value = GlowingSeaFlowerNext;
+    document.getElementById("GlowingSeaFlowerVitalityPerMinute").value = GlowingSeaFlowerVitalityPerMinute;
+    document.getElementById("SapphireSeaFanNext").value = SapphireSeaFanNext;
+    document.getElementById("SapphireSeaFanVitalityPerMinute").value = SapphireSeaFanVitalityPerMinute;
+    document.getElementById("RubyCabbageCoralNext").value = RubyCabbageCoralNext;
+    document.getElementById("RubyCabbageCoralVitalityPerMinute").value = RubyCabbageCoralVitalityPerMinute;
+    document.getElementById("StarHornCoralNext").value = StarHornCoralNext;
+    document.getElementById("StarHornCoralVitalityPerMinute").value = StarHornCoralVitalityPerMinute;
+}
+
+function PrintResult() {
+    var array = [
+        LonelyCoralliteVitalityPerMinute,
+        FragilStaghornCoralVitalityPerMinute,
+        FreshSeaweedVitalityPerMinute,
+        RedSeaFanVitalityPerMinute,
+        MysteriousStarfishVitalityPerMinute,
+        WhiteAnemoneVitalityPerMinute,
+        PearlyAnemoneVitalityPerMinute,
+        CactusCoralVitalityPerMinute,
+        OrangeCupCoralVitalityPerMinute,
+        BlueCabbageCoralVitalityPerMinute,
+        GreenSpongodesVitalityPerMinute,
+        GlowingSeaFlowerVitalityPerMinute,
+        SapphireSeaFanVitalityPerMinute,
+        RubyCabbageCoralVitalityPerMinute,
+        StarHornCoralVitalityPerMinute
+    ];
+    var maxValue = Math.max.apply(Math, array);
+    var i = 0;
+    for (; i < array.length; i++) {
+        if (array[i] == maxValue) {
+            break;
+        }
+    }
+    var titles = document.getElementsByTagName("h3");
+    document.getElementById("result").innerHTML = "Recommended: " + titles[i].innerHTML + ": " + maxValue;
+}
+
+function CalculateNextVitality() {
+    GetCurrentVitality();
+    if (TapPerMinute == "") {
+        TapPerMinute = "0";
+    }
+    LonelyCoralliteNext = AddLetterNumbers(LonelyCoralliteVitality, LonelyCoralliteBonus);
+    LonelyCoralliteVitalityPerMinute = DivideLetterNumbers(MultiplyLetterNumbers(LonelyCoralliteBonus, TapPerMinute).toString(), LonelyCoralliteCost);
+    FragilStaghornCoralNext = AddLetterNumbers(FragilStaghornCoralVitality, FragilStaghornCoralBonus);
+    FragilStaghornCoralVitalityPerMinute = DivideLetterNumbers(MultiplyLetterNumbers(FragilStaghornCoralBonus, "60"), FragilStaghornCoralCost);
+    FreshSeaweedNext = AddLetterNumbers(FreshSeaweedVitality, FreshSeaweedBonus);
+    FreshSeaweedVitalityPerMinute = DivideLetterNumbers(MultiplyLetterNumbers(FreshSeaweedBonus, "60"), FreshSeaweedCost);
+    RedSeaFanNext = AddLetterNumbers(RedSeaFanVitality, RedSeaFanBonus);
+    RedSeaFanVitalityPerMinute = DivideLetterNumbers(MultiplyLetterNumbers(RedSeaFanBonus, "60"), RedSeaFanCost);
+    MysteriousStarfishNext = AddLetterNumbers(MysteriousStarfishVitality, MysteriousStarfishBonus);
+    MysteriousStarfishVitalityPerMinute = DivideLetterNumbers(MultiplyLetterNumbers(MysteriousStarfishBonus, "60"), MysteriousStarfishCost);
+    WhiteAnemoneNext = AddLetterNumbers(WhiteAnemoneVitality, WhiteAnemoneBonus);
+    WhiteAnemoneVitalityPerMinute = DivideLetterNumbers(MultiplyLetterNumbers(WhiteAnemoneBonus, "60"), WhiteAnemoneCost);
+    PearlyAnemoneNext = AddLetterNumbers(PearlyAnemoneVitality, PearlyAnemoneBonus);
+    PearlyAnemoneVitalityPerMinute = DivideLetterNumbers(MultiplyLetterNumbers(PearlyAnemoneBonus, "60"), PearlyAnemoneCost);
+    CactusCoralNext = AddLetterNumbers(CactusCoralVitality, CactusCoralBonus);
+    CactusCoralVitalityPerMinute = DivideLetterNumbers(MultiplyLetterNumbers(CactusCoralBonus, "60"), CactusCoralCost);
+    OrangeCupCoralNext = AddLetterNumbers(OrangeCupCoralVitality, OrangeCupCoralBonus);
+    OrangeCupCoralVitalityPerMinute = DivideLetterNumbers(MultiplyLetterNumbers(OrangeCupCoralBonus, "60"), OrangeCupCoralCost);
+    BlueCabbageCoralNext = AddLetterNumbers(BlueCabbageCoralVitality, BlueCabbageCoralBonus);
+    BlueCabbageCoralVitalityPerMinute = DivideLetterNumbers(MultiplyLetterNumbers(BlueCabbageCoralBonus, "60"), BlueCabbageCoralCost);
+    GreenSpongodesNext = AddLetterNumbers(GreenSpongodesVitality, GreenSpongodesBonus);
+    GreenSpongodesVitalityPerMinute = DivideLetterNumbers(MultiplyLetterNumbers(GreenSpongodesBonus, "60"), GreenSpongodesCost);
+    GlowingSeaFlowerNext = AddLetterNumbers(GlowingSeaFlowerVitality, GlowingSeaFlowerBonus);
+    GlowingSeaFlowerVitalityPerMinute = DivideLetterNumbers(MultiplyLetterNumbers(GlowingSeaFlowerBonus, "60"), GlowingSeaFlowerCost);
+    SapphireSeaFanNext = AddLetterNumbers(SapphireSeaFanVitality, SapphireSeaFanBonus);
+    SapphireSeaFanVitalityPerMinute = DivideLetterNumbers(MultiplyLetterNumbers(SapphireSeaFanBonus, "60"), SapphireSeaFanCost);
+    RubyCabbageCoralNext = AddLetterNumbers(RubyCabbageCoralVitality, RubyCabbageCoralBonus);
+    RubyCabbageCoralVitalityPerMinute = DivideLetterNumbers(MultiplyLetterNumbers(RubyCabbageCoralBonus, "60"), RubyCabbageCoralCost);
+    StarHornCoralNext = AddLetterNumbers(StarHornCoralVitality, StarHornCoralBonus);
+    StarHornCoralVitalityPerMinute = DivideLetterNumbers(MultiplyLetterNumbers(StarHornCoralBonus, "60"), StarHornCoralCost);
+
+    SetNextVitality();
+    PrintResult();
+}
+</script>
+</html>
