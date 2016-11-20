@@ -1,12 +1,13 @@
 <html>
+<title>Which one to upgrade</title>
 <style>
     body {
         font-family: Arial, Helvetica, sans-serif;
-        max-width: 600px;
+        max-width: 800px;
         margin: 10 auto 0 auto;
     }
     
-    h3 {
+    .items {
         font-size: 16px;
     }
     
@@ -63,101 +64,168 @@
     input[type='button']:hover {
         color: #59aaf4;
     }
+    
+    table {
+        width: 100%
+    }
+    
+    td:first-child {
+        width: 160px;
+    }
+    
+    td:last-child {
+        width: 160px;
+    }
+    
+    tr:hover:not(:first-child) {
+        background-color: #eee;
+    }
+    
+    th {
+        font-weight: normal;
+    }
+    
+    #result {
+        margin: 5px;
+    }
 </style>
 
 <body onload="LoadCache()">
     <div id="content">
-        <h3>Lonely corallite(Tap)</h3> <br>
-        <label>Current Vitality Per Tap: </label><span><input type="text" id="LonelyCoralliteVitality" value="" onkeyup="FormatInputAndStore(this)" /></span>
-        <label>Next Level Cost: </label><span><input type="text" id="LonelyCoralliteCost" value="" onkeyup="FormatInputAndStore(this)" /></span>
-        <label>Next Level Bonus: </label><span><input type="text" id="LonelyCoralliteBonus" value="" onkeyup="FormatInputAndStore(this)" /></span>
-        <label>Tap Per Minute: </label><span><input type="text" id="TapPerMinute" value="" onkeyup="FormatInputNumberOnly(this)" /></span>
-        <label class="readOnly">Next Vitality: </label><span><input type="text" tabIndex="-1" readonly="true" id="LonelyCoralliteNext" value="" /></span>
-        <label class="readOnly">Bonus Vitality Per Minute/Cost: </label><span><input type="text" tabIndex="-1" readonly="true" id="LonelyCoralliteVitalityPerMinute" value="" /></span>
-        <h3>Fragil staghorn coral</h3>
-        <label>Current Vitality Per Sec: </label><span><input type="text" id="FragilStaghornCoralVitality" value="" onkeyup="FormatInputAndStore(this)" /></span>
-        <label>Next Level Cost: </label><span><input type="text" id="FragilStaghornCoralCost" value="" onkeyup="FormatInputAndStore(this)" /></span>
-        <label>Next Level Bonus: </label><span><input type="text" id="FragilStaghornCoralBonus" value="" onkeyup="FormatInputAndStore(this)" /></span>
-        <label class="readOnly">Next Vitality: </label><span><input type="text" tabIndex="-1" readonly="true" id="FragilStaghornCoralNext" value="" /></span>
-        <label class="readOnly">Bonus Vitality Per Minute/Cost: </label><span><input type="text" tabIndex="-1" readonly="true" id="FragilStaghornCoralVitalityPerMinute" value="" /></span>
-        <h3>Fresh seaweed</h3>
-        <label>Current Vitality Per Sec: </label><span><input type="text" id="FreshSeaweedVitality" value="" onkeyup="FormatInputAndStore(this)" /></span>
-        <label>Next Level Cost: </label><span><input type="text" id="FreshSeaweedCost" value="" onkeyup="FormatInputAndStore(this)" /></span>
-        <label>Next Level Bonus: </label><span><input type="text" id="FreshSeaweedBonus" value="" onkeyup="FormatInputAndStore(this)" /></span>
-        <label class="readOnly">Next Vitality: </label><span><input type="text"tabIndex="-1"  readonly="true" id="FreshSeaweedNext" value="" /></span>
-        <label class="readOnly">Bonus Vitality Per Minute/Cost: </label><span><input type="text"tabIndex="-1"  readonly="true" id="FreshSeaweedVitalityPerMinute" value="" /></span>
-        <h3>Red sea fan</h3>
-        <label>Current Vitality Per Sec: </label><span><input type="text" id="RedSeaFanVitality" value="" onkeyup="FormatInputAndStore(this)" /></span>
-        <label>Next Level Cost: </label><span><input type="text" id="RedSeaFanCost" value="" onkeyup="FormatInputAndStore(this)" /></span>
-        <label>Next Level Bonus: </label><span><input type="text" id="RedSeaFanBonus" value="" onkeyup="FormatInputAndStore(this)" /></span>
-        <label class="readOnly">Next Vitality: </label><span><input type="text" tabIndex="-1" readonly="true" id="RedSeaFanNext" value="" /></span>
-        <label class="readOnly">Bonus Vitality Per Minute/Cost: </label><span><input type="text" tabIndex="-1" readonly="true" id="RedSeaFanVitalityPerMinute" value="" /></span>
-        <h3>Mysterious starfish</h3>
-        <label>Current Vitality Per Sec: </label><span><input type="text" id="MysteriousStarfishVitality" value="" onkeyup="FormatInputAndStore(this)" /></span>
-        <label>Next Level Cost: </label><span><input type="text" id="MysteriousStarfishCost" value="" onkeyup="FormatInputAndStore(this)" /></span>
-        <label>Next Level Bonus: </label><span><input type="text" id="MysteriousStarfishBonus" value="" onkeyup="FormatInputAndStore(this)" /></span>
-        <label class="readOnly">Next Vitality: </label><span><input type="text" tabIndex="-1" readonly="true" id="MysteriousStarfishNext" value="" /></span>
-        <label class="readOnly">Bonus Vitality Per Minute/Cost: </label><span><input type="text"tabIndex="-1"  readonly="true" id="MysteriousStarfishVitalityPerMinute" value="" /></span>
-        <h3>White anemone</h3>
-        <label>Current Vitality Per Sec: </label><span><input type="text" id="WhiteAnemoneVitality" value="" onkeyup="FormatInputAndStore(this)" /></span>
-        <label>Next Level Cost: </label><span><input type="text" id="WhiteAnemoneCost" value="" onkeyup="FormatInputAndStore(this)" /></span>
-        <label>Next Level Bonus: </label><span><input type="text" id="WhiteAnemoneBonus" value="" onkeyup="FormatInputAndStore(this)" /></span>
-        <label class="readOnly">Next Vitality: </label><span><input type="text" tabIndex="-1" readonly="true" id="WhiteAnemoneNext" value="" /></span>
-        <label class="readOnly">Bonus Vitality Per Minute/Cost: </label><span><input type="text"tabIndex="-1"  readonly="true" id="WhiteAnemoneVitalityPerMinute" value="" /></span>
-        <h3>Pearly anemone</h3>
-        <label>Current Vitality Per Sec: </label><span><input type="text" id="PearlyAnemoneVitality" value="" onkeyup="FormatInputAndStore(this)" /></span>
-        <label>Next Level Cost: </label><span><input type="text" id="PearlyAnemoneCost" value="" onkeyup="FormatInputAndStore(this)" /></span>
-        <label>Next Level Bonus: </label><span><input type="text" id="PearlyAnemoneBonus" value="" onkeyup="FormatInputAndStore(this)" /></span>
-        <label class="readOnly">Next Vitality: </label><span><input type="text" tabIndex="-1" readonly="true" id="PearlyAnemoneNext" value="" /></span>
-        <label class="readOnly">Bonus Vitality Per Minute/Cost: </label><span><input type="text" tabIndex="-1" readonly="true" id="PearlyAnemoneVitalityPerMinute" value="" /></span>
-        <h3>Cactus coral</h3>
-        <label>Current Vitality Per Sec: </label><span><input type="text" id="CactusCoralVitality" value="" onkeyup="FormatInputAndStore(this)" /></span>
-        <label>Next Level Cost: </label><span><input type="text" id="CactusCoralCost" value="" onkeyup="FormatInputAndStore(this)" /></span>
-        <label>Next Level Bonus: </label><span><input type="text" id="CactusCoralBonus" value="" onkeyup="FormatInputAndStore(this)" /></span>
-        <label class="readOnly">Next Vitality: </label><span><input type="text" tabIndex="-1" readonly="true" id="CactusCoralNext" value="" /></span>
-        <label class="readOnly">Bonus Vitality Per Minute/Cost: </label><span><input type="text"tabIndex="-1"  readonly="true" id="CactusCoralVitalityPerMinute" value="" /></span>
-        <h3>Orange cup coral</h3>
-        <label>Current Vitality Per Sec: </label><span><input type="text" id="OrangeCupCoralVitality" value="" onkeyup="FormatInputAndStore(this)" /></span>
-        <label>Next Level Cost: </label><span><input type="text" id="OrangeCupCoralCost" value="" onkeyup="FormatInputAndStore(this)" /></span>
-        <label>Next Level Bonus: </label><span><input type="text" id="OrangeCupCoralBonus" value="" onkeyup="FormatInputAndStore(this)" /></span>
-        <label class="readOnly">Next Vitality: </label><span><input type="text" tabIndex="-1" readonly="true" id="OrangeCupCoralNext" value="" /></span>
-        <label class="readOnly">Bonus Vitality Per Minute/Cost: </label><span><input type="text"tabIndex="-1" readonly="true" id="OrangeCupCoralVitalityPerMinute" value="" /></span>
-        <h3>Blue cabbage coral</h3>
-        <label>Current Vitality Per Sec: </label><span><input type="text" id="BlueCabbageCoralVitality" value="" onkeyup="FormatInputAndStore(this)" /></span>
-        <label>Next Level Cost: </label><span><input type="text" id="BlueCabbageCoralCost" value="" onkeyup="FormatInputAndStore(this)" /></span>
-        <label>Next Level Bonus: </label><span><input type="text" id="BlueCabbageCoralBonus" value="" onkeyup="FormatInputAndStore(this)" /></span>
-        <label class="readOnly">Next Vitality: </label><span><input type="text"tabIndex="-1"  readonly="true" id="BlueCabbageCoralNext" value="" /></span>
-        <label class="readOnly">Bonus Vitality Per Minute/Cost: </label><span><input type="text"tabIndex="-1"  readonly="true" id="BlueCabbageCoralVitalityPerMinute" value="" /></span>
-        <h3>Green spongodes</h3>
-        <label>Current Vitality Per Sec: </label><span><input type="text" id="GreenSpongodesVitality" value="" onkeyup="FormatInputAndStore(this)" /></span>
-        <label>Next Level Cost: </label><span><input type="text" id="GreenSpongodesCost" value="" onkeyup="FormatInputAndStore(this)" /></span>
-        <label>Next Level Bonus: </label><span><input type="text" id="GreenSpongodesBonus" value="" onkeyup="FormatInputAndStore(this)" /></span>
-        <label class="readOnly">Next Vitality: </label><span><input type="text" tabIndex="-1" readonly="true" id="GreenSpongodesNext" value="" /></span>
-        <label class="readOnly">Bonus Vitality Per Minute/Cost: </label><span><input type="text"tabIndex="-1"  readonly="true" id="GreenSpongodesVitalityPerMinute" value="" /></span>
-        <h3>Glowing sea flower</h3>
-        <label>Current Vitality Per Sec: </label><span><input type="text" id="GlowingSeaFlowerVitality" value="" onkeyup="FormatInputAndStore(this)" /></span>
-        <label>Next Level Cost: </label><span><input type="text" id="GlowingSeaFlowerCost" value="" onkeyup="FormatInputAndStore(this)" /></span>
-        <label>Next Level Bonus: </label><span><input type="text" id="GlowingSeaFlowerBonus" value="" onkeyup="FormatInputAndStore(this)" /></span>
-        <label class="readOnly">Next Vitality: </label><span><input type="text" tabIndex="-1" readonly="true" id="GlowingSeaFlowerNext" value="" /></span>
-        <label class="readOnly">Bonus Vitality Per Minute/Cost: </label><span><input type="text"tabIndex="-1"  readonly="true" id="GlowingSeaFlowerVitalityPerMinute" value="" /></span>
-        <h3>Sapphire sea fan</h3>
-        <label>Current Vitality Per Sec: </label><span><input type="text" id="SapphireSeaFanVitality" value="" onkeyup="FormatInputAndStore(this)" /></span>
-        <label>Next Level Cost: </label><span><input type="text" id="SapphireSeaFanCost" value="" onkeyup="FormatInputAndStore(this)" /></span>
-        <label>Next Level Bonus: </label><span><input type="text" id="SapphireSeaFanBonus" value="" onkeyup="FormatInputAndStore(this)" /></span>
-        <label class="readOnly">Next Vitality: </label><span><input type="text" tabIndex="-1" readonly="true" id="SapphireSeaFanNext" value="" /></span>
-        <label class="readOnly">Bonus Vitality Per Minute/Cost: </label><span><input type="text"tabIndex="-1"  readonly="true" id="SapphireSeaFanVitalityPerMinute" value="" /></span>
-        <h3>Ruby cabbage coral</h3>
-        <label>Current Vitality Per Sec: </label><span><input type="text" id="RubyCabbageCoralVitality" value="" onkeyup="FormatInputAndStore(this)" /></span>
-        <label>Next Level Cost: </label><span><input type="text" id="RubyCabbageCoralCost" value="" onkeyup="FormatInputAndStore(this)" /></span>
-        <label>Next Level Bonus: </label><span><input type="text" id="RubyCabbageCoralBonus" value="" onkeyup="FormatInputAndStore(this)" /></span>
-        <label class="readOnly">Next Vitality: </label><span><input type="text"tabIndex="-1"  readonly="true" id="RubyCabbageCoralNext" value="" /></span>
-        <label class="readOnly">Bonus Vitality Per Minute/Cost: </label><span><input type="text"tabIndex="-1"  readonly="true" id="RubyCabbageCoralVitalityPerMinute" value="" /></span>
-        <h3>Star horn coral</h3>
-        <label>Current Vitality Per Sec: </label><span><input type="text" id="StarHornCoralVitality" value="" onkeyup="FormatInputAndStore(this)" /></span>
-        <label>Next Level Cost: </label><span><input type="text" id="StarHornCoralCost" value="" onkeyup="FormatInputAndStore(this)" /></span>
-        <label>Next Level Bonus: </label><span><input type="text" id="StarHornCoralBonus" value="" onkeyup="FormatInputAndStore(this)" /></span>
-        <label class="readOnly">Next Vitality: </label><span><input type="text"tabIndex="-1"  readonly="true" id="StarHornCoralNext" value="" /></span>
-        <label class="readOnly">Bonus Vitality Per Minute/Cost: </label><span><input type="text"tabIndex="-1"  readonly="true" id="StarHornCoralVitalityPerMinute" value="" /></span>
+        <p>
+            Efficiency = (Bonus Vitality Per Minute)/(Next Level Cost).<br> You can leave "Current Vitality" and "Next Vitality"
+            blank<br>
+        </p>
+        <label>Auto tap per minute:</label><span><input type="text"id="TapPerMinute" onkeyup="FormatInputNumberOnly(this)"></span>
+        <table>
+            <tr>
+                <th></th>
+                <th>Current Vitality</th>
+                <th>Next Level Cost</th>
+                <th>Next Level Bonus</th>
+                <th>Next Vitality</th>
+                <th>Efficiency</th>
+            </tr>
+            <tr>
+                <td class="items">Lonely corallite(Tap)</td>
+                <td><input type="text" id="LonelyCoralliteVitality" onkeyup="FormatInputAndStore(this)"></td>
+                <td><input type="text" id="LonelyCoralliteCost" onkeyup="FormatInputAndStore(this)"></td>
+                <td><input type="text" id="LonelyCoralliteBonus" onkeyup="FormatInputAndStore(this)"></td>
+                <td class="readOnly"><input type="text" tabIndex="-1" readonly="true" id="LonelyCoralliteNext" value=""></td>
+                <td class="readOnly"><input type="text" tabIndex="-1" readonly="true" id="LonelyCoralliteVitalityPerMinute" value=""></td>
+            </tr>
+            <tr>
+                <td class="items">Fragil staghorn coral</td>
+                <td><input type="text" id="FragilStaghornCoralVitality" onkeyup="FormatInputAndStore(this)"></td>
+                <td><input type="text" id="FragilStaghornCoralCost" onkeyup="FormatInputAndStore(this)"></td>
+                <td><input type="text" id="FragilStaghornCoralBonus" onkeyup="FormatInputAndStore(this)"></td>
+                <td class="readOnly"><input type="text" tabIndex="-1" readonly="true" id="FragilStaghornCoralNext" value=""></td>
+                <td class="readOnly"><input type="text" tabIndex="-1" readonly="true" id="FragilStaghornCoralVitalityPerMinute" value=""></td>
+            </tr>
+            <tr>
+                <td class="items">Fresh seaweed</td>
+                <td><input type="text" id="FreshSeaweedVitality" onkeyup="FormatInputAndStore(this)"></td>
+                <td><input type="text" id="FreshSeaweedCost" onkeyup="FormatInputAndStore(this)"></td>
+                <td><input type="text" id="FreshSeaweedBonus" onkeyup="FormatInputAndStore(this)"></td>
+                <td class="readOnly"><input type="text" tabIndex="-1" readonly="true" id="FreshSeaweedNext" value=""></td>
+                <td class="readOnly"><input type="text" tabIndex="-1" readonly="true" id="FreshSeaweedVitalityPerMinute" value=""></td>
+            </tr>
+            <tr>
+                <td class="items">Red sea fan</td>
+                <td><input type="text" id="RedSeaFanVitality" onkeyup="FormatInputAndStore(this)"></td>
+                <td><input type="text" id="RedSeaFanCost" onkeyup="FormatInputAndStore(this)"></td>
+                <td><input type="text" id="RedSeaFanBonus" onkeyup="FormatInputAndStore(this)"></td>
+                <td class="readOnly"><input type="text" tabIndex="-1" readonly="true" id="RedSeaFanNext" value=""></td>
+                <td class="readOnly"><input type="text" tabIndex="-1" readonly="true" id="RedSeaFanVitalityPerMinute" value=""></td>
+            </tr>
+            <tr>
+                <td class="items">Mysterious starfish</td>
+                <td><input type="text" id="MysteriousStarfishVitality" onkeyup="FormatInputAndStore(this)"></td>
+                <td><input type="text" id="MysteriousStarfishCost" onkeyup="FormatInputAndStore(this)"></td>
+                <td><input type="text" id="MysteriousStarfishBonus" onkeyup="FormatInputAndStore(this)"></td>
+                <td class="readOnly"><input type="text" tabIndex="-1" readonly="true" id="MysteriousStarfishNext" value=""></td>
+                <td class="readOnly"><input type="text" tabIndex="-1" readonly="true" id="MysteriousStarfishVitalityPerMinute" value=""></td>
+            </tr>
+            <tr>
+                <td class="items">White anemone</td>
+                <td><input type="text" id="WhiteAnemoneVitality" onkeyup="FormatInputAndStore(this)"></td>
+                <td><input type="text" id="WhiteAnemoneCost" onkeyup="FormatInputAndStore(this)"></td>
+                <td><input type="text" id="WhiteAnemoneBonus" onkeyup="FormatInputAndStore(this)"></td>
+                <td class="readOnly"><input type="text" tabIndex="-1" readonly="true" id="WhiteAnemoneNext" value=""></td>
+                <td class="readOnly"><input type="text" tabIndex="-1" readonly="true" id="WhiteAnemoneVitalityPerMinute" value=""></td>
+            </tr>
+            <tr>
+                <td class="items">Pearly anemone</td>
+                <td><input type="text" id="PearlyAnemoneVitality" onkeyup="FormatInputAndStore(this)"></td>
+                <td><input type="text" id="PearlyAnemoneCost" onkeyup="FormatInputAndStore(this)"></td>
+                <td><input type="text" id="PearlyAnemoneBonus" onkeyup="FormatInputAndStore(this)"></td>
+                <td class="readOnly"><input type="text" tabIndex="-1" readonly="true" id="PearlyAnemoneNext" value=""></td>
+                <td class="readOnly"><input type="text" tabIndex="-1" readonly="true" id="PearlyAnemoneVitalityPerMinute" value=""></td>
+            </tr>
+            <tr>
+                <td class="items">Cactus coral</td>
+                <td><input type="text" id="CactusCoralVitality" onkeyup="FormatInputAndStore(this)"></td>
+                <td><input type="text" id="CactusCoralCost" onkeyup="FormatInputAndStore(this)"></td>
+                <td><input type="text" id="CactusCoralBonus" onkeyup="FormatInputAndStore(this)"></td>
+                <td class="readOnly"><input type="text" tabIndex="-1" readonly="true" id="CactusCoralNext" value=""></td>
+                <td class="readOnly"><input type="text" tabIndex="-1" readonly="true" id="CactusCoralVitalityPerMinute" value=""></td>
+            </tr>
+            <tr>
+                <td class="items">Orange cup coral</td>
+                <td><input type="text" id="OrangeCupCoralVitality" onkeyup="FormatInputAndStore(this)"></td>
+                <td><input type="text" id="OrangeCupCoralCost" onkeyup="FormatInputAndStore(this)"></td>
+                <td><input type="text" id="OrangeCupCoralBonus" onkeyup="FormatInputAndStore(this)"></td>
+                <td class="readOnly"><input type="text" tabIndex="-1" readonly="true" id="OrangeCupCoralNext" value=""></td>
+                <td class="readOnly"><input type="text" tabIndex="-1" readonly="true" id="OrangeCupCoralVitalityPerMinute" value=""></td>
+            </tr>
+            <tr>
+                <td class="items">Blue cabbage coral</td>
+                <td><input type="text" id="BlueCabbageCoralVitality" onkeyup="FormatInputAndStore(this)"></td>
+                <td><input type="text" id="BlueCabbageCoralCost" onkeyup="FormatInputAndStore(this)"></td>
+                <td><input type="text" id="BlueCabbageCoralBonus" onkeyup="FormatInputAndStore(this)"></td>
+                <td class="readOnly"><input type="text" tabIndex="-1" readonly="true" id="BlueCabbageCoralNext" value=""></td>
+                <td class="readOnly"><input type="text" tabIndex="-1" readonly="true" id="BlueCabbageCoralVitalityPerMinute" value=""></td>
+            </tr>
+            <tr>
+                <td class="items">Green spongodes</td>
+                <td><input type="text" id="GreenSpongodesVitality" onkeyup="FormatInputAndStore(this)"></td>
+                <td><input type="text" id="GreenSpongodesCost" onkeyup="FormatInputAndStore(this)"></td>
+                <td><input type="text" id="GreenSpongodesBonus" onkeyup="FormatInputAndStore(this)"></td>
+                <td class="readOnly"><input type="text" tabIndex="-1" readonly="true" id="GreenSpongodesNext" value=""></td>
+                <td class="readOnly"><input type="text" tabIndex="-1" readonly="true" id="GreenSpongodesVitalityPerMinute" value=""></td>
+            </tr>
+            <tr>
+                <td class="items">Glowing sea flower</td>
+                <td><input type="text" id="GlowingSeaFlowerVitality" onkeyup="FormatInputAndStore(this)"></td>
+                <td><input type="text" id="GlowingSeaFlowerCost" onkeyup="FormatInputAndStore(this)"></td>
+                <td><input type="text" id="GlowingSeaFlowerBonus" onkeyup="FormatInputAndStore(this)"></td>
+                <td class="readOnly"><input type="text" tabIndex="-1" readonly="true" id="GlowingSeaFlowerNext" value=""></td>
+                <td class="readOnly"><input type="text" tabIndex="-1" readonly="true" id="GlowingSeaFlowerVitalityPerMinute" value=""></td>
+            </tr>
+            <tr>
+                <td class="items">Sapphire sea fan</td>
+                <td><input type="text" id="SapphireSeaFanVitality" onkeyup="FormatInputAndStore(this)"></td>
+                <td><input type="text" id="SapphireSeaFanCost" onkeyup="FormatInputAndStore(this)"></td>
+                <td><input type="text" id="SapphireSeaFanBonus" onkeyup="FormatInputAndStore(this)"></td>
+                <td class="readOnly"><input type="text" tabIndex="-1" readonly="true" id="SapphireSeaFanNext" value=""></td>
+                <td class="readOnly"><input type="text" tabIndex="-1" readonly="true" id="SapphireSeaFanVitalityPerMinute" value=""></td>
+            </tr>
+            <tr>
+                <td class="items">Ruby cabbage coral</td>
+                <td><input type="text" id="RubyCabbageCoralVitality" onkeyup="FormatInputAndStore(this)"></td>
+                <td><input type="text" id="RubyCabbageCoralCost" onkeyup="FormatInputAndStore(this)"></td>
+                <td><input type="text" id="RubyCabbageCoralBonus" onkeyup="FormatInputAndStore(this)"></td>
+                <td class="readOnly"><input type="text" tabIndex="-1" readonly="true" id="RubyCabbageCoralNext" value=""></td>
+                <td class="readOnly"><input type="text" tabIndex="-1" readonly="true" id="RubyCabbageCoralVitalityPerMinute" value=""></td>
+            </tr>
+            <tr>
+                <td class="items">Star horn coral</td>
+                <td><input type="text" id="StarHornCoralVitality" onkeyup="FormatInputAndStore(this)"></td>
+                <td><input type="text" id="StarHornCoralCost" onkeyup="FormatInputAndStore(this)"></td>
+                <td><input type="text" id="StarHornCoralBonus" onkeyup="FormatInputAndStore(this)"></td>
+                <td class="readOnly"><input type="text" tabIndex="-1" readonly="true" id="StarHornCoralNext" value=""></td>
+                <td class="readOnly"><input type="text" tabIndex="-1" readonly="true" id="StarHornCoralVitalityPerMinute" value=""></td>
+        </table>
     </div>
     <div id="result"></div>
     <input type="button" value="Which one to upgrade" onclick="CalculateNextVitality()" />
@@ -659,7 +727,7 @@ function DivideLetterNumbers(num1, num2) {
     }
 
     var letterDifference = GetLettersDifference(num1Letter, num2Letter);
-    var numberDivision = (num1Number / num2Number);
+    var numberDivision = num1Number / num2Number;
     if (letterDifference == 0) {
         return numberDivision;
     }
@@ -755,35 +823,35 @@ function AddLetterNumbers(num1, num2) {
 
 function SetNextVitality() {
     document.getElementById("LonelyCoralliteNext").value = LonelyCoralliteNext;
-    document.getElementById("LonelyCoralliteVitalityPerMinute").value = LonelyCoralliteVitalityPerMinute;
+    document.getElementById("LonelyCoralliteVitalityPerMinute").value = LonelyCoralliteVitalityPerMinute.toString().replace(/([0-9]{10})[0-9]+([eE][0-9\.\-]+)?/, "$1$2");
     document.getElementById("FragilStaghornCoralNext").value = FragilStaghornCoralNext;
-    document.getElementById("FragilStaghornCoralVitalityPerMinute").value = FragilStaghornCoralVitalityPerMinute;
+    document.getElementById("FragilStaghornCoralVitalityPerMinute").value = FragilStaghornCoralVitalityPerMinute.toString().replace(/([0-9]{10})[0-9]+([eE][0-9\.\-]+)?/, "$1$2");
     document.getElementById("FreshSeaweedNext").value = FreshSeaweedNext;
-    document.getElementById("FreshSeaweedVitalityPerMinute").value = FreshSeaweedVitalityPerMinute;
+    document.getElementById("FreshSeaweedVitalityPerMinute").value = FreshSeaweedVitalityPerMinute.toString().replace(/([0-9]{10})[0-9]+([eE][0-9\.\-]+)?/, "$1$2");
     document.getElementById("RedSeaFanNext").value = RedSeaFanNext;
-    document.getElementById("RedSeaFanVitalityPerMinute").value = RedSeaFanVitalityPerMinute;
+    document.getElementById("RedSeaFanVitalityPerMinute").value = RedSeaFanVitalityPerMinute.toString().replace(/([0-9]{10})[0-9]+([eE][0-9\.\-]+)?/, "$1$2");
     document.getElementById("MysteriousStarfishNext").value = MysteriousStarfishNext;
-    document.getElementById("MysteriousStarfishVitalityPerMinute").value = MysteriousStarfishVitalityPerMinute;
+    document.getElementById("MysteriousStarfishVitalityPerMinute").value = MysteriousStarfishVitalityPerMinute.toString().replace(/([0-9]{10})[0-9]+([eE][0-9\.\-]+)?/, "$1$2");
     document.getElementById("WhiteAnemoneNext").value = WhiteAnemoneNext;
-    document.getElementById("WhiteAnemoneVitalityPerMinute").value = WhiteAnemoneVitalityPerMinute;
+    document.getElementById("WhiteAnemoneVitalityPerMinute").value = WhiteAnemoneVitalityPerMinute.toString().replace(/([0-9]{10})[0-9]+([eE][0-9\.\-]+)?/, "$1$2");
     document.getElementById("PearlyAnemoneNext").value = PearlyAnemoneNext;
-    document.getElementById("PearlyAnemoneVitalityPerMinute").value = PearlyAnemoneVitalityPerMinute;
+    document.getElementById("PearlyAnemoneVitalityPerMinute").value = PearlyAnemoneVitalityPerMinute.toString().replace(/([0-9]{10})[0-9]+([eE][0-9\.\-]+)?/, "$1$2");
     document.getElementById("CactusCoralNext").value = CactusCoralNext;
-    document.getElementById("CactusCoralVitalityPerMinute").value = CactusCoralVitalityPerMinute;
+    document.getElementById("CactusCoralVitalityPerMinute").value = CactusCoralVitalityPerMinute.toString().replace(/([0-9]{10})[0-9]+([eE][0-9\.\-]+)?/, "$1$2");
     document.getElementById("OrangeCupCoralNext").value = OrangeCupCoralNext;
-    document.getElementById("OrangeCupCoralVitalityPerMinute").value = OrangeCupCoralVitalityPerMinute;
+    document.getElementById("OrangeCupCoralVitalityPerMinute").value = OrangeCupCoralVitalityPerMinute.toString().replace(/([0-9]{10})[0-9]+([eE][0-9\.\-]+)?/, "$1$2");
     document.getElementById("BlueCabbageCoralNext").value = BlueCabbageCoralNext;
-    document.getElementById("BlueCabbageCoralVitalityPerMinute").value = BlueCabbageCoralVitalityPerMinute;
+    document.getElementById("BlueCabbageCoralVitalityPerMinute").value = BlueCabbageCoralVitalityPerMinute.toString().replace(/([0-9]{10})[0-9]+([eE][0-9\.\-]+)?/, "$1$2");
     document.getElementById("GreenSpongodesNext").value = GreenSpongodesNext;
-    document.getElementById("GreenSpongodesVitalityPerMinute").value = GreenSpongodesVitalityPerMinute;
+    document.getElementById("GreenSpongodesVitalityPerMinute").value = GreenSpongodesVitalityPerMinute.toString().replace(/([0-9]{10})[0-9]+([eE][0-9\.\-]+)?/, "$1$2");
     document.getElementById("GlowingSeaFlowerNext").value = GlowingSeaFlowerNext;
-    document.getElementById("GlowingSeaFlowerVitalityPerMinute").value = GlowingSeaFlowerVitalityPerMinute;
+    document.getElementById("GlowingSeaFlowerVitalityPerMinute").value = GlowingSeaFlowerVitalityPerMinute.toString().replace(/([0-9]{10})[0-9]+([eE][0-9\.\-]+)?/, "$1$2");
     document.getElementById("SapphireSeaFanNext").value = SapphireSeaFanNext;
-    document.getElementById("SapphireSeaFanVitalityPerMinute").value = SapphireSeaFanVitalityPerMinute;
+    document.getElementById("SapphireSeaFanVitalityPerMinute").value = SapphireSeaFanVitalityPerMinute.toString().replace(/([0-9]{10})[0-9]+([eE][0-9\.\-]+)?/, "$1$2");
     document.getElementById("RubyCabbageCoralNext").value = RubyCabbageCoralNext;
-    document.getElementById("RubyCabbageCoralVitalityPerMinute").value = RubyCabbageCoralVitalityPerMinute;
+    document.getElementById("RubyCabbageCoralVitalityPerMinute").value = RubyCabbageCoralVitalityPerMinute.toString().replace(/([0-9]{10})[0-9]+([eE][0-9\.\-]+)?/, "$1$2");
     document.getElementById("StarHornCoralNext").value = StarHornCoralNext;
-    document.getElementById("StarHornCoralVitalityPerMinute").value = StarHornCoralVitalityPerMinute;
+    document.getElementById("StarHornCoralVitalityPerMinute").value = StarHornCoralVitalityPerMinute.toString().replace(/([0-9]{10})[0-9]+([eE][0-9\.\-]+)?/, "$1$2");
 }
 
 function PrintResult() {
@@ -811,8 +879,9 @@ function PrintResult() {
             break;
         }
     }
-    var titles = document.getElementsByTagName("h3");
-    document.getElementById("result").innerHTML = "Recommended: " + titles[i].innerHTML + ": " + maxValue;
+    console.log(i, maxValue);
+    var titles = document.getElementsByClassName("items");
+    document.getElementById("result").innerHTML = "Recommend <strong>" + titles[i].innerHTML + "</strong>: " + maxValue;
 }
 
 function CalculateNextVitality() {
