@@ -3,6 +3,7 @@
 <meta charset='utf-8'>
 <style>body{font-family:consolas}
 .g{display:block;color:#888;}
+.complimentary{color:#888;display:inline-block;margin-left:10px;}
 .red{background-color:#eee;}
 .btn{margin: 10px 10px;
 padding: 5px 8px;
@@ -55,10 +56,7 @@ function search() {
         var s2 = s.replace(/\./g, '[a-z]')
 		s2 = s2.replace(/[0-9]/g, '[a-z]');
         var s4 = s.replace('-', '');
-        
 		var smatch = s.match(/\[[^\[\]]+\][\+\*]?/g);
-        //console.log(s);
-        //console.log(smatch);
         if(smatch != null){
             for(var i=0;i<smatch.length;i++){
                 //s = s.replace(smatch[i], i.toString());
@@ -93,7 +91,6 @@ function search() {
                 for(i=0;i<comb.length;i++){
                 var combiLen=comb[i].length;
                     if(combiLen>2 && combiLen<=13){
-                  //      console.log(JSON.stringify(sortedComb))
                         sortedComb[combiLen-3]+=comb[i].split("").sort().join("")+',';
                     }
                 }
@@ -125,7 +122,8 @@ function search() {
                         }
                     }
                 }
-                f = f1.concat(f)
+                f = f1.concat(f);
+                f = GetComplimentary(f, scrabbleArr);
             }else{
                 var s_ = a[len[s_len]];
                 var array = s_.split(',');
@@ -184,7 +182,10 @@ function search() {
 		var f = []
         var dict = d;
         var dictlen = lend
-        if(jpw){dict = jp;dictlen=lenjp;}
+        if(jpw){
+            dict = jp;
+            dictlen=lenjp;
+        }
 		if(s.indexOf('-')<0){
 			var s_ = dict[dictlen[s_len]];
 			var array = s_.split(',');
@@ -250,6 +251,44 @@ function show(){
 	}else{
 		pp.style.display='';
 	}
+}
+
+function GetComplimentary(f, inputArray) {
+    fullWords = new Array(f.length);
+    var sortedWords = new Array(f.length);
+    for (var i = 0; i < f.length; i++) {
+        sortedWords[i] = f[i].split("").sort().join("");
+    }
+    console.log(sortedWords.join(";;;;"))
+    var input = inputArray.join("");
+    for (var i = 0; i < f.length; i++) {
+        fullWords[i] = f[i];
+        var cloneInputArray = input.split("");
+        console.log(cloneInputArray.join(", "))
+        var word = f[i].split("");
+        for (var j = 0; j < word.length; j++) {
+            var index = cloneInputArray.indexOf(word[j]);
+            if (index >= 0) {
+                cloneInputArray.splice(index, 1);
+            }
+        }
+        var leftLetters = cloneInputArray.sort().join("");
+        console.log(leftLetters)
+        var found = false;
+        for (var k = 0; k < sortedWords.length; k++) {
+            if (sortedWords[k] == leftLetters) {
+            fullWords[i]+="<div class='complimentary'>";
+            if(found){
+            fullWords[i]+=" / ";
+            }
+            else{  fullWords[i] += " + " ;
+            found = true;
+            }
+                fullWords[i] += f[k] + "</div>";
+            }
+        }
+    }
+    return fullWords;
 }
 
 function combinations(str) {
