@@ -853,7 +853,7 @@ function beautify(input, no_format, remove_comments, remove_report, check_alias,
 	
     input = input.replace(/@@semicolon/g, ";");
     input = input.replace(/@@[a-z]+/g, "");
-    SetKeywordCase(input, keywordcase, keyword, typename);
+    input = SetKeywordCase(input, keywordcase, keyword, typename);
     return input;
 }
 
