@@ -1,4 +1,3 @@
-
 <html>
 <head>
 <title>VHDL Beautifier, Formatter Online</title>
@@ -64,24 +63,8 @@ function selectText(element) {
 <p>
 Proper formatting makes code easier to read and understand.<br>
 Please make a backup before you replace your code!<br>
-<a href="https://github.com/g2384/g2384.github.io/issues" target="_blank">Report bugs if your code is not properly formatted</a>
+<a href="https://github.com/g2384/g2384.github.io/issues" target="_blank">Report bugs if your code is not properly formatted, please provide sample code which causes the failure</a>
 </p>
-<script>
-function fetchHeader(url, wch) {
-    try {
-        var req=new XMLHttpRequest();
-        req.open("HEAD", url, false);
-        req.send(null);
-        if(req.status== 200){
-            return req.getResponseHeader(wch);
-        }
-        else return false;
-    } catch(er) {
-        return er.message;
-    }
-}
-document.write("<p>Last modified: "+fetchHeader(location.href,'Last-Modified')+"</p>");
-</script>
 <textarea id="in" rows="10" wrap="off"></textarea><br>
 <form id="keyword">Keyword Case: 
 <label><input type="radio" name="keywordcase" value="UpperCase" checked="checked">UPPERCASE</label> 
@@ -156,6 +139,26 @@ document.write("<p>Last modified: "+fetchHeader(location.href,'Last-Modified')+"
 <script>
 isTesting = false;
 showUnitTests = window.location.href.indexOf("g2384") < 0;
+
+function fetchHeader(url, wch) {
+    try {
+        var req=new XMLHttpRequest();
+        req.open("HEAD", url, false);
+        req.send(null);
+        if(req.status== 200){
+            return req.getResponseHeader(wch);
+        }
+        else return false;
+    } catch(e) {
+        return "";
+    }
+}
+
+lastModifiedDate = fetchHeader(location.href,'Last-Modified');
+if(lastModifiedDate != ""){
+    document.write("<p>Last modified: " + lastModifiedDate + "</p>");
+}
+
 String.prototype.regexIndexOf = function(pattern, startIndex) {
     startIndex = startIndex || 0;
     var searchResult = this.substr(startIndex).search(pattern);
@@ -292,10 +295,10 @@ function SetKeywordCase(input, keywordcase, keyword, typename) {
     }
     if (keywordcase != "UpperCase") {
         for (var k = 0; k < keyword.length; k++) {
-            input = input.replace(new RegExp("([^a-zA-Z0-9_]|^)" + keyword[k] + "([^a-zA-Z0-9_]|$)", 'gi'), "$1" + keyword[k] + "$2");
+            input = input.replace(new RegExp("([^a-zA-Z0-9_@]|^)" + keyword[k] + "([^a-zA-Z0-9_]|$)", 'gi'), "$1" + keyword[k] + "$2");
         }
         for (var k = 0; k < typename.length; k++) {
-            input = input.replace(new RegExp("([^a-zA-Z0-9_]|^)" + typename[k] + "([^a-zA-Z0-9_]|$)", 'gi'), "$1" + typename[k] + "$2");
+            input = input.replace(new RegExp("([^a-zA-Z0-9_@]|^)" + typename[k] + "([^a-zA-Z0-9_]|$)", 'gi'), "$1" + typename[k] + "$2");
         }
     }
     return input;
@@ -352,7 +355,6 @@ function f() {
 }
 
 function beautify(input, no_format, remove_comments, remove_report, check_alias, sign_align, new_line, keywordcase, indentation, new_line_after_port) {
-
     keyword = ["ABS", "ACCESS", "AFTER", "ALIAS", "ALL", "AND", "ARCHITECTURE", "ARRAY", "ASSERT", "ATTRIBUTE", "BEGIN", "BLOCK", "BODY", "BUFFER", "BUS", "CASE", "COMPONENT", "CONFIGURATION", "CONSTANT", "CONTEXT", "COVER", "DISCONNECT", "DOWNTO", "DEFAULT", "ELSE", "ELSIF", "END", "ENTITY", "EXIT", "FAIRNESS", "FILE", "FOR", "FORCE", "FUNCTION", "GENERATE", "GENERIC", "GROUP", "GUARDED", "IF", "IMPURE", "IN", "INERTIAL", "INOUT", "IS", "LABEL", "LIBRARY", "LINKAGE", "LITERAL", "LOOP", "MAP", "MOD", "NAND", "NEW", "NEXT", "NOR", "NOT", "NULL", "OF", "ON", "OPEN", "OR", "OTHERS", "OUT", "PACKAGE", "PORT", "POSTPONED", "PROCEDURE", "PROCESS", "PROPERTY", "PROTECTED", "PURE", "RANGE", "RECORD", "REGISTER", "REJECT", "RELEASE", "REM", "REPORT", "RESTRICT", "RESTRICT_GUARANTEE", "RETURN", "ROL", "ROR", "SELECT", "SEQUENCE", "SEVERITY", "SHARED", "SIGNAL", "SLA", "SLL", "SRA", "SRL", "STRONG", "SUBTYPE", "THEN", "TO", "TRANSPORT", "TYPE", "UNAFFECTED", "UNITS", "UNTIL", "USE", "VARIABLE", "VMODE", "VPROP", "VUNIT", "WAIT", "WHEN", "WHILE", "WITH", "XNOR", "XOR"];
     var typename = ["BOOLEAN", "BIT", "CHARACTER", "INTEGER", "TIME", "NATURAL", "POSITIVE", "STRING"];
     input = input.replace(/(?:\r\n|\r|\n)/g, '\r\n');
@@ -485,6 +487,7 @@ function beautify(input, no_format, remove_comments, remove_report, check_alias,
     input = input.replace(/\r\n[ \t]+--\r\n/g, "\r\n");
     input = input.replace(/[ ]+/g, ' ');
     input = input.replace(/\r\n\r\n\r\n/g, '\r\n');
+    input = input.replace(/[ \t]+\)/g, ')');
     //if (remove_lines) {
     //    input = input.replace(/(\r\n)*[ \t]*\r\n/g, '\r\n');
     //}
@@ -549,6 +552,7 @@ function beautify(input, no_format, remove_comments, remove_report, check_alias,
         then_b = false,
         conditional_b = false,
         generic_map_b = false,
+        architecture_begin_b = false,
         case_indent = [0, 0, 0, 0, 0, 0, 0];
     var indent_start = [];
     for (i = 0; i < l; i++) {
@@ -590,7 +594,14 @@ function beautify(input, no_format, remove_comments, remove_report, check_alias,
                 }
             } else if (first_word == "BEGIN") {
                 if (begin_b) {
-                    tab_n = indent_start[indent_start.length - 1] - 1;
+                    if(architecture_begin_b){
+                        tab_n = indent_start[indent_start.length - 1] - 1;
+                        architecture_begin_b = false;
+                    }
+                    else{
+                        tab_n = indent_start[indent_start.length - 1];
+                        indent_start.push(tab_n + 1);
+                    }
                     //indent_start.pop();
                     back_tab = true;
                     begin_b = false;
@@ -602,6 +613,8 @@ function beautify(input, no_format, remove_comments, remove_report, check_alias,
                 } else {
                     back_tab = true;
                 }
+            } else if(first_word == "PROCESS") {
+                begin_b = true;
             } else if (str.indexOf(": PROCESS") >= 0) {
                 //back_tab = true;
                 tab_n = 1;
@@ -787,6 +800,7 @@ function beautify(input, no_format, remove_comments, remove_report, check_alias,
                 tab_n++;
                 indent_start.push(tab_n);
                 begin_b = true;
+                architecture_begin_b = true;
             } else if (first_word == "IF") {
                 if_b++;
                 tab_n++;
@@ -833,6 +847,8 @@ function beautify(input, no_format, remove_comments, remove_report, check_alias,
         }
     }
 	
+	input = SetKeywordCase(input, keywordcase, keyword, typename);
+	
     if (sign_align) {
         for (var k = 0; k < align_i; k++) {
             input = input.replace("@@align" + k, Array((align_max[k] - align[k] + 2)).join(" "));
@@ -853,7 +869,6 @@ function beautify(input, no_format, remove_comments, remove_report, check_alias,
 	
     input = input.replace(/@@semicolon/g, ";");
     input = input.replace(/@@[a-z]+/g, "");
-    input = SetKeywordCase(input, keywordcase, keyword, typename);
     return input;
 }
 
@@ -882,7 +897,7 @@ function UnitTest() {
     input = "entity TB_DISPLAY is\r\n-- port declarations\r\nend TB_DISPLAY;\r\n\r\narchitecture TEST of TB_DISPLAY is\r\n-- signal declarations\r\nbegin\r\n-- component instance(s)\r\nend TEST;";
     expected = "ENTITY TB_DISPLAY IS\r\n    -- port declarations\r\nEND TB_DISPLAY;\r\n\r\nARCHITECTURE TEST OF TB_DISPLAY IS\r\n    -- signal declarations\r\nBEGIN\r\n    -- component instance(s)\r\nEND TEST;";
     actual = beautify(input, no_format, remove_comments, remove_report, check_alias, sign_align, new_line, keywordcase, indentation, new_line_after_port);
-    console.log("ENTITY ARCHITECTURE", actual == expected);
+    console.log("ENTITY ARCHITECTURE", CompareString(actual, expected));
 
     input = "port map(\r\ninput_1 => input_1_sig,\r\ninput_2 => input_2_sig,\r\noutput => output_sig\r\n);";
     expected = "PORT MAP(\r\n    input_1  => input_1_sig, \r\n    input_2  => input_2_sig, \r\n    output   => output_sig\r\n);";
@@ -933,6 +948,11 @@ function UnitTest() {
     expected = "PROCESS xyx (vf, fr, \r\n             de -- comment\r\n             )";
     actual = beautify(input, no_format, remove_comments, remove_report, check_alias, sign_align, new_line, keywordcase, indentation, true);
     console.log("Align parameters in PROCESS", CompareString(actual, expected));
+	
+	input = "architecture a of b is\r\nbegin\r\n    process (w)\r\n    variable t : std_logic_vector (4 downto 0) ;\r\nbegin\r\n    a := (others => '0') ;\r\nend process ;\r\nend a;";
+    expected = "ARCHITECTURE a OF b IS\r\nBEGIN\r\n    PROCESS (w)\r\n    VARIABLE t : std_logic_vector (4 DOWNTO 0);\r\n    BEGIN\r\n        a := (OTHERS => '0');\r\n    END PROCESS;\r\nEND a;";
+    actual = beautify(input, no_format, remove_comments, remove_report, check_alias, sign_align, new_line, keywordcase, indentation, true);
+    console.log("Double BEGIN", CompareString(actual, expected));
 }
 
 function CompareString(s1, s2) {
@@ -940,7 +960,7 @@ function CompareString(s1, s2) {
     for (var i = 0; i < l; i++) {
         if (s1[i] != s2[i]) {
             var toEnd = Math.min(i + 50, l);
-            return '\ndifferent at ' + i.toString() + '\nactual: "' + s1.substring(i, toEnd) + '\nexpected: "' + s2.substring(i, toEnd) + '"' + "\nactual: " + s1;
+            return '\ndifferent at ' + i.toString() + '\nactual: "\n' + s1.substring(i, toEnd) + '\nexpected: "\n' + s2.substring(i, toEnd) + '"' + "\nactual: \n" + s1;
         }
     }
     return true;
