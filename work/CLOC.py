@@ -66,7 +66,10 @@ def start(includedFileType, exclude_file, excludeFileName):
                 n +=1
                 with open(f, "rb") as infile:
                     content = infile.readlines()
-                    count(content)
+                    if(content is str):
+                        count(content)
+                    else:
+                        count(str(content))
     else:
         for f in all_file:
             if(f!=file_name):
@@ -159,7 +162,7 @@ if __name__ == "__main__":
     sys.argv = ["anything.py",
                 "-t[cs]",
                 "-x[g.cs g.i.cs]",
-                "-if[Debug, Resources, Properties, Interface, Interfaces, Triangle]",
+                "-if[Debug, Resources, Properties, Interface, Interfaces, Release]",
                 "-p[nonCode]"]
     global includedFileType, excludedFolder, doPrintFileName, doCountNonCount
     global codeLine, emptyLine, commentLine, nonCodeLine, totalLine
@@ -168,7 +171,7 @@ if __name__ == "__main__":
     commentLine = 0
     nonCodeLine = 0
     totalLine = 0
-    doPrintFileName = False
+    doPrintFileName = True
     doCountNonCount = False
     f = ''
     includedFileType = []
@@ -207,7 +210,7 @@ if __name__ == "__main__":
         if a >= 0:
             b = s.find(']', a)
             i = s[a+4: b]
-            excludedFolder = re.split('[^a-z0-9A-Z\\\/]+', i)
+            excludedFolder = re.split('[^a-z0-9A-Z\\\/\.]+', i)
             for i in range(len(excludedFolder)):
                 if(excludedFolder[i].find('\\') != 0):
                     excludedFolder[i] = '\\'+excludedFolder[i] + "\\"
