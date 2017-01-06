@@ -17,19 +17,16 @@ def findAllFiles(path,all_file): # get all files in this dir, including subfolde
             for s in excludedFolder:
                 if(s in fn2):
                     excluded = True
-                    #print(fn)
                     break
             if excluded:
                 return all_file
             all_file = findAllFiles( fn , all_file)
         else:
-            #print fn
             excluded = False
             
             for s in excludedFolder:
                 if(s in fn2):
                     excluded = True
-                    #print(fn)
                     break
             if excluded:
                 return all_file
@@ -66,10 +63,7 @@ def start(includedFileType, exclude_file, excludeFileName):
                 n +=1
                 with open(f, "rb") as infile:
                     content = infile.readlines()
-                    if(content is str):
-                        count(content)
-                    else:
-                        count(str(content))
+                    count(content)
     else:
         for f in all_file:
             if(f!=file_name):
@@ -97,7 +91,8 @@ def count(arr):
     global codeLine, emptyLine, commentLine, nonCodeLine, totalLine
     totalLine+=len(arr)
     for i in arr:
-        chars = re.sub(r'[ \t\r\n]+','',i)
+        s = i.decode('utf-8')
+        chars = re.sub(r'[ \t\r\n]+','',s)
         if(len(chars) == 0):
             emptyLine += 1
             continue
@@ -162,7 +157,7 @@ if __name__ == "__main__":
     sys.argv = ["anything.py",
                 "-t[cs]",
                 "-x[g.cs g.i.cs]",
-                "-if[Debug, Resources, Properties, Interface, Interfaces, Release]",
+                "-if[Debug, Resources, Properties, Release]",
                 "-p[nonCode]"]
     global includedFileType, excludedFolder, doPrintFileName, doCountNonCount
     global codeLine, emptyLine, commentLine, nonCodeLine, totalLine
