@@ -38,7 +38,7 @@ border: 1px solid rgb(194, 194, 194);}
 // 10:proper noun
 // 11:name
 // 12:verb phrase
-lib1=[
+LibChars=[
 "你","0",
 '我','0',
 "好","2,3",
@@ -49,84 +49,81 @@ lib1=[
 '江',"4",
 '爱','1',
 ];
-lib2=["你","1001b",
-"好","1002b",
-"真","1022b",
-"可",'1011b,1021b,1031b,1131b',
-'乐','1012b,1032b,1132b',
-'非','1041b',
-'常','1042b',
-'聪','1051b',
-'明','1052b',
-'南','1081b,1091c',
-'京','1082b,1092c',
-'市','1093c,1111b',
-'长','1101b,1112b',
-'江','1102b',
-'大','1061b,1071b',
-'桥','1062b,1072b',
-'欢','1121b',
-'迎','1122b'];
-sec=["0,2,3","100",'101','6','11,12','0','6,12','0,12','12'];
-word=['102','2','103','3','104','2','105','3','106','5','107','6','110','10','108','8','109','8','111','7','112','1','113','6'];
+LibWords=["你","a12",
+"好","a22",
+"真","b22",
+"可",'10112,10212,10312,11312',
+'乐','10122,10322,11322',
+'非','10412',
+'常','10422',
+'聪','10512',
+'明','10522',
+'南','10812,10913',
+'京','10822,10923',
+'市','1093c,11112',
+'长','11012,11122',
+'江','11022',
+'大','10612,10712',
+'桥','10622,10722',
+'欢','11212',
+'迎','11222'];
+sec=["0,2,3","a",'101','6','11,12','0','6,12','0,12','12'];
+word=['b','2','103','3','104','2','105','3','106','5','107','6','110','10','108','8','109','8','111','7','112','1','113','6'];
 section=['6,6,6|6,6|8|10','6','2,2','2','6,7|8,7','7','7,4,5','11','11','0', '1,0|1,9|1,6', '12']
 sec_e=['pronoun','verb','adverb','adj','surname','given name','noun','title','place','object','proper noun','name', 'verb phrase']
-alphabet='0abc';
 section_reg=[];
 for(var i=0;i<section.length;i+=2){
 section_reg.push(new RegExp('(^|,)('+section[i]+')(,|$)'));
 console.log(new RegExp(section[i]))
 }
-function InfoSplit(a, t) {
-    var ll = a.length;
-    var l1 = a.substr(0, ll - 2);
-    var l2 = a.substr(ll - 2, 1);
-    var l3 = a.substr(ll - 1, 1);
-    var ln = alphabet.indexOf(l3).toString();
-    var expect = l1 + (parseInt(l2) + 1).toString() + l3;
-    var fin = l1 + ln + l3;
+function InfoSplit(currentChar, t) {
+    var len = currentChar.length;
+    var wordReferenceNumber = currentChar.substr(0, len - 2);
+    var positionInWord = currentChar.substr(len - 2, 1);
+    var wordLength = currentChar.substr(len - 1, 1);
+    var expectedNextChar = wordReferenceNumber + (parseInt(positionInWord) + 1).toString() + wordLength;
+    var endCharOfTheWord = wordReferenceNumber + wordLength + wordLength;
     if (t == 0) {
-        if (l2 == '1') {
-            return [l1, expect];
+        if (positionInWord == '1') {
+            return [wordReferenceNumber, expectedNextChar];
         } else {
             return [];
         }
     } else {
-        if (a == fin) {
-            return [l1, ''];
+        if (currentChar == endCharOfTheWord) {
+            return [wordReferenceNumber, ''];
         } else {
-            return [l1, expect];
+            return [wordReferenceNumber, expectedNextChar];
         }
     }
 }
 
 function parse() {
     var start = new Date().getTime();
-    var o = document.getElementById('in');
-    var s = o.value;
-    s = s.replace(/[，\n\r ]+/g, ' ');
-    s = s.replace(/ $/g, '');
+    var input = document.getElementById('in').value;
+    input = input.replace(/[，\n\r ]+/g, ' ');
+    input = input.replace(/ $/g, '');
     var info = '';
-    var a = s.split(' ');
+    var inputGroups = input.split(' ');
     //console.log(s,a)
-    for (var i = 0; i < a.length; i++) {
-        console.log(a[i])
+    for (var i = 0; i < inputGroups.length; i++) {
+        console.log(inputGroups[i])
         var b = [],
             w = [];
-        a1 = a[i].split('');
-        for (var j = 0; j < lib1.length; j += 2) {
-            if (lib1[j] == a1[0]) {
-                var liba = lib1[j + 1].split(',');
-                for (var k = 0; k < liba.length; k++) {
-                    b.push([liba[k], '']);
+        currentPhrase = inputGroups[i].split('');
+        for (var j = 0; j < LibChars.length; j += 2) {
+            if (LibChars[j] == currentPhrase[0]) {
+                var possibleCombinations = LibChars[j + 1].split(',');
+                for (var k = 0; k < possibleCombinations.length; k++) {
+                    b.push([possibleCombinations[k], '']);
                 }
             }
         }
-        for (var j = 0; j < lib2.length; j += 2) {
-            if (lib2[j] == a1[0]) {
-                var liba = lib2[j + 1].split(',')
-                for (var k = 0; k < liba.length; k++) {
-                    var ll = InfoSplit(liba[k], 0)
+        for (var j = 0; j < LibWords.length; j += 2) {
+            if (LibWords[j] == currentPhrase[0]) {
+                var possibleCombinations = LibWords[j + 1].split(',')
+                for (var k = 0; k < possibleCombinations.length; k++) {
+                    var ll = InfoSplit(possibleCombinations[k], 0)
                     b.push(ll)
                 }
             }
@@ -136,45 +133,37 @@ function parse() {
         var bl2 = 0;
         var bl = b.length;
         b_len.push(bl - bl2)
-        for (var k = 1; k < a1.length; k++) {
-            //for(var ii=0;ii<b.length;ii++){
-            //	console.log(ii + ' - ',b[ii].join(','))
-            //}
+        for (var k = 1; k < currentPhrase.length; k++) {
             for (var i2 = 0; i2 < bl; i2++) {
                 var bstr = b[i2][b[i2].length - 1];
                 var bcopy = b[i2].join(',');
                 bcopy = bcopy.split(',');
                 bcopy.pop();
                 if (bstr != '') {
-                    for (var j = 0; j < lib2.length; j += 2) {
-                        if (lib2[j] == a1[k]) {
-                            var liba = lib2[j + 1].split(',')
-                            for (var k2 = 0; k2 < liba.length; k2++) {
-                                if (bstr == liba[k2]) {
-                                    var ll = InfoSplit(liba[k2], 1)
-                                        //console.log(bcopy.concat(ll))
-                                    b.push(bcopy.concat(ll));
+                    for (var j = 0; j < LibWords.length; j += 2) {
+                        if (LibWords[j] == currentPhrase[k]) {
+                            var possibleCombinations = LibWords[j + 1].split(',')
+                            for (var k2 = 0; k2 < possibleCombinations.length; k2++) {
+                                if (bstr == possibleCombinations[k2]) {
+                                    b.push(bcopy.concat(InfoSplit(possibleCombinations[k2], 1)));
                                 }
                             }
                         }
                     }
                 } else {
-                    for (var j = 0; j < lib1.length; j += 2) {
-                        if (lib1[j] == a1[k]) {
-                            var liba = lib1[j + 1].split(',');
-                            for (var k2 = 0; k2 < liba.length; k2++) {
-                                b.push(bcopy.concat([liba[k2], '']));
+                    for (var j = 0; j < LibChars.length; j += 2) {
+                        if (LibChars[j] == currentPhrase[k]) {
+                            var possibleCombinations = LibChars[j + 1].split(',');
+                            for (var k2 = 0; k2 < possibleCombinations.length; k2++) {
+                                b.push(bcopy.concat([possibleCombinations[k2], '']));
                             }
                         }
                     }
-                    for (var j = 0; j < lib2.length; j += 2) {
-                        if (lib2[j] == a1[k]) {
-                            var liba = lib2[j + 1].split(',')
-                            for (var k2 = 0; k2 < liba.length; k2++) {
-                                //console.log(liba[k2])
-                                var ll = InfoSplit(liba[k2], 0)
-                                    //	console.log('new: ',liba[k2],bcopy.concat(ll))
-                                b.push(bcopy.concat(ll));
+                    for (var j = 0; j < LibWords.length; j += 2) {
+                        if (LibWords[j] == currentPhrase[k]) {
+                            var possibleCombinations = LibWords[j + 1].split(',')
+                            for (var k2 = 0; k2 < possibleCombinations.length; k2++) {
+                                b.push(bcopy.concat(InfoSplit(possibleCombinations[k2], 0)));
                             }
                         }
                     }
@@ -191,7 +180,7 @@ function parse() {
         //	console.log(ii + ' - ',b[ii].join(','))
         //}
         for (var j = 0; j < b.length; j++) {
-            if (b[j].length < a1.length + 1) {
+            if (b[j].length < currentPhrase.length + 1) {
                 b.shift();
                 j--;
             } else {
@@ -200,7 +189,7 @@ function parse() {
         }
         var bc = deepCopy(b);
         for (var j = 0; j < b.length; j++) {
-            if (b[j][a1.length] != '') {
+            if (b[j][currentPhrase.length] != '') {
                 b[j] = [];
                 bc[j] = [];
             }
@@ -242,7 +231,7 @@ function parse() {
         //    console.log(ii + ' - ',bc[ii].join(','))
         //}
 		
-        var str = check(b, a1, bc,bc2);
+        var str = check(b, currentPhrase, bc,bc2);
         if (str != '') {
             info += '<span class="sec">' + a[i] + '</span>:<br>' + str + '<br><br>';
         } else {
