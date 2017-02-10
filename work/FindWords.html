@@ -34,216 +34,289 @@ border: 1px solid rgb(194, 194, 194);}
 </style>
 <script src="FindWordsDict.js"></script>
 <script>
-var arr = [];
-var len = [-1, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
-var lend = [0, 0, 0, 0, 0, 1, 2];
-var lenjp = [0, 0, 0, 1, 2, 3, 4];
+var MaxWordLength = 100;
 
-function search() {
-    var s = document.getElementById('w').value;
-    var eng = document.getElementById('eng').checked;
-    var jpw = document.getElementById('jpw').checked;
-    var r_div = document.getElementById('r');
-    var final_s = '----------<br>';
-    var s_len = s.length;
+function Test() {
+    var text = "a12";
+    var result = FormatAndRegex(text, true);
+    CompareResultOfFormatAndRegex(text, result, "a..", 3, 3);
+
+    text = "a..";
+    result = FormatAndRegex(text, true);
+    CompareResultOfFormatAndRegex(text, result, "a..", 3, 3);
+
+    text = "-ing";
+    result = FormatAndRegex(text, true);
+    CompareResultOfFormatAndRegex(text, result, ".*ing", 3, MaxWordLength);
+
+    text = "k-ing";
+    result = FormatAndRegex(text, true);
+    CompareResultOfFormatAndRegex(text, result, "k.*ing", 4, MaxWordLength);
+
+    text = "(abcd)";
+    result = FormatAndRegex(text, true);
+    CompareResultOfFormatAndRegex(text, result, "[abcd]+", 1, MaxWordLength);
+
+    text = "[abcd]-e";
+    result = FormatAndRegex(text, true);
+    CompareResultOfFormatAndRegex(text, result, "[abcd].*e", 2, MaxWordLength);
+
+    text = "c[abcd]+";
+    result = FormatAndRegex(text, true);
+    CompareResultOfFormatAndRegex(text, result, "c[abcd]+", 2, MaxWordLength);
+
+    text = "[abcd]+";
+    result = FormatAndRegex(text, true);
+    CompareResultOfFormatAndRegex(text, result, "[abcd]+", 1, MaxWordLength);
+    
+    text = "AABB";
+    result = FormatAndRegex(text, false);
+    CompareResultOfFormatAndRegex(text, result, "....", 4, 4);
+
+    text = "[a.*]"
+    result = IsRegexStringValid(text);
+    Compare("IsRegexStringValid " + text, result, false);
+
+    text = "[ab]c"
+    result = IsRegexStringValid(text);
+    Compare("IsRegexStringValid " + text, result, true);
+
+    text = "(abc.*)+"
+    result = IsScrabbleStringValid(text);
+    Compare("IsScrabbleStringValid " + text, result, false);
+
+    text = "(abc)"
+    result = IsScrabbleStringValid(text);
+    Compare("IsScrabbleStringValid " + text, result, true);
+
+    text = "(abcd)"
+    result = GetScrabble(text, a);
+    Compare("GetScrabble " + text, result[0], "abc");
+
+    text = "(a:bc)"
+    result = GetScrabble(text, a);
+    Compare("GetScrabble " + text, result[0], "<span class=red>abc</span>");
+}
+
+function CompareResultOfFormatAndRegex(text, result, regexString, startLength, endLength) {
+    var noError = true;
+    if (result[0] != regexString) {
+        ConsoleLog("FormatAndRegex " + text, result[0], regexString);
+        noError = false;
+    }
+    if (result[1] != startLength) {
+        ConsoleLog("FormatAndRegex " + text, result[1], startLength);
+        noError = false;
+    }
+    if (result[2] != endLength) {
+        ConsoleLog("FormatAndRegex " + text, result[2], endLength);
+        noError = false;
+    }
+    if (noError) {
+        ConsoleLogPass("FormatAndRegex " + text);
+    }
+}
+
+function Compare(text, actual, expected) {
+    if (actual != expected) {
+        ConsoleLog(text, actual, expected);
+    } else {
+        ConsoleLogPass(text);
+    }
+}
+
+function ConsoleLogPass(text) {
+    console.log(text + ": pass");
+}
+
+function ConsoleLog(text, actual, expected) {
+    console.log(text + ": actual = " + actual + "; expected = " + expected);
+}
+
+function FormatAndRegex(s, isEng) {
     s = s.toLowerCase();
     s = s.replace(/[ \t]*/g, "");
-    var start = new Date().getTime();
-    if (eng) {
-        var s2 = s.replace(/\./g, '[a-z]')
-        s2 = s2.replace(/[0-9]/g, '[a-z]');
-        var s4 = s.replace('-', '');
-        var smatch = s.match(/\[[^\[\]]+\][\+\*]?/g);
-        if (smatch != null) {
-            for (var i = 0; i < smatch.length; i++) {
-                //s = s.replace(smatch[i], i.toString());
-                if (smatch[i].indexOf("-") >= 0) {
-                    r_div.innerHTML = final_s + "regex cannot contain '-', use [abcd] instead.";
-                    return;
-                }
-            }
-            if (s.indexOf('+') >= 0) {
-                if (s.indexOf('+-') < 0) {
-                    s = s.replace(/\+/g, "+-");
-                }
-            } else if (s.indexOf(']-') < 0) {
-                s = s.replace(/\]/g, "]-");
-            }
-        }
-
-        var re = new RegExp(s2);
-        var result = [];
-        var s_a = s.split('');
-        var f = []
-        if (s.indexOf('-') < 0) {
-            if (s.match(/^\([a-z]*[^a-z]?[a-z]*\)$/) != null) {
-                // scrabble
-                var scrabbleArr = s.substring(1, s.length - 1).split(/[^a-z]/);
-                var scrabbleMust = new RegExp('[a-z]*' + scrabbleArr[0].split("").sort().join('[a-z]*') + '[a-z]*');
-                var comb = combinations(scrabbleArr.join(''));
-                var inputset = new Set(s.substring(1, s.length - 1).split(""));
-                var sortedComb = new Array(s.length - 4).fill("");
-                comb = Array.from(new Set(comb));
-                for (i = 0; i < comb.length; i++) {
-                    var combiLen = comb[i].length;
-                    if (combiLen > 2 && combiLen <= 13) {
-                        sortedComb[combiLen - 3] += comb[i].split("").sort().join("") + ',';
-                    }
-                }
-                for (i = 0; i < sortedComb.length; i++) {
-                    sortedComb[i] = sortedComb[i].split(',');
-                }
-                var f1 = new Array();
-                for (i = 0; i < sortedComb.length; i++) {
-                    if (sortedComb[i][0].length == 0) {
-                        continue;
-                    }
-                    array = a[len[sortedComb[i][0].length]].match(new RegExp("\\b[" + (Array.from(inputset)).join("") + ']+\\b', 'g'));
-                    if (array != undefined) {
-                        arr_len = array.length;
-                        for (var j = 0; j < arr_len; j++) {
-                            var sortedArr = array[j].split("").sort().join("");
-                            if (sortedComb[sortedArr.length - 3].indexOf(sortedArr) >= 0) {
-                                if (sortedArr.length < scrabbleMust.length) {
-                                    f.push(array[j])
-                                } else {
-                                    if (sortedArr.replace(scrabbleMust, '').length > 0) {
-                                        f.push(array[j])
-                                    } else {
-                                        f1.push('<span class=red>' + array[j] + '</span>')
-                                    }
-                                }
-
-                            }
-                        }
-                    }
-                }
-                f = f1.concat(f);
-                f = GetComplimentary(f, scrabbleArr);
-            } else {
-                var s_ = a[len[s_len]];
-                var array = s_.split(',');
-                var arr_len = array.length;
-                for (var i = 0; i < arr_len; i++) {
-                    if (array[i].replace(re, '') == '') {
-                        result.push(array[i])
-                    }
-                }
-                if (s.replace(/[0-9]/g, '').length != s_len) {
-                    for (var i = 0; i < result.length; i++) {
-                        var r_i = result[i].split('')
-                        var keep = true;
-                        for (var j = 1; j < r_i.length; j++) {
-                            for (var k = j; k < r_i.length; k++) {
-                                if (keep) {
-                                    if (s_a[k] != s_a[k - j]) {
-                                        keep = r_i[k] != r_i[k - j]
-                                    } else {
-                                        keep = r_i[k] == r_i[k - j]
-                                    }
-                                }
-                            }
-                        }
-                        if (keep) {
-                            f.push(result[i])
-                        }
-                    }
-                } else {
-                    f = result;
-                }
-            }
-        } else {
-            s = s.replace(/\+\-/g, "+");
-            s = s.replace(/\]\-/g, "\]");
-            s4 = s4.replace(/\[[^\[\]]+\][\+]*/g, '');
-            s2 = s2.replace(/\-/g, '[a-z]*');
-            s_len = s4.length > 1 ? s4.length - 1 : 1;
-            re = new RegExp(s2);
-            for (i = s_len; i < a.length; i++) {
-                array = a[i].split(',');
-                arr_len = array.length;
-                for (var j = 0; j < arr_len; j++) {
-                    if (array[j].replace(re, '') == '') {
-                        f.push(array[j])
-                    }
-                }
-            }
-        }
+    var regexString = s.replace(/[0-9]/g, '.');
+    regexString = regexString.replace(/\(([^\)\(]+)\)/, "[$1]+");
+    var forLength = regexString.replace(/\[[^\]\[]+\]/g, '-');
+    forLength = forLength.replace(/\[.+\]/g, '.');
+    forLength = forLength.replace(/:/g, '');
+    if(!isEng){
+        regexString = regexString.replace(/[a-z]/g, '.');
+    }
+    if (forLength.indexOf('-') >= 0) {
+        regexString = regexString.replace(/-/g, '.*');
+        var forStartLength = forLength.replace('-', '');
+        return [regexString, forStartLength.length, MaxWordLength];
     } else {
-        var s2 = s.replace(/[A-Za-z0-9]/g, '.')
-        s2 = s2.replace(/[，。]/g, '')
-        var re = new RegExp(s2);
-        var result = [];
-        var s_a = s.split('');
-        var f = []
-        var dict = d;
-        var dictlen = lend
-        if (jpw) {
-            dict = jp;
-            dictlen = lenjp;
+        return [regexString, forLength.length, forLength.length];
+    }
+}
+
+function IsRegexStringValid(s) {
+    var smatch = s.match(/\[[^\[\]]+\][\+\*]?/g);
+    if (smatch != null) {
+        for (var i = 0; i < smatch.length; i++) {
+            if (smatch[i].indexOf(".*") >= 0) {
+                return false;
+            }
         }
-        
-        if (s.indexOf(']') >= 0) {
-            re = new RegExp(s);
-            for (i = 0; i < dict.length; i++) {
-                array = dict[i].split(',');
-                arr_len = array.length;
-                for (var j = 0; j < arr_len; j++) {
-                    if (array[j].replace(re, '') == '') {
+    }
+    return true;
+}
+
+function IsScrabbleStringValid(s) {
+    var smatch = s.match(/\([^\(\)]+\)[\+\*]?/g);
+    if (smatch != null) {
+        for (var i = 0; i < smatch.length; i++) {
+            if (smatch[i].indexOf("*") >= 0 || smatch[i].indexOf("+") >= 0) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+function GetScrabble(s, dict) {
+    var f = [];
+    var scrabbleArr = s.substring(1, s.length - 1).split(/[^a-z]/);
+    var scrabbleMust = new RegExp('[a-z]*' + scrabbleArr[0].split("").sort().join('[a-z]*') + '[a-z]*');
+    var comb = combinations(scrabbleArr.join(''));
+    var inputset = new Set(s.substring(1, s.length - 1).split(""));
+    var sortedComb = new Array(s.length - 4).fill("");
+    comb = Array.from(new Set(comb));
+    for (i = 0; i < comb.length; i++) {
+        var combiLen = comb[i].length;
+        if (combiLen > 2 && combiLen <= 13) {
+            sortedComb[combiLen - 3] += comb[i].split("").sort().join("") + ',';
+        }
+    }
+    for (i = 0; i < sortedComb.length; i++) {
+        sortedComb[i] = sortedComb[i].split(',');
+    }
+    var f1 = new Array();
+    for (i = 0; i < sortedComb.length; i++) {
+        if (sortedComb[i][0].length == 0) {
+            continue;
+        }
+        array = dict[sortedComb[i][0].length].match(new RegExp("\\b[" + (Array.from(inputset)).join("") + ']+\\b', 'g'));
+        if (array != undefined) {
+            arr_len = array.length;
+            for (var j = 0; j < arr_len; j++) {
+                var sortedArr = array[j].split("").sort().join("");
+                if (sortedComb[sortedArr.length - 3].indexOf(sortedArr) >= 0) {
+                    if (sortedArr.length < scrabbleMust.length) {
                         f.push(array[j])
-                    }
-                }
-            }
-        } else if (s.indexOf('-') < 0) {
-            var s_ = dict[dictlen[s_len]];
-            var array = s_.split(',');
-            var arr_len = array.length;
-            for (var i = 0; i < arr_len; i++) {
-                if (array[i].replace(re, '') == '') {
-                    result.push(array[i])
-                }
-            }
-            if (s.replace(/[A-Za-z0-9]/g, '').length != s_len) {
-                for (var i = 0; i < result.length; i++) {
-                    var r_i = result[i].split('')
-                    var keep = true;
-                    for (var j = 1; j < r_i.length; j++) {
-                        for (var k = j; k < r_i.length; k++) {
-                            if (keep) {
-                                if (s_a[k] != s_a[k - j]) {
-                                    keep = r_i[k] != r_i[k - j]
-                                } else {
-                                    keep = r_i[k] == r_i[k - j]
-                                }
-                            }
+                    } else {
+                        if (sortedArr.replace(scrabbleMust, '').length > 0) {
+                            f.push(array[j])
+                        } else {
+                            f1.push('<span class=red>' + array[j] + '</span>')
                         }
                     }
-                    if (keep) {
-                        f.push(result[i])
-                    }
-                }
-            } else {
-                f = result;
-            }
-        } else {
-            var s3 = s2.replace('-', '');
-            s2 = s2.replace('-', '.*');
-            s_len = s3.length > 3 ? s3.length - 4 : 0;
-            re = new RegExp(s2);
-            for (i = s_len; i < dict.length; i++) {
-                array = dict[i].split(',');
-                arr_len = array.length;
-                for (var j = 0; j < arr_len; j++) {
-                    if (array[j].replace(re, '') == '') {
-                        f.push(array[j])
-                    }
+
                 }
             }
         }
     }
+    f = f1.concat(f);
+    f = GetComplimentary(f, scrabbleArr);
+    return f;
+}
+
+function DiscardDismachtedWords(s, result) {
+    var s_a = s.split('');
+    var f = [];
+    for (var i = 0; i < result.length; i++) {
+        var r_i = result[i].split('')
+        var keep = true;
+        for (var j = 1; j < r_i.length; j++) {
+            if(r_i == '.') {
+                for (var k = j; k < r_i.length; k++) {
+                    if (keep) {
+                        if (s_a[k] != s_a[k - j]) {
+                            keep = r_i[k] != r_i[k - j]
+                        } else {
+                            keep = r_i[k] == r_i[k - j]
+                        }
+                    }
+                }   
+            }
+        }
+        if (keep) {
+            f.push(result[i])
+        }
+    }
+    return f;
+}
+
+function GetMatchedWords(dict, s, isEng, r_div) {
+    var s_len = s.length;
+    var returned_values = FormatAndRegex(s, isEng);
+    var regexString = returned_values[0];
+    var dict_start_length = returned_values[1];
+    var dict_end_length = Math.min(returned_values[2], dict.length - 1);
+    if (!IsRegexStringValid(regexString)) {
+        r_div.innerHTML = final_s + "regex cannot contain '-', use [abcd] instead.";
+        return undefined;
+    }
+
+    if (!IsScrabbleStringValid(regexString)) {
+        r_div.innerHTML = final_s + "scrabble cannot contain '-, *, +'";
+        return undefined;
+    }
+
+    var re = new RegExp(regexString);
+    var result = [];
+    var f = []
+    if (s.match(/^\([a-z]*[^a-z]?[a-z]*\)$/) != null) {
+        f = GetScrabble(s);
+    } else {
+        re = new RegExp(regexString);
+        for (i = dict_start_length; i <= dict_end_length; i++) {
+            if (dict[i] != "") {
+                array = dict[i].split(',');
+                arr_len = array.length;
+                for (var j = 0; j < arr_len; j++) {
+                    if (array[j].replace(re, '') == '') {
+                        result.push(array[j]);
+                    }
+                }
+            }
+        }
+        if ((s.replace(/[0-9]/g, '').length != s_len) ||
+            (!isEng && s.replace(/[0-9a-zA-Z]+/g, '').length != s_len)) {
+            f = DiscardDismachtedWords(s, result);
+        } else {
+            f = result;
+        }
+    }
+    return f;
+}
+
+function search() {
+    var s = document.getElementById('w').value;
+    var eng = document.getElementById('eng').checked;
+    var ido = document.getElementById('ido').checked;
+    var jpw = document.getElementById('jpw').checked;
+    var r_div = document.getElementById('r');
+    var final_s = '----------<br>';
+
+    var start = new Date().getTime();
+    var dict = a;
+    if (ido) {
+        dict = d;
+    } else if (jpw) {
+        dict = jp;
+    }
+
+    f = GetMatchedWords(dict, s, eng, r_div);
 
     var end = new Date().getTime();
     var time = (end - start) / 1000;
+    if (f == undefined) {
+        return;
+    }
     if (f.length > 0) {
         r_div.innerHTML = final_s + 'Execution time: ' + time + 'ms<br>Found ' + f.length + ' words<br>' + f.join('<br>')
     } else {
@@ -310,6 +383,7 @@ function combinations(str) {
     }
     return fn("", str, []);
 }
+Test();
 </script>
 <body>
 <h2>Find Words</h2>
