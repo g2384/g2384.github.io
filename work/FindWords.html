@@ -228,10 +228,10 @@ function DiscardDismachtedWords(s, result) {
     var s_a = s.split('');
     var f = [];
     for (var i = 0; i < result.length; i++) {
-        var r_i = result[i].split('')
+        var r_i = result[i].split('');
         var keep = true;
         for (var j = 1; j < r_i.length; j++) {
-            if(r_i == '.') {
+            if(r_i != '.') {
                 for (var k = j; k < r_i.length; k++) {
                     if (keep) {
                         if (s_a[k] != s_a[k - j]) {
