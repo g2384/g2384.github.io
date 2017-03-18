@@ -801,7 +801,7 @@ function GetMatchedWords(dict, s, mode, r_div) {
     } else {
         re = new RegExp(regexString);
         var result = [];
-        if (mode = "jp") {
+        if (mode == "jp") {
             if (jpdict_hiragana.length == 0) {
                 for (var i = 0; i < dict.length; i++) {
                     var strhiragana = getHiragana(dict[i]);
