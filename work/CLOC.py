@@ -56,7 +56,7 @@ def start(includedFileType, exclude_file, excludeFileName):
             if SubstringIsInList(exclude_file, f):
                 break
             if SubstringIsInList(excludeFileName, f_name):
-                break
+                continue
             if(f!=file_name and f_ext in includedFileType):
                 if doPrintFileName:
                     print(f)
@@ -83,7 +83,7 @@ def SubstringIsInList(arr, string):
     for s in arr:
         if len(s) == 0:
             continue
-        if s in string:
+        if string.find(s) >= 0:
             return True
     return False
 
