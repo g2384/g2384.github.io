@@ -4,12 +4,12 @@ import os, sys
 import re
 
 global includedFileType, currentPath
-global codeLine, emptyLine, commentLine, nonCodeLine, totalLine
-global excludedFolder
+global codeLine, emptyLine, commentLine, nonCodeLine, totalLine, charLength, nonWhiteSpaceLength
+global excludedFolder, excludedFileType
 global doPrintFileName,doCountNonCount
 
 def findAllFiles(path,all_file): # get all files in this dir, including subfolders
-    global excludedFolder
+    global excludedFolder, excludedFileType
     for fn in glob.glob( path + os.sep + '*' ):
         fn2 = fn.replace(currentPath, "")
         if os.path.isdir( fn ):
@@ -23,14 +23,15 @@ def findAllFiles(path,all_file): # get all files in this dir, including subfolde
             all_file = findAllFiles( fn , all_file)
         else:
             excluded = False
-            
             for s in excludedFolder:
                 if(s in fn2):
                     excluded = True
                     break
             if excluded:
                 return all_file
-            all_file.append(fn)
+            filename, file_extension = os.path.splitext(fn2)
+            if(file_extension not in excludedFileType):
+                all_file.append(fn)
     return all_file
 
 def start(includedFileType, exclude_file, excludeFileName):
@@ -75,7 +76,7 @@ def start(includedFileType, exclude_file, excludeFileName):
             for f in all_file:
                 print(f)
     print("=======\n")   
-    print("read "+str(n)+" files")
+    print("found "+str(n)+" files")
 
 def SubstringIsInList(arr, string):
     if len(arr) == 0:
@@ -88,36 +89,46 @@ def SubstringIsInList(arr, string):
     return False
 
 def count(arr):
-    global codeLine, emptyLine, commentLine, nonCodeLine, totalLine
+    global codeLine, emptyLine, commentLine, nonCodeLine, totalLine, charLength, nonWhiteSpaceLength
     totalLine+=len(arr)
     for i in arr:
-        s = i.decode('utf-8')
-        chars = re.sub(r'[ \t\r\n]+','',s)
-        if(len(chars) == 0):
-            emptyLine += 1
-            continue
-        commentPos = chars.find('//')
-        if(commentPos == 0):
-            commentLine += 1
-            continue
-        chars = re.sub(r'[^0-9a-zA-Z]', '', chars)
-        if(len(chars) == 0):
-            nonCodeLine += 1
-            continue
-        
-        codeLine += 1
+        try:
+            charLength += len(i)
+            s = i.decode('utf-8')
+            chars = re.sub(r'[ \t\r\n]+','',s)
+            nonWhiteSpaceLength += len(chars)
+            if(len(chars) == 0):
+                emptyLine += 1
+                continue
+            if(chars.startswith('//') or chars.startswith('/*')):
+                commentLine += 1
+                continue
+            chars = re.sub(r'[^0-9a-zA-Z]', '', chars)
+            if(len(chars) == 0):
+                nonCodeLine += 1
+                continue
+            codeLine += 1
+        except:
+            print("cannot analyse line:")
+            print(i)
+            return
+
+def CalculatePercentage(a, b, r):
+    return round(a/b * 100, r)
 
 def printResult():
     global doCountNonCount, codeLine, emptyLine, commentLine, nonCodeLine, totalLine
     if not doCountNonCount:
         codeLine += nonCodeLine
-    print("code: " + str(codeLine))
-    print("empty: " + str(emptyLine))
-    print("comment: " + str(commentLine))
+    print("code: " + str(codeLine) + "(" + str(CalculatePercentage(codeLine, totalLine, 2)) + "%)")
+    print("empty: " + str(emptyLine) + "(" + str(CalculatePercentage(emptyLine, totalLine, 2)) + "%)")
+    print("comment: " + str(commentLine) + "(" + str(CalculatePercentage(commentLine, totalLine, 2)) + "%)")
 
     if doCountNonCount:
-        print("non-code: " + str(nonCodeLine))
+        print("non-code: " + str(nonCodeLine) + "(" + str(CalculatePercentage(nonCodeLine, totalLine, 2)) + "%)")
     print("total: " + str(totalLine))
+    print("total chars: " + str(charLength))
+    print("total non-whitespace: " + str(nonWhiteSpaceLength) + "(" + str(CalculatePercentage(nonWhiteSpaceLength, charLength, 2)) + "%)")
 
 if __name__ == "__main__":
     """ cmd:
@@ -152,7 +163,7 @@ if __name__ == "__main__":
 
     # in windows, place this file in your code folder.
     # use Python IDLE to open this file.
-    # the following line to give commands.
+    # use the following line to give commands.
     # sys.argv = ["anything.py", '-m', "-f[detectcolor]", '-i', "-t[cpp,h]"]
     sys.argv = ["anything.py",
                 "-t[cs]",
@@ -160,12 +171,14 @@ if __name__ == "__main__":
                 "-if[Debug, Resources, Properties, Release]",
                 "-p[nonCode]"]
     global includedFileType, excludedFolder, doPrintFileName, doCountNonCount
-    global codeLine, emptyLine, commentLine, nonCodeLine, totalLine
+    global codeLine, emptyLine, commentLine, nonCodeLine, totalLine, charLength, nonWhiteSpaceLength
     codeLine = 0
     emptyLine = 0
     commentLine = 0
     nonCodeLine = 0
     totalLine = 0
+    charLength = 0
+    nonWhiteSpaceLength = 0
     doPrintFileName = True
     doCountNonCount = False
     f = ''
