@@ -406,7 +406,9 @@ function beautify(input, no_format, remove_comments, remove_report, check_alias,
         input = input.replace(/@@comments[0-9]+/g, '');
     }
     input = input.replace(/(PORT|PROCESS|GENERIC)[\s]*\(/g, '$1 (');
-    input = input.replace(/(;|THEN)[ ]?([a-zA-Z])/g, '$1\r\n$2');
+    if (new_line) {
+        input = input.replace(/(;|THEN)[ ]?([a-zA-Z])/g, '$1\r\n$2');
+    }
     arr = input.split("\r\n");
     var l = arr.length;
     var before_begin = true;
