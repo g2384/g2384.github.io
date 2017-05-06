@@ -64,6 +64,7 @@ function selectText(element) {
 Proper formatting makes code easier to read and understand.<br>
 Please make a backup before you replace your code!<br>
 <a href="https://github.com/g2384/g2384.github.io/issues" target="_blank">Report bugs if your code is not properly formatted, please provide sample code which causes the failure</a>
+<div id="lastModified" />
 </p>
 <textarea id="in" rows="10" wrap="off"></textarea><br>
 <form id="keyword">Keyword Case: 
@@ -137,7 +138,7 @@ Please make a backup before you replace your code!<br>
 <span class="hljs-keyword">END</span> EXA;</code></pre>
 <script>
 isTesting = false;
-showUnitTests = window.location.href.indexOf("g2384") < 0;
+showUnitTests = window.location.href.indexOf("http") < 0;
 
 function fetchHeader(url, wch) {
     try {
@@ -155,7 +156,7 @@ function fetchHeader(url, wch) {
 
 lastModifiedDate = fetchHeader(location.href,'Last-Modified');
 if(lastModifiedDate != ""){
-    document.write("<p>Last modified: " + lastModifiedDate + "</p>");
+    document.getElementById("lastModified").write("<p>Last modified: " + lastModifiedDate + "</p>");
 }
 
 String.prototype.regexIndexOf = function(pattern, startIndex) {
@@ -405,6 +406,7 @@ function beautify(input, no_format, remove_comments, remove_report, check_alias,
         input = input.replace(/@@comments[0-9]+/g, '');
     }
     input = input.replace(/(PORT|PROCESS|GENERIC)[\s]*\(/g, '$1 (');
+    input = input.replace(/(;|THEN)[ ]?([a-zA-Z])/g, '$1\r\n$2');
     arr = input.split("\r\n");
     var l = arr.length;
     var before_begin = true;
@@ -505,7 +507,6 @@ function beautify(input, no_format, remove_comments, remove_report, check_alias,
         }
     }
     input = input.replace(/(MAP)[ \r\n]+\(/g, '$1(');
-    input = input.replace(/(;|THEN)[ ]?([a-zA-Z])/g, '$1\r\n$2');
     input = input.replace(/(;|THEN)[ ]?(@@comments[0-9]+)([a-zA-Z])/g, '$1 $2\r\n$3');
     input = input.replace(/[\r\n ]+RETURN/g, ' RETURN');
     input = input.replace(/BEGIN[\r\n ]+/g, 'BEGIN\r\n');
@@ -560,13 +561,14 @@ function beautify(input, no_format, remove_comments, remove_report, check_alias,
         conditional_b = false,
         generic_map_b = false,
         architecture_begin_b = false,
+        process_begin_b = false,
         case_indent = [0, 0, 0, 0, 0, 0, 0];
     var align_groups = [],
         align_groups_max = [],
         lastAlignedSign = "",
         current_align_group = 0,
         aligned_group_starts = 0;
-    var indent_start = [];
+    var indent_start = [0];
     for (i = 0; i < l; i++) {
         str = arr[i];
         str_len = str.length;
@@ -588,7 +590,6 @@ function beautify(input, no_format, remove_comments, remove_report, check_alias,
                 indent_start.pop();
                 case_n--;
                 tab_n = indent_start[indent_start.length - 1];
-
             } else if (first_word == "END") {
                 tab_n = indent_start[indent_start.length - 1] - 1;
                 indent_start.pop();
@@ -612,6 +613,9 @@ function beautify(input, no_format, remove_comments, remove_report, check_alias,
                     if (architecture_begin_b) {
                         tab_n = indent_start[indent_start.length - 1] - 1;
                         architecture_begin_b = false;
+                    }else if (process_begin_b) {
+                        tab_n = indent_start[indent_start.length - 1] - 1;
+                        process_begin_b = false;
                     } else {
                         tab_n = indent_start[indent_start.length - 1];
                         indent_start.push(tab_n + 1);
@@ -630,10 +634,9 @@ function beautify(input, no_format, remove_comments, remove_report, check_alias,
             } else if (first_word == "PROCESS") {
                 begin_b = true;
             } else if (str.indexOf(": PROCESS") >= 0) {
-                //back_tab = true;
-                tab_n = 1;
-                indent_start.push(tab_n);
+                back_tab = true;
                 begin_b = true;
+                process_begin_b = true;
             } else if (str.indexOf(": ENTITY") >= 0) {
                 back_tab = true;
                 entity_b = true;
@@ -881,10 +884,10 @@ function beautify(input, no_format, remove_comments, remove_report, check_alias,
                     processArray[i] = indentation + processArray[i];
                 }
             }
-            p = input.indexOf('PROCESS', nextCloseBracket);
             input = input.substring(0, p) + processArray.join('\r\n') + input.substring(nextCloseBracket, input.length);
+            p = input.regexIndexOf('PROCESS[ ]+\\(', nextCloseBracket);
         } else {
-            p = input.indexOf('PROCESS', p + 7);
+            p = input.indexOf('PROCESS[ ]+\\(', p + 7);
         }
     }
 
@@ -1011,6 +1014,11 @@ function UnitTest() {
     expected = "ENTITY a IS\r\n    PORT \r\n    (\r\n        w   : IN std_logic_vector (7 DOWNTO 0);\r\n        w_s : OUT std_logic_vector (3 DOWNTO 0); \r\n    );\r\nEND a;\r\nARCHITECTURE b OF a IS\r\nBEGIN\r\n    PROCESS (w)\r\n    VARIABLE t   : std_logic_vector (4 DOWNTO 0);\r\n    VARIABLE bcd : std_logic_vector (11 DOWNTO 0);\r\n    BEGIN\r\n        b(2 DOWNTO 0) := w(7 DOWNTO 5);\r\n        t             := w(4 DOWNTO 0);\r\n        w_s <= b(11 DOWNTO 8);\r\n        w   <= b(3 DOWNTO 0);\r\n    END PROCESS;\r\nEND b;";
     actual = beautify(input, no_format, remove_comments, remove_report, check_alias, sign_align, true, new_line, keywordcase, indentation, true);
     console.log("Align signs in all places", CompareString(actual, expected));
+
+    input = "begin\r\n  P0 : process(input)\r\n  variable value: Integer;\r\n  begin\r\n    result(i) := '0';\r\n  end process P0;\r\nend behavior;";
+    expected = "BEGIN\r\n    P0 : PROCESS (input)\r\n        VARIABLE value : INTEGER;\r\n    BEGIN\r\n        result(i) := '0';\r\n    END PROCESS P0;\r\nEND behavior;";
+    actual = beautify(input, no_format, remove_comments, remove_report, check_alias, sign_align, false, new_line, keywordcase, indentation, true);
+    console.log("Indent after Begin", CompareString(actual, expected));
 }
 
 function CompareString(s1, s2) {
