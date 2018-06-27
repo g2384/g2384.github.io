@@ -1,0 +1,328 @@
+<html>
+<meta charset="UTF-8">
+<title>Chinese Words Split</title>
+<style>
+    body {
+        font-size: 16px;
+        font-family: consolas;
+        margin: 0 auto;
+        max-width: 800px;
+        padding: 10px;
+    }
+    
+    .answer {
+        color: #868686;
+        margin-right: 10px;
+        background-color: #dedede;
+        border-radius: 3px;
+        padding: 2px 5px;
+    }
+    
+    textarea {
+        width: 600px;
+        height: 120px;
+        padding: 5px;
+        font-size: 16px;
+    }
+    
+    .btn {
+        margin: 10px 10px;
+        padding: 5px 8px;
+        font-size: 16px;
+        line-height: 1.33;
+        border-radius: 3px;
+        color: #333;
+        background-color: #fff;
+        cursor: pointer;
+        text-align: center;
+        white-space: nowrap;
+        border: 1px solid rgb(194, 194, 194);
+    }
+    
+    .btn:hover {
+        color: red;
+    }
+    
+    .sec {
+        color: red;
+    }
+    
+    .line {
+        display: block;
+        margin-top: 10px;
+    }
+    
+    .answer-line {
+        display: block;
+        margin-top: 5px;
+    }
+    
+    .checkmark {
+        margin-bottom: -4;
+        margin-right: 10px;
+        display: inline-block;
+        width: 22px;
+        height: 22px;
+        -ms-transform: rotate(45deg);
+        /* IE 9 */
+        -webkit-transform: rotate(45deg);
+        /* Chrome, Safari, Opera */
+        transform: rotate(45deg);
+    }
+    
+    .checkmark_circle {
+        position: absolute;
+        width: 22px;
+        height: 22px;
+        background-color: green;
+        border-radius: 11px;
+        left: 0;
+        top: 0;
+    }
+    
+    .checkmark_stem {
+        position: absolute;
+        width: 3px;
+        height: 9px;
+        background-color: #fff;
+        left: 11px;
+        top: 6px;
+    }
+    
+    .checkmark_kick {
+        position: absolute;
+        width: 3px;
+        height: 3px;
+        background-color: #fff;
+        left: 8px;
+        top: 12px;
+    }
+    
+    .checkmark-cross {
+        margin-right: 10px;
+        margin-bottom: -4;
+        display: inline-block;
+        width: 21px;
+        height: 21px;
+        background: red;
+        border-radius: 50%;
+        -ms-transform: rotate(45deg);
+        /* IE 9 */
+        -webkit-transform: rotate(45deg);
+        /* Chrome, Safari, Opera */
+        transform: rotate(45deg);
+    }
+    
+    .checkmark-cross:before {
+        content: "";
+        position: absolute;
+        width: 3px;
+        height: 13px;
+        background-color: #fff;
+        left: 9px;
+        top: 4px;
+    }
+    
+    .checkmark-cross:after {
+        content: "";
+        position: absolute;
+        width: 3px;
+        height: 13px;
+        background-color: #fff;
+        left: 9px;
+        top: 4px;
+        -ms-transform: rotate(90deg);
+        /* IE 9 */
+        -webkit-transform: rotate(90deg);
+        /* Chrome, Safari, Opera */
+        transform: rotate(90deg);
+    }
+</style>
+<div>Training Data:</div>
+<textarea id='training-data'>苹果是水果。我喜欢苹果。
+夏天是季节。我喜欢夏天。
+我喜欢什么季节？
+我喜欢夏天。
+</textarea><br>
+<input type='button' class=btn onclick='Train()' value='Train' />
+<div>Query:</div>
+<textarea id='query'>
+我喜欢什么季节？
+我喜欢什么水果？
+</textarea><br>
+<input type='button' class=btn onclick='Test()' value='Test' />
+<div id='out'></div>
+<script>
+    var _dict = {};
+    var _qa = {};
+    const reservedValue = "[value]";
+
+    function Learnt(str, isSuccessful) {
+        if (isSuccessful) {
+            return "<div class=line>" +
+                '<span class="checkmark"><div class="checkmark_circle"></div><div class="checkmark_stem"></div><div class="checkmark_kick"></div></span>' +
+                str + "</div>";
+        } else {
+            return '<span class="checkmark-cross"></span>' +
+                str + "<br>";
+        }
+    }
+
+    function Answered(str) {
+        return "<div class=answer-line>" +
+            "<span class='answer'>回答</span>" +
+            str +
+            "</div>";
+    }
+
+    function Test() {
+        var queriesText = document.getElementById("query").value;
+        var queries = queriesText.split(/[\r\n？?]+/);
+        console.log(queries);
+        var result = "";
+        console.log(_dict);
+        for (var i = 0; i < queries.length; i++) {
+            var question = queries[i];
+            if (question.length <= 0) {
+                continue;
+            }
+            console.log(question);
+            [_, answer] = GetAnswer(question, null);
+            console.log(answer);
+            if (answer.length > 0) {
+                result += Learnt(question, true);
+                result += Answered(answer);
+            } else {
+                result += Learnt(question, false);
+            }
+        }
+        document.getElementById("out").innerHTML = result;
+    }
+
+    function GetAnswer(question, knownAnswer) {
+        var isLearnt = false;
+        var guessedAnswer = "";
+        if (question.indexOf("是") > 0) {
+            var s = question.split("是");
+            if (s[1] == "什么") {
+                var possibleAnswers = [];
+                for (var key in _dict) {
+                    console.log("hj" + key)
+                    if (_dict[key].includes(s[0])) {
+                        possibleAnswers.push(key);
+                        continue;
+                    }
+                }
+                if (possibleAnswers.length > 0) {
+                    return [false, s[0] + "是" + possibleAnswers.join(", ")];
+                } else {
+                    return [false, ""];
+                }
+            }
+            for (var key in _dict) {
+                if (_dict[key].includes(s[0])) {
+                    var possibleAnswers = _dict[key];
+                    console.log(possibleAnswers)
+                    for (var i = 0; i < possibleAnswers.length; i++) {
+                        for (var key2 in _dict) {
+                            if (_dict[key2].indexOf(possibleAnswers[i]) &&
+                                s[1].indexOf(key2) >= 0) {
+                                return [false, s[0] + "是" + key];
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            for (var key in _dict) {
+                if (question.indexOf(key) >= 0) {
+                    var entries = _dict[key];
+                    console.log(entries);
+                    for (var v = 0; v < entries.length; v++) {
+                        if (entries[v].indexOf(reservedValue) >= 0) {
+                            var statment = entries[v];
+                            for (var v2 = 0; v2 < entries.length; v2++) {
+                                guessedAnswer = statment.replace(reservedValue, entries[v2]);
+                                if (knownAnswer == null && guessedAnswer.length > 0) {
+                                    return [false, guessedAnswer];
+                                }
+                                if (guessedAnswer == knownAnswer) {
+                                    isLearnt = true;
+                                    v2 = _dict[key].length; // break
+                                    v = _dict[key].length; // break
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (isLearnt) {
+                    break;
+                }
+            }
+        }
+
+        return [isLearnt, guessedAnswer];
+    }
+
+    function Train() {
+        var data = document.getElementById("training-data").value;
+        var inputs = data.split(/[\r\n。!！]+/);
+        console.log(inputs)
+        var result = "";
+        for (var index = 0; index < inputs.length; index++) {
+            var i = inputs[index];
+            if (i.length <= 0) {
+                continue;
+            }
+            console.log(i);
+            var isLearnt = false;
+            if (i.endsWith("？") || i.endsWith("?")) {
+                var knownAnswer = inputs[index + 1];
+                [isLearnt, guessedAnswer] = GetAnswer(i, knownAnswer);
+
+                result += Learnt(i, isLearnt);
+                if (isLearnt) {
+                    index++; //skip the next line (assume next line is answer)
+                    result += Learnt(knownAnswer, isLearnt);
+                }
+
+            } else if (i.indexOf("是") > 0) {
+                statement = i.split("是");
+                var firstWord = statement[0];
+                var secondWord = statement[1];
+                if (secondWord in _dict) {
+                    _dict[secondWord].push(firstWord)
+                } else {
+                    _dict[secondWord] = [firstWord];
+                }
+                result += Learnt(i, true);
+            } else {
+                for (var key in _dict) {
+                    if (i.indexOf(key) >= 0) {
+                        _dict[key].push(i.replace(key, reservedValue));
+                        isLearnt = true;
+                    } else {
+                        for (var v in _dict[key]) {
+                            if (i.indexOf(_dict[key][v]) >= 0) {
+                                _dict[key].push(i.replace(_dict[key][v], "[value]"));
+                                isLearnt = true;
+                            }
+                            if (isLearnt) {
+                                break;
+                            }
+                        }
+                    }
+                    if (isLearnt) {
+                        break;
+                    }
+                }
+                result += Learnt(i, isLearnt);
+            }
+        }
+
+        document.getElementById("out").innerHTML = result;
+    }
+</script>
+
+</html>
