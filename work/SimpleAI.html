@@ -139,16 +139,23 @@
     }
 </style>
 <div>Training Data:</div>
-<textarea id='training-data'>苹果是水果。我喜欢苹果。
-夏天是季节。我喜欢夏天。
+<textarea id='training-data'>菠菜是蔬菜。我喜欢菠菜。
+香蕉是水果。我喜欢香蕉。
+夏天是季节。夏天太好了！
+我爱吃什么水果？
+我爱吃香蕉
 我喜欢什么季节？
 我喜欢夏天。
+夏天有西瓜。
+我为什么喜欢夏天？
+因为夏天有西瓜。    
 </textarea><br>
 <input type='button' class=btn onclick='Train()' value='Train' />
 <div>Query:</div>
 <textarea id='query'>
 我喜欢什么季节？
-我喜欢什么水果？
+我为什么喜欢夏天？
+我爱吃什么蔬菜？
 </textarea><br>
 <input type='button' class=btn onclick='Test()' value='Test' />
 <div id='out'></div>
@@ -156,6 +163,21 @@
     var _dict = {};
     var _qa = {};
     const reservedValue = "[value]";
+
+    class QAPair {
+        constructor(commonWords, commonWordsIndicesInAnswer, commonWordsIndicesInQuestion) {
+            this.commonWords = commonWords;
+            this.commonWordsIndicesInAnswer = commonWordsIndicesInAnswer;
+            this.commonWordsIndicesInQuestion = commonWordsIndicesInQuestion;
+        }
+    }
+
+    class AnswerPair {
+        constructor(knownAnswer, guessedAnswer) {
+            this.knownAnswer = knownAnswer;
+            this.guessedAnswer = guessedAnswer;
+        }
+    }
 
     function Learnt(str, isSuccessful) {
         if (isSuccessful) {
@@ -175,6 +197,41 @@
             "</div>";
     }
 
+    function GetCommonSubstrings(str1, str2) {
+        var result = [""];
+        var str1Indices = [
+            []
+        ];
+        var str2Indices = [
+            []
+        ];
+        var checkedWords = {};
+        for (var i = 0; i < str1.length; i++) {
+            var char = str1[i];
+            var startIndex = char in checkedWords ? checkedWords[char] : 0;
+            var s2 = str2.indexOf(char, startIndex);
+            if (s2 < 0) {
+                if (result[result.length - 1] != "") {
+                    result.push("");
+                    str1Indices.push([]);
+                    str2Indices.push([]);
+                }
+                continue;
+            }
+            checkedWords[char] = s2;
+            result[result.length - 1] += char;
+            str1Indices[str1Indices.length - 1].push(s2);
+            str2Indices[str1Indices.length - 1].push(i);
+        }
+        if (result[result.length - 1] == "") {
+            result.pop();
+            str1Indices.pop();
+            str2Indices.pop();
+        }
+
+        return new QAPair(result, str1Indices, str2Indices);
+    }
+
     function Test() {
         var queriesText = document.getElementById("query").value;
         var queries = queriesText.split(/[\r\n？?]+/);
@@ -187,7 +244,7 @@
                 continue;
             }
             console.log(question);
-            [_, answer] = GetAnswer(question, null);
+            answer = CalculateAnswer(question);
             console.log(answer);
             if (answer.length > 0) {
                 result += Learnt(question, true);
@@ -199,66 +256,90 @@
         document.getElementById("out").innerHTML = result;
     }
 
+    function CalculateAnswer(question) {
+        for (var key in _dict) {
+            if (question.indexOf(key) >= 0) {
+                console.log(key);
+                for (var qKey in _qa) {
+                    if (question == qKey.replace("[key]", key)) {
+                        console.log(_qa[qKey]);
+                        var firstAns = _qa[qKey][0];
+                        var finalAns = firstAns.knownAnswer;
+                        var knowledge = firstAns.guessedAnswer;
+                        if (finalAns.indexOf(reservedValue) >= 0) {
+                            for (var i = 0; i < _dict[key].length; i++) {
+                                var key2 = _dict[key][i];
+                                console.log(_dict[key][i]);
+                                if (key2 in _dict) {
+                                    if (_dict[key2].includes(knowledge)) {
+                                        finalAns = finalAns.replace(reservedValue, key2);
+                                        return finalAns;
+                                    }
+                                } else {
+                                    for (var key2 in _dict) {
+                                        if (_dict[key2].includes(knowledge)) {
+                                            finalAns = finalAns.replace(reservedValue, key2);
+                                            return finalAns;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return "";
+    }
+
     function GetAnswer(question, knownAnswer) {
+        question = question.replace(/[?？]/, "");
         var isLearnt = false;
         var guessedAnswer = "";
-        if (question.indexOf("是") > 0) {
-            var s = question.split("是");
-            if (s[1] == "什么") {
-                var possibleAnswers = [];
-                for (var key in _dict) {
-                    console.log("hj" + key)
-                    if (_dict[key].includes(s[0])) {
-                        possibleAnswers.push(key);
-                        continue;
-                    }
-                }
-                if (possibleAnswers.length > 0) {
-                    return [false, s[0] + "是" + possibleAnswers.join(", ")];
-                } else {
-                    return [false, ""];
-                }
+        var possibleKeys = [];
+        var qaPair = GetCommonSubstrings(question, knownAnswer);
+        for (var key in _dict) {
+            if (question.indexOf(key) >= 0) {
+                possibleKeys.push(key);
             }
-            for (var key in _dict) {
-                if (_dict[key].includes(s[0])) {
-                    var possibleAnswers = _dict[key];
-                    console.log(possibleAnswers)
-                    for (var i = 0; i < possibleAnswers.length; i++) {
-                        for (var key2 in _dict) {
-                            if (_dict[key2].indexOf(possibleAnswers[i]) &&
-                                s[1].indexOf(key2) >= 0) {
-                                return [false, s[0] + "是" + key];
-                            }
-                        }
+        }
+        for (var i = 0; i < possibleKeys.length; i++) {
+            var key = possibleKeys[i];
+            var entries = _dict[key];
+            for (var v = 0; v < entries.length; v++) {
+                if (knownAnswer.indexOf(entries[v])) {
+                    var formattedKnownAnswer = knownAnswer.replace(entries[v], reservedValue);
+                    formattedKnownAnswer = formattedKnownAnswer.replace(key, reservedValue);
+                    var formattedKnowledge = "";
+                    if (entries[v] in _dict) {
+                        formattedKnowledge = _dict[entries[v]][0];
+                    } else {
+                        formattedKnowledge = entries[v];
                     }
-                }
-            }
-        } else {
-            for (var key in _dict) {
-                if (question.indexOf(key) >= 0) {
-                    var entries = _dict[key];
-                    console.log(entries);
-                    for (var v = 0; v < entries.length; v++) {
-                        if (entries[v].indexOf(reservedValue) >= 0) {
-                            var statment = entries[v];
-                            for (var v2 = 0; v2 < entries.length; v2++) {
-                                guessedAnswer = statment.replace(reservedValue, entries[v2]);
-                                if (knownAnswer == null && guessedAnswer.length > 0) {
-                                    return [false, guessedAnswer];
-                                }
-                                if (guessedAnswer == knownAnswer) {
-                                    isLearnt = true;
-                                    v2 = _dict[key].length; // break
-                                    v = _dict[key].length; // break
-                                }
-                            }
+                    formattedKnowledge = formattedKnowledge.replace(key, reservedValue);
+                    _qa[question.replace(key, "[key]")] = [
+                        new AnswerPair(formattedKnownAnswer, formattedKnowledge)
+                    ];
+                    isLearnt = true;
+                } else if (entries[v].indexOf(reservedValue) >= 0) {
+                    var statment = entries[v];
+                    for (var v2 = 0; v2 < entries.length; v2++) {
+                        guessedAnswer = statment.replace(reservedValue, entries[v2]);
+                        if (knownAnswer == null && guessedAnswer.length > 0) {
+                            return [false, guessedAnswer];
                         }
-                    }
-                }
+                        if (guessedAnswer == knownAnswer) {
+                            isLearnt = true;
 
-                if (isLearnt) {
-                    break;
+                            v2 = _dict[key].length; // break
+                            v = _dict[key].length; // break
+                        }
+                    }
                 }
+            }
+
+            if (isLearnt) {
+                break;
             }
         }
 
@@ -268,22 +349,20 @@
     function Train() {
         var data = document.getElementById("training-data").value;
         var inputs = data.split(/[\r\n。!！]+/);
-        console.log(inputs)
         var result = "";
         for (var index = 0; index < inputs.length; index++) {
             var i = inputs[index];
             if (i.length <= 0) {
                 continue;
             }
-            console.log(i);
             var isLearnt = false;
             if (i.endsWith("？") || i.endsWith("?")) {
                 var knownAnswer = inputs[index + 1];
                 [isLearnt, guessedAnswer] = GetAnswer(i, knownAnswer);
 
                 result += Learnt(i, isLearnt);
+                index++; //skip the next line (assume next line is answer)
                 if (isLearnt) {
-                    index++; //skip the next line (assume next line is answer)
                     result += Learnt(knownAnswer, isLearnt);
                 }
 
@@ -300,21 +379,26 @@
             } else {
                 for (var key in _dict) {
                     if (i.indexOf(key) >= 0) {
-                        _dict[key].push(i.replace(key, reservedValue));
+                        var formattedKnowledge = i.replace(key, reservedValue);
+                        if (_dict[key].includes(formattedKnowledge)) {
+                            isLearnt = true;
+                        }
+                        _dict[key].push(formattedKnowledge);
                         isLearnt = true;
                     } else {
                         for (var v in _dict[key]) {
                             if (i.indexOf(_dict[key][v]) >= 0) {
-                                _dict[key].push(i.replace(_dict[key][v], "[value]"));
+                                var formattedKnowledge = i.replace(_dict[key][v], "[value]");
+                                var currentEntry = _dict[_dict[key][v]];
+                                if (currentEntry != null && currentEntry.length > 0) {
+                                    currentEntry.push(formattedKnowledge);
+                                } else {
+                                    currentEntry = [formattedKnowledge];
+                                }
+                                _dict[_dict[key][v]] = currentEntry;
                                 isLearnt = true;
                             }
-                            if (isLearnt) {
-                                break;
-                            }
                         }
-                    }
-                    if (isLearnt) {
-                        break;
                     }
                 }
                 result += Learnt(i, isLearnt);
