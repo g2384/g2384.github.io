@@ -1,0 +1,42 @@
+<html>
+<head>
+<title>Floating Point Benchmark</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<style type="text/css">
+    body {
+        max-width:800px;
+        margin:10px auto;
+    }
+    footer{
+        font-size:0.5em;
+    }
+</style>
+
+<script>
+var current_surfaces,paraxial,clear_aperture,aberr_lspher,aberr_osc,aberr_lchrom,max_lspher,max_osc,max_lchrom,radius_of_curvature,object_distance,ray_height,axis_slope_angle,from_index,to_index,s,od_sa,outarr,spectral_line=[0,7621,6869.955,6562.816,5895.944,5269.557,4861.344,4340.477,3968.494],refarr=["   Marginal ray          47.09479120920   0.04178472683","   Paraxial ray          47.08372160249   0.04177864821","Longitudinal spherical aberration:        -0.01106960671","    (Maximum permissible):                 0.05306749907","Offense against sine condition (coma):     0.00008954761","    (Maximum permissible):                 0.00250000000","Axial chromatic aberration:                0.00448229032","    (Maximum permissible):                 0.05306749907"],testcase=[[27.05,1.5137,63.6,.52],[-16.68,1,0,.138],[-16.68,1.6164,36.7,.38],[-78.1,1,0,0]];function transit_surface(){var a,e,r,i,s,_;return paraxial?0!=radius_of_curvature?(0==object_distance?(axis_slope_angle=0,r=ray_height/radius_of_curvature):r=(object_distance-radius_of_curvature)/radius_of_curvature*axis_slope_angle,s=axis_slope_angle,axis_slope_angle=axis_slope_angle+r-(i=from_index/to_index*r),0!=object_distance&&(ray_height=object_distance*s),void(object_distance=ray_height/axis_slope_angle)):(object_distance*=to_index/from_index,void(axis_slope_angle*=from_index/to_index)):0!=radius_of_curvature?(0==object_distance?(axis_slope_angle=0,r=ray_height/radius_of_curvature):r=(object_distance-radius_of_curvature)/radius_of_curvature*Math.sin(axis_slope_angle),a=Math.asin(r),i=from_index/to_index*r,s=axis_slope_angle,axis_slope_angle=axis_slope_angle+a-Math.asin(i),_=Math.sin((s+a)/2),_*=2*radius_of_curvature*_,void(object_distance=radius_of_curvature*Math.sin(s+a)*(1/Math.tan(axis_slope_angle))+_)):(e=-Math.asin(from_index/to_index*Math.sin(axis_slope_angle)),object_distance*=to_index*Math.cos(-e)/(from_index*Math.cos(axis_slope_angle)),void(axis_slope_angle=-e))}function trace_line(a,e){var r;for(object_distance=0,ray_height=e,from_index=1,r=0;r<current_surfaces;r++)radius_of_curvature=s[r][0],(to_index=s[r][1])>1&&(to_index+=(spectral_line[4]-spectral_line[a])/(spectral_line[3]-spectral_line[6])*((s[r][1]-1)/s[r][2])),transit_surface(),from_index=to_index,r<current_surfaces&&(object_distance-=s[r][3])}function fnum(a){var e=a.toFixed(11);return a>=0&&(e=" "+e),e}function RunBenchmark(a,e){var r;clear_aperture=4,current_surfaces=4,s=testcase,axis_slope_angle=0,od_sa=[[0,0],[0,0]],u("Running "+a+" iterations."),r=new Date;for(var i=0;i<a;i++){for(paraxial=0;paraxial<=1;paraxial++)trace_line(4,clear_aperture/2),od_sa[paraxial][0]=object_distance,od_sa[paraxial][1]=axis_slope_angle;paraxial=0,trace_line(3,clear_aperture/2);var _=object_distance;trace_line(6,clear_aperture/2);var n=object_distance;aberr_lspher=od_sa[1][0]-od_sa[0][0],aberr_osc=1-od_sa[1][0]*od_sa[1][1]/(Math.sin(od_sa[0][1])*od_sa[0][0]),aberr_lchrom=n-_,max_lspher=Math.sin(od_sa[0][1]),max_lchrom=max_lspher=926e-7/(max_lspher*max_lspher),max_osc=.0025}var o=(new Date).getTime()-r.getTime();u("Elapsed time in seconds: "+(o/1e3).toFixed(3)),u("Time for 1000 iterations: "+(o/1e3*(1e3/a)).toFixed(4)),u("Microseconds per iteration: "+(o/a*1e3).toFixed(4)),outarr=["   Marginal ray         "+fnum(od_sa[0][0])+"  "+fnum(od_sa[0][1]),"   Paraxial ray         "+fnum(od_sa[1][0])+"  "+fnum(od_sa[1][1]),"Longitudinal spherical aberration:        "+fnum(aberr_lspher),"    (Maximum permissible):                "+fnum(max_lspher),"Offense against sine condition (coma):    "+fnum(aberr_osc),"    (Maximum permissible):                "+fnum(max_osc),"Axial chromatic aberration:               "+fnum(aberr_lchrom),"    (Maximum permissible):                "+fnum(max_lchrom)];for(var t=0,c=0;c<refarr.length;c++)if(refarr[c]!=outarr[c]){var l;for(t+=1,u("Error in results on line "+(c+1)),u("Expected: "+refarr[c]),u("Received: "+outarr[c]),l="",j=0;j<refarr[c].length;j++)refarr[c][j]==outarr[c][j]?l+=" ":l+="^";u("(Errors)  "+l)}function u(a){e?e.value+=a+"\n":console.log(a)}u(t>0?t+" error"+(t>1?"s":"")+" in results.  This is VERY SERIOUS.":"No errors in results.")}if("undefined"==typeof window){var nIterations=1e5;process.argv[2]&&(nIterations=process.argv[2]),RunBenchmark(nIterations,!1)}</script>
+
+</head>
+
+<body>
+
+<h3>Floating Point Benchmark</h3>
+
+<p>
+<span>Iterations:</span>
+<input type="text" id="iterations" size="10" maxlength="16"
+       value="100000" />
+&nbsp;
+<input type="button" value=" Run " onclick="RunBenchmark(document.getElementById('iterations').value, document.getElementById('log'));" />
+</p>
+
+<p>Execution Log:</p>
+<p>
+<textarea id="log" rows="10" cols="80">
+</textarea>
+<br />
+<input type="button" value=" Clear " onclick="document.getElementById('log').value = '';" />
+</p>
+
+<footer>Adopted from John Walker's <a href="http://www.fourmilab.ch/fbench/">Floating Point Benchmark</a></footer>
+</body>
+</html>
