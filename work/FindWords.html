@@ -1,7 +1,7 @@
 ﻿<html>
 <title>Find Words</title>
 <meta charset='utf-8'>
-<style>body{font-family:consolas}
+<style>body{font-family:consolas;max-width:1000px;margin:10px auto;}
 .g{display:block;color:#888;}
 .complimentary{color:#888;display:inline-block;margin-left:10px;}
 .red{background-color:#eee;}
@@ -22,7 +22,7 @@ border: 1px solid rgb(194, 194, 194);}
     border-bottom: solid 2px #c9c9c9;
 	transition: border 0.3s;
     margin: 0;
-    width: 300px;
+    width: 100%;
     font-size: 18px;
     -webkit-appearance: none;
 	box-shadow: none;
@@ -934,7 +934,7 @@ function combinations(str) {
     }
     return fn("", str, []);
 }
-Test();
+//Test();
 </script>
 <body>
 <h2>Find Words</h2>
