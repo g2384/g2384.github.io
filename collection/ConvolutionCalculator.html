@@ -4,9 +4,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Convolution calculator</title>
 <style>
-	body{font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;}
+	body{font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;margin:0 auto;max-width: 800px;padding:10px;}
 .result,textarea{font-family:'Courier New', Courier, monospace;}
-h1{font-size:1.5em;}
+h1{font-size:1.5em;font-weight: 500;}
 input[type="text"] {
     padding: 2px 4px;
 }
@@ -333,10 +333,10 @@ function changeFft(){
 	var label = document.getElementById("fft_dir_label");
 	if(checked)
 	{
-label.innerHTML="IFFT (click again for FFT)";
+		label.innerHTML="FFT (click again for IFFT)";
 	}
 	else{
-		label.innerHTML="FFT (click again for IFFT)";
+		label.innerHTML="IFFT (click again for FFT)";
 	}
 		checkBox.checked = !checked;
 }
