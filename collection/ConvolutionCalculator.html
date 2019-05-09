@@ -4,7 +4,127 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Convolution calculator</title>
 <style>
-div,textarea{font-family:"Courier New";}
+	body{font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;}
+.result,textarea{font-family:'Courier New', Courier, monospace;}
+h1{font-size:1.5em;}
+input[type="text"] {
+    padding: 2px 4px;
+}
+textarea{
+	margin-top:5px;
+}
+input[type="text"],textarea{border: solid 1px #dbdbdb;
+		border-radius: 4px;}
+		
+		input[type="button"] {
+    margin: 10px 0px;
+    padding: .5em 1em;
+    font-size: 1rem;
+    border-radius: 3px;
+    color: #333;
+    border: solid 1px #dbdbdb;
+    cursor: pointer;
+    text-align: center;
+    white-space: nowrap;
+    background-color: #fff;
+}
+
+input[type="button"]:hover {
+    border-color: #b5b5b5;
+    background: rgba(0, 0, 0, .03);
+}
+
+.gray{
+	color:#888;
+	font-weight: lighter;
+}
+
+.checkbox input[type="checkbox"] {
+    opacity: 0;
+		display: none;
+}
+
+.checkbox label {
+	cursor:pointer;
+    position: relative;
+    display: inline-block;
+    /*16px width of fake checkbox + 6px distance between fake checkbox and text*/
+		padding-left: 22px;
+		padding-top: 3px;
+}
+
+.checkbox label::before,
+.checkbox label::after {
+    position: absolute;
+    content: "";
+    /*Needed for the line-height to take effect*/
+    display: inline-block;
+}
+
+/*Outer box of the fake checkbox*/
+
+.checkbox label::before {
+    height: 16px;
+    width: 16px;
+    border: 1px solid #9A9A9A;
+    left: 0px;
+    /*(24px line-height - 16px height of fake checkbox) / 2 - 1px for the border to vertically center it.*/
+    top: 3px;
+}
+
+/*Checkmark of the fake checkbox*/
+
+.checkbox label::after {
+    height: 5px;
+    width: 9px;
+    border-left: 2px solid;
+    border-bottom: 2px solid;
+    transform: rotate(-45deg);
+    left: 4px;
+    top: 7px;
+    color: #333;
+}
+
+/*Hide the checkmark by default*/
+
+.checkbox input[type="checkbox"]+label::after {
+    content: none;
+}
+
+/*Unhide on the checked state*/
+
+.checkbox input[type="checkbox"]:checked+label::after {
+    content: "";
+}
+
+/*Adding focus styles on the outer-box of the fake checkbox*/
+
+.checkbox input[type="checkbox"]:hover+label::after {
+    border-color: #888;
+    outline: #ccc;
+}
+
+.checkbox input[type="checkbox"]:hover+label::before {
+    outline: #888;
+    border-color: #888;
+    background-color: #eee;
+}
+
+.checkbox input[type="checkbox"]:disabled+label::before {
+    outline: #ccc;
+    border-color: #ccc;
+    background-color: #fff;
+    color: #ccc;
+}
+
+.checkbox input[type="checkbox"]:disabled+label::after {
+    color: #888;
+}
+
+.checkbox input[type="checkbox"]:focus+label::before {
+    outline: #333 auto 5px;
+}
+
 	@media all and (max-width: 576px) {
 		textarea { width:100%; height:70px; }
 	}
@@ -15,9 +135,6 @@ div,textarea{font-family:"Courier New";}
 </head>
 
 <body>
-Adapted from: <br>http://www.rapidtables.com/calc/math/convolution-calculator.htm<br>http://www.uniquelycommon.com/projects/circular_convolution<br>
-https://www.easycalculation.com/engineering/mechanical/discrete-fourier-transform.php<br>
-http://scistatcalc.blogspot.co.uk/2013/12/fft-calculator.html<br>
 		<h1>Linear Convolution/Circular Convolution calculator</h1>
 		
 				Enter first data sequence: (real numbers only)<br />
@@ -30,9 +147,9 @@ http://scistatcalc.blogspot.co.uk/2013/12/fft-calculator.html<br>
 				<br /><input type=button value="Calculate its DFT" onclick='calculate("h")'><br />
 				<div id='result_h'></div><br />
 				<input onclick="form_calc()" type="button" value="Calculate Convolution" class="btn"><br />
-		<label for="length">(optional) circular conv length = </label><input id="length" style="width: 50px;" value="4" /><br />
+		<label for="length">(optional) circular conv length = </label><input type="text" id="length" style="width: 50px;" value="4" /><br />
 		<br />
-				<div id="function_result"></div><br />
+				<div class="result" id="function_result"></div><br />
 		
 	
 	<script>
@@ -198,13 +315,32 @@ for(var k=0;k<N;k++)
 Input: (accept imaginary numbers, e.g. 1+j 0 2+j 0 3 0 4 0)
 <br>
 <textarea id="Num_inp">1+j 0 2+j 0 3 0 4 0</textarea>
-<br><label><input id="fft_dir" type="checkbox">Check for IFFT, uncheck for FFT.</label>
+<br>
+<div class="checkbox" onclick="changeFft()">
+	<input type="checkbox" id="fft_dir">
+	<label for="no_format" id="fft_dir_label">FFT (click again for IFFT)</label>
+</div>
 <br>
 <input name="b1" onclick="calc_fft()" type="Button" value="Perform FFT/IFFT">
 <br><br>
-<div id="Real_Imag_out"></div>
+<div class="result" id="Real_Imag_out"></div>
 
 <script language="JavaScript">
+
+function changeFft(){
+	var checkBox = document.getElementById("fft_dir");
+	var checked = checkBox.checked;
+	var label = document.getElementById("fft_dir_label");
+	if(checked)
+	{
+label.innerHTML="IFFT (click again for FFT)";
+	}
+	else{
+		label.innerHTML="FFT (click again for IFFT)";
+	}
+		checkBox.checked = !checked;
+}
+
 var x = new Array();
 var y = new Array();
 function calc_fft() {
@@ -313,4 +449,9 @@ function FFT(dir,m,x,y)
    return(1);
 }
 </script>
+	<div class="gray">
+			Adapted from: <br>http://www.rapidtables.com/calc/math/convolution-calculator.htm<br>http://www.uniquelycommon.com/projects/circular_convolution<br>
+			https://www.easycalculation.com/engineering/mechanical/discrete-fourier-transform.php<br>
+			http://scistatcalc.blogspot.co.uk/2013/12/fft-calculator.html<br>
+			</div>
 </body></html>
