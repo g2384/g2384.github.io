@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Scientific Notation Converter</title>
+	<style>
+		body {
+			font-family: consolas, Courier, monospace;
+			margin: 0 auto;
+			max-width: 800px;
+		}
+
+		.error_msg {
+			color: #ff2b2b;
+			display: inline-block;
+			margin-left: 5px;
+		}
+
+		.input_text {
+			font-family: consolas;
+			padding: 10px;
+			border: solid 1px gainsboro;
+			border-bottom: solid 2px #c9c9c9;
+			transition: border 0.3s;
+			margin: 0 0 3 0;
+			font-size: 18px;
+			-webkit-appearance: none;
+			box-shadow: none;
+			box-sizing: border-box;
+			width: 100%;
+		}
+
+		.input_text:focus {
+			border-bottom: solid 2px #969696;
+		}
+
+		label {
+			display: inline-block;
+		}
+
+		input[type='button'] {
+			padding: 5px 8px;
+			font-size: 16px;
+			line-height: 1.33;
+			border-radius: 3px;
+			color: #333;
+			background-color: #fff;
+			cursor: pointer;
+			text-align: center;
+			white-space: nowrap;
+			border: 1px solid #B3B3B3;
+		}
+
+		.btn {
+			margin: 10px;
+		}
+
+		.btn-sm {
+			margin: 3px;
+		}
+
+		input[type='button']:hover {
+			color: red;
+		}
+
+		.calc2 tr:nth-child(5) input[type=button] {
+			width: 40px;
+		}
+
+		@media all and (max-width: 576px) {
+			.calc2 tr td:nth-child(4) input[type=text] {
+				width: 50px;
+			}
+
+			.calc2 tr td:nth-child(5) {
+				padding-top: 30px;
+			}
+		}
+
+		@media all and (min-width: 577px) {
+			.calc2 tr td:nth-child(4) input[type=text] {
+				width: 80px;
+				margin-bottom: 40px;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<div id="wrapper">
+		<div id="lcol">
+			<div id="doc">
+				<!-- #BeginEditable "doctext" -->
+				<h1>Scientific Notation Converter</h1>
+				<p>Scientific notation to standard decimal notation, E notation, normalized notation and engineering
+					notation:</p>
+				<form name="calcform" autocomplete="off">
+					<table class="calc2">
+						<tbody>
+							<tr>
+								<td><label for="sci">Scientific notation:</label></td>
+								<td><input type="text" id="sci" name="sci" class="input_text" autofocus="">
+								</td>
+								<td class="math">×10</td>
+								<td><input type="text" id="sci2" class="input_text" name="sci2">
+								</td>
+								<td><input onclick="Convert_Sci()" type="button" value="Convert" class="btn"></td>
+							</tr>
+							<tr>
+								<td><label for="dec">Decimal notation:</label></td>
+								<td colspan="3"><input type="text" id="dec" name="dec" class="input_text">
+								</td>
+								<td><input onclick="Convert_Dec()" type="button" value="Convert" class="btn"></td>
+							</tr>
+							<tr>
+								<td><label for="e">E notation:</label></td>
+								<td colspan="3"><input type="text" id="e" name="e" class="input_text"></td>
+								<td><input onclick="Convert_E()" type="button" value="Convert" class="btn"></td>
+							</tr>
+							<tr>
+								<td><label for="a">Alphabetic notation:</label></td>
+								<td colspan="3"><input type="text" id="a" name="a" class="input_text"></td>
+								<td><input onclick="Convert_Alpha()" type="button" value="Convert" class="btn"></td>
+							</tr>
+							<tr>
+								<td><label for="norm">Normalized notation:</label></td>
+								<td><input type="text" id="norm" name="norm" class="input_text" readonly="">
+								</td>
+								<td class="math">×10</td>
+								<td><input type="text" id="norm2" name="norm2" class="input_text" readonly=""></td>
+								<td>&nbsp;</td>
+							</tr>
+							<tr>
+								<td><label for="eng">Engineering notation:</label></td>
+								<td><input type="text" id="eng" name="eng" class="input_text" readonly="">
+								</td>
+								<td class="math">×10</td>
+								<td><input type="text" id="eng2" name="eng2" class="input_text" readonly="">
+								</td>
+								<td><input type="button" value="‹" class="btn btn-sm" onclick="Convert_Eng(0)">
+									<input type="button" value="›" class="btn btn-sm" onclick="Convert_Eng(1)"></td>
+							</tr>
+						</tbody>
+					</table>
+				</form>
+
+				<script>
+					function roundNum(x, p) {
+						var i;
+						var n = parseFloat(x);
+						var m = n.toPrecision(p + 1);
+						var y = String(m);
+						i = y.indexOf('e');
+						if (i == -1) i = y.length;
+						j = y.indexOf('.');
+						if (i > j && j != -1) {
+							while (i > 0) {
+								if (y.charAt(--i) == '0')
+									y = removeAt(y, i);
+								else
+									break;
+							}
+							if (y.charAt(i) == '.')
+								y = removeAt(y, i);
+						}
+						return y;
+					}
+
+					function removeAt(s, i) {
+						s = s.substring(0, i) + s.substring(i + 1, s.length);
+						return s;
+					}
+				</script>
+				<script>
+					function Convert_Sci() {
+						a = document.calcform.sci.value;
+						b = document.calcform.sci2.value;
+						b = parseInt(b);
+
+						calcAndSetDec(a, b);
+						[norm, norm2] = calcAndSetNorm(a, b);
+						calcAndSetE(a, b);
+						[eng, eng2] = calcAndSetEng(norm, norm2);
+						calcAndSetAlpha(eng, eng2);
+					}
+
+					function calcAndSetNorm(a, b) {
+						f = (a == 0) ? 0 : Math.floor(Math.log(Math.abs(a)) * Math.LOG10E);
+						norm = a / Math.pow(10, f);
+						norm = roundNum(norm, 10);
+						norm2 = parseInt(b) + f;
+						document.calcform.norm.value = norm;
+						document.calcform.norm2.value = norm2;
+						return [norm, norm2];
+					}
+
+					function calcAndSetEng(norm, norm2) {
+						mod = norm2 % 3;
+						eng = norm * Math.pow(10, mod);
+						eng = roundNum(eng, 10);
+						eng2 = norm2 - mod;
+						if (Math.abs(eng) < 1 && eng != 0) {
+							eng *= 1000;
+							eng2 -= 3;
+						}
+						eng = roundNum(eng, 10);
+						document.calcform.eng.value = eng;
+						document.calcform.eng2.value = eng2;
+						return [eng, eng2]
+					}
+
+					function calcAndSetE(sci, sci_e) {
+						sign = "";
+						if (sci_e >= 0) sign = "";
+						e = sci + "e" + sign + sci_e;
+						document.calcform.e.value = e;
+					}
+
+					function Convert_Dec() {
+						dec = document.calcform.dec.value;
+						dec = parseFloat(dec);
+						e = dec.toExponential();
+						a = e;
+						b = 0;
+						i = e.indexOf('e');
+						if (i != -1) {
+							a = e.substring(0, i);
+							b = e.substring(i + 1, e.length);
+						}
+						b = parseInt(b);
+
+						[norm, norm2] = calcAndSetNorm(a, b);
+						calcAndSetE(a, b);
+						[eng, eng2] = calcAndSetEng(norm, norm2);
+						calcAndSetAlpha(eng, eng2);
+
+						document.calcform.sci.value = a;
+						document.calcform.sci2.value = b;
+					}
+
+					function Convert_E() {
+						e = document.calcform.e.value;
+						a = e;
+						b = 0;
+						i = e.indexOf('e');
+						if (i != -1) {
+							a = e.substring(0, i);
+							b = e.substring(i + 1, e.length);
+						}
+						b = parseInt(b);
+
+						calcAndSetDec(a, b);
+						[norm, norm2] = calcAndSetNorm(a, b);
+						[eng, eng2] = calcAndSetEng(norm, norm2);
+						calcAndSetAlpha(eng, eng2);
+
+						document.calcform.sci.value = a;
+						document.calcform.sci2.value = b;
+					}
+
+					function calcAndSetDec(a, b) {
+						dec = a * Math.pow(10, b);
+						dec = roundNum(dec, 10);
+						dec = parseFloat(dec).toFixed(20).replace(/\.?0+$/, "");
+						document.calcform.dec.value = dec;
+						return dec;
+					}
+
+					function Convert_Alpha() {
+						var value = document.calcform.a.value;
+						let regex = /([\d\.]+)([a-zA-Z]+)/;
+						var captures = value.match(regex);
+						var number = captures[1];
+						var letters = captures[2];
+
+						number = parseInt(number);
+						exp = letterToExp(letters);
+						[norm, norm2] = calcAndSetNorm(number, exp);
+						calcAndSetDec(number, exp);
+						calcAndSetE(number, exp);
+						[eng, eng2] = calcAndSetEng(norm, norm2);
+					}
+
+					function calcAndSetAlpha(eng, eng2) {
+						var alpha = nFormatter(eng, eng2);
+						document.calcform.a.value = alpha;
+					}
+
+					function letterToExp(c) {
+						c = c.toLowerCase();
+						switch (c) {
+							case "":
+								return 0;
+							case "k":
+								return 3;
+							case "m":
+								return 6;
+							case "b":
+								return 9;
+							case "t":
+								return 12;
+							default:
+								return base26ToBase10(c);
+						}
+					}
+
+					function base26ToBase10(c) {
+						var result = 0;
+						for (var i = 0; i < c.length; i++) {
+							result = (c[i].charCodeAt(0) - 97) + result * 26;
+						}
+						return result;
+					}
+
+					function nFormatter(num, exp) {
+						var rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
+						var i;
+						var symbol = "";
+						var scale = Math.floor(exp / 3);
+						switch (scale) {
+							case 0:
+								break;
+							case 1:
+								symbol = "K";
+								break;
+							case 2:
+								symbol = "M";
+								break;
+							case 3:
+								symbol = "B";
+								break;
+							case 4:
+								symbol = "T";
+								break;
+							default:
+								symbol = ToBaseLetter(scale - 5);
+								break;
+						}
+						return num.toString() + symbol;
+					}
+
+					function ToBaseLetter(value) {
+						var range_letter = 'abcdefghijklmnopqrstuvwxyz'.split('');
+						var result = "";
+						while (value >= 26) {
+							index = value % 26;
+							value = Math.floor(value / 26);
+							result += range_letter[index];
+						}
+						if (value >= 0) {
+							result = range_letter[value] + result;
+						}
+						if (result.length == 1) {
+							result = "a" + result;
+						}
+						return result;
+					}
+
+					function Convert_Eng(e) {
+						a = document.calcform.eng.value;
+						b = document.calcform.eng2.value;
+						a = parseFloat(a);
+						b = parseInt(b);
+
+						if (e == 0) {
+							a *= 1000;
+							b -= 3;
+						} else {
+							a /= 1000;
+							b += 3;
+						}
+
+						document.calcform.eng.value = a;
+						document.calcform.eng2.value = b;
+					}
+				</script>
+			</div>
+
+		</div>
+
+	</div>
+
+</body>
+
+</html>
