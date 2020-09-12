@@ -79,14 +79,15 @@ function decipher(text, processedPinyin, pinyinBuffer, usedLetters, currentPos) 
         var letters = validLetters[letterPos];
 
         for (var i = 0; i < letters.length; i++) {
-            if (usedLetters.indexOf(letters[i]) >= 0) {
+            var currentLetter = letters[i];
+            if (usedLetters.indexOf(currentLetter) >= 0) {
                 continue;
             }
-            var text2 = text.replaceAll(currentChar, letters[i]);
+            var text2 = text.replaceAll(currentChar, currentLetter);
             if (hasInvalidCombos(text2)) {
                 continue;
             }
-            var usedLetters2 = usedLetters + letters[i];
+            var usedLetters2 = usedLetters + currentLetter;
             decipher(text2, processedPinyin, pinyinBuffer, usedLetters2, textLength - text2.length);
         }
     }
