@@ -37,10 +37,15 @@ var quickSkip;
 
 function decipher(text, processedPinyin, pinyinBuffer, usedLetters, currentPos) {
     if (quickSkip) {
-        if (currentPos <= fastSearchEndIndex) {
+        if (currentPos == fastSearchEndIndex) {
             quickSkip = false;
         }
-        return;
+        else if (currentPos <= fastSearchEndIndex + 1) {
+            quickSkip = false;
+            return;
+        } else {
+            return;
+        }
     }
 
     count++;
@@ -48,7 +53,7 @@ function decipher(text, processedPinyin, pinyinBuffer, usedLetters, currentPos) 
     if (text.length == 0) {
         // all finished
         if (pinyinBuffer.length == 0) {
-            quickSkip = true;
+            quickSkip = true && fastSearchEndIndex >= 0;
             postMessage([true, processedPinyin, count]);
         }
         else {
