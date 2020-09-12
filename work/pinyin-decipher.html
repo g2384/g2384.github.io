@@ -4,7 +4,7 @@
   <title>拼音密码破解</title>
   <style>
     body {
-      font-family: consolas;
+      font-family: consolas, Courier, monospace;
       max-width: 600px;
       margin: 10px auto;
       font-size: 1.2em;
@@ -14,12 +14,17 @@
       display: inline-block;
     }
 
-    #progressContainer, #countContainer {
+    #progressContainer,
+    #countContainer {
       display: none;
     }
 
-    #count{
+    #count {
       display: inline;
+    }
+
+    #result,#progress {
+      word-break: break-all;
     }
 
     textarea {
@@ -27,6 +32,7 @@
       height: 120px;
       padding: 5px;
       font-size: 1.2em;
+      border: 1px solid #333;
     }
 
     .btn {
@@ -59,6 +65,7 @@
     input[type=text] {
       padding: 5px;
       width: 40px;
+      border: 1px solid #333;
     }
   </style>
 </header>
