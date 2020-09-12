@@ -1,7 +1,7 @@
 <html>
 <header>
   <meta charset="utf-8" />
-  <title>Pinyin Cipher/Decipher</title>
+  <title>拼音密码破解</title>
   <style>
     body {
       font-family: consolas;
@@ -14,8 +14,12 @@
       display: inline-block;
     }
 
-    #progressConainter {
+    #progressContainer, #countContainer {
       display: none;
+    }
+
+    #count{
+      display: inline;
     }
 
     textarea {
@@ -60,17 +64,23 @@
 </header>
 
 <body>
-  <h3>Pinyin Cipher/Decipher</h3>
+  <h3>拼音密码破解</h3>
+  <p>暴力破解拼音字母替换的密码</p>
   <div>
+    <p>密文：（不区分大小写）</p>
     <textarea id="inputText">love</textarea>
+    <p>已知的替换：（选填，左侧为密文里出现的字母，右侧为明文里出现的字母）</p>
     <div id="knownKeys"></div>
-    <input type="button" class="btn" onclick="start();" value="Start" />
+    <input type="button" class="btn" onclick="start();" value="开始" />
   </div>
 
-  <div id="result"></div>
-  <div id="progressConainter">Checking: <div id="progress"></div>
+  <div id="countContainer">已检查：
+    <div id="count"></div>组
   </div>
-  <div id="count"></div>
+  <div id="progressContainer">Checking: <div id="progress"></div>
+  </div>
+  <hr>
+  <div id="result"></div>
   <script>
     const alpha2 = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
 
@@ -92,12 +102,12 @@
       throw "Your browser doesn't support Web Workers";
     }
 
-    var thread = new Worker("PinyinCipher.js");
+    var thread = new Worker("pinyin-decipher.js");
     thread.onmessage = function (e) {
       [isValid, text, curr_c] = e.data;
       if (isValid) {
         if (text == "!") {
-          document.getElementById("progressConainter").style.display = "none";
+          document.getElementById("progressContainer").style.display = "none";
         } else {
           var text2 = text.replaceAll(" ", "");
           if (deciphered.indexOf(text2) < 0) {
@@ -121,7 +131,8 @@
     var deciphered = [];
 
     function start() {
-      document.getElementById("progressConainter").style.display = "block";
+      document.getElementById("progressContainer").style.display = "block";
+      document.getElementById("countContainer").style.display = "block";
       count = 0;
       deciphered = [];
       progressArea.innerHTML = count;
