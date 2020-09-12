@@ -42,13 +42,28 @@
       color: #4e4e4e;
       border: 1px solid rgb(226, 226, 226);
     }
+
+    #knownKeys {
+      margin: 10px 0px;
+    }
+
+    .inlineBlock {
+      display: inline-block;
+      margin: 2px 10;
+    }
+
+    input[type=text] {
+      padding: 5px;
+      width: 40px;
+    }
   </style>
 </header>
 
 <body>
-<h3>Pinyin Cipher/Decipher</h3>
+  <h3>Pinyin Cipher/Decipher</h3>
   <div>
     <textarea id="inputText">love</textarea>
+    <div id="knownKeys"></div>
     <input type="button" class="btn" onclick="start();" value="Start" />
   </div>
 
@@ -57,6 +72,17 @@
   </div>
   <div id="count"></div>
   <script>
+    const alpha2 = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
+
+    function setUI() {
+      var knownKeys = document.getElementById("knownKeys");
+      var html = "";
+      alpha2.forEach(function (v, i) {
+        html += "<div class='inlineBlock'>" + v + ": <input type='text' maxLength='1' id='i_" + v + "'/></div>"
+      });
+      knownKeys.innerHTML = html;
+    }
+    setUI();
 
     var progressArea = document.getElementById("progress");
     var countArea = document.getElementById("count");
@@ -100,8 +126,20 @@
       deciphered = [];
       progressArea.innerHTML = count;
       console.log("start");
+      var keys = getKeys();
       var text = document.getElementById("inputText").value;
-      thread.postMessage([text, {}]);
+      thread.postMessage([text, keys]);
+    }
+
+    function getKeys() {
+      var keys = {}
+      alpha2.forEach(function (v, i) {
+        var key = document.getElementById("i_" + v).value;
+        if (key != null && key != undefined && key.length > 0) {
+          keys[v.toLowerCase()] = key;
+        }
+      });
+      return keys;
     }
 
 
