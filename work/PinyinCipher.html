@@ -1,0 +1,175 @@
+<html>
+<header>
+  <meta charset="utf-8" />
+  <title>Pinyin Cipher/Decipher</title>
+  <style>
+    body {
+      font-family: consolas;
+      max-width: 600px;
+      margin: 10px auto;
+      font-size: 1.2em;
+    }
+
+    #progress {
+      display: inline-block;
+    }
+
+    #progressConainter {
+      display: none;
+    }
+
+    textarea {
+      width: 100%;
+      height: 120px;
+      padding: 5px;
+      font-size: 1.2em;
+    }
+
+    .btn {
+      margin: 10px 0px;
+      padding: 5px 8px;
+      border-radius: 3px;
+      color: #000;
+      font-size: 1em;
+      cursor: pointer;
+      text-align: center;
+      background-color: white;
+      border: 1px solid rgb(194, 194, 194);
+    }
+
+    .btn:hover {
+      background-color: #ebebeb;
+      color: #4e4e4e;
+      border: 1px solid rgb(226, 226, 226);
+    }
+  </style>
+</header>
+
+<body>
+<h3>Pinyin Cipher/Decipher</h3>
+  <div>
+    <textarea id="inputText">love</textarea>
+    <input type="button" class="btn" onclick="start();" value="Start" />
+  </div>
+
+  <div id="result"></div>
+  <div id="progressConainter">Checking: <div id="progress"></div>
+  </div>
+  <div id="count"></div>
+  <script>
+
+    var progressArea = document.getElementById("progress");
+    var countArea = document.getElementById("count");
+    var resultDiv = document.getElementById("result");
+
+    if ("function" !== typeof window.Worker) {
+      throw "Your browser doesn't support Web Workers";
+    }
+
+    var thread = new Worker("PinyinCipher.js");
+    thread.onmessage = function (e) {
+      [isValid, text, curr_c] = e.data;
+      if (isValid) {
+        if (text == "!") {
+          document.getElementById("progressConainter").style.display = "none";
+        } else {
+          var text2 = text.replaceAll(" ", "");
+          if (deciphered.indexOf(text2) < 0) {
+            deciphered.push(text2);
+            resultDiv.innerHTML += text + "<br>";
+          }
+        }
+      }
+      else {
+        progressArea.innerHTML = text;
+      }
+      count += curr_c;
+      countArea.innerHTML = count;
+    };
+
+    thread.onerror = function (e) {
+      console.log(e);
+    };
+
+    var count = 0;
+    var deciphered = [];
+
+    function start() {
+      document.getElementById("progressConainter").style.display = "block";
+      count = 0;
+      deciphered = [];
+      progressArea.innerHTML = count;
+      console.log("start");
+      var text = document.getElementById("inputText").innerHTML;
+      thread.postMessage([text, {}]);
+    }
+
+
+    function test() {
+      var pp = ["a", "e", "o", "ai", "an", "ao", "ba", "bi", "bo", "bu", "ca", "ce", "ci", "cu", "da", "de", "di", "du", "ei", "en", "er", "fa", "fo", "fu", "ga", "ge", "gu", "ha", "he", "hu", "ji", "ju", "ka", "ke", "ku", "la", "le", "li", "lo", "lu", "lv", "ma", "me", "mi", "mo", "mu", "na", "ne", "ni", "nu", "nv", "ou", "pa", "pi", "po", "pu", "qi", "qu", "re", "ri", "ru", "sa", "se", "si", "su", "ta", "te", "ti", "tu", "wa", "wo", "wu", "xi", "xu", "ya", "ye", "yi", "yo", "yu", "za", "ze", "zi", "zu", "ang", "bai", "ban", "bao", "bei", "ben", "bie", "bin", "cai", "can", "cao", "cen", "cha", "che", "chi", "chu", "cou", "cui", "cun", "cuo", "dai", "dan", "dao", "dei", "den", "dia", "die", "diu", "dou", "dui", "dun", "duo", "eng", "fan", "fei", "fen", "fou", "gai", "gan", "gao", "gei", "gen", "gou", "gua", "gui", "gun", "guo", "hai", "han", "hao", "hei", "hen", "hng", "hou", "hua", "hui", "hun", "huo", "jia", "jie", "jin", "jiu", "jue", "jun", "kai", "kan", "kao", "kei", "ken", "kou", "kua", "kui", "kun", "kuo", "lai", "lan", "lao", "lei", "lia", "lie", "lin", "liu", "lou", "lve", "lun", "luo", "mai", "man", "mao", "mei", "men", "mie", "min", "miu", "mou", "nai", "nan", "nao", "nei", "nen", "nie", "nin", "niu", "nou", "nve", "nuo", "pai", "pan", "pao", "pei", "pen", "pie", "pin", "pou", "qia", "qie", "qin", "qiu", "que", "qun", "ran", "rao", "ren", "rou", "rui", "run", "ruo", "sai", "san", "sao", "sen", "sha", "she", "shi", "shu", "sou", "sui", "sun", "suo", "tai", "tan", "tao", "tie", "tou", "tui", "tun", "tuo", "wai", "wan", "wei", "wen", "xia", "xie", "xin", "xiu", "xue", "xun", "yan", "yao", "yin", "you", "yue", "yun", "zai", "zan", "zao", "zei", "zen", "zha", "zhe", "zhi", "zhu", "zou", "zui", "zun", "zuo", "bang", "beng", "bian", "biao", "bing", "cang", "ceng", "chai", "chan", "chao", "chen", "chou", "chua", "chui", "chun", "chuo", "cong", "cuan", "dang", "deng", "dian", "diao", "ding", "dong", "duan", "fang", "feng", "gang", "geng", "gong", "guai", "guan", "hang", "heng", "hong", "huai", "huan", "jian", "jiao", "jing", "juan", "kang", "keng", "kong", "kuai", "kuan", "lang", "leng", "lian", "liao", "ling", "long", "luan", "mang", "meng", "mian", "miao", "ming", "nang", "neng", "nian", "niao", "ning", "nong", "nuan", "pang", "peng", "pian", "piao", "ping", "qian", "qiao", "qing", "quan", "rang", "reng", "rong", "ruan", "sang", "seng", "shai", "shan", "shao", "shei", "shen", "shou", "shua", "shui", "shun", "shuo", "song", "suan", "tang", "teng", "tian", "tiao", "ting", "tong", "tuan", "wang", "weng", "xian", "xiao", "xing", "xuan", "yang", "ying", "yong", "yuan", "zang", "zeng", "zhai", "zhan", "zhao", "zhei", "zhen", "zhou", "zhua", "zhui", "zhun", "zhuo", "zong", "zuan", "chang", "cheng", "chong", "chuai", "chuan", "guang", "huang", "jiang", "jiong", "kuang", "liang", "niang", "qiang", "qiong", "shang", "sheng", "shuai", "shuan", "xiang", "xiong", "zhang", "zheng", "zhong", "zhuai", "zhuan", "chuang", "shuang", "zhuang"];
+      var alpha = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
+      var alpha2 = findAllCombo(alpha, alpha);
+      console.log(alpha2);
+      var pp2 = findAllCombo(pp, pp);
+      console.log(pp2);
+      var valid = [];
+      var invalid = [];
+      for (var i = 0; i < alpha2.length; i++) {
+        var found = false;
+        for (var j = 0; j < pp2.length; j++) {
+          if (pp2[j].indexOf(alpha2[i]) >= 0) {
+            found = true;
+            break;
+          }
+        }
+        if (!found) {
+          invalid.push(alpha2[i]);
+        }
+        else {
+          valid.push(alpha2[i]);
+        }
+      }
+      console.log(valid.join(", "));
+      console.log(invalid.join(", "));
+
+
+      for (var i = 0; i < pp2.length; i++) {
+        var index = pp.indexOf(pp2[i]);
+        if (index >= 0) {
+          pp[index] = "";
+        }
+      }
+      console.log(pp.join(", "));
+
+
+      for (var j = 0; j < 6; j++) {
+        var result = "";
+        for (var i = 0; i < pp.length; i++) {
+          if (pp[i].length > j) {
+            result += pp[i][j] + " ";
+          }
+        }
+        console.log(result);
+      }
+
+    }
+
+    function findAllCombo(array1, array2) {
+      combos = [] //or combos = new Array(2);
+
+      for (var i = 0; i < array1.length; i++) {
+        for (var j = 0; j < array2.length; j++) {
+          //you would access the element of the array as array1[i] and array2[j]
+          //create and array with as many elements as the number of arrays you are to combine
+          //add them in
+          //you could have as many dimensions as you need
+          combos.push(array1[i] + array2[j])
+        }
+      }
+      return combos;
+    }
+
+  </script>
+</body>
+
+</html>
