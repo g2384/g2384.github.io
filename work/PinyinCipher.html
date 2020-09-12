@@ -100,7 +100,7 @@
       deciphered = [];
       progressArea.innerHTML = count;
       console.log("start");
-      var text = document.getElementById("inputText").innerHTML;
+      var text = document.getElementById("inputText").value;
       thread.postMessage([text, {}]);
     }
 
