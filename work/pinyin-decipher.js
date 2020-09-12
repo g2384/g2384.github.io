@@ -1,16 +1,19 @@
 onmessage = function (e) {
-    [text, key] = e.data;
+    [text, key, fastSearchStartIndex, fastSearchEndIndex] = e.data;
     console.log("Decipher: " + text);
     text = text.toUpperCase();
     var keys = Object.keys(key);
     var usedLetters = "";
-    for(var i=0;i<Object.keys(key).length;i++){
+    for (var i = 0; i < keys.length; i++) {
         text = text.replaceAll(keys[i].toUpperCase(), key[keys[i]]);
-        usedLetters +=  key[keys[i]];
+        usedLetters += key[keys[i]];
     }
-    decipher(text, "", "", usedLetters);
+    textLength = text.length;
+    decipher(text, "", "", usedLetters, 0);
     postMessage([true, "!", 0]);
 };
+
+var fastSearchStartIndex, fastSearchEndIndex, textLength;
 
 const alpha = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
 
@@ -30,12 +33,22 @@ const validLetters = [
 
 const alpha2 = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
 var count = 0;
+var quickSkip;
 
-function decipher(text, processedPinyin, pinyinBuffer, usedLetters) {
+function decipher(text, processedPinyin, pinyinBuffer, usedLetters, currentPos) {
+    if (quickSkip) {
+        if (currentPos <= fastSearchEndIndex) {
+            quickSkip = false;
+        }
+        return;
+    }
+
     count++;
+
     if (text.length == 0) {
         // all finished
         if (pinyinBuffer.length == 0) {
+            quickSkip = true;
             postMessage([true, processedPinyin, count]);
         }
         else {
@@ -69,25 +82,26 @@ function decipher(text, processedPinyin, pinyinBuffer, usedLetters) {
                 continue;
             }
             var usedLetters2 = usedLetters + letters[i];
-            decipher(text2, processedPinyin, pinyinBuffer, usedLetters2);
+            decipher(text2, processedPinyin, pinyinBuffer, usedLetters2, textLength - text2.length);
         }
     }
     else {
         pinyinBuffer += currentChar;
         if (shortestPinyin.indexOf(pinyinBuffer) >= 0) {
-            decipher(text.slice(1), processedPinyin, pinyinBuffer, usedLetters);
+            currentPos++;
+            decipher(text.slice(1), processedPinyin, pinyinBuffer, usedLetters, currentPos);
 
             processedPinyin += pinyinBuffer + " ";
-            decipher(text.slice(1), processedPinyin, "", usedLetters);
+            decipher(text.slice(1), processedPinyin, "", usedLetters, currentPos);
         }
         else {
             if (hasPinyinStartsWith(pinyinBuffer)) {
-                decipher(text.slice(1), processedPinyin, pinyinBuffer, usedLetters);
+                currentPos++;
+                decipher(text.slice(1), processedPinyin, pinyinBuffer, usedLetters, currentPos);
             }
             return;
         }
     }
-
 }
 
 function hasPinyinStartsWith(text) {

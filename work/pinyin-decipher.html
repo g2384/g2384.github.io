@@ -24,7 +24,8 @@
       display: inline;
     }
 
-    #result,#progress {
+    #result,
+    #progress {
       word-break: break-all;
     }
 
@@ -63,10 +64,17 @@
       margin: 2px 10;
     }
 
+    .key {
+      width: 40px;
+    }
+
     input[type=text] {
       padding: 5px;
-      width: 40px;
       border: 1px solid #333;
+    }
+
+    #fastSearch {
+      width: 200px;
     }
   </style>
 </header>
@@ -80,6 +88,7 @@
     <textarea id="inputText">love</textarea>
     <p>已知的替换：（选填，左侧为密文里出现的字母，右侧为明文里出现的字母）</p>
     <div id="knownKeys"></div>
+    <div>快速破解：<input type="text" id='fastSearch' />（仅破解选定的密文）</div>
     <input type="button" class="btn" onclick="start();" value="开始" />
   </div>
 
@@ -97,7 +106,7 @@
       var knownKeys = document.getElementById("knownKeys");
       var html = "";
       alpha2.forEach(function (v, i) {
-        html += "<div class='inlineBlock'>" + v + ": <input type='text' maxLength='1' id='i_" + v + "'/></div>"
+        html += "<div class='inlineBlock'>" + v + ": <input type='text' class='key' maxLength='1' id='i_" + v + "'/></div>"
       });
       knownKeys.innerHTML = html;
     }
@@ -106,6 +115,7 @@
     var progressArea = document.getElementById("progress");
     var countArea = document.getElementById("count");
     var resultDiv = document.getElementById("result");
+    var fastSearchText = document.getElementById("fastSearch");
 
     if ("function" !== typeof window.Worker) {
       throw "Your browser doesn't support Web Workers";
@@ -138,6 +148,7 @@
 
     var count = 0;
     var deciphered = [];
+    var fastSearchStartIndex, fastSearchEndIndex;
 
     function start() {
       document.getElementById("progressContainer").style.display = "block";
@@ -145,10 +156,19 @@
       count = 0;
       deciphered = [];
       progressArea.innerHTML = count;
+      var fs_Text = fastSearchText.value;
       console.log("start");
       var keys = getKeys();
       var text = document.getElementById("inputText").value;
-      thread.postMessage([text, keys]);
+      fastSearchStartIndex = text.indexOf(fs_Text);
+      if (fastSearchStartIndex < 0) {
+        fastSearchStartIndex = 0;
+      }
+      fastSearchEndIndex = fastSearchStartIndex + fs_Text.length - 1;
+      if (fastSearchEndIndex >= text.length) {
+        fastSearchEndIndex = text.length - 1;
+      }
+      thread.postMessage([text, keys, fastSearchStartIndex, fastSearchEndIndex]);
     }
 
     function getKeys() {
