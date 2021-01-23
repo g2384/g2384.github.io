@@ -749,27 +749,75 @@ function GetScrabble(s, dict) {
     return f;
 }
 
-function DiscardDismatchedWords(s, result) {
-    var s_a = s.split('');
-    var f = [];
-    for (var i = 0; i < result.length; i++) {
-        var r_i = result[i].split('');
-        var keep = true;
-        for (var j = 1; j < r_i.length; j++) {
-            if (r_i != '.') {
-                for (var k = j; k < r_i.length; k++) {
-                    if (keep) {
-                        if (s_a[k] != s_a[k - j]) {
-                            keep = r_i[k] != r_i[k - j]
-                        } else {
-                            keep = r_i[k] == r_i[k - j]
-                        }
-                    }
+function getCombinations (arr, n) {
+    var i, j, k, elem, l = arr.length, childperm, ret = [];
+    if (n == 1){
+        for (i = 0; i < arr.length; i++) {
+            for (j = 0; j < arr[i].length; j++) {
+                ret.push([arr[i][j]]);
+            }
+        }
+        return ret;
+    }
+    else {
+        for (i = 0; i < l; i++) {
+            elem = arr.shift();
+            for (j = 0; j < elem.length; j++) {
+                childperm = getCombinations(arr.slice(), n-1);
+                for (k = 0; k < childperm.length; k++) {
+                    ret.push([elem[j]].concat(childperm[k]));
                 }
             }
         }
+        return ret;
+    }
+}
+
+function DiscardDismatchedWords(s, result) {
+    var s_a = s.split('');
+    var f = [];
+    var s_unique = [...new Set(s_a)];
+    s_unique = s_unique.filter(function(el) {
+        return el.length && el==+el;
+    });
+    var dict = {};
+    var dict2={};
+    for (var i = 0; i < result.length; i++) {
+        var ri = result[i];
+        var r_i = ri.split('');
+        var keep = false;       
+        let r_letters = [...new Set(r_i)];
+        var comb = getCombinations(r_letters, s_unique.length);
+        for(var k=0;k<comb.length;k++){
+            let s2 = s;
+            var c_k = comb[k];
+            for(var j=0;j<s_unique.length;j++){
+                var s_reg;
+                var s_j = s_unique[j];
+                if(s_j in dict2){
+                    s_reg = dict2[s_j];
+                }
+                else{
+                    s_reg = new RegExp(s_j, "g")
+                    dict2[s_j] = s_reg;
+                }
+                s2 = s2.replace(s_reg, c_k[j]);
+            }
+            if(s2 in dict){
+                var regex = dict[s2];
+            }
+            else{
+                var regexStr = FormatAndRegex(s2, mode);
+                var regex = new RegExp(regexStr[0]);
+                dict[s2] = regex;
+            }
+            keep = ri.replace(regex, '') == '';
+            if(keep){
+                break;
+            }
+        }
         if (keep) {
-            f.push(result[i])
+            f.push(ri)
         }
     }
     return f;
@@ -799,7 +847,6 @@ function GetMatchedWords(dict, s, mode, r_div) {
     if (s.match(/^\([a-z]*[^a-z]?[a-z]*\)$/) != null) {
         f = GetScrabble(s);
     } else {
-        re = new RegExp(regexString);
         var result = [];
         if (mode == "jp") {
             if (jpdict_hiragana.length == 0) {
