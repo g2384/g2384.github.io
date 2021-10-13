@@ -1,0 +1,117 @@
+<html>
+<header>
+    <title>Draw Balls</title>
+    <style>
+        body {
+            font-family: arial, sans-serif;
+            font-size: 1.5em;
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        .ball {
+            border: 3px solid #840a0a;
+            display: inline-block;
+            width: 100px;
+            margin: 10px;
+            padding: 35 0;
+            text-align: center;
+            border-radius: 50%;
+        }
+
+        .selected {
+            background-color: #f07f7f;
+        }
+
+        input[type=button] {
+            border: 3px solid #840a0a;
+            background-color: #ffd0d0;
+            display: inline-block;
+            margin: 10px;
+            padding: 20 40;
+            text-align: center;
+            font-size: 1em;
+            cursor: pointer;
+            border-radius: 10px;
+        }
+
+        input[type=button]:hover {
+            background-color: #f07f7f;
+        }
+    </style>
+</header>
+
+<body>
+    <h2>
+        Draw Balls
+    </h2>
+    <p>Hold any key and release after a while to select a ball</p>
+    <div id="balls"></div>
+    <input tabindex="-1" value="Select ball: 1" id="removed" onmouseup="confirm();" type="button">
+    <input tabindex="-1" value="Remove last ball" id="removed" onmouseup="removeball();" type="button">
+    <div>Selected: <div id="removedList"></div>
+    </div>
+    <script>
+        var balls = document.querySelector("#balls");
+        var rl = document.querySelector("#removedList");
+        var removedL = [];
+        var ballsEle = [];
+        var innerHtml = "";
+        for (var i = 1; i <= 59; i++) {
+            var newEle = "<span class='ball' id='ball-" + i + "'>" + i + "</span>";
+            innerHtml += newEle;
+        }
+        balls.innerHTML = innerHtml;
+        for (var i = 1; i <= 59; i++) {
+            var currentBallEle = document.querySelector("#ball-" + i);
+            ballsEle.push(currentBallEle);
+        }
+        function select(count) {
+            var currentBallEle = ballsEle[count - 1];
+            currentBallEle.classList.add("selected");
+        }
+        function unselect(count) {
+            var currentBallEle = ballsEle[count - 1];
+            currentBallEle.classList.remove("selected");
+        }
+        var currentBall = 1;
+        select(currentBall);
+
+        document.addEventListener('keydown', logKey);
+        document.addEventListener('keyup', updateRemoved);
+        function logKey(e) {
+            unselect(currentBall);
+            currentBall++;
+            if (currentBall > 59) {
+                currentBall = 1;
+            }
+            while (removedL.indexOf(currentBall) >= 0) {
+                currentBall++;
+                if (currentBall > 59) {
+                    currentBall = 1;
+                }
+            }
+            select(currentBall);
+        }
+        function updateRemoved(e) {
+            var inp = document.querySelector("#removed");
+            inp.value = "Select ball: " + currentBall;
+
+        }
+        function confirm() {
+            if (removedL.indexOf(currentBall) >= 0) {
+                return;
+            }
+            removedL.push(currentBall);
+            rl.innerHTML = removedL.join("; ");
+            var currentBallEle = document.querySelector("#ball-" + currentBall);
+            currentBallEle.focus();
+        }
+        function removeball() {
+            removedL.pop();
+            rl.innerHTML = removedL.join("; ");
+        }
+    </script>
+</body>
+
+</html>
