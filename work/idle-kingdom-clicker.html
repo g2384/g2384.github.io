@@ -89,6 +89,10 @@
             font-weight: bold;
             font-size: 0.9em;
         }
+
+        #trait-count{
+            display: inline-block;
+        }
     </style>
 </head>
 
@@ -97,7 +101,7 @@
     <h4>For v0.10.4.x</h4>
     <h4>Filters:</h4>
     <div id="filters"></div>
-    <h4>Governor's Traits:</h4>
+    <h4>Governor's Traits: (<div id="trait-count"></div>)</h4>
     <div id="traits"></div>
     <h4>Map Info:</h4>
     <div id="mapinfo"></div>
@@ -267,6 +271,12 @@
                 "class": "cultivators",
                 "base-value": [2.10, 3.90],
                 "items": ["fisherman", "salt mine"]
+            },
+            {
+                "name": "winemaker",
+                "class": "cultivators",
+                "base-value": [2.10, 3.90],
+                "items": ["foraging hut", "winery"]
             }];
         const itemClasses = {
             "cultivators": ["foraging hut", "hunter", "winery", "fisherman", "farm", "bakery", "spice farm", "salt mine", "herbalist hut", "distillery", "butcher shop", "curing shop", "tavern"],
@@ -319,6 +329,7 @@
         }
         function addTraits(showItems) {
             var result = "";
+            var totalShown = 0;
             data.sort(function (a, b) { return a["class"] + a["name"] > b["class"] + b["name"] })
             for (var i = 0; i < data.length; i++) {
                 var d = data[i];
@@ -353,15 +364,18 @@
                     for (var j = 0; j < showItems.length; j++) {
                         if (text.indexOf(showItems[j]) >= 0) {
                             result += h.replace("{html}", text);
+                            totalShown++;
                             break;
                         }
                     }
                 }
                 else {
                     result += h.replace("{html}", text);
+                    totalShown++;
                 }
             }
             document.querySelector("#traits").innerHTML = result;
+            document.querySelector("#trait-count").innerHTML = totalShown + "/" + data.length;
         }
         function addFilters() {
             var btns = "";
