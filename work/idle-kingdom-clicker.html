@@ -1,0 +1,429 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Idle Kingdom Clicker Governors</title>
+    <style>
+        body {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        #traits {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .cell {
+            border: 1px solid #333;
+            display: inline-block;
+            width: 400px;
+            margin: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            position: relative;
+        }
+
+        .filter-btns {
+            margin: 10px;
+            padding: 10px;
+            line-height: 1.5em;
+        }
+
+        .filter-btns label {
+            margin: 0 5px;
+        }
+
+        .cultivators {
+            background-color: #ffecc8;
+        }
+
+        .crafters {
+            background-color: #ececec;
+        }
+
+        .scholars {
+            background-color: #e8f3ff;
+        }
+
+        .item-cultivators {
+            color: #8f5e02;
+        }
+
+        .item-crafters {
+            color: #5e5e5e;
+        }
+
+        .item-scholars {
+            color: #0059b9;
+        }
+
+        .class {
+            position: absolute;
+            right: 0;
+            top: 0;
+            margin-right: 10px;
+            margin: 10px 10px 50px 0px;
+            color: #888;
+            margin-left: 50px;
+        }
+
+        .base-value {
+            position: absolute;
+            bottom: 0px;
+        }
+
+        label {
+            display: inline-block;
+        }
+
+        .content {
+            margin-bottom: 1em;
+        }
+
+        .title {
+            display: inline-block;
+            border-bottom: 1px solid #262626;
+            margin-bottom: 5px;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Idle Kingdom Clicker Governors</h2>
+    <h4>Filters:</h4>
+    <div id="filters"></div>
+    <h4>Governor's Traits:</h4>
+    <div id="traits"></div>
+    <h4>Map Info:</h4>
+    <div id="mapinfo"></div>
+    <script>
+        const data = [
+            {
+                "name": "alchemist",
+                "class": "scholars",
+                "base-value": [2.10, 3.90],
+                "items": ["outcast hovel", "alchemist tower"]
+            },
+            {
+                "name": "scientist",
+                "class": "scholars",
+                "base-value": [1.10, 1.80],
+                "items": ["shaman", "paper mill", "outcast hovel", "squid fisher",
+                    "whaling port", "volcano outpost"]
+            },
+            {
+                "name": "tradesman",
+                "class": "all classes",
+                "base-value": [1.10, 1.60],
+                "items": ["winery", "bakery", "butcher shop", "distillery",
+                    "curing shop", "tavern", "sawmill", "kiln", "carpentry", "mason shop", "engineering hall", "smelter", "blacksmith", "adept shack", "bookbinder", "apothecary", "alchemist tower", "laboratory", "dye works", "scriptorium"]
+            },
+            {
+                "name": "logistician",
+                "class": "all classes",
+                "base-value": [1.20, 2.20],
+                "items": ["foodstore", "stockpile", "library", "bridge",
+                    "tunnel"]
+            },
+            {
+                "name": "apothecary",
+                "class": "scholars",
+                "base-value": [2.10, 3.90],
+                "items": ["volcano outpost", "apothecary"]
+            },
+            {
+                "name": "scribe",
+                "class": "scholars",
+                "base-value": [2.10, 3.90],
+                "items": ["squid fisher", "whaling port", "dye works"]
+            },
+            {
+                "name": "sage",
+                "class": "scholars",
+                "base-value": [1.10, 1.80],
+                "items": ["adept shack", "bookbinder", "apothecary", "alchemist tower", "laboratory", "dye works", "scriptorium"]
+            },
+            {
+                "name": "pioneer",
+                "class": "scholars",
+                "base-value": [2.10, 3.90],
+                "items": ["outcast hovel", "volcano outpost", "whaling port"]
+            },
+            {
+                "name": "sea dog",
+                "class": "all classes",
+                "base-value": [2.10, 3.90],
+                "items": ["fisherman", "squid fisher", "whaling port"]
+            },
+            {
+                "name": "extractor",
+                "class": "all classes",
+                "base-value": [1.10, 1.60],
+                "items": ["foraging hut", "hunter", "farm", "herbalist hut", "fisherman", "spice farm", "salt mine", "woodcutter", "clay pit", "quarry", "forester lodge", "coal mine", "iron mine", "shaman", "paper mill", "outcast hovel", "squid fisher", "whaling port", "volcano outpost"]
+            },
+            {
+                "name": "overseer",
+                "class": "crafters",
+                "base-value": [1.10, 1.80],
+                "items": ["woodcutter", "clay pit", "quarry", "forester lodge", "coal mine", "iron mine"]
+            },
+            {
+                "name": "accountant",
+                "class": "crafters",
+                "base-value": [1.40, 2.60],
+                "items": ["stockpile"]
+            },
+            {
+                "name": "ranger",
+                "class": "all classes",
+                "base-value": [1.40, 2.60],
+                "items": ["hunter", "woodcutter", "forester lodge"]
+            },
+            {
+                "name": "prospector",
+                "class": "all classes",
+                "base-value": [2.10, 3.90],
+                "items": ["salt mine", "quarry", "coal mine", "iron mine", "volcano outpost"]
+            },
+            {
+                "name": "manufacturer",
+                "class": "crafters",
+                "base-value": [1.10, 1.80],
+                "items": ["sawmill", "kiln", "carpentry", "mason shop", "engineering hall", "smelter", "blacksmith"]
+            },
+            {
+                "name": "hermit",
+                "class": "all classes",
+                "base-value": [1.40, 2.60],
+                "items": ["herbalist hut", "clay pit", "paper mill", "outcast hovel"]
+            },
+            {
+                "name": "carpenter",
+                "class": "crafters",
+                "base-value": [2.10, 3.90],
+                "items": ["forester lodge", "carpentry"]
+            },
+            {
+                "name": "metallurgist",
+                "class": "crafters",
+                "base-value": [2.10, 3.90],
+                "items": ["coal mine", "iron mine", "smelter"]
+            },
+            {
+                "name": "potter",
+                "class": "crafters",
+                "base-value": [2.10, 3.90],
+                "items": ["clay pit", "kiln"]
+            },
+            {
+                "name": "procurement operator",
+                "class": "crafters",
+                "base-value": [2.10, 3.90],
+                "items": ["forester lodge", "coal mine", "iron mine"]
+            },
+            {
+                "name": "provider",
+                "class": "cultivators",
+                "base-value": [1.10, 1.80],
+                "items": ["foraging hut", "hunter", "farm", "herbalist hut", "fisherman", "spice farm", "salt mine"]
+            },
+            {
+                "name": "baker",
+                "class": "cultivators",
+                "base-value": [2.10, 3.90],
+                "items": ["farm", "bakery"]
+            },
+            {
+                "name": "supplier",
+                "class": "cultivators",
+                "base-value": [1.40, 2.60],
+                "items": ["foodstore"]
+            },
+            {
+                "name": "planner",
+                "class": "all classes",
+                "base-value": [1.10, 1.30],
+                "items": ["foraging hut", "winery", "farm", "bakery", "butcher shop", "spice farm", "distillery", "curing shop", "tavern", "sawmill", "kiln", "carpentry", "mason shop", "engineering hall", "smelter", "blacksmith", "adept shack", "bookbinder", "apothecary", "alchemist tower", "laboratory", "dye works", "scriptorium"]
+            },
+            {
+                "name": "conserver",
+                "class": "cultivators",
+                "base-value": [2.10, 3.90],
+                "items": ["curing shop"]
+            },
+            {
+                "name": "gourmet",
+                "class": "cultivators",
+                "base-value": [1.10, 1.80],
+                "items": ["winery", "bakery", "butcher shop", "distillery", "curing shop", "tavern"]
+            },
+            {
+                "name": "mariner",
+                "class": "cultivators",
+                "base-value": [2.10, 3.90],
+                "items": ["fisherman", "salt mine"]
+            }];
+        const itemClasses = {
+            "cultivators": ["foraging hut", "hunter", "winery", "fisherman", "farm", "bakery", "spice farm", "salt mine", "herbalist hut", "distillery", "butcher shop", "curing shop", "tavern"],
+            "crafters": ["woodcutter", "sawmill", "clay pit", "kiln", "quarry", "coal mine", "mason shop", "forester lodge", "iron mine", "carpentry", "smelter", "blacksmith", "engineering hall"],
+            "scholars": ["shaman", "paper mill", "adept shack", "squid fisher", "bookbinder", "whaling port", "volcano outpost", "outcast hovel", "apothecary", "dye works", "alchemist tower", "scriptorium", "laboratory"],
+            "transport": ["foodstore", "stockpile", "library", "bridge", "tunnel"]
+        }
+        const index = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"]
+        const mapInfo = [
+            {
+                "village": 1,
+                "level": 4,
+                "location": "mid-bottom"
+            },
+            {
+                "village": 1,
+                "level": 14,
+                "location": "mid-bottom"
+            },
+            {
+                "village": 1,
+                "level": 22,
+                "location": "top"
+            },
+            {
+                "village": 2,
+                "level": 28,
+                "location": "left, right-bottom"
+            },
+            {
+                "village": 1,
+                "level": 31,
+                "location": "top"
+            }
+        ];
+        function titleCase(str) {
+            return str.toLowerCase().split(' ').map(function (word) {
+                return (word.charAt(0).toUpperCase() + word.slice(1));
+            }).join(' ');
+        }
+        function addMapInfo() {
+            var result = "";
+            for (var i = 0; i < mapInfo.length; i++) {
+                var d = mapInfo[i];
+                var h = "<div class='cell'>{html}</div>";
+                var text = "<div class='title'>Map " + (i + 1) + "</div>" + "<div class='content'>" + "Village: " + d["village"] + " (" + (d["location"]) + ")" + "<br>Level: " + d["level"] + "</div>";
+                result += h.replace("{html}", text);
+            }
+            document.querySelector("#mapinfo").innerHTML = result;
+        }
+        function addTraits(showItems) {
+            var result = "";
+            data.sort(function (a, b) { return a["class"] + a["name"] > b["class"] + b["name"] })
+            for (var i = 0; i < data.length; i++) {
+                var d = data[i];
+                var name = d["name"];
+                var cls = d["class"];
+                var items = d["items"];
+                var itemsTexts = [];
+                var previousClass = "";
+                for (var j = 0; j < items.length; j++) {
+                    var itemCls = "";
+                    for (var k in itemClasses) {
+                        if (itemClasses[k].indexOf(items[j]) >= 0) {
+                            itemCls = k;
+                            break;
+                        }
+                    }
+                    itemText = "<span class='item-" + itemCls + "'>" + titleCase(items[j]) + "</span>";
+                    if (previousClass != "" && previousClass != itemCls) {
+                        itemText = "<br>" + itemText;
+                    }
+                    itemsTexts.push(itemText);
+                    previousClass = itemCls;
+                }
+                var h = "<div class='cell " + cls + "'>{html}</div>";
+                var text = "<div class='title'>"
+                    + name.toUpperCase() + "</div>" + "<div class='class'>"
+                    + cls.toUpperCase() + "</div>" + "<div class='content'>"
+                    + itemsTexts.join(", ") + "</div>"
+                    + "<div class='base-value'>"
+                    + d["base-value"].join(" - ") + "</div>";
+                if (showItems != undefined) {
+                    for (var j = 0; j < showItems.length; j++) {
+                        if (text.indexOf(showItems[j]) >= 0) {
+                            result += h.replace("{html}", text);
+                            break;
+                        }
+                    }
+                }
+                else {
+                    result += h.replace("{html}", text);
+                }
+            }
+            document.querySelector("#traits").innerHTML = result;
+        }
+        function addFilters() {
+            var btns = "";
+            for (var k in itemClasses) {
+                var items = itemClasses[k];
+                btns += "<div class='filter-btns " + k + "'>";
+                for (var i = 0; i < items.length; i++) {
+                    btns += "<label><input type='checkbox' id='item-filter-" + items[i].replace(" ", "") + "' onclick='refresh()'>" + titleCase(items[i]) + "</label>";
+                }
+                btns += "</div>";
+            }
+            document.querySelector("#filters").innerHTML = btns;
+        }
+        function refresh() {
+            var showItems = [];
+            var settings = [];
+            for (var k in itemClasses) {
+                var setting = [];
+                var items = itemClasses[k];
+                for (var i = 0; i < items.length; i++) {
+                    var ck = document.querySelector("#item-filter-" + items[i].replace(" ", ""));
+                    if (ck.checked) {
+                        showItems.push(titleCase(items[i]));
+                        setting.push(index[i]);
+                    }
+                }
+                if (setting.length == 0) {
+                    continue;
+                }
+                settings.push(k + "=" + setting.join(""));
+            }
+            addTraits(showItems);
+            document.location.search = settings.join("&");
+        }
+
+        function setCheckBoxes() {
+            var q = document.location.search.substr(1);
+            if (q == '') {
+                return;
+            }
+            var kvp = q.split('&');
+            showItems = [];
+            for (var i = 0; i < kvp.length; i++) {
+                var key = kvp[i].split("=");
+                if (key.length < 2) {
+                    continue;
+                }
+                var key1 = key[0];
+                var key2s = key[1].split("");
+                for (var j = 0; j < key2s.length; j++) {
+                    var idx = index.indexOf(key2s[j]);
+                    if (idx >= 0) {
+                        var item = itemClasses[key1][idx];
+                        document.querySelector("#item-filter-" + item.replace(" ", "")).checked = true;
+                        showItems.push(titleCase(item));
+                    }
+                }
+            }
+            addTraits(showItems);
+        }
+        addTraits();
+        addMapInfo();
+        addFilters();
+        setCheckBoxes();
+    </script>
+</body>
+
+</html>
