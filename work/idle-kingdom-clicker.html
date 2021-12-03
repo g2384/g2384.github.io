@@ -86,12 +86,15 @@
             border-bottom: 1px solid #262626;
             margin-bottom: 5px;
             width: 100%;
+            font-weight: bold;
+            font-size: 0.9em;
         }
     </style>
 </head>
 
 <body>
     <h2>Idle Kingdom Clicker Governors</h2>
+    <h4>For v0.10.4.x</h4>
     <h4>Filters:</h4>
     <div id="filters"></div>
     <h4>Governor's Traits:</h4>
@@ -309,7 +312,7 @@
             for (var i = 0; i < mapInfo.length; i++) {
                 var d = mapInfo[i];
                 var h = "<div class='cell'>{html}</div>";
-                var text = "<div class='title'>Map " + (i + 1) + "</div>" + "<div class='content'>" + "Village: " + d["village"] + " (" + (d["location"]) + ")" + "<br>Level: " + d["level"] + "</div>";
+                var text = "<div class='title'>Map " + (i + 1) + "</div>" + "<div class='content'>" + "Village: " + d["village"] + " (" + (d["location"]) + ")" + "</div>";
                 result += h.replace("{html}", text);
             }
             document.querySelector("#mapinfo").innerHTML = result;
