@@ -7,6 +7,7 @@
         body {
             max-width: 900px;
             margin: 0 auto;
+            font-family: sans-serif;
         }
 
         #traits {
@@ -90,7 +91,7 @@
             font-size: 0.9em;
         }
 
-        #trait-count{
+        #trait-count {
             display: inline-block;
         }
     </style>
@@ -277,6 +278,42 @@
                 "class": "cultivators",
                 "base-value": [2.10, 3.90],
                 "items": ["foraging hut", "winery"]
+            },
+            {
+                "name": "chef",
+                "class": "cultivators",
+                "base-value": [2.10, 3.90],
+                "items": ["hunter", "herbalist Hut", "butcher shop"]
+            },
+            {
+                "name": "forester",
+                "class": "crafters",
+                "base-value": [2.10, 3.90],
+                "items": ["woodcutter", "sawmill"]
+            },
+            {
+                "name": "mason",
+                "class": "crafters",
+                "base-value": [2.10, 3.90],
+                "items": ["quarry", "mason shop"]
+            },
+            {
+                "name": "bookbinder",
+                "class": "scholars",
+                "base-value": [2.10, 3.90],
+                "items": ["paper mill", "bookbinder"]
+            },
+            {
+                "name": "quack",
+                "class": "scholars",
+                "base-value": [2.10, 3.90],
+                "items": ["shaman", "adept shack"]
+            },
+            {
+                "name": "librarian",
+                "class": "scholars",
+                "base-value": [1.40, 2.60],
+                "items": ["library"]
             }];
         const itemClasses = {
             "cultivators": ["foraging hut", "hunter", "winery", "fisherman", "farm", "bakery", "spice farm", "salt mine", "herbalist hut", "distillery", "butcher shop", "curing shop", "tavern"],
@@ -289,27 +326,32 @@
             {
                 "village": 1,
                 "level": 4,
-                "location": "mid-bottom"
+                "location": "mid-bottom",
+                "map": "./ikc_images/map_1.png"
             },
             {
                 "village": 1,
                 "level": 14,
-                "location": "mid-bottom"
+                "location": "mid-bottom",
+                "map": "./ikc_images/map_2.png"
             },
             {
                 "village": 1,
                 "level": 22,
-                "location": "top"
+                "location": "top",
+                "map": "./ikc_images/map_3.png"
             },
             {
                 "village": 2,
                 "level": 28,
-                "location": "left, right-bottom"
+                "location": "left, right",
+                "map": "./ikc_images/map_4.png"
             },
             {
-                "village": 1,
+                "village": 2,
                 "level": 31,
-                "location": "top"
+                "location": "top, bottom",
+                "map": "./ikc_images/map_5.png"
             }
         ];
         function titleCase(str) {
@@ -322,7 +364,10 @@
             for (var i = 0; i < mapInfo.length; i++) {
                 var d = mapInfo[i];
                 var h = "<div class='cell'>{html}</div>";
-                var text = "<div class='title'>Map " + (i + 1) + "</div>" + "<div class='content'>" + "Village: " + d["village"] + " (" + (d["location"]) + ")" + "</div>";
+                var text = "<div class='title'>Map " + (i + 1) + "</div>"
+                    + "<div class='content'>"
+                    + "Village: " + d["village"] + " (" + (d["location"]) + ")"
+                    + "<br><a href='" + d["map"] + "' target='_blank'>View Map</a>" + "</div>";
                 result += h.replace("{html}", text);
             }
             document.querySelector("#mapinfo").innerHTML = result;
