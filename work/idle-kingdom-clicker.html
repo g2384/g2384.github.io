@@ -107,7 +107,7 @@
     <h4>Map Info:</h4>
     <div id="mapinfo"></div>
     <script>
-        const data = [
+        let data = [
             {
                 "name": "alchemist",
                 "class": "scholars",
@@ -315,6 +315,7 @@
                 "base-value": [1.40, 2.60],
                 "items": ["library"]
             }];
+        data.sort((a, b) => (a["class"] + a["name"]).localeCompare(b["class"] + b["name"]));
         const itemClasses = {
             "cultivators": ["foraging hut", "hunter", "winery", "fisherman", "farm", "bakery", "spice farm", "salt mine", "herbalist hut", "distillery", "butcher shop", "curing shop", "tavern"],
             "crafters": ["woodcutter", "sawmill", "clay pit", "kiln", "quarry", "coal mine", "mason shop", "forester lodge", "iron mine", "carpentry", "smelter", "blacksmith", "engineering hall"],
@@ -375,7 +376,6 @@
         function addTraits(showItems) {
             var result = "";
             var totalShown = 0;
-            data.sort(function (a, b) { return a["class"] + a["name"] > b["class"] + b["name"] })
             for (var i = 0; i < data.length; i++) {
                 var d = data[i];
                 var name = d["name"];
