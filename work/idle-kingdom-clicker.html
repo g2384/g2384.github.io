@@ -59,6 +59,11 @@
             color: #0059b9;
         }
 
+        .highligh{
+            font-weight: bold;
+            display: inline-block;
+        }
+
         .class {
             position: absolute;
             right: 0;
@@ -355,11 +360,13 @@
                 "map": "./ikc_images/map_5.png"
             }
         ];
+
         function titleCase(str) {
             return str.toLowerCase().split(' ').map(function (word) {
                 return (word.charAt(0).toUpperCase() + word.slice(1));
             }).join(' ');
         }
+
         function addMapInfo() {
             var result = "";
             for (var i = 0; i < mapInfo.length; i++) {
@@ -373,9 +380,18 @@
             }
             document.querySelector("#mapinfo").innerHTML = result;
         }
+
         function addTraits(showItems) {
             var result = "";
             var totalShown = 0;
+            var highlight = true;
+            if (showItems == undefined || showItems == null) {
+                showItems = [];
+                highlight = false;
+                for (var k in itemClasses) {
+                    showItems = showItems.concat(itemClasses[k]);
+                }
+            }
             for (var i = 0; i < data.length; i++) {
                 var d = data[i];
                 var name = d["name"];
@@ -383,15 +399,24 @@
                 var items = d["items"];
                 var itemsTexts = [];
                 var previousClass = "";
+                var displayThis = !highlight;
                 for (var j = 0; j < items.length; j++) {
                     var itemCls = "";
+                    var item = items[j];
                     for (var k in itemClasses) {
-                        if (itemClasses[k].indexOf(items[j]) >= 0) {
+                        if (itemClasses[k].indexOf(item) >= 0) {
                             itemCls = k;
                             break;
                         }
                     }
-                    itemText = "<span class='item-" + itemCls + "'>" + titleCase(items[j]) + "</span>";
+                    var title = titleCase(item);
+                    if (highlight && showItems.indexOf(title) >= 0) {
+                        itemText = "<span class='item-" + itemCls + "'><div class='highligh'>" + title + "</div></span>";
+                        displayThis = true;
+                    }
+                    else {
+                        itemText = "<span class='item-" + itemCls + "'>" + title + "</span>";
+                    }
                     if (previousClass != "" && previousClass != itemCls) {
                         itemText = "<br>" + itemText;
                     }
@@ -405,16 +430,7 @@
                     + itemsTexts.join(", ") + "</div>"
                     + "<div class='base-value'>"
                     + d["base-value"].join(" - ") + "</div>";
-                if (showItems != undefined) {
-                    for (var j = 0; j < showItems.length; j++) {
-                        if (text.indexOf(showItems[j]) >= 0) {
-                            result += h.replace("{html}", text);
-                            totalShown++;
-                            break;
-                        }
-                    }
-                }
-                else {
+                if (displayThis) {
                     result += h.replace("{html}", text);
                     totalShown++;
                 }
@@ -422,6 +438,7 @@
             document.querySelector("#traits").innerHTML = result;
             document.querySelector("#trait-count").innerHTML = totalShown + "/" + data.length;
         }
+
         function addFilters() {
             var btns = "";
             for (var k in itemClasses) {
@@ -434,6 +451,7 @@
             }
             document.querySelector("#filters").innerHTML = btns;
         }
+
         function refresh() {
             var showItems = [];
             var settings = [];
