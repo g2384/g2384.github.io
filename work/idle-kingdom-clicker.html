@@ -2,6 +2,7 @@
 
 <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Idle Kingdom Clicker Governors</title>
     <style>
         body {
@@ -10,7 +11,7 @@
             font-family: sans-serif;
         }
 
-        #traits {
+        .flex-container {
             display: flex;
             flex-wrap: wrap;
         }
@@ -59,7 +60,7 @@
             color: #0059b9;
         }
 
-        .highligh{
+        .highlight {
             font-weight: bold;
             display: inline-block;
         }
@@ -99,6 +100,18 @@
         #trait-count {
             display: inline-block;
         }
+
+        a,
+        .link {
+            cursor: pointer;
+            text-decoration: underline;
+            color: #206cbe;
+        }
+
+        a:hover,
+        .link:hover {
+            color: #00346b;
+        }
     </style>
 </head>
 
@@ -108,7 +121,9 @@
     <h4>Filters:</h4>
     <div id="filters"></div>
     <h4>Governor's Traits: (<div id="trait-count"></div>)</h4>
-    <div id="traits"></div>
+    <div id="traits" class="flex-container"></div>
+    <h4>Best Combs:</h4>
+    <div id="combs"></div>
     <h4>Map Info:</h4>
     <div id="mapinfo"></div>
     <script>
@@ -288,7 +303,7 @@
                 "name": "chef",
                 "class": "cultivators",
                 "base-value": [2.10, 3.90],
-                "items": ["hunter", "herbalist Hut", "butcher shop"]
+                "items": ["hunter", "herbalist hut", "butcher shop"]
             },
             {
                 "name": "forester",
@@ -360,6 +375,47 @@
                 "map": "./ikc_images/map_5.png"
             }
         ];
+        const bestComb = [
+            {
+                "name": "level-up-cultivators",
+                "displayName": "Levelling up cultivators (governor)",
+                "traits": ["Herbalist Hut"]
+            },
+            {
+                "name": "level-up-crafters",
+                "displayName": "Levelling up crafters (governor)",
+                "traits": ["Forester Lodge"]
+            },
+            {
+                "name": "level-up-scholars",
+                "displayName": "Levelling up scholars (governor)",
+                "traits": ["Outcast Hovel"]
+            }
+        ]
+
+        function toggle(name) {
+            var div = document.querySelector("#" + name);
+            if (div.style.display != "none") {
+                div.style.display = "none";
+            }
+            else {
+                div.style.display = "";
+            }
+        }
+
+        function loadBestCombs() {
+            var resultAll = ""
+            for (var i = 0; i < bestComb.length; i++) {
+                var c = bestComb[i];
+                var [result, totalShown] = getTraitHtml(true, c["traits"]);
+                var link = "<div class='link' onclick=\"toggle('" + c["name"] + "');\">" + c["displayName"] + ":</div>";
+                var div = "<div id='" + c["name"] + "' class='flex-container toggle-anime' style='display:none;'>" + result + "</div>";
+                resultAll += (link + div);
+            }
+            document.querySelector("#combs").innerHTML = resultAll;
+        }
+
+        window.addEventListener('load', loadBestCombs, false);
 
         function titleCase(str) {
             return str.toLowerCase().split(' ').map(function (word) {
@@ -382,8 +438,6 @@
         }
 
         function addTraits(showItems) {
-            var result = "";
-            var totalShown = 0;
             var highlight = true;
             if (showItems == undefined || showItems == null) {
                 showItems = [];
@@ -392,6 +446,14 @@
                     showItems = showItems.concat(itemClasses[k]);
                 }
             }
+            var [result, totalShown] = getTraitHtml(highlight, showItems);
+            document.querySelector("#traits").innerHTML = result;
+            document.querySelector("#trait-count").innerHTML = totalShown + "/" + data.length;
+        }
+
+        function getTraitHtml(highlight, showItems) {
+            var result = "";
+            var totalShown = 0;
             for (var i = 0; i < data.length; i++) {
                 var d = data[i];
                 var name = d["name"];
@@ -411,7 +473,7 @@
                     }
                     var title = titleCase(item);
                     if (highlight && showItems.indexOf(title) >= 0) {
-                        itemText = "<span class='item-" + itemCls + "'><div class='highligh'>" + title + "</div></span>";
+                        itemText = "<span class='item-" + itemCls + "'><div class='highlight'>" + title + "</div></span>";
                         displayThis = true;
                     }
                     else {
@@ -435,8 +497,7 @@
                     totalShown++;
                 }
             }
-            document.querySelector("#traits").innerHTML = result;
-            document.querySelector("#trait-count").innerHTML = totalShown + "/" + data.length;
+            return [result, totalShown];
         }
 
         function addFilters() {
