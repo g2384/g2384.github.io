@@ -1,0 +1,283 @@
+<html>
+<meta charset="UTF-8">
+<style>
+    body {
+        margin: 0 auto;
+        max-width: 1200;
+    }
+
+    #inputs input {
+        display: block;
+        margin: 2px 0px;
+        padding: 2px;
+        float: right;
+        text-align: right;
+    }
+
+    #inputs {
+        margin-bottom: 5px;
+    }
+
+    table.blueTable {
+        border: 1px solid #11A49D;
+        background-color: #EEEEEE;
+        width: 100%;
+        text-align: right;
+        border-collapse: collapse;
+    }
+
+    table.blueTable td,
+    table.blueTable th {
+        border: 1px solid #AAAAAA;
+        padding: 3px 2px;
+    }
+
+    table.blueTable tbody td {
+        font-size: 13px;
+    }
+
+    table.blueTable tr:nth-child(even) {
+        background: #D0E4F5;
+    }
+
+    table.blueTable thead {
+        background: #1C6EA4;
+        border-bottom: 2px solid #444444;
+    }
+
+    table.blueTable thead th {
+        font-size: 15px;
+        font-weight: bold;
+        color: #FFFFFF;
+        border-left: 2px solid #D0E4F5;
+    }
+
+    table.blueTable thead th:first-child {
+        border-left: none;
+    }
+
+    table.blueTable tfoot td {
+        font-size: 14px;
+    }
+
+    table.blueTable tfoot .links {
+        text-align: right;
+    }
+
+    table.blueTable tfoot .links a {
+        display: inline-block;
+        background: #1C6EA4;
+        color: #FFFFFF;
+        padding: 2px 8px;
+        border-radius: 5px;
+    }
+
+    #settings {
+        margin-bottom: 5px;
+    }
+
+    #settings .label {
+        width: 5em;
+        display: inline-block;
+    }
+
+    #settings input {
+        margin-left: 2px;
+    }
+</style>
+
+<body>
+    <div id="settings">
+        <div class="label">优惠：</div>£<input type="text" id="discount" oninput="calcActualDiscount()" value=""><br>
+        <div class="label">运费：</div>£<input type="text" id="deliveryCost" oninput="calcActualDiscount()" value=""><br>
+        <div class="label">实际优惠：</div>£<input type="text" id="actualDiscount" value=""> ( = 优惠 - 运费)<br>
+    </div>
+    <div id="inputs">
+        <table class="blueTable">
+            <thead>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    <button onclick="addInput()">Add One Line</button>
+    <script>
+        let inputsCount = 0;
+        const theadText = [
+            "原价（单价）",
+            "数量",
+            "折扣（%=折扣，数字=价, -=原价）",
+            "第一次折后价",
+            "折后总价",
+            "原价总价",
+            "折后+优惠码后总价",
+            "优惠码后/原价总价",
+            "优惠码后单价"
+        ];
+        let sums = [];
+
+        function safeParseFloat(id) {
+            //console.log(id);
+            let e = document.querySelector(id);
+            let v = e.value;
+            if (v != undefined || v != null) {
+                e.setAttribute('value', v);
+            }
+            let f = parseFloat(v);
+            if (isNaN(f)) {
+                f = 0;
+            }
+            return f;
+        }
+
+        function calcActualDiscount() {
+            document.querySelector("#actualDiscount").value = safeParseFloat("#discount") - safeParseFloat("#deliveryCost")
+            calc();
+        }
+
+        function addTable() {
+            sums = theadText.map(e => 0);
+            document.querySelector("#inputs thead").innerHTML = "<th></th>" + theadText.map(e => "<th>" + e + "</th>").join("");
+            document.querySelector("#inputs tbody").innerHTML = "<tr><th>总价</th>" + theadText.map((e, i) => "<td><span id='s_" + i + "'>0</span></td>").join("") + "</tr>";
+        }
+
+        function addInput() {
+            let i = document.querySelector("#inputs tbody");
+            let html =
+                "<tr>"
+                + "<th></th>"
+                + "<td>" + getInput("o", inputsCount) + "</td>"
+                + "<td>" + getInput("n", inputsCount) + "</td>"
+                + "<td>" + getInput("d1", inputsCount) + "</td>"
+                + "<td></td>".repeat(theadText.length - 3);
+            + "</tr>";
+            let tr = document.createElement("tr");
+            let tdArray = [getInput("o", inputsCount), getInput("n", inputsCount), getInput("d1", inputsCount)].concat(Array(theadText.length - 3).fill(""));
+            console.log(tdArray);
+            let th = document.createElement("th");
+            tr.appendChild(th);
+            for (let td of tdArray) {
+                let tdE = document.createElement("td");
+                tdE.innerHTML = td;
+                console.log(tdE)
+                tr.appendChild(tdE);
+                if (td.indexOf("d1_") >= 0) {
+                    tdE.addEventListener('keydown', addInputByTab);
+                }
+            }
+            i.appendChild(tr);
+            inputsCount++;
+        }
+
+        function addInputByTab(e) {
+            if (e.code == "Tab") {
+                addInput();
+            }
+            console.log(e.code);
+        }
+
+        function getInput(prefix, i) {
+            return "<input type='text' id='" + prefix + "_" + i + "' value='' oninput='calc()'>";
+        }
+
+        function calc() {
+            sums = theadText.map(e => 0);
+            let trs = document.querySelectorAll("#inputs tbody tr");
+            let actualDiscount = safeParseFloat("#actualDiscount");
+            let sumRows = [];
+            for (let i = 0; i < trs.length - 1; i++) {
+                let sumRow = {};
+                let tr = trs[i + 1];
+                let tds = tr.querySelectorAll("td");
+                let originalPrice = safeParseFloat("#o_" + i);
+                let quantity = safeParseFloat("#n_" + i);
+                let d1E = document.querySelector("#d1_" + i);
+                let discountText = d1E.value;
+                if (discountText != undefined || discountText != null) {
+                    d1E.setAttribute('value', discountText);
+                }
+                let discountPrice = originalPrice;
+                if (discountText.indexOf("%") >= 0) {
+                    let discountPercentage = parseFloat(discountText.replace("%", ""));
+                    discountPrice = (discountPercentage / 100 * originalPrice).toFixed(5);;
+                }
+                else if (discountText.trim() == "-") {
+                    discountPrice = originalPrice;
+                }
+                else {
+                    discountPrice = parseFloat(discountText);
+                    if (isNaN(discountPrice)) {
+                        discountPrice = 0;
+                    }
+                }
+                tds[3].innerText = discountPrice;
+                let discountPriceTotal = (discountPrice * quantity).toFixed(5);
+                tds[4].innerText = discountPriceTotal;
+                let originalPriceTotal = (originalPrice * quantity).toFixed(5);
+                tds[5].innerText = (originalPrice * quantity).toFixed(5);
+                sumRow.originalPrice = originalPrice;
+                sumRow.quantity = quantity;
+                sumRow.discountPrice = discountPrice;
+                sumRow.discountPriceTotal = discountPriceTotal;
+                sumRow.originalPriceTotal = originalPriceTotal;
+                sumRows.push(sumRow);
+            }
+            sums[0] = sumRows.reduce((a, b) => +a + +b.originalPrice, 0).toFixed(5);
+            sums[1] = sumRows.reduce((a, b) => +a + +b.quantity, 0).toFixed(5);
+            sums[2] = 0;
+            sums[3] = sumRows.reduce((a, b) => +a + +b.discountPrice, 0).toFixed(5);
+            sums[4] = sumRows.reduce((a, b) => +a + +b.discountPriceTotal, 0).toFixed(5);
+            sums[5] = sumRows.reduce((a, b) => +a + +b.originalPriceTotal, 0).toFixed(5);
+            for (let i = 0; i < trs.length - 1; i++) {
+                let tr = trs[i + 1];
+                let tds = tr.querySelectorAll("td");
+
+                let discount_coupon = (sumRows[i].discountPriceTotal * (1 - actualDiscount / sums[4])).toFixed(5);
+                sumRows[i].discount_coupon = discount_coupon;
+                tds[6].innerText = discount_coupon;
+
+                let discount_div_original = (discount_coupon / sumRows[i].originalPriceTotal).toFixed(5);
+                if (isNaN(discount_div_original)) {
+                    discount_div_original = 0;
+                }
+                sumRows[i].discount_div_original = discount_div_original;
+                tds[7].innerText = discount_div_original;
+
+                let discount_unit = (discount_coupon / sumRows[i].quantity).toFixed(5);
+                if (isNaN(discount_unit)) {
+                    discount_unit = 0;
+                }
+                sumRows[i].discount_unit = discount_unit;
+                tds[8].innerText = discount_unit;
+            }
+            sums[6] = sumRows.reduce((a, b) => +a + +b.discount_coupon, 0).toFixed(5);
+            sums[7] = sumRows.reduce((a, b) => +a + +b.discount_div_original, 0).toFixed(5);
+            sums[8] = sumRows.reduce((a, b) => +a + +b.discount_unit, 0).toFixed(5);
+
+            let tds = trs[0].querySelectorAll("td");
+            for (let i = 0; i < sums.length; i++) {
+                tds[i].innerText = sums[i];
+            }
+
+            saveToCache();
+        }
+
+        function saveToCache() {
+            localStorage.setItem('html', document.querySelector("body").innerHTML);
+        }
+
+        function loadFromCache() {
+            let obj = localStorage.getItem('html');
+            if (obj != undefined || obj != null) {
+                document.querySelector("body").innerHTML = obj
+            }
+        }
+
+        window.addEventListener('load', function () {
+            addTable();
+            loadFromCache();
+        });
+    </script>
+</body>
+
+</html>
