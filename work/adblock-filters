@@ -1,0 +1,10 @@
+@@||consular.mfa.gov.cn^$document
+hotukdeals.com##article:has(a[title*="refurb" i])
+hotukdeals.com##article:has(a[title*="lingerie" i])
+hotukdeals.com##article:has(a[title*="nubia" i])
+
+! Hide Costco deals
+hotukdeals.com##article:has(a[href$="/search/deals?merchant-id=2295"])
+
+! Hide Aliexpress deals
+hotukdeals.com##article:has(a[href$="/search/deals?merchant-id=45020"])
