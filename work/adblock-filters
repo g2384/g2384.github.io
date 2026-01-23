@@ -8,3 +8,12 @@ hotukdeals.com##article:has(a[href$="/search/deals?merchant-id=2295"])
 
 ! Hide Aliexpress deals
 hotukdeals.com##article:has(a[href$="/search/deals?merchant-id=45020"])
+
+! Hide Playstation Store
+hotukdeals.com##article:has(a[href$="/search/deals?merchant-id=4409"])
+
+! Hide Cash Generator
+hotukdeals.com##article:has(a[href$="/search/deals?merchant-id=17930"])
+
+! Hide FarmFoods
+hotukdeals.com##article:has(a[href$="/search/deals?merchant-id=5150"])
