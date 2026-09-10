@@ -148,7 +148,7 @@
 
 		.actions {
 			display: grid;
-			grid-template-columns: 1fr 1fr;
+			grid-template-columns: repeat(3, 1fr);
 			gap: 10px;
 		}
 
@@ -217,10 +217,11 @@
 
 		<section class="results-panel" aria-labelledby="values-label">
 			<label id="values-label" for="values">Read values</label>
-			<textarea id="values" placeholder="Confirmed QR values appear here"></textarea>
+			<textarea id="values" placeholder="Confirmed QR values appear here" readonly></textarea>
 			<div class="actions">
 				<button id="append" type="button" disabled>Append value</button>
 				<button id="replace" type="button" disabled>Write new</button>
+				<button id="copy" type="button" disabled>Copy</button>
 			</div>
 		</section>
 	</main>
@@ -237,19 +238,39 @@
 		const values = document.getElementById("values");
 		const appendButton = document.getElementById("append");
 		const replaceButton = document.getElementById("replace");
+		const copyButton = document.getElementById("copy");
 
 		let recognisedValue = "";
+		let lastRecognisedValue = "";
 		let animationFrameId;
 		let lastScanTime = 0;
 
 		function setRecognisedValue(value) {
-			recognisedValue = value;
-			const recognised = value.length > 0;
+			if (value.length === 0) {
+				recognisedValue = "";
+				appendButton.disabled = true;
+				replaceButton.disabled = true;
+				status.dataset.state = "error";
+				status.textContent = "QR code is not recognised";
+				return;
+			}
 
-			appendButton.disabled = !recognised;
-			replaceButton.disabled = !recognised;
-			status.dataset.state = recognised ? "success" : "idle";
-			status.textContent = recognised ? `Recognised: ${value}` : "QR code is not recognised";
+			if (value === lastRecognisedValue) {
+				return;
+			}
+
+			recognisedValue = value;
+			lastRecognisedValue = value;
+			appendButton.disabled = false;
+			replaceButton.disabled = false;
+			status.dataset.state = "success";
+			status.textContent = `Recognised: ${value}`;
+		}
+
+		function consumeRecognisedValue() {
+			recognisedValue = "";
+			appendButton.disabled = true;
+			replaceButton.disabled = true;
 		}
 
 		function scanFrame(timestamp) {
@@ -303,12 +324,25 @@
 		appendButton.addEventListener("click", () => {
 			const separator = values.value.length > 0 && !values.value.endsWith("\n") ? "\n" : "";
 			values.value += `${separator}${recognisedValue}`;
-			values.focus();
+			copyButton.disabled = false;
+			consumeRecognisedValue();
 		});
 
 		replaceButton.addEventListener("click", () => {
 			values.value = recognisedValue;
-			values.focus();
+			copyButton.disabled = false;
+			consumeRecognisedValue();
+		});
+
+		copyButton.addEventListener("click", async () => {
+			try {
+				await navigator.clipboard.writeText(values.value);
+				status.dataset.state = "success";
+				status.textContent = "Copied values";
+			} catch {
+				status.dataset.state = "error";
+				status.textContent = "Unable to copy values";
+			}
 		});
 
 		window.addEventListener("pagehide", () => {
