@@ -244,10 +244,18 @@
 		let lastRecognisedValue = "";
 		let animationFrameId;
 		let lastScanTime = 0;
+		let consecutiveMisses = 0;
+		const missesBeforeFailure = 5;
 
 		function setRecognisedValue(value) {
 			if (value.length === 0) {
+				consecutiveMisses += 1;
+				if (consecutiveMisses < missesBeforeFailure) {
+					return;
+				}
+
 				recognisedValue = "";
+				lastRecognisedValue = "";
 				appendButton.disabled = true;
 				replaceButton.disabled = true;
 				status.dataset.state = "error";
@@ -255,6 +263,7 @@
 				return;
 			}
 
+			consecutiveMisses = 0;
 			if (value === lastRecognisedValue) {
 				return;
 			}
